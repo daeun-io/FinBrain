@@ -1,16 +1,15 @@
-# finbrain
+# FinBrain
 
-A new Flutter project.
+Finbrain is an application that analyzes and compares financial products with AI to assist users in understanding the explanations and differences among them.
 
-## Getting Started
+### Git Convention
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+|제목|내용|
+|------|---|
+|main(default)|The primary branch that maintains a production-ready, deployable state at all times.|
+|develop|The main integration branch for ongoing development.|
+|feat/new-feature|Used for developing and adding new features to the project.|
+|refactor/existing-code|Dedicated to improving or restructuring existing code without changing its external behavior.|
+|fix/bug-fix|Used for resolving standard bugs or issues found during development.|
+|hotfix/bug-fix|Specifically for addressing critical issues in production that require immediate attention.|
+|release/vn.m.r|Used for release preparation, including final polish, documentation, and versioning.|
