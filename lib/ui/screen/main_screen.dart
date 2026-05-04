@@ -9,16 +9,16 @@ class MainScreen extends StatefulWidget{
   State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin{
+class _MainScreenState extends State<MainScreen>{
 
   int _currentIndex = 0;
   
-  // todo: 추후 수정
+  // todo: change later
   final List<Widget> _pages = [
-    ProductScreen(),
-    ProductScreen(),
-    ProductScreen(),
-    ProductScreen(),
+    const ProductScreen(),
+    const ProductScreen(),
+    const ProductScreen(),
+    const ProductScreen(),
   ];
 
   @override
@@ -43,15 +43,16 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
               titleSpacing: -8,
               actions: [
                 OutlinedButton(
+                  // todo: implement later
                   onPressed: (){},
                   style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
-                  side: BorderSide(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
+                  side: const BorderSide(
                     color: textPrimary,
                     width: 1
                     ),
                   ),
-                  // 추후 수정
+                  // todo: implement later
                   child: const Text(
                     "큰 글씨",
                     style: TextStyle(
@@ -60,7 +61,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                     ),
                   ),
                 ),
-                SizedBox(width: 20, height: 60,)
+                const SizedBox(width: 20, height: 60,)
               ],
             ),
           ),
@@ -99,11 +100,11 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
               unselectedItemColor: textSecondary,
               selectedLabelStyle: const TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 14
+                fontSize: 14,
               ),
               unselectedLabelStyle: const TextStyle(
                 fontWeight: FontWeight.w400,
-                fontSize: 14
+                fontSize: 14,
               ),
               type: BottomNavigationBarType.fixed,
               items: [

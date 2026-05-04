@@ -1,3 +1,4 @@
+import 'package:finbrain/ui/screen/product_base_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finbrain/themes/colors.dart';
 
@@ -12,17 +13,15 @@ class ProductScreen extends StatelessWidget{
         backgroundColor: white,
         appBar: TabBar(
             labelColor: textPrimary,
-            labelStyle: TextStyle(
+            labelStyle: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: textPrimary,
             ),
-            unselectedLabelStyle: TextStyle(
+            unselectedLabelStyle: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w400,
-              color: textSecondary,
             ),
-            indicator: UnderlineTabIndicator(
+            indicator: const UnderlineTabIndicator(
               borderSide: BorderSide(
                 width: 2,
               ),
@@ -50,9 +49,9 @@ class ProductScreen extends StatelessWidget{
           ),
           body: TabBarView(
             children: [
-              Text("tab1"),
-              Text("tab2"),
-              Text("tab3"),
+              const ProductBaseScreen(),
+              const ProductBaseScreen(),
+              const ProductBaseScreen(),
             ]
           ),
       )
