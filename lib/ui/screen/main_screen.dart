@@ -1,3 +1,4 @@
+import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/screen/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finbrain/themes/colors.dart';
@@ -18,7 +19,7 @@ class _MainScreenState extends State<MainScreen>{
     const ProductScreen(),
     const ProductScreen(),
     const ProductScreen(),
-    const ProductScreen(),
+    const LikedScreen(),
   ];
 
   @override
@@ -32,7 +33,7 @@ class _MainScreenState extends State<MainScreen>{
             padding: const EdgeInsets.only(top:20.0),
             child: AppBar(
               backgroundColor: white,
-              leading: Image.asset("assets/images/icon.png"),
+              leading: Image.asset("assets/images/app_icon.png"),
               title: const Text(
                   "FinBrain", 
                   style: TextStyle(
