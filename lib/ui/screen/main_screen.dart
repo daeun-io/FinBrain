@@ -24,8 +24,7 @@ class _MainScreenState extends State<MainScreen>{
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: white,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(70.0),
@@ -117,7 +116,6 @@ class _MainScreenState extends State<MainScreen>{
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

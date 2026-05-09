@@ -1,8 +1,9 @@
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class AiButton extends StatelessWidget{
+class AiButton extends StatelessWidget {
   const AiButton({super.key});
 
   @override
@@ -11,10 +12,14 @@ class AiButton extends StatelessWidget{
       height: 80,
       width: 80,
       child: FloatingActionButton(
-        onPressed: (){},
+        onPressed: () {
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (ctx) => AiAssistScreen()));
+        },
         backgroundColor: primary900,
         splashColor: Colors.transparent,
-        shape: const CircleBorder(), 
+        shape: const CircleBorder(),
         elevation: 0.0,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -25,9 +30,9 @@ class AiButton extends StatelessWidget{
               style: TextStyle(
                 color: textTertiary,
                 fontSize: 12.0,
-                fontWeight: FontWeight.w600
+                fontWeight: FontWeight.w600,
               ),
-            )
+            ),
           ],
         ),
       ),
