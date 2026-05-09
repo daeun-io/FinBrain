@@ -18,11 +18,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: white,
         body: Padding(
-          padding: const EdgeInsets.only(top: 40.0, left: 20.0, right: 20.0),
+          padding: const EdgeInsets.only(top: 80.0, left: 20.0, right: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -229,6 +228,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   TextButton(
                     onPressed: () {
                       _textController.clear();
+                      setState(() {
+                        isSubmitted = false;
+                      });
                     },
                     style: TextButton.styleFrom(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -450,7 +452,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

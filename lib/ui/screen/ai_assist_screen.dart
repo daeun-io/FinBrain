@@ -22,6 +22,7 @@ class AiAssistScreen extends StatelessWidget{
             fontWeight: FontWeight.w600
           ),
         ),
+        titleSpacing: -6.0,
       ),
       body: Column(
         children: [
