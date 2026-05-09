@@ -9,6 +9,7 @@ class ProductDetailScreen extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: primary100,
         title: const Text(
@@ -30,52 +31,74 @@ class ProductDetailScreen extends StatelessWidget{
           )
         ],
       ),
-      body: Expanded(
-        child: Column(
-          children: [
-            const Text("Example"),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                    color: primary300,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "금융 계산기",
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w400
+      body: SizedBox.expand(
+        child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 20.0),
+                    child: Column(children: [
+                      Text("Example"),
+                      SizedBox(height: 80.0,)
+                    ],),
+                  ))
+              ),
+              Positioned(
+                right: 20,
+                bottom: 100,
+                child: const AiButton()
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: SafeArea(
+                        minimum: const EdgeInsets.only(bottom: 20.0),
+                        child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 20.0),
+                            color: primary300,
+                            alignment: Alignment.center,
+                            child: Text(
+                              "금융 계산기",
+                              style: TextStyle(
+                                color: textPrimary,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w400
+                              ),
+                            ),
+                          ),
                       ),
                     ),
-                  ),
+                     Expanded(
+                       child: SafeArea(
+                        minimum: const EdgeInsets.only(bottom: 20.0),
+                         child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 20.0),
+                            color: primary100,
+                            alignment: Alignment.center,
+                            child: Text(
+                              "공식 홈페이지로 이동",
+                              style: TextStyle(
+                                color: textPrimary,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w400
+                              ),
+                            ),
+                          ),
+                       ),
+                     ),
+                  ],
                 ),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                    color: primary100,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "공식 홈페이지로 이동",
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w400
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          ],
-        )
-      ),
-      // todo: change later
-      floatingActionButton: AiButton(),
-    );
+              )
+            ],
+          ),
+      )
+      );
   }
 }
