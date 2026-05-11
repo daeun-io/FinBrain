@@ -25,17 +25,17 @@ class CreditLoanOption {
   final double? gradeUnder300;
   final double? averageGrade;
 
-  const CreditLoanOption(
-    this.creditLendRateType,
-    this.creditLendRateTypeName,
-    this.gradeOver900,
-    this.grade801900,
-    this.grade701800,
-    this.grade601700,
-    this.grade501600,
-    this.grade401500,
-    this.grade301400,
-    this.gradeUnder300,
-    this.averageGrade
-  );
+  const CreditLoanOption({
+    required this.creditLendRateType,
+    required this.creditLendRateTypeName,
+    required this.gradeOver900,
+    required this.grade801900,
+    required this.grade701800,
+    required this.grade601700,
+    required this.grade501600,
+    required this.grade401500,
+    required this.grade301400,
+    required this.gradeUnder300,
+    required this.averageGrade
+  });
 }

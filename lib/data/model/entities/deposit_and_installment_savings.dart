@@ -1,8 +1,8 @@
-import 'package:finbrain/data/model/entities/common_info.dart';
+import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 
 // 정기예금, 적금
-class DepositAndInstallmentSavings {
+class DepositAndInstallmentSavings extends FinancialProduct{
   // 프로퍼티명(필드명): 의미
   // commonInfo: 공통 정보
   // interestAfterExpiration(mrnt_int): 만기 후 이자율
@@ -12,7 +12,6 @@ class DepositAndInstallmentSavings {
   // etc(etc_note): 기타 주의사항
   // options: 옵션 목록
 
-  final CommonInfo commonInfo;
   final String? interestAfterExpiration;
   final String? specialCondition;
   final String? joinDeny;
@@ -21,14 +20,36 @@ class DepositAndInstallmentSavings {
   final String? maxLimit;
   final List<DepositAndInstallmentSavingsOption>? options;
 
-  DepositAndInstallmentSavings(
-    this.commonInfo,
-    this.interestAfterExpiration,
-    this.specialCondition,
-    this.joinDeny,
-    this.joinMember,
-    this.etc,
-    this.maxLimit,
-    this.options
-  );
+  DepositAndInstallmentSavings({
+    // commonInfo
+    required String? submittedMonth,
+    required String? companyCode,
+    required String? companyName,
+    required String? productCode,
+    required String? productName,
+    required String? startDay,
+    required String? endDay,
+    required String? submittedDay,
+    required String? joinWay,
+    required String? url,
+    
+    required this.interestAfterExpiration,
+    required this.specialCondition,
+    required this.joinDeny,
+    required this.joinMember,
+    required this.etc,
+    required this.maxLimit,
+    required this.options
+  }) : super(CommonInfo(
+        submittedMonth: submittedMonth,
+        companyCode: companyCode,
+        companyName: companyName, 
+        productCode: productCode, 
+        productName: productName, 
+        startDay: startDay, 
+        endDay: endDay, 
+        submittedDay: submittedDay,
+        joinWay: joinWay, 
+        url: url
+      ));
 }

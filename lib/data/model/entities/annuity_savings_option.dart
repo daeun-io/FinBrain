@@ -1,5 +1,5 @@
 // 연금저축 옵션
-class AnnuitySavingsOption {
+class AnnuitySavingsOption{
   // 프로퍼티명(필드명): 의미 
   // receiptTerm(pnsn_recp_trm): 연금 수령 기간
   // receiptTermName(pnsn_recp_trn_nm): 연금 수령 기간 명칭
@@ -25,17 +25,17 @@ class AnnuitySavingsOption {
   final String? startAgeName;
   final String? monthlyReceiptAmount;
 
-  AnnuitySavingsOption(
-    this.receiptTerm,
-    this.receiptTermName,
-    this.entryAge,
-    this.entryAgeName,
-    this.monthlyPayment,
-    this.monthlyPaymentName,
-    this.paymentPeriod,
-    this.paymentPeriodName,
-    this.startAge,
-    this.startAgeName,
-    this.monthlyReceiptAmount
-  );
+  AnnuitySavingsOption({
+    required this.receiptTerm,
+    required this.receiptTermName,
+    required this.entryAge,
+    required this.entryAgeName,
+    required this.monthlyPayment,
+    required this.monthlyPaymentName,
+    required this.paymentPeriod,
+    required this.paymentPeriodName,
+    required this.startAge,
+    required this.startAgeName,
+    required this.monthlyReceiptAmount
+  });
 }

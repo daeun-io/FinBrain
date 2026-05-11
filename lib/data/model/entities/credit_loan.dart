@@ -1,8 +1,8 @@
-import 'package:finbrain/data/model/entities/common_info.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
+import 'package:finbrain/data/model/entities/financial_product.dart';
 
 // 개인신용대출
-class CreditLoan {
+class CreditLoan extends FinancialProduct{
   // 프로퍼티명(필드명): 의미 
   // commonInfo: 기본 정보
   // productType(crdt_prdt_type): 대출 정보 코드
@@ -10,17 +10,38 @@ class CreditLoan {
   // cbName(cb_name): CB 회사명
   // options: 옵션 목록
 
-  final CommonInfo commonInfo;
   final String? productType;
   final String? productTypeName;
   final String? cbName;
   final List<CreditLoanOption>? options;
 
-  CreditLoan(
-    this.commonInfo,
-    this.productType,
-    this.productTypeName,
-    this.cbName,
-    this.options
-  );
+  CreditLoan({
+    // commonInfo
+    required String? submittedMonth,
+    required String? companyCode,
+    required String? companyName,
+    required String? productCode,
+    required String? productName,
+    required String? startDay,
+    required String? endDay,
+    required String? submittedDay,
+    required String? joinWay,
+    required String? url,
+    
+    required this.productType,
+    required this.productTypeName,
+    required this.cbName,
+    required this.options
+  }): super(CommonInfo(
+        submittedMonth: submittedMonth,
+        companyCode: companyCode,
+        companyName: companyName, 
+        productCode: productCode, 
+        productName: productName, 
+        startDay: startDay, 
+        endDay: endDay, 
+        submittedDay: submittedDay,
+        joinWay: joinWay, 
+        url: url
+      ));
 }

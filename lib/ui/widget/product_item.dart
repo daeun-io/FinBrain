@@ -32,7 +32,7 @@ class _ProductItemState extends State<ProductItem>{
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
               Text(
-                "아이템 이름",
+                "상품 이름",
                 style: const TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w600,
@@ -41,7 +41,7 @@ class _ProductItemState extends State<ProductItem>{
               ),
               const SizedBox(height: 6.0,),
               Text(
-                "은행 이름",
+                "회사명",
                 style: const TextStyle(
                   fontSize: 12.0,
                   fontWeight: FontWeight.w400,
@@ -63,7 +63,7 @@ class _ProductItemState extends State<ProductItem>{
               ),
               const SizedBox(height: 6.0,),
               Text(
-                "금리",
+                "이자율",
                 style: const TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w600,
@@ -73,7 +73,11 @@ class _ProductItemState extends State<ProductItem>{
             ],),
             const SizedBox(width: 3.0,),
             IconButton(
-              onPressed: (){}, 
+              onPressed: (){
+                setState(() {
+                  // todo: change state
+                });
+              }, 
               icon: const Icon(Icons.favorite, color: white, size: 32.0,),
             )
           ],),
