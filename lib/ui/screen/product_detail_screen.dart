@@ -1,5 +1,4 @@
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:flutter/material.dart';
