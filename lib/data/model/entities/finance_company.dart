@@ -15,12 +15,12 @@ class FinanceCompany {
   final String? homeUrl;
   final String? telephone;
 
-  const FinanceCompany(
-    this.submittedMonth, 
-    this.companyCode, 
-    this.companyName, 
-    this.chargeMan,
-    this.homeUrl,
-    this.telephone
-  );
+  const FinanceCompany({
+    required this.submittedMonth, 
+    required this.companyCode, 
+    required this.companyName, 
+    required this.chargeMan,
+    required this.homeUrl,
+    required this.telephone
+  });
 }

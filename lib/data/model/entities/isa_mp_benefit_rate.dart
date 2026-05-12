@@ -1,5 +1,7 @@
 // ISA MP 대표수익률
-class IsaMpBenefitRate {
+import 'package:finbrain/data/model/entities/financial_product.dart';
+
+class IsaMpBenefitRate extends FinancialProduct{
   // 프로퍼티명(필드명): 의미
   // mpName(mpNm): mp명칭
   // releaseDate(rlsDt): 출시일
@@ -18,16 +20,16 @@ class IsaMpBenefitRate {
   final String? businessDomain;
   final String? companyName;
   final String? mpType;
-  var isLiked = false;
 
-  IsaMpBenefitRate(
-    this.mpName,
-    this.releaseDate,
-    this.term,
-    this.benefitRate,
-    this.baseDate,
-    this.businessDomain,
-    this.companyName,
-    this.mpType
-  );
+  IsaMpBenefitRate({
+    required String? url,
+    required this.mpName,
+    required this.releaseDate,
+    required this.term,
+    required this.benefitRate,
+    required this.baseDate,
+    required this.businessDomain,
+    required this.companyName,
+    required this.mpType,
+  }):super(CommonInfo(url: url));
 }

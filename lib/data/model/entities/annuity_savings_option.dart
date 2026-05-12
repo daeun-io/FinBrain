@@ -25,7 +25,7 @@ class AnnuitySavingsOption{
   final String? startAgeName;
   final String? monthlyReceiptAmount;
 
-  AnnuitySavingsOption({
+  const AnnuitySavingsOption({
     required this.receiptTerm,
     required this.receiptTermName,
     required this.entryAge,

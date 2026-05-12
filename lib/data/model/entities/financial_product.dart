@@ -27,15 +27,15 @@ class CommonInfo {
 
   CommonInfo(
     {
-      required this.submittedMonth,
-      required this.companyCode,
-      required this.companyName, 
-      required this.productCode, 
-      required this.productName, 
-      required this.startDay, 
-      required this.endDay, 
-      required this.submittedDay, 
-      required this.joinWay,
+      this.submittedMonth,
+      this.companyCode,
+      this.companyName, 
+      this.productCode, 
+      this.productName, 
+      this.startDay, 
+      this.endDay,
+      this.submittedDay,
+      this.joinWay,
       required this.url
     }
   );
