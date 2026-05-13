@@ -1,13 +1,16 @@
+import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductBaseScreen extends StatelessWidget{
+class ProductBaseScreen extends ConsumerWidget{
   const ProductBaseScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dummies = ref.watch(productProvider);
 
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
@@ -18,11 +21,13 @@ class ProductBaseScreen extends StatelessWidget{
         const SizedBox(height: 12.0),
         Expanded(
           child: ListView.builder(
-            itemCount: 3,
+            itemCount: dummies.length,
             itemBuilder: (context, index) {
-              return const Padding(
-                padding: EdgeInsets.only(bottom: 16.0),
-                child: ProductItem(),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: ProductItem(
+                  productName: dummies[index].commonInfo.productName!,
+                ),
               );
             },
           ),

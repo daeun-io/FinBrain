@@ -1,20 +1,39 @@
+import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({super.key});
+class ProductDetailScreen extends ConsumerWidget {
+  const ProductDetailScreen({
+    super.key,
+    required this.productName
+  });
 
+  final String productName;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final product = ref.watch(productProvider).firstWhere(
+      (p) => p.commonInfo.productName == productName
+    );
+
     return Scaffold(
       backgroundColor: white,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: primary100,
-        title: const Text(
-          "우리웰리치 주거래예금",
+        leading: IconButton(
+          onPressed: (){
+            Navigator.of(context).pop();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: textPrimary,
+          ),
+        ),
+        title: Text(
+          productName,
           style: TextStyle(
             color: textPrimary,
             fontSize: 20.0,
@@ -24,8 +43,10 @@ class ProductDetailScreen extends StatelessWidget {
         titleSpacing: -6.0,
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.favorite, color: white, size: 32.0),
+            onPressed: () {
+              ref.read(productProvider.notifier).toggleLiked(productName);
+            },
+            icon: product.commonInfo.isLiked ? const Icon(Icons.favorite, color: likedColor, size: 32.0):const Icon(Icons.favorite, color: unlikedColor, size: 32.0) ,
           ),
         ],
       ),
@@ -35,13 +56,17 @@ class ProductDetailScreen extends StatelessWidget {
             SingleChildScrollView(
               child: SizedBox(
                 width: double.infinity,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
                     vertical: 24.0,
                     horizontal: 20.0,
                   ),
                   child: Column(
-                    children: [Text("Example"), SizedBox(height: 80.0)],
+                    children: [
+                      Text(
+                        product.commonInfo.submittedDay.toString(),
+                      ), 
+                      SizedBox(height: 80.0)],
                   ),
                 ),
               ),

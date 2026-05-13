@@ -1,35 +1,41 @@
+import 'package:finbrain/provider/liked_provider.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LikedScreen extends StatelessWidget{
+class LikedScreen extends ConsumerWidget{
   const LikedScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final likedDummies = ref.watch(likedProvider);
+
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
       child: Column(
         children: [
           SearchBox(),
           const SizedBox(height: 16.0,),
-          ProductFilter(),
+          const ProductFilter(),
           const SizedBox(height: 24.0,),
-          FilterText(),
+          const FilterText(),
           const SizedBox(height: 20.0,),
           Expanded(
             child: Stack(
               children: [
                 Expanded(
                   child: ListView.builder(
-                  itemCount: 3,
+                  itemCount: likedDummies.length,
                   itemBuilder: (context, index) {
-                    return const Padding(
-                        padding: EdgeInsets.only(bottom: 16.0),
-                        child: ProductItem(),
+                    return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: ProductItem(
+                          productName: likedDummies[index].commonInfo.productName!,
+                        ),
                       );
                     },
                   ),
@@ -37,7 +43,7 @@ class LikedScreen extends StatelessWidget{
                 Positioned(
                   right: 0,
                   bottom: 0,
-                  child: AiButton()
+                  child: const AiButton()
                 ),
               ],
             ),

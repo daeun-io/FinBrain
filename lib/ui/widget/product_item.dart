@@ -1,24 +1,31 @@
+import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductItem extends StatefulWidget{
-  const ProductItem({super.key});
+class ProductItem extends ConsumerWidget{
+  const ProductItem({
+    super.key,
+    required this.productName
+  });
+
+  final String productName;
 
   @override
-  State<StatefulWidget> createState() {
-    return _ProductItemState();
-  }
-}
+  Widget build(BuildContext context, WidgetRef ref) {
 
-class _ProductItemState extends State<ProductItem>{
-  @override
-  Widget build(BuildContext context) {
+    final product = ref.watch(productProvider).firstWhere(
+      (p) => p.commonInfo.productName == productName
+    );
+
     return GestureDetector(
       onTap:(){
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (ctx) => const ProductDetailScreen())
-        );
+          MaterialPageRoute(builder:
+            (ctx) => ProductDetailScreen(productName: productName)
+          )
+      );
       },
       child: Container(
         decoration: const BoxDecoration(
@@ -32,7 +39,7 @@ class _ProductItemState extends State<ProductItem>{
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
               Text(
-                "상품 이름",
+                productName,
                 style: const TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w600,
@@ -41,7 +48,7 @@ class _ProductItemState extends State<ProductItem>{
               ),
               const SizedBox(height: 6.0,),
               Text(
-                "회사명",
+                product.commonInfo.companyName!,
                 style: const TextStyle(
                   fontSize: 12.0,
                   fontWeight: FontWeight.w400,
@@ -74,11 +81,9 @@ class _ProductItemState extends State<ProductItem>{
             const SizedBox(width: 3.0,),
             IconButton(
               onPressed: (){
-                setState(() {
-                  // todo: change state
-                });
+                ref.read(productProvider.notifier).toggleLiked(productName);
               }, 
-              icon: const Icon(Icons.favorite, color: white, size: 32.0,),
+              icon: product.commonInfo.isLiked ? const Icon(Icons.favorite, color: likedColor, size: 32.0,) : const Icon(Icons.favorite, color: unlikedColor, size: 32.0,)
             )
           ],),
         ),

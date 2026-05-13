@@ -12,24 +12,29 @@ class IsaMpBenefitRate extends FinancialProduct{
   // companyName(cmpyNm): 회사명
   // mpType(mpTp): mp유형
 
-  final String? mpName;
   final String? releaseDate;
   final String? term;
   final int? benefitRate;
   final String? baseDate;
   final String? businessDomain;
-  final String? companyName;
   final String? mpType;
 
   IsaMpBenefitRate({
+    // CommonInfo
     required String? url,
-    required this.mpName,
+    required String? companyName,
+    required String? mpName,
+
     required this.releaseDate,
     required this.term,
     required this.benefitRate,
     required this.baseDate,
     required this.businessDomain,
-    required this.companyName,
     required this.mpType,
-  }):super(CommonInfo(url: url));
+  }):super(CommonInfo(
+    companyName: companyName,
+    productName: mpName,
+    url: url,
+    isLiked: false,
+  ));
 }

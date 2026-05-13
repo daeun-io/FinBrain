@@ -35,14 +35,14 @@ class AiAssistScreen extends StatelessWidget{
               ],
             ),
           ),
-          Spacer(),
+          const Spacer(),
           Container(
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
               color: primary100,
             ),
             child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             child: Row(
               children: [
                 Expanded(

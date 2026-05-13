@@ -11,12 +11,12 @@ class IsaScreen extends StatelessWidget{
     return DefaultTabController(
       length: 3,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
-          children: [
+          children:[
             Card(
               color: primary100,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               elevation: 0,
@@ -31,7 +31,7 @@ class IsaScreen extends StatelessWidget{
                   fontWeight: FontWeight.w400,
                   color: textSecondary
                 ),
-                indicator: BoxDecoration(
+                indicator: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   color: primary700,
                 ),

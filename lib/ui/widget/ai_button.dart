@@ -25,7 +25,7 @@ class AiButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset("assets/images/ai_assist.svg"),
-            Text(
+            const Text(
               "AI 도우미",
               style: TextStyle(
                 color: textTertiary,

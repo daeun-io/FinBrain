@@ -19,9 +19,9 @@ class FilterText extends StatelessWidget{
           // todo: implement later
           onPressed: (){},
           padding: EdgeInsets.zero,
-          constraints: BoxConstraints(),
+          constraints: const BoxConstraints(),
           visualDensity: VisualDensity.compact,
-          icon: Icon(Icons.keyboard_arrow_down, size: 24,)
+          icon: const Icon(Icons.keyboard_arrow_down, size: 24,)
         )
       ],
     );

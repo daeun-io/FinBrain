@@ -16,8 +16,8 @@ const textTertiary = Color(0xffE9F0F6);
 const black = Color(0xff000000);
 const white = Color(0xffffffff);
 
-const liked = Color(0xffFF0059);
-const unliked = Color(0xffffffff);
+const likedColor = Color(0xffFF0059);
+const unlikedColor = Color(0xffffffff);
 
 const robotPrimary = Color(0xff7BF2DB);
 const robotEyes = Color(0xff06607F);

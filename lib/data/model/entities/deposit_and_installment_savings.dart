@@ -50,6 +50,7 @@ class DepositAndInstallmentSavings extends FinancialProduct{
         endDay: endDay, 
         submittedDay: submittedDay,
         joinWay: joinWay, 
-        url: url
+        url: url,
+        isLiked: false,
       ));
 }

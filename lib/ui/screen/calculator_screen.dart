@@ -33,10 +33,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   color: textPrimary,
                 ),
               ),
-              SizedBox(height: 2.0),
+              const SizedBox(height: 2.0),
               TextField(
                 controller: _textController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: primary900),
                   ),
@@ -47,8 +47,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   helperText: "",
                 ),
               ),
-              SizedBox(height: 32.0),
-              Text(
+              const SizedBox(height: 32.0),
+              const Text(
                 "예치 기간",
                 style: TextStyle(
                   fontSize: 18.0,
@@ -56,10 +56,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   color: textPrimary,
                 ),
               ),
-              SizedBox(height: 2.0),
+              const SizedBox(height: 2.0),
               Card(
                 color: white,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   side: BorderSide(color: primary900, width: 1.0),
                 ),
                 child: ButtonTheme(
@@ -70,9 +70,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       dropdownColor: white,
                       value: _period,
                       items: [
-                        DropdownMenuItem(
+                        const DropdownMenuItem(
                           value: 6,
-                          child: const Text(
+                          child: Text(
                             "6개월",
                             style: TextStyle(
                               color: textPrimary,
@@ -81,9 +81,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                             ),
                           ),
                         ),
-                        DropdownMenuItem(
+                        const DropdownMenuItem(
                           value: 12,
-                          child: const Text(
+                          child: Text(
                             "12개월",
                             style: TextStyle(
                               color: textPrimary,
@@ -102,8 +102,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 32.0),
-              Text(
+              const SizedBox(height: 32.0),
+              const Text(
                 "예치 금리",
                 style: TextStyle(
                   fontSize: 18.0,
@@ -111,14 +111,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   color: textPrimary,
                 ),
               ),
-              SizedBox(height: 2.0),
+              const SizedBox(height: 2.0),
               Row(
                 children: [
                   SizedBox(
                     width: 100,
                     child: Card(
                       color: white,
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                         side: BorderSide(color: primary900, width: 1.0),
                       ),
                       child: DropdownButtonHideUnderline(
@@ -129,9 +129,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                             dropdownColor: Colors.white,
                             value: _type,
                             items: [
-                              DropdownMenuItem(
+                              const DropdownMenuItem(
                                 value: "단리",
-                                child: const Text(
+                                child: Text(
                                   "단리",
                                   style: TextStyle(
                                     color: textPrimary,
@@ -140,9 +140,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                   ),
                                 ),
                               ),
-                              DropdownMenuItem(
+                              const DropdownMenuItem(
                                 value: "복리",
-                                child: const Text(
+                                child: Text(
                                   "복리",
                                   style: TextStyle(
                                     color: textPrimary,
@@ -168,7 +168,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     child: Card(
                       margin: EdgeInsets.zero,
                       color: Colors.white,
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                         side: BorderSide(color: primary900, width: 1.0),
                       ),
                       child: DropdownButtonHideUnderline(
@@ -179,11 +179,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                             dropdownColor: Colors.white,
                             value: _interest,
                             items: [
-                              DropdownMenuItem(
+                              const DropdownMenuItem(
                                 value: 1,
                                 child: Align(
                                   alignment: Alignment.centerRight,
-                                  child: const Text(
+                                  child: Text(
                                     "1.74%",
                                     style: TextStyle(
                                       color: textPrimary,
@@ -193,11 +193,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                   ),
                                 ),
                               ),
-                              DropdownMenuItem(
+                              const DropdownMenuItem(
                                 value: 2,
                                 child: Align(
                                   alignment: Alignment.centerRight,
-                                  child: const Text(
+                                  child: Text(
                                     "1.80%",
                                     style: TextStyle(
                                       color: textPrimary,
@@ -221,7 +221,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 32.0),
+              const SizedBox(height: 32.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -242,7 +242,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         vertical: 12.0,
                         horizontal: 20.0,
                       ),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: primary300,
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
@@ -256,7 +256,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 12.0),
+                  const SizedBox(width: 12.0),
                   TextButton(
                     onPressed: () {
                       setState(() {
@@ -273,7 +273,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         vertical: 12.0,
                         horizontal: 20.0,
                       ),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: primary400,
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
@@ -293,8 +293,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 40.0),
-                    Text(
+                    const SizedBox(height: 40.0),
+                    const Text(
                       "계산 결과",
                       style: TextStyle(
                         fontSize: 18.0,
@@ -302,7 +302,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         color: textPrimary,
                       ),
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     SizedBox(
                       width: double.infinity,
                       child: Table(

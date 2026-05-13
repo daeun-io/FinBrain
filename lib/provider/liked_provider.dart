@@ -1,21 +1,8 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'product_provider.dart';
 
-class LikedNotifier extends StateNotifier<List<FinancialProduct>>{
-
-  LikedNotifier(): super([]);
-
-  bool toggleLikedStatus(FinancialProduct item){
-    final itemIsLiked = state.contains(item);
-    if(itemIsLiked){
-      state = state.where((i) => i.commonInfo.productCode != item.commonInfo.productCode).toList();
-      return false;
-    }else{
-      state = [...state, item];
-      return true;
-    }
-  }
-  final likedProvider = StateNotifierProvider<LikedNotifier, List<FinancialProduct>>((ref){
-    return LikedNotifier();
-  });
-}
+final likedProvider = Provider<List<FinancialProduct>>((ref){
+  final allProducts = ref.watch(productProvider);
+  return allProducts.where((element) => element.commonInfo.isLiked == true,).toList();
+});

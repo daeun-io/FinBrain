@@ -1,14 +1,18 @@
+import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class IsaMpScreen extends StatelessWidget{
+class IsaMpScreen extends ConsumerWidget{
   const IsaMpScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dummies = ref.read(productProvider);
+
     return Column(
       children: [
         const SizedBox(height: 16.0,),
@@ -20,11 +24,13 @@ class IsaMpScreen extends StatelessWidget{
         const SizedBox(height: 20,),
         Expanded(
           child: ListView.builder(
-            itemCount: 3,
+            itemCount: dummies.length,
             itemBuilder: (context, index) {
-              return const Padding(
-                padding: EdgeInsets.only(bottom: 16.0),
-                child: ProductItem(),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: ProductItem(
+                  productName: dummies[index].commonInfo.productName!,
+                ),
               );
             },
           ),

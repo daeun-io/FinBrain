@@ -29,19 +29,33 @@ class CommonInfo {
     {
       this.submittedMonth,
       this.companyCode,
-      this.companyName, 
+      required this.companyName, 
       this.productCode, 
-      this.productName, 
+      required this.productName, 
       this.startDay, 
       this.endDay,
       this.submittedDay,
       this.joinWay,
-      required this.url
+      required this.url,
+      required this.isLiked,
     }
   );
+
+  CommonInfo copyWith(bool isLiked){
+    return CommonInfo(
+      companyName: companyName,
+      productName: productName,
+      url: url,
+      isLiked: isLiked,
+    );
+  }
 }
 
 class FinancialProduct {
   final CommonInfo commonInfo;
   FinancialProduct(this.commonInfo);
+
+  FinancialProduct copyWith(CommonInfo commonInfo){
+    return FinancialProduct(commonInfo);
+  }
 }
