@@ -1,5 +1,5 @@
 import 'package:finbrain/provider/product_provider.dart';
-import 'package:finbrain/ui/product_category.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
@@ -9,10 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductBaseScreen extends ConsumerWidget{
   const ProductBaseScreen({
     super.key,
-    required this.subCategory
+    required this.productCategory,
+    required this.filterCategory
   });
 
-  final SubCategory subCategory;
+  final ProductBaseScreenCategory productCategory;
+  final FilterTextCategory filterCategory;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +25,7 @@ class ProductBaseScreen extends ConsumerWidget{
       child: Column(children: [
         const ProductFilter(),
         const SizedBox(height: 24.0,),
-        const FilterText(),
+        FilterText(category: filterCategory,),
         const SizedBox(height: 12.0),
         Expanded(
           child: ListView.builder(

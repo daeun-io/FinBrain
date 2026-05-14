@@ -1,4 +1,4 @@
-import 'package:finbrain/ui/product_category.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_screen.dart';
 import 'package:finbrain/ui/screen/product_base_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,29 +10,27 @@ class ProductScreen extends StatelessWidget{
     required this.category
   });
 
-  final ProductCategory category;
+  final ProductScreenCategory category;
 
   @override
   Widget build(BuildContext context) {
     
     var tabList = switch(category){
-      ProductCategory.savings => ["정기예금", "적금", "ISA"],
-      ProductCategory.loan => ["주택담보대출", "전세자금대출", "개인신용대출"],
-      _ => null
+      ProductScreenCategory.savings => ["정기예금", "적금", "ISA"],
+      ProductScreenCategory.loan => ["주택담보대출", "전세자금대출", "개인신용대출"],
     };
 
     var tabView = switch(category){
-      ProductCategory.savings => TabBarView(children: [
-        const ProductBaseScreen(subCategory: SubCategory.deposit,),
-        const ProductBaseScreen(subCategory: SubCategory.installment,),
+      ProductScreenCategory.savings => TabBarView(children: [
+        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.deposit, filterCategory: FilterTextCategory.savings,),
+        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.installment, filterCategory: FilterTextCategory.savings),
         const IsaScreen(),
       ]),
-      ProductCategory.loan => TabBarView(children: [
-        const ProductBaseScreen(subCategory: SubCategory.mortage,),
-        const ProductBaseScreen(subCategory: SubCategory.rent,),
-        const ProductBaseScreen(subCategory: SubCategory.credit,),
+      ProductScreenCategory.loan => TabBarView(children: [
+        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.mortage, filterCategory: FilterTextCategory.loan),
+        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.mortage, filterCategory: FilterTextCategory.loan,),
+        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.mortage, filterCategory: FilterTextCategory.loan),
       ]),
-      _ => null
     };
 
     return DefaultTabController(

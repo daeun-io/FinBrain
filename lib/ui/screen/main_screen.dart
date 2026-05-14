@@ -1,4 +1,4 @@
-import 'package:finbrain/ui/product_category.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/screen/product_base_screen.dart';
 import 'package:finbrain/ui/screen/product_screen.dart';
@@ -19,13 +19,14 @@ class _MainScreenState extends State<MainScreen>{
   // todo: change later
   final List<Widget> _pages = [
     const ProductScreen(
-      category: ProductCategory.savings,
+      category: ProductScreenCategory.savings,
     ),
     const ProductScreen(
-      category: ProductCategory.loan,
+      category: ProductScreenCategory.loan,
     ),
     const ProductBaseScreen(
-      subCategory: SubCategory.annuity,
+      productCategory: ProductBaseScreenCategory.annuity,
+      filterCategory: FilterTextCategory.annuity,
     ),
     const LikedScreen(),
   ];

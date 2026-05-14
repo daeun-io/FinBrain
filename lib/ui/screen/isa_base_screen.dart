@@ -1,5 +1,5 @@
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/product_category.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
@@ -11,7 +11,8 @@ class IsaBaseScreen extends StatelessWidget{
     required this.category
   });
   
-  final IsaCategory category; 
+  final IsaScreenCategory category;
+  
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -19,7 +20,7 @@ class IsaBaseScreen extends StatelessWidget{
         const SizedBox(height: 16.0,),
         const ProductFilter(),
         const SizedBox(height: 24.0,),
-        const FilterText(),
+        const FilterText(category: FilterTextCategory.isa,),
         Expanded(
           child: Stack(children: [
             SingleChildScrollView(

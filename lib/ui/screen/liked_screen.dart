@@ -1,4 +1,5 @@
 import 'package:finbrain/provider/liked_provider.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
@@ -22,7 +23,7 @@ class LikedScreen extends ConsumerWidget{
           const SizedBox(height: 16.0,),
           const ProductFilter(),
           const SizedBox(height: 24.0,),
-          const FilterText(),
+          const FilterText(category: FilterTextCategory.liked,),
           const SizedBox(height: 20.0,),
           Expanded(
             child: Stack(

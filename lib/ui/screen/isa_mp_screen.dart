@@ -1,4 +1,5 @@
 import 'package:finbrain/provider/product_provider.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
@@ -20,7 +21,7 @@ class IsaMpScreen extends ConsumerWidget{
         const SizedBox(height: 16.0,),
         const ProductFilter(),
         const SizedBox(height: 24.0,),
-        FilterText(),
+        const FilterText(category: FilterTextCategory.isa,),
         const SizedBox(height: 20,),
         Expanded(
           child: ListView.builder(
