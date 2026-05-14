@@ -1,13 +1,40 @@
+import 'package:finbrain/ui/product_category.dart';
 import 'package:finbrain/ui/screen/isa_screen.dart';
 import 'package:finbrain/ui/screen/product_base_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finbrain/themes/colors.dart';
 
 class ProductScreen extends StatelessWidget{
-  const ProductScreen({super.key});
+  const ProductScreen({
+    super.key,
+    required this.category
+  });
+
+  final ProductCategory category;
 
   @override
   Widget build(BuildContext context) {
+    
+    var tabList = switch(category){
+      ProductCategory.savings => ["정기예금", "적금", "ISA"],
+      ProductCategory.loan => ["주택담보대출", "전세자금대출", "개인신용대출"],
+      _ => null
+    };
+
+    var tabView = switch(category){
+      ProductCategory.savings => TabBarView(children: [
+        const ProductBaseScreen(subCategory: SubCategory.deposit,),
+        const ProductBaseScreen(subCategory: SubCategory.installment,),
+        const IsaScreen(),
+      ]),
+      ProductCategory.loan => TabBarView(children: [
+        const ProductBaseScreen(subCategory: SubCategory.mortage,),
+        const ProductBaseScreen(subCategory: SubCategory.rent,),
+        const ProductBaseScreen(subCategory: SubCategory.credit,),
+      ]),
+      _ => null
+    };
+
     return DefaultTabController(
       length: 3,
         child: Column(
@@ -31,31 +58,16 @@ class ProductScreen extends StatelessWidget{
               indicatorSize: TabBarIndicatorSize.tab,
               splashFactory: NoSplash.splashFactory,
               tabs: [
-                Container(
-                  alignment: Alignment.center,
-                  height: 60,
-                  child: const Text("정기예금"),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  height: 60,
-                  child: const Text("정기예금"),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  height: 60,
-                  child: const Text("정기예금"),
-                ),
-              ]
+                for(final item in tabList!)
+                  Container(
+                    alignment: Alignment.center,
+                    height: 60,
+                    child: Text(item),
+                  )
+                ]
             ),
             Expanded(
-              child: TabBarView(            
-                children: [
-                  const ProductBaseScreen(),
-                  const ProductBaseScreen(),
-                  const IsaScreen(),
-                ]
-              ),
+              child: tabView!
             )
           ],
         )

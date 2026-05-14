@@ -1,12 +1,17 @@
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/product_category.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:flutter/material.dart';
 
 class IsaBaseScreen extends StatelessWidget{
-  const IsaBaseScreen({super.key});
-
+  const IsaBaseScreen({
+    super.key,
+    required this.category
+  });
+  
+  final IsaCategory category; 
   @override
   Widget build(BuildContext context) {
     return Column(

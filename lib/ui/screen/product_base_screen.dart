@@ -1,4 +1,5 @@
 import 'package:finbrain/provider/product_provider.dart';
+import 'package:finbrain/ui/product_category.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
@@ -6,7 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductBaseScreen extends ConsumerWidget{
-  const ProductBaseScreen({super.key});
+  const ProductBaseScreen({
+    super.key,
+    required this.subCategory
+  });
+
+  final SubCategory subCategory;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

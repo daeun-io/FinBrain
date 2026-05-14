@@ -1,4 +1,5 @@
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/product_category.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';
 import 'package:finbrain/ui/screen/isa_mp_screen.dart';
 import 'package:flutter/material.dart';
@@ -60,8 +61,8 @@ class IsaScreen extends StatelessWidget{
             Expanded(
               child: TabBarView(
                 children: [
-                  const IsaBaseScreen(),
-                  const IsaBaseScreen(),
+                  const IsaBaseScreen(category: IsaCategory.join,),
+                  const IsaBaseScreen(category: IsaCategory.operation,),
                   const IsaMpScreen()
                 ]
               ),

@@ -1,4 +1,6 @@
+import 'package:finbrain/ui/product_category.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
+import 'package:finbrain/ui/screen/product_base_screen.dart';
 import 'package:finbrain/ui/screen/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finbrain/themes/colors.dart';
@@ -16,9 +18,15 @@ class _MainScreenState extends State<MainScreen>{
 
   // todo: change later
   final List<Widget> _pages = [
-    const ProductScreen(),
-    const ProductScreen(),
-    const ProductScreen(),
+    const ProductScreen(
+      category: ProductCategory.savings,
+    ),
+    const ProductScreen(
+      category: ProductCategory.loan,
+    ),
+    const ProductBaseScreen(
+      subCategory: SubCategory.annuity,
+    ),
     const LikedScreen(),
   ];
 
