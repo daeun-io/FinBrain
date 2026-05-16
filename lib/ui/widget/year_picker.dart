@@ -61,6 +61,7 @@ class _YearPickerPageState extends State<YearPickerPage> {
               width: double.infinity,
               child: Card(
                 key: ValueKey('Selected: ${widget.yearsList[index]}'),
+                margin: EdgeInsets.zero,
                 color: primary300,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadiusGeometry.all(Radius.circular(10.0)),

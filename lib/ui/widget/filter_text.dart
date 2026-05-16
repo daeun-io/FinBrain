@@ -3,6 +3,7 @@ import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/year_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class FilterText extends StatefulWidget {
   const FilterText({super.key, required this.category});
@@ -70,6 +71,8 @@ class _FilterTextState extends State<FilterText> {
               builder: (BuildContext context) {
                 return StatefulBuilder(
                   builder: (BuildContext context, StateSetter setModalState) {
+                    final pageController = PageController();
+
                     Widget optionView = ListView.builder(
                       itemCount: optionList.length,
                       itemBuilder: (context, index) {
@@ -155,17 +158,35 @@ class _FilterTextState extends State<FilterText> {
                           const SizedBox(height: 28.0),
                           if (widget.category == FilterTextCategory.isa)
                             Expanded(
-                              child: PageView(
+                              child: Column(
                                 children: [
-                                  // todo: implement later(change to custom picker)
-                                  YearPickerPage(
-                                    selectedYear: selectedYear,
-                                    yearsList: years,
-                                    onYearChanged: (value) {
-                                      selectedYear = value;
-                                    },
+                                  Expanded(
+                                    child: PageView(
+                                      controller: pageController,
+                                      children: [
+                                        YearPickerPage(
+                                          selectedYear: selectedYear,
+                                          yearsList: years,
+                                          onYearChanged: (value) {
+                                            selectedYear = value;
+                                          },
+                                        ),
+                                        optionView,
+                                      ],
+                                    ),
                                   ),
-                                  optionView,
+                                  const SizedBox(height: 16.0,),
+                                  SmoothPageIndicator(
+                                    controller: pageController, 
+                                    count: 2,
+                                    effect: ScrollingDotsEffect(
+                                      spacing: 10.0,
+                                      dotWidth: 8.0,
+                                      dotHeight: 8.0,
+                                      dotColor: primary300,
+                                      activeDotColor: primary700
+                                    ),
+                                  )
                                 ],
                               ),
                             )
