@@ -1,5 +1,6 @@
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/ui/widget/year_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -40,6 +41,13 @@ class _FilterTextState extends State<FilterText> {
     var selectedOption = optionList[0];
     var selectedOptions = [optionList[0]];
 
+    var selectedYear = DateTime.now().year;
+    final List<int> years =
+        (List.generate(25, (index) => DateTime.now().year - index) +
+              List.generate(25, (index) => DateTime.now().year + index))
+          ..removeAt(0)
+          ..sort();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -62,9 +70,6 @@ class _FilterTextState extends State<FilterText> {
               builder: (BuildContext context) {
                 return StatefulBuilder(
                   builder: (BuildContext context, StateSetter setModalState) {
-                    final now = DateTime.now();
-                    var selectedYear = now;
-
                     Widget optionView = ListView.builder(
                       itemCount: optionList.length,
                       itemBuilder: (context, index) {
@@ -153,14 +158,11 @@ class _FilterTextState extends State<FilterText> {
                               child: PageView(
                                 children: [
                                   // todo: implement later(change to custom picker)
-                                  YearPicker(
-                                    firstDate: DateTime(now.year-10),
-                                    lastDate: now,
-                                    selectedDate: selectedYear,
-                                    onChanged: (value){
-                                      setModalState((){
-                                        selectedYear = value;
-                                      });
+                                  YearPickerPage(
+                                    selectedYear: selectedYear,
+                                    yearsList: years,
+                                    onYearChanged: (value) {
+                                      selectedYear = value;
                                     },
                                   ),
                                   optionView,
