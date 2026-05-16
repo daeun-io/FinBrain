@@ -1,6 +1,7 @@
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/year_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -15,9 +16,18 @@ class FilterText extends StatefulWidget {
 }
 
 class _FilterTextState extends State<FilterText> {
+  late List<String> optionList;
+  late String selectedOption;
+  late List<String> selectedOptions;
+  late int selectedYear;
+  late List<int> years;
+  late String text;
+
   @override
-  Widget build(BuildContext context) {
-    final optionList = switch (widget.category) {
+  void initState() {
+    super.initState();
+
+    optionList = switch (widget.category) {
       FilterTextCategory.savings => ["최고 금리", "기본 금리"],
       FilterTextCategory.loan => ["최저 금리", "최고 금리", "평균 금리"],
       FilterTextCategory.annuity => [
@@ -39,23 +49,38 @@ class _FilterTextState extends State<FilterText> {
       ],
     };
 
-    var selectedOption = optionList[0];
-    var selectedOptions = [optionList[0]];
+    selectedOption = optionList[0];
+    selectedOptions = [optionList[0]];
 
-    var selectedYear = DateTime.now().year;
-    final List<int> years =
+    selectedYear = DateTime.now().year;
+    years =
         (List.generate(25, (index) => DateTime.now().year - index) +
               List.generate(25, (index) => DateTime.now().year + index))
           ..removeAt(0)
           ..sort();
 
+    text = switch (widget.category) {
+      FilterTextCategory.savings => "최고 금리",
+      FilterTextCategory.loan => "최저 금리",
+      FilterTextCategory.annuity => "평균 수익률",
+      FilterTextCategory.isa => "$selectedYear년 기준, 최신순",
+      FilterTextCategory.liked => "모든 상품"
+    };
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Text(
-          // change later
-          (widget.category == FilterTextCategory.liked) ? "선택 상품" : "정렬 기준",
-          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400),
+        Flexible(
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400),
+          ),
         ),
         IconButton(
           onPressed: () {
@@ -86,6 +111,7 @@ class _FilterTextState extends State<FilterText> {
                             if (widget.category == FilterTextCategory.liked)
                               IconButton(
                                 onPressed: () {
+                                  // selecedOption 변경되는 지 확인
                                   setModalState(() {
                                     if (index == 0) {
                                       selectedOptions = [optionList[0]];
@@ -96,6 +122,12 @@ class _FilterTextState extends State<FilterText> {
                                     } else {
                                       selectedOptions.add(optionList[index]);
                                       selectedOptions.remove(optionList[0]);
+                                    }
+                                  });
+                                  setState(() {
+                                    text = "";
+                                    for(final option in selectedOptions){
+                                      text = "$text $option,";
                                     }
                                   });
                                 },
@@ -119,6 +151,13 @@ class _FilterTextState extends State<FilterText> {
                                 onPressed: () {
                                   setModalState(() {
                                     selectedOption = optionList[index];
+                                  });
+                                  setState(() {
+                                    if(widget.category == FilterTextCategory.isa){
+                                      text = "$selectedYear년 기준, ${optionList[index]}";
+                                    }else{
+                                      text = optionList[index];
+                                    }
                                   });
                                 },
                                 icon: (selectedOption == optionList[index])
