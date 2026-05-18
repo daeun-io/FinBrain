@@ -1,7 +1,6 @@
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
-import 'package:finbrain/ui/widget/year_picker.dart';
-import 'package:flutter/foundation.dart';
+import 'package:finbrain/ui/widget/year_picker_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';

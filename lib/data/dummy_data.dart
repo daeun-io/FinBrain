@@ -7,7 +7,7 @@ final dummyData = [
     companyCode: "0010001",
     companyName: "우리은행",
     productCode: "WR0001A",
-    productName: "우리웰리치 주거래예금1",
+    productName: "Woori WellRich",
     startDay: "20160920",
     endDay: null,
     submittedDay: "201609201028",

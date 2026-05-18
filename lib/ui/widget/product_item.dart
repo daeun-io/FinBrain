@@ -16,7 +16,7 @@ class ProductItem extends ConsumerWidget{
   Widget build(BuildContext context, WidgetRef ref) {
 
     final product = ref.watch(productProvider).firstWhere(
-      (p) => p.commonInfo.productName == productName
+      (p) => p.commonInfo.productName == productName,
     );
 
     return GestureDetector(

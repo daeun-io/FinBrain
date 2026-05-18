@@ -65,7 +65,7 @@ class ProductScreen extends StatelessWidget{
                 ]
             ),
             Expanded(
-              child: tabView!
+              child: tabView
             )
           ],
         )

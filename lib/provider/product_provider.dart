@@ -15,6 +15,7 @@ class ProductNotifier extends StateNotifier<List<FinancialProduct>>{
           item
     ];
   }
+
 }
 
 final productProvider = StateNotifierProvider<ProductNotifier, List<FinancialProduct>>((ref){
