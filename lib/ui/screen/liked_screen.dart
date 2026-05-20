@@ -56,7 +56,7 @@ class LikedScreen extends ConsumerWidget {
                     },
                   ),
                 ),
-                Positioned(right: 0, bottom: 0, child: const AiButton()),
+                Positioned(right: 5, bottom: 5, child: const AiButton()),
               ],
             ),
           ),
