@@ -1,11 +1,13 @@
+import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class IsaBaseScreen extends StatelessWidget{
+class IsaBaseScreen extends ConsumerWidget{
   const IsaBaseScreen({
     super.key,
     required this.category
@@ -14,11 +16,13 @@ class IsaBaseScreen extends StatelessWidget{
   final IsaScreenCategory category;
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final filters = ref.watch(filtersProvider);
+
     return Column(
       children: [
         const SizedBox(height: 16.0,),
-        const ProductFilter(),
+        ProductFilter(filters: filters,),
         const SizedBox(height: 24.0,),
         const FilterText(category: FilterTextCategory.isa,),
         Expanded(

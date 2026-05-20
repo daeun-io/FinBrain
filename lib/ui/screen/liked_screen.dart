@@ -1,3 +1,4 @@
+import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/provider/searched_provider.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
@@ -15,6 +16,7 @@ class LikedScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final likedDummies = ref.watch(searchedProductProvider)(true);
     final searchedList = ref.watch(searchedListProvider);
+    final filters = ref.watch(filtersProvider);
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -33,7 +35,7 @@ class LikedScreen extends ConsumerWidget {
             searchedList: searchedList,
           ),
           const SizedBox(height: 16.0),
-          const ProductFilter(),
+          ProductFilter(filters: filters,),
           const SizedBox(height: 24.0),
           const FilterText(category: FilterTextCategory.liked),
           const SizedBox(height: 20.0),

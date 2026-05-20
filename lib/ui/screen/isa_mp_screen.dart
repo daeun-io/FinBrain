@@ -1,3 +1,4 @@
+import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/provider/searched_provider.dart';
 import 'package:finbrain/themes/colors.dart';
@@ -16,6 +17,7 @@ class IsaMpScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dummies = ref.watch(searchedProductProvider)(false);
     final searchedList = ref.watch(searchedListProvider);
+    final filters = ref.watch(filtersProvider);
 
     return Column(
       children: [
@@ -28,7 +30,7 @@ class IsaMpScreen extends ConsumerWidget {
           searchedList: searchedList,
         ),
         const SizedBox(height: 16.0),
-        const ProductFilter(),
+        ProductFilter(filters: filters,),
         const SizedBox(height: 24.0),
         const FilterText(category: FilterTextCategory.isa),
         const SizedBox(height: 20),

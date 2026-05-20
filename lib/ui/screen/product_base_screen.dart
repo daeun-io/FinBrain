@@ -1,3 +1,4 @@
+import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
@@ -19,11 +20,12 @@ class ProductBaseScreen extends ConsumerWidget{
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dummies = ref.watch(productProvider);
+    final filters = ref.watch(filtersProvider);
 
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
       child: Column(children: [
-        const ProductFilter(),
+        ProductFilter(filters: filters,),
         const SizedBox(height: 24.0,),
         FilterText(category: filterCategory,),
         const SizedBox(height: 12.0),
