@@ -17,6 +17,7 @@ class LikedScreen extends ConsumerWidget {
     final likedDummies = ref.watch(searchedProductProvider)(true);
     final searchedList = ref.watch(searchedListProvider);
     final filters = ref.watch(filtersProvider);
+    final selectedFilters = ref.watch(selectedFilterProvider);
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -35,7 +36,7 @@ class LikedScreen extends ConsumerWidget {
             searchedList: searchedList,
           ),
           const SizedBox(height: 16.0),
-          ProductFilter(filters: filters,),
+          ProductFilter(filters: filters, selectedFilters: selectedFilters,),
           const SizedBox(height: 24.0),
           const FilterText(category: FilterTextCategory.liked),
           const SizedBox(height: 20.0),

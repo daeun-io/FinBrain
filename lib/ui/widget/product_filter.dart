@@ -4,9 +4,14 @@ import 'package:finbrain/ui/widget/product_filter_item.dart';
 import 'package:flutter/material.dart';
 
 class ProductFilter extends StatefulWidget {
-  const ProductFilter({super.key, required this.filters});
+  const ProductFilter({
+    super.key,
+    required this.filters,
+    required this.selectedFilters,
+  });
 
   final Map<String, List<(String, bool)>> filters;
+  final List<(String, bool)> selectedFilters;
 
   @override
   State<ProductFilter> createState() => _ProductFilterState();
@@ -14,9 +19,12 @@ class ProductFilter extends StatefulWidget {
 
 class _ProductFilterState extends State<ProductFilter> {
   var isExpanded = false;
-
+  
   @override
   Widget build(BuildContext context) {
+    // todo: change number depending on the width of the screen
+    final num = (widget.selectedFilters.length < 4) ? widget.selectedFilters.length : 4;
+    
     return Card(
       color: primary100,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -29,10 +37,11 @@ class _ProductFilterState extends State<ProductFilter> {
             children: [
               Row(
                 children: [
-                  // todo: change later
-                  ProductFilterItem(isSelected: true, text: "테스트"),
-                  ProductFilterItem(isSelected: true, text: "테스트"),
-                  ProductFilterItem(isSelected: true, text: "테스트"),
+                  for (int i = 0; i < num; i++)
+                    ProductFilterItem(
+                      isSelected: widget.selectedFilters[i].$2,
+                      text: widget.selectedFilters[i].$1,
+                    ),
                   const Spacer(),
                   IconButton(
                     onPressed: () {

@@ -18,6 +18,7 @@ class IsaMpScreen extends ConsumerWidget {
     final dummies = ref.watch(searchedProductProvider)(false);
     final searchedList = ref.watch(searchedListProvider);
     final filters = ref.watch(filtersProvider);
+    final selectedFilters = ref.watch(selectedFilterProvider);
 
     return Column(
       children: [
@@ -30,7 +31,7 @@ class IsaMpScreen extends ConsumerWidget {
           searchedList: searchedList,
         ),
         const SizedBox(height: 16.0),
-        ProductFilter(filters: filters,),
+        ProductFilter(filters: filters, selectedFilters: selectedFilters,),
         const SizedBox(height: 24.0),
         const FilterText(category: FilterTextCategory.isa),
         const SizedBox(height: 20),

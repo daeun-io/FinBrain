@@ -18,11 +18,12 @@ class IsaBaseScreen extends ConsumerWidget{
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filters = ref.watch(filtersProvider);
+    final selectedFilters = ref.watch(selectedFilterProvider);
 
     return Column(
       children: [
         const SizedBox(height: 16.0,),
-        ProductFilter(filters: filters,),
+        ProductFilter(filters: filters, selectedFilters: selectedFilters,),
         const SizedBox(height: 24.0,),
         const FilterText(category: FilterTextCategory.isa,),
         Expanded(

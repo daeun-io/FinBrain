@@ -1,32 +1,35 @@
+import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductFilterItem extends StatefulWidget{
-  ProductFilterItem({
+class ProductFilterItem extends ConsumerStatefulWidget{
+  const ProductFilterItem({
     super.key,
     required this.isSelected,
-    required this.text
+    required this.text,
   });
 
-  bool isSelected;
+  final bool isSelected;
   final String text;
 
   @override
-  State<ProductFilterItem> createState() => _ProductFilterItemState();
+  ConsumerState<ProductFilterItem> createState() => _ProductFilterItemState();
 }
 
-class _ProductFilterItemState extends State<ProductFilterItem> {
+class _ProductFilterItemState extends ConsumerState<ProductFilterItem> {
   @override
   Widget build(BuildContext context) {
+    var localIsSelected = widget.isSelected;
     return GestureDetector(
       onTap: (){
         setState(() {
-          widget.isSelected = !widget.isSelected;
-        });       
+          ref.read(filtersProvider.notifier).toggleSelected(widget.text, localIsSelected);
+        });
       },
       child: Card(
         // selected color
-        color: widget.isSelected ? primary700 : primary300,
+        color: localIsSelected ? primary700 : primary300,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(34.5),
         ),
@@ -39,7 +42,7 @@ class _ProductFilterItemState extends State<ProductFilterItem> {
           child: Text(
             widget.text,
             style: TextStyle(
-              color: widget.isSelected ? white : textPrimary,
+              color: localIsSelected ? white : textPrimary,
               fontSize: 12.0,
               fontWeight: FontWeight.w400
             ),

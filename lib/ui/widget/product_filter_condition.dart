@@ -15,29 +15,32 @@ class ProductFilterCondition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            filter,
-            style: const TextStyle(
-              fontSize: 12.0,
-              fontWeight: FontWeight.w400,
-              color: textPrimary,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          filter,
+          style: const TextStyle(
+            fontSize: 12.0,
+            fontWeight: FontWeight.w400,
+            color: textPrimary,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (var item in filterList)
+                  ProductFilterItem(
+                    isSelected: item.$2, 
+                    text: item.$1,
+                  ),
+              ],
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (var item in filterList)
-                    ProductFilterItem(isSelected: item.$2, text: item.$1),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 }
