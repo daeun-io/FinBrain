@@ -1,4 +1,5 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'annuity_savings_option.dart';
 
 // 연금저축
@@ -39,6 +40,7 @@ class AnnuitySavings extends FinancialProduct{
 
   AnnuitySavings({
     // commonInfo
+    required ProductCategory category,
     required String? submittedMonth,
     required String? companyCode,
     required String? companyName,
@@ -66,6 +68,7 @@ class AnnuitySavings extends FinancialProduct{
     required this.saleCompany,
     required this.options
   }): super(CommonInfo(
+        category: category,
         submittedMonth: submittedMonth,
         companyCode: companyCode,
         companyName: companyName, 

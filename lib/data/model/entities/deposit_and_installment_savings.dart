@@ -1,5 +1,6 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
+import 'package:finbrain/ui/product_categories.dart';
 
 // 정기예금, 적금
 class DepositAndInstallmentSavings extends FinancialProduct{
@@ -22,6 +23,7 @@ class DepositAndInstallmentSavings extends FinancialProduct{
 
   DepositAndInstallmentSavings({
     // commonInfo
+    required ProductCategory category,
     required String? submittedMonth,
     required String? companyCode,
     required String? companyName,
@@ -41,6 +43,7 @@ class DepositAndInstallmentSavings extends FinancialProduct{
     required this.maxLimit,
     required this.options
   }) : super(CommonInfo(
+        category: category,
         submittedMonth: submittedMonth,
         companyCode: companyCode,
         companyName: companyName, 

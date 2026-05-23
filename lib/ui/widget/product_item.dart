@@ -1,5 +1,6 @@
 import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductItem extends ConsumerWidget{
   const ProductItem({
     super.key,
-    required this.productName
+    required this.productName,
   });
 
   final String productName;
@@ -23,7 +24,7 @@ class ProductItem extends ConsumerWidget{
       onTap:(){
         Navigator.of(context).push(
           MaterialPageRoute(builder:
-            (ctx) => ProductDetailScreen(productName: productName)
+            (ctx) => ProductDetailScreen(productName: productName, category: product.commonInfo.category,)
           )
       );
       },

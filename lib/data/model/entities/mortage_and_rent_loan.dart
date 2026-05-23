@@ -1,4 +1,5 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'mortage_and_rent_loan_option.dart';
 
 // 주택담보대출 & 전세자금대출
@@ -19,6 +20,7 @@ class MortageAndRentLoan extends FinancialProduct{
 
   MortageAndRentLoan({
     // commonInfo
+    required ProductCategory category,
     required String? submittedMonth,
     required String? companyCode,
     required String? companyName,
@@ -36,6 +38,7 @@ class MortageAndRentLoan extends FinancialProduct{
     required this.loanLimit,
     required this.options
   }) : super(CommonInfo(
+        category: category,
         submittedMonth: submittedMonth,
         companyCode: companyCode,
         companyName: companyName, 

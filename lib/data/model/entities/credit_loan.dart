@@ -1,5 +1,6 @@
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/ui/product_categories.dart';
 
 // 개인신용대출
 class CreditLoan extends FinancialProduct{
@@ -17,6 +18,7 @@ class CreditLoan extends FinancialProduct{
 
   CreditLoan({
     // commonInfo
+    required ProductCategory category,
     required String? submittedMonth,
     required String? companyCode,
     required String? companyName,
@@ -33,6 +35,7 @@ class CreditLoan extends FinancialProduct{
     required this.cbName,
     required this.options
   }): super(CommonInfo(
+        category: category,
         submittedMonth: submittedMonth,
         companyCode: companyCode,
         companyName: companyName, 

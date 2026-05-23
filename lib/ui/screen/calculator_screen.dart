@@ -1,8 +1,14 @@
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'package:flutter/material.dart';
 
 class CalculatorScreen extends StatefulWidget {
-  const CalculatorScreen({super.key});
+  const CalculatorScreen({
+    super.key,
+    required this.category
+  });
+
+  final ProductCategory category;
 
   @override
   State<CalculatorScreen> createState() => _CalculatorScreenState();

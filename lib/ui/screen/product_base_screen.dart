@@ -14,7 +14,7 @@ class ProductBaseScreen extends ConsumerWidget{
     required this.filterCategory
   });
 
-  final ProductBaseScreenCategory productCategory;
+  final ProductCategory productCategory;
   final FilterTextCategory filterCategory;
 
   @override

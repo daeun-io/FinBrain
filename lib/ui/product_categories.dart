@@ -1,15 +1,16 @@
-enum ProductScreenCategory{
-  savings,
-  loan,
-}
-
-enum ProductBaseScreenCategory{
+enum ProductCategory{
   deposit,
   installment,
+  isa,
   mortage,
   rent,
   credit,
-  annuity,
+  annuity
+}
+
+enum ProductScreenCategory{
+  savings,
+  loan
 }
 
 enum IsaScreenCategory{

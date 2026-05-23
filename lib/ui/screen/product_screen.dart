@@ -22,14 +22,14 @@ class ProductScreen extends StatelessWidget{
 
     var tabView = switch(category){
       ProductScreenCategory.savings => TabBarView(children: [
-        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.deposit, filterCategory: FilterTextCategory.savings,),
-        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.installment, filterCategory: FilterTextCategory.savings),
+        const ProductBaseScreen(productCategory: ProductCategory.deposit, filterCategory: FilterTextCategory.savings,),
+        const ProductBaseScreen(productCategory: ProductCategory.installment, filterCategory: FilterTextCategory.savings),
         const IsaScreen(),
       ]),
       ProductScreenCategory.loan => TabBarView(children: [
-        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.mortage, filterCategory: FilterTextCategory.loan),
-        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.mortage, filterCategory: FilterTextCategory.loan,),
-        const ProductBaseScreen(productCategory: ProductBaseScreenCategory.mortage, filterCategory: FilterTextCategory.loan),
+        const ProductBaseScreen(productCategory: ProductCategory.mortage, filterCategory: FilterTextCategory.loan),
+        const ProductBaseScreen(productCategory: ProductCategory.rent, filterCategory: FilterTextCategory.loan,),
+        const ProductBaseScreen(productCategory: ProductCategory.credit, filterCategory: FilterTextCategory.loan),
       ]),
     };
 
