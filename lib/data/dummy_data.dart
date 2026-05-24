@@ -93,8 +93,8 @@ final dummyData = [
         saveTerm: 6,
         intRate: 1.15,
         maxIntRate: 1.35,
-        reserveType: null,
-        reserveTypeName: null,
+        reserveType: "S",
+        reserveTypeName: "정액적립식",
       ),
       DepositAndInstallmentSavingsOption(
         intRateType: "S",

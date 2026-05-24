@@ -36,28 +36,30 @@ class ProductItem extends ConsumerWidget{
         child: Padding(
           padding: EdgeInsets.all(20.0),
           child: Row(children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-              Text(
-                productName,
-                style: const TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w600,
-                  color: textPrimary
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Text(
+                  productName,
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w600,
+                    color: textPrimary
+                  ),
                 ),
-              ),
-              const SizedBox(height: 6.0,),
-              Text(
-                product.commonInfo.companyName!,
-                style: const TextStyle(
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w400,
-                  color: textSecondary
+                const SizedBox(height: 6.0,),
+                Text(
+                  product.commonInfo.companyName!,
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w400,
+                    color: textSecondary
+                  ),
                 ),
-              ),
-            ],),
-            const Spacer(),
+              ],),
+            ),
+            const SizedBox(width: 28.0,),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

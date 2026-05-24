@@ -1,9 +1,12 @@
 import 'package:finbrain/data/model/entities/annuity_savings.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
+import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
+import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
+import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
 import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
@@ -71,10 +74,12 @@ class ProductDetailScreen extends ConsumerWidget {
                     horizontal: 20.0,
                   ),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ..._displayDefaultWidgetList(product),
                       ..._displayDynamicWidgetList(category, product),
-                      SizedBox(height: 40.0),
+                      SizedBox(height: 80.0),
                     ],
                   ),
                 ),
@@ -137,13 +142,177 @@ class ProductDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget textFrame(String? text) {
+  Widget textFrame(String text) {
     return Text(
-      (text == null) ? "제공 안 함" : text,
+      text,
       style: const TextStyle(
         color: black,
         fontSize: 14.0,
         fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+  Widget tableCellFrame(String text){
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: TableCell(
+        verticalAlignment: TableCellVerticalAlignment.middle,
+        child: Center(child: textFrame(text)),
+      ),
+    );
+  }
+
+  Widget dataTableCellText(String text){
+    return Center(
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          color: black,
+          fontSize: 14.0,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    );
+  }
+
+  // todo: implement logic for isa mp product
+  Widget tableFrame(ProductCategory category, List<dynamic> options) {
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      border: TableBorder.all(color: primary300),
+      children: [
+        TableRow(
+          decoration: BoxDecoration(
+            color: primary100,
+            border: BoxBorder.all(color: primary300),
+          ),
+          children: [
+            tableCellFrame("신용 등급"),
+            tableCellFrame("대출 금리")
+          ],
+        ),
+        TableRow(
+          children: [
+            tableCellFrame("900점 초과"),
+            tableCellFrame(options[0].gradeOver900.toString()),
+          ],
+        ),
+        TableRow(
+          children: [
+            tableCellFrame("801~900점"),
+            tableCellFrame(options[0].grade801900.toString()),
+          ],
+        ),
+        TableRow(
+          children: [
+            tableCellFrame("701~800점"),
+            tableCellFrame(options[0].grade701800.toString()),
+          ],
+        ),
+        TableRow(
+          children: [
+            tableCellFrame("601~700점"),
+            tableCellFrame((options[0].grade601700.toString())),
+          ],
+        ),
+        TableRow(
+          children: [
+            tableCellFrame(("501~600점")),
+            tableCellFrame((options[0].grade501600.toString())),
+          ],
+        ),
+        TableRow(
+          children: [
+            tableCellFrame(("401~500점")),
+            tableCellFrame((options[0].grade401500.toString())),
+          ],
+        ),
+        TableRow(
+          children: [
+            tableCellFrame(("301~400점")),
+            tableCellFrame((options[0].grade301400.toString())),
+          ],
+        ),
+        TableRow(
+          children: [
+            tableCellFrame(("300점 이하")),
+            tableCellFrame((options[0].gradeUnder300.toString())),
+          ],
+        ),
+        TableRow(
+          children: [
+            tableCellFrame(("평균 금리")),
+            tableCellFrame((options[0].averageGrade.toString())),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget dataTableFrame(
+    ProductCategory category,
+    List<String> columns,
+    List<dynamic> options,
+  ) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        decoration: BoxDecoration(border: Border.all(color: primary300)),
+        headingRowColor: const WidgetStatePropertyAll(primary100),
+        headingRowHeight: 40.0,
+        dataRowColor: const WidgetStatePropertyAll(white),
+        columnSpacing: 36.0,
+        columns: [
+          for (final column in columns) DataColumn(label: dataTableCellText(column)),
+        ],
+        rows: [
+          if (category == ProductCategory.deposit)
+            for (final option
+                in options as List<DepositAndInstallmentSavingsOption>)
+              DataRow(
+                cells: [
+                  DataCell(dataTableCellText(option.intRateTypeName!)),
+                  DataCell(dataTableCellText(option.saveTerm.toString())),
+                  DataCell(dataTableCellText(option.intRate.toString())),
+                  DataCell(dataTableCellText(option.maxIntRate.toString())),
+                ],
+              ),
+          if (category == ProductCategory.installment)
+            for (final option
+                in options as List<DepositAndInstallmentSavingsOption>)
+              DataRow(
+                cells: [
+                  DataCell(dataTableCellText(option.intRateTypeName!)),
+                  DataCell(dataTableCellText(option.reserveTypeName.toString())),
+                  DataCell(dataTableCellText(option.saveTerm.toString())),
+                  DataCell(dataTableCellText(option.intRate.toString())),
+                ],
+              ),
+          if (category == ProductCategory.mortage)
+            for (final option in options as List<MortageAndRentLoanOption>)
+              DataRow(
+                cells: [
+                  DataCell(dataTableCellText(option.loanTypeName!)),
+                  DataCell(dataTableCellText(option.repayTypeName!)),
+                  DataCell(dataTableCellText(option.lendRateTypeName!)),
+                  DataCell(dataTableCellText(option.lendRateMin.toString())),
+                  DataCell(dataTableCellText(option.lendRateMax.toString())),
+                  DataCell(dataTableCellText(option.lendRateAvg.toString())),
+                ],
+              ),
+          if (category == ProductCategory.rent)
+            for (final option in options as List<MortageAndRentLoanOption>)
+              DataRow(
+                cells: [
+                  DataCell(dataTableCellText(option.repayTypeName!)),
+                  DataCell(dataTableCellText(option.lendRateTypeName!)),
+                  DataCell(dataTableCellText(option.lendRateMin.toString())),
+                  DataCell(dataTableCellText(option.lendRateMax.toString())),
+                  DataCell(dataTableCellText(option.lendRateAvg.toString())),
+                ],
+              ),
+        ],
       ),
     );
   }
@@ -158,7 +327,7 @@ class ProductDetailScreen extends ConsumerWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
-      const Divider(thickness: 1, color: black),
+      const Divider(thickness: 1, color: textPrimary),
       textFrame("금융 상품명: ${product.commonInfo.productName}"),
       textFrame("금융회사: ${product.commonInfo.companyName}"),
     ];
@@ -170,26 +339,43 @@ class ProductDetailScreen extends ConsumerWidget {
   ) {
     return [
       if (category != ProductCategory.isa)
-        textFrame("가입 방법: ${product.commonInfo.joinWay}"),
+        textFrame(
+          "가입 방법: ${(product.commonInfo.joinWay == null) ? "미제공" : product.commonInfo.joinWay}",
+        ),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
-        textFrame("가입 제한: ${(product as DepositAndInstallmentSavings).joinDeny}"),
-        textFrame("가입 대상: ${product.joinMember}"),
+        textFrame(
+          "가입 제한: ${((product as DepositAndInstallmentSavings).joinDeny == null) ? "미제공" : product.joinDeny}",
+        ),
+        textFrame(
+          "가입 대상: ${(product.joinMember == null) ? "미제공" : product.joinMember}",
+        ),
       ] else if (category == ProductCategory.credit) ...[
-        textFrame("CB 회사: ${(product as CreditLoan).cbName}"),
-        textFrame("대출 종류 ${product.productTypeName}"),
+        textFrame(
+          "CB 회사: ${((product as CreditLoan).cbName == null) ? "미제공" : product.cbName}",
+        ),
+        textFrame(
+          "대출 종류 ${(product.productTypeName == null) ? "미제공" : product.productTypeName}",
+        ),
       ] else if (category == ProductCategory.annuity) ...[
-        textFrame("연금 종류: ${(product as AnnuitySavings).pensionKindName}"),
-        textFrame("상품 유형: ${product.productTypeName}"),
-        textFrame("판매사: ${product.saleCompany}"),
-        textFrame("판매사: ${product.saleCompany}"),
+        textFrame(
+          "연금 종류: ${((product as AnnuitySavings).pensionKindName == null) ? "미제공" : product.pensionKindName}",
+        ),
+        textFrame(
+          "상품 유형: ${(product.productTypeName == null) ? "미제공" : product.productTypeName}",
+        ),
+        textFrame(
+          "판매사: ${(product.saleCompany == null) ? "미제공" : product.saleCompany}",
+        ),
       ] else if (category == ProductCategory.isa) ...[
-        textFrame("업권: ${(product as IsaMpBenefitRate).businessDomain}"),
-        textFrame("mp유형: ${product.mpType}"),
+        textFrame(
+          "업권: ${((product as IsaMpBenefitRate).businessDomain == null) ? "미제공" : product.businessDomain}",
+        ),
+        textFrame("mp유형: ${(product.mpType == null) ? "미제공" : product.mpType}"),
       ] else
         ...[],
-      textFrame(product.commonInfo.submittedDay),
-      SizedBox(height: 14.0),
+      textFrame("공시 제출일: ${product.commonInfo.submittedDay}"),
+      SizedBox(height: 24.0),
       Text(
         switch (category) {
           ProductCategory.credit => "대출 금리 안내",
@@ -203,37 +389,89 @@ class ProductDetailScreen extends ConsumerWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
-      const Divider(thickness: 1, color: black),
+      const Divider(thickness: 1, color: textPrimary),
+      textFrame("금리"),
+      const SizedBox(height: 14.0),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
-        textFrame("만기 후 이자율:\n${(product as DepositAndInstallmentSavings).interestAfterExpiration}"),
-        const SizedBox(height: 14.0,),
-        textFrame("우대 조건:\n${product.specialCondition}"),
-        const SizedBox(height: 14.0,),
-        textFrame("기타 유의 사항:\n${product.etc}"),
-        // todo: 옵션에서 리스트 호출해 제시
-      ] else if (category == ProductCategory.mortage || category == ProductCategory.rent) ...[
-        textFrame("대출 부대 비용:\n${(product as MortageAndRentLoan).extraExpense}"),
-        const SizedBox(height: 14.0,),
-        textFrame("중도 상환 수수료:\n${product.earlyRepayFee}"),
-        const SizedBox(height: 14.0,),
-        textFrame("연체 이자율:\n${product.delayRate}"),
-        const SizedBox(height: 14.0,),
-        textFrame("대출 한도: ${product.loanLimit}"),
-        // todo: 상환 방식에 따른 내용 추가(options)
-        // todo: 신용 등금에 따른 이자 추가(options)
-      ] else if (category == ProductCategory.credit)Table()
+        dataTableFrame(
+          category,
+          (category == ProductCategory.deposit)
+              ? const ["금리 유형", "기간(개월)", "기본 금리", "최대 우대 금리"]
+              : const ["금리 유형", "적금 유형", "기간(개월)", "금리"],
+          (product as DepositAndInstallmentSavings).options!,
+        ),
+        const SizedBox(height: 14.0),
+        textFrame(
+          "만기 후 이자율:\n${(product.interestAfterExpiration == null) ? "미제공" : product.interestAfterExpiration}",
+        ),
+        const SizedBox(height: 14.0),
+        textFrame(
+          "우대 조건:\n${(product.specialCondition == null) ? "미제공" : product.specialCondition}",
+        ),
+        const SizedBox(height: 14.0),
+        textFrame("기타 유의 사항:\n${(product.etc == null) ? "미제공" : product.etc}"),
+      ] else if (category == ProductCategory.mortage ||
+          category == ProductCategory.rent) ...[
+        dataTableFrame(
+          category,
+          (category == ProductCategory.mortage)
+              ? const [
+                  "담보 유형",
+                  "대출 상환 유형",
+                  "대출 금리 유형",
+                  "최저 금리",
+                  "최대 금리",
+                  "평균 금리",
+                ]
+              : const ["대출 상환 유형", "대출 금리 유형", "최저 금리", "최대 금리", "평균 금리"],
+          (product as MortageAndRentLoan).options!,
+        ),
+        const SizedBox(height: 14.0),
+        textFrame(
+          "대출 부대 비용:\n${(product.extraExpense == null) ? "미제공" : product.extraExpense}",
+        ),
+        const SizedBox(height: 14.0),
+        textFrame(
+          "중도 상환 수수료:\n${(product.earlyRepayFee == null) ? "미제공" : product.earlyRepayFee}",
+        ),
+        const SizedBox(height: 14.0),
+        textFrame(
+          "연체 이자율:\n${(product.delayRate == null) ? "미제공" : product.delayRate}",
+        ),
+        const SizedBox(height: 14.0),
+        textFrame(
+          "대출 한도: ${(product.loanLimit == null) ? "미제공" : product.loanLimit}",
+        ),
+      ] else if (category == ProductCategory.credit)
+        tableFrame(category, (product as CreditLoan).options!)
       else if (category == ProductCategory.annuity) ...[
-        textFrame("유지건수/설정액 ${(product as AnnuitySavings).maintenanceCount}"),
-        textFrame("평균 수익률: ${product.averageCommision}"),
-        textFrame("공시 이율: ${product.declaredRate}"),
-        textFrame("최저 보증 이율: ${product.guaranteedRate}"),
-        textFrame("전년도 수익률: ${product.pyProfitRate}"),
-        textFrame("전전년도 수익률: ${product.ppyProfitRate}"),
-        textFrame("전전전년도 수익률: ${product.pppyProfitRate}"),
+        textFrame(
+          "유지건수/설정액 ${((product as AnnuitySavings).maintenanceCount == null) ? "미제공" : product.maintenanceCount}",
+        ),
+        textFrame(
+          "평균 수익률: ${(product.averageCommision == null) ? "미제공" : product.averageCommision}",
+        ),
+        textFrame(
+          "공시 이율: ${(product.declaredRate == null) ? "미제공" : product.declaredRate}",
+        ),
+        textFrame(
+          "최저 보증 이율: ${(product.guaranteedRate == null) ? "미제공" : product.guaranteedRate}",
+        ),
+        textFrame(
+          "전년도 수익률: ${(product.pyProfitRate == null) ? "미제공" : product.pyProfitRate}",
+        ),
+        textFrame(
+          "전전년도 수익률: ${(product.ppyProfitRate == null) ? "미제공" : product.ppyProfitRate}",
+        ),
+        textFrame(
+          "전전전년도 수익률: ${(product.pppyProfitRate == null) ? "미제공" : product.pppyProfitRate}",
+        ),
       ]
       // todo: isa
-      else Table(),
+      else
+        // todo: implement later
+        tableFrame(category, []),
     ];
   }
 }
