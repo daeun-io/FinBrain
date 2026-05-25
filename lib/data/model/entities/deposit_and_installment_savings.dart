@@ -19,7 +19,7 @@ class DepositAndInstallmentSavings extends FinancialProduct{
   final String? joinMember;
   final String? etc;
   final String? maxLimit;
-  final List<DepositAndInstallmentSavingsOption>? options;
+  final List<DepositAndInstallmentSavingsOption> options;
 
   DepositAndInstallmentSavings({
     // commonInfo

@@ -16,7 +16,7 @@ class MortageAndRentLoan extends FinancialProduct{
   final String? earlyRepayFee;
   final String? delayRate;
   final String? loanLimit;
-  final List<MortageAndRentLoanOption>? options;
+  final List<MortageAndRentLoanOption> options;
 
   MortageAndRentLoan({
     // commonInfo

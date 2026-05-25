@@ -14,7 +14,7 @@ class CreditLoan extends FinancialProduct{
   final String? productType;
   final String? productTypeName;
   final String? cbName;
-  final List<CreditLoanOption>? options;
+  final List<CreditLoanOption> options;
 
   CreditLoan({
     // commonInfo

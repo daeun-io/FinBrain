@@ -25,6 +25,39 @@ class ProductDetailScreen extends ConsumerWidget {
   final String productName;
   final ProductCategory category;
 
+  // Map<String, List<String>> _mapProductOptions(ProductCategory category, List<dynamic> options){
+  //   for(var i=0; i < options.length; i++){
+  //     final firstValue = List.generate(options.length, (index){
+  //       switch(category){
+  //         case ProductCategory.deposit: options[i].intRateTypeName;
+  //         case ProductCategory.installment: options[i].intRateTypeName;
+  //         case ProductCategory.mortage: options[i].loanTypeName;
+  //         case ProductCategory.rent: options[i].repayTypeName;
+  //         // case ProductCategory.credit: options[i].creditLendRateTypeName;
+  //         default : null;
+  //     }});
+  //     final secondValue = List.generate(options.length, (index){
+  //       switch(category){
+  //         case ProductCategory.deposit: options[i].intRateTypeName;
+  //         case ProductCategory.installment: options[i].intRateTypeName;
+  //         case ProductCategory.mortage: options[i].loanTypeName;
+  //         case ProductCategory.rent: options[i].repayTypeName;
+  //         // case ProductCategory.credit: options[i].gradeOver900;
+  //         default : null;
+  //     }});
+  //     final firstValue = List.generate(options.length, (index){
+  //       switch(category){
+  //         case ProductCategory.deposit: options[i].intRateTypeName;
+  //         case ProductCategory.installment: options[i].intRateTypeName;
+  //         case ProductCategory.mortage: options[i].loanTypeName;
+  //         case ProductCategory.rent: options[i].repayTypeName;
+  //         // case ProductCategory.credit: options[i].gradeOver900;
+  //         default : null;
+  //     }});
+  //   }
+
+  // }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final product = ref
@@ -86,29 +119,71 @@ class ProductDetailScreen extends ConsumerWidget {
               ),
             ),
             Positioned(right: 20, bottom: 100, child: const AiButton()),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (ctx) =>
-                                CalculatorScreen(category: category),
+            if (category == ProductCategory.isa)
+              Positioned(
+                child: Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                    color: primary100,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "공식 홈페이지로 이동",
+                      style: TextStyle(
+                        color: textPrimary,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            else
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) => CalculatorScreen(
+                                category: category,
+                                options: {
+                                  "예치 종류": ["정액적립식", "자유적립식"],
+                                  "예치 기간": ["6개월", "12개월"],
+                                  "저축 금리 유향": ["단리"],
+                                  "저축 금리": ["1.15", "1.3"],
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          color: primary300,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "금융 계산기",
+                            style: TextStyle(
+                              color: textPrimary,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
-                        );
-                      },
+                        ),
+                      ),
+                    ),
+                    Expanded(
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
-                        color: primary300,
+                        color: primary100,
                         alignment: Alignment.center,
                         child: Text(
-                          "금융 계산기",
+                          "공식 홈페이지로 이동",
                           style: TextStyle(
                             color: textPrimary,
                             fontSize: 18.0,
@@ -117,25 +192,9 @@ class ProductDetailScreen extends ConsumerWidget {
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 20.0),
-                      color: primary100,
-                      alignment: Alignment.center,
-                      child: Text(
-                        "공식 홈페이지로 이동",
-                        style: TextStyle(
-                          color: textPrimary,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -152,7 +211,8 @@ class ProductDetailScreen extends ConsumerWidget {
       ),
     );
   }
-  Widget tableCellFrame(String text){
+
+  Widget tableCellFrame(String text) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: TableCell(
@@ -162,7 +222,7 @@ class ProductDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget dataTableCellText(String text){
+  Widget dataTableCellText(String text) {
     return Center(
       child: Text(
         text,
@@ -178,74 +238,85 @@ class ProductDetailScreen extends ConsumerWidget {
 
   // todo: implement logic for isa mp product
   Widget tableFrame(ProductCategory category, List<dynamic> options) {
-    return Table(
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      border: TableBorder.all(color: primary300),
+    return Column(
       children: [
-        TableRow(
-          decoration: BoxDecoration(
-            color: primary100,
-            border: BoxBorder.all(color: primary300),
-          ),
-          children: [
-            tableCellFrame("신용 등급"),
-            tableCellFrame("대출 금리")
-          ],
-        ),
-        TableRow(
-          children: [
-            tableCellFrame("900점 초과"),
-            tableCellFrame(options[0].gradeOver900.toString()),
-          ],
-        ),
-        TableRow(
-          children: [
-            tableCellFrame("801~900점"),
-            tableCellFrame(options[0].grade801900.toString()),
-          ],
-        ),
-        TableRow(
-          children: [
-            tableCellFrame("701~800점"),
-            tableCellFrame(options[0].grade701800.toString()),
-          ],
-        ),
-        TableRow(
-          children: [
-            tableCellFrame("601~700점"),
-            tableCellFrame((options[0].grade601700.toString())),
-          ],
-        ),
-        TableRow(
-          children: [
-            tableCellFrame(("501~600점")),
-            tableCellFrame((options[0].grade501600.toString())),
-          ],
-        ),
-        TableRow(
-          children: [
-            tableCellFrame(("401~500점")),
-            tableCellFrame((options[0].grade401500.toString())),
-          ],
-        ),
-        TableRow(
-          children: [
-            tableCellFrame(("301~400점")),
-            tableCellFrame((options[0].grade301400.toString())),
-          ],
-        ),
-        TableRow(
-          children: [
-            tableCellFrame(("300점 이하")),
-            tableCellFrame((options[0].gradeUnder300.toString())),
-          ],
-        ),
-        TableRow(
-          children: [
-            tableCellFrame(("평균 금리")),
-            tableCellFrame((options[0].averageGrade.toString())),
-          ],
-        ),
+        if (category == ProductCategory.credit)
+          for (final option in options as List<CreditLoanOption>)
+            if (option.creditLendRateTypeName != null) ...[
+              textFrame(option.creditLendRateTypeName!),
+              const SizedBox(height: 8.0),
+              Table(
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                border: TableBorder.all(color: primary300),
+                children: [
+                  TableRow(
+                    decoration: BoxDecoration(
+                      color: primary100,
+                      border: BoxBorder.all(color: primary300),
+                    ),
+                    children: [
+                      tableCellFrame("신용 등급"),
+                      tableCellFrame("대출 금리"),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      tableCellFrame("900점 초과"),
+                      tableCellFrame(option.gradeOver900.toString()),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      tableCellFrame("801~900점"),
+                      tableCellFrame(option.grade801900.toString()),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      tableCellFrame("701~800점"),
+                      tableCellFrame(option.grade701800.toString()),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      tableCellFrame("601~700점"),
+                      tableCellFrame((option.grade601700.toString())),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      tableCellFrame(("501~600점")),
+                      tableCellFrame((option.grade501600.toString())),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      tableCellFrame(("401~500점")),
+                      tableCellFrame((option.grade401500.toString())),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      tableCellFrame(("301~400점")),
+                      tableCellFrame((option.grade301400.toString())),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      tableCellFrame(("300점 이하")),
+                      tableCellFrame((option.gradeUnder300.toString())),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      tableCellFrame(("평균 금리")),
+                      tableCellFrame((option.averageGrade.toString())),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 28.0),
+            ],
       ],
     );
   }
@@ -264,7 +335,8 @@ class ProductDetailScreen extends ConsumerWidget {
         dataRowColor: const WidgetStatePropertyAll(white),
         columnSpacing: 36.0,
         columns: [
-          for (final column in columns) DataColumn(label: dataTableCellText(column)),
+          for (final column in columns)
+            DataColumn(label: dataTableCellText(column)),
         ],
         rows: [
           if (category == ProductCategory.deposit)
@@ -284,7 +356,9 @@ class ProductDetailScreen extends ConsumerWidget {
               DataRow(
                 cells: [
                   DataCell(dataTableCellText(option.intRateTypeName!)),
-                  DataCell(dataTableCellText(option.reserveTypeName.toString())),
+                  DataCell(
+                    dataTableCellText(option.reserveTypeName.toString()),
+                  ),
                   DataCell(dataTableCellText(option.saveTerm.toString())),
                   DataCell(dataTableCellText(option.intRate.toString())),
                 ],
@@ -390,16 +464,16 @@ class ProductDetailScreen extends ConsumerWidget {
         ),
       ),
       const Divider(thickness: 1, color: textPrimary),
-      textFrame("금리"),
       const SizedBox(height: 14.0),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
+        textFrame("금리"),
         dataTableFrame(
           category,
           (category == ProductCategory.deposit)
               ? const ["금리 유형", "기간(개월)", "기본 금리", "최대 우대 금리"]
               : const ["금리 유형", "적금 유형", "기간(개월)", "금리"],
-          (product as DepositAndInstallmentSavings).options!,
+          (product as DepositAndInstallmentSavings).options,
         ),
         const SizedBox(height: 14.0),
         textFrame(
@@ -413,6 +487,8 @@ class ProductDetailScreen extends ConsumerWidget {
         textFrame("기타 유의 사항:\n${(product.etc == null) ? "미제공" : product.etc}"),
       ] else if (category == ProductCategory.mortage ||
           category == ProductCategory.rent) ...[
+        textFrame("금리"),
+        const SizedBox(height: 14.0,),
         dataTableFrame(
           category,
           (category == ProductCategory.mortage)
@@ -444,7 +520,7 @@ class ProductDetailScreen extends ConsumerWidget {
           "대출 한도: ${(product.loanLimit == null) ? "미제공" : product.loanLimit}",
         ),
       ] else if (category == ProductCategory.credit)
-        tableFrame(category, (product as CreditLoan).options!)
+        tableFrame(category, (product as CreditLoan).options)
       else if (category == ProductCategory.annuity) ...[
         textFrame(
           "유지건수/설정액 ${((product as AnnuitySavings).maintenanceCount == null) ? "미제공" : product.maintenanceCount}",

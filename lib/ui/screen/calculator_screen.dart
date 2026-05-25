@@ -5,43 +5,80 @@ import 'package:flutter/material.dart';
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({
     super.key,
-    required this.category
+    required this.category,
+    required this.options,
   });
 
   final ProductCategory category;
+  final Map<String, List<String>> options;
 
   @override
   State<CalculatorScreen> createState() => _CalculatorScreenState();
 }
 
 class _CalculatorScreenState extends State<CalculatorScreen> {
-  final _textController = TextEditingController();
+  final _moneyController = TextEditingController();
+  final _periodController = TextEditingController();
 
-  var isSubmitted = false;
-  int? _period;
-  int? _interest;
-  String? _type = "단리";
+  bool isSubmitted = false;
+
+  late String _firstValue;
+  late String _secondValue;
+  late String _thirdValue;
+  late String _forthValue;
+
+  @override
+  void initState() {
+    super.initState();
+    final List<String> dropdownValues = [];
+    final keys = widget.options.keys.toList();
+    if (widget.options.isNotEmpty && keys.isNotEmpty) {
+      for (var i = 0; i < keys.length; i++) {
+        if (widget.options[keys[i]] != null &&
+            widget.options[keys[i]]!.isNotEmpty) {
+          dropdownValues.add(widget.options[keys[i]]!.first);
+        }
+      }
+
+      _firstValue = dropdownValues[0];
+      _secondValue = dropdownValues[1];
+      if(keys.length >= 3){
+        _thirdValue = dropdownValues[2];
+      }
+      if(keys.length == 4){
+        _forthValue = dropdownValues[3];
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
         backgroundColor: white,
-        body: Padding(
-          padding: const EdgeInsets.only(top: 80.0, left: 20.0, right: 20.0),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+        ),
+      ),
+      backgroundColor: white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "예치금",
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w400,
-                  color: textPrimary,
-                ),
-              ),
+              titleText(switch (widget.category) {
+                ProductCategory.deposit => "예치금",
+                ProductCategory.installment => "예치금",
+                ProductCategory.annuity => "월 납입 금액",
+                _ => "대출 원금",
+              }),
               const SizedBox(height: 2.0),
               TextField(
-                controller: _textController,
+                controller: _moneyController,
                 decoration: const InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: primary900),
@@ -53,187 +90,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   helperText: "",
                 ),
               ),
-              const SizedBox(height: 32.0),
-              const Text(
-                "예치 기간",
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w400,
-                  color: textPrimary,
-                ),
-              ),
-              const SizedBox(height: 2.0),
-              Card(
-                color: white,
-                shape: const RoundedRectangleBorder(
-                  side: BorderSide(color: primary900, width: 1.0),
-                ),
-                child: ButtonTheme(
-                  alignedDropdown: true,
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                      isExpanded: true,
-                      dropdownColor: white,
-                      value: _period,
-                      items: [
-                        const DropdownMenuItem(
-                          value: 6,
-                          child: Text(
-                            "6개월",
-                            style: TextStyle(
-                              color: textPrimary,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                        const DropdownMenuItem(
-                          value: 12,
-                          child: Text(
-                            "12개월",
-                            style: TextStyle(
-                              color: textPrimary,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _period = value;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32.0),
-              const Text(
-                "예치 금리",
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w400,
-                  color: textPrimary,
-                ),
-              ),
-              const SizedBox(height: 2.0),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 100,
-                    child: Card(
-                      color: white,
-                      shape: const RoundedRectangleBorder(
-                        side: BorderSide(color: primary900, width: 1.0),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            dropdownColor: Colors.white,
-                            value: _type,
-                            items: [
-                              const DropdownMenuItem(
-                                value: "단리",
-                                child: Text(
-                                  "단리",
-                                  style: TextStyle(
-                                    color: textPrimary,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                              const DropdownMenuItem(
-                                value: "복리",
-                                child: Text(
-                                  "복리",
-                                  style: TextStyle(
-                                    color: textPrimary,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                _type = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12.0),
-                  // 2. 이율 선택 드롭다운 (남은 공간 전체)
-                  Expanded(
-                    child: Card(
-                      margin: EdgeInsets.zero,
-                      color: Colors.white,
-                      shape: const RoundedRectangleBorder(
-                        side: BorderSide(color: primary900, width: 1.0),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: DropdownButton<int>(
-                            isExpanded: true,
-                            dropdownColor: Colors.white,
-                            value: _interest,
-                            items: [
-                              const DropdownMenuItem(
-                                value: 1,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    "1.74%",
-                                    style: TextStyle(
-                                      color: textPrimary,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const DropdownMenuItem(
-                                value: 2,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    "1.80%",
-                                    style: TextStyle(
-                                      color: textPrimary,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              // 중요: 이 부분에 setState가 있어야 화면이 갱신됩니다.
-                              setState(() {
-                                _interest = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              const SizedBox(height: 28.0),
+              ..._displayDynamicWidgetList(widget.category, widget.options),
               const SizedBox(height: 32.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
                     onPressed: () {
-                      _textController.clear();
+                      _moneyController.clear();
                       setState(() {
                         isSubmitted = false;
                       });
@@ -252,14 +117,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         color: primary300,
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
-                      child: const Text(
-                        "리셋",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: textPrimary,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+                      child: titleText("리셋"),
                     ),
                   ),
                   const SizedBox(width: 12.0),
@@ -283,14 +141,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         color: primary400,
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
-                      child: const Text(
-                        "계산",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: textPrimary,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+                      child: titleText("계산"),
                     ),
                   ),
                 ],
@@ -300,164 +151,201 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 40.0),
-                    const Text(
-                      "계산 결과",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w600,
-                        color: textPrimary,
-                      ),
-                    ),
+                    titleText("계산 결과"),
                     const SizedBox(height: 16.0),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Table(
-                        defaultColumnWidth: FlexColumnWidth(1.0),
-                        children: [
-                          TableRow(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 16.0,
-                                ),
-                                color: primary100,
-                                child: const Text(
-                                  "예치금",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: black,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 16.0,
-                                ),
-                                color: white,
-                                child: const Text(
-                                  "10,000,000원",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: black,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 16.0,
-                                ),
-                                color: primary100,
-                                child: const Text(
-                                  "예치금",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: black,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 16.0,
-                                ),
-                                color: white,
-                                child: const Text(
-                                  "10,000,000원",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: black,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 16.0,
-                                ),
-                                color: primary100,
-                                child: const Text(
-                                  "예치금",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: black,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 16.0,
-                                ),
-                                color: white,
-                                child: const Text(
-                                  "10,000,000원",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: black,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 16.0,
-                                ),
-                                color: primary100,
-                                child: const Text(
-                                  "예치금",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: black,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 16.0,
-                                ),
-                                color: white,
-                                child: const Text(
-                                  "10,000,000원",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: black,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                    _displayResult(widget.category, []),
                   ],
                 ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget titleText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 18.0,
+        fontWeight: FontWeight.w400,
+        color: textPrimary,
+      ),
+    );
+  }
+
+  Widget normalText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 18.0,
+        fontWeight: FontWeight.w400,
+        color: black,
+      ),
+    );
+  }
+
+  Widget dropdownCard(int ordinal, List<dynamic> items) {
+    return Card(
+      color: white,
+      shape: const RoundedRectangleBorder(
+        side: BorderSide(color: primary900, width: 1.0),
+      ),
+      child: ButtonTheme(
+        alignedDropdown: true,
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+            isExpanded: true,
+            dropdownColor: white,
+            value: switch (ordinal) {
+              1 => _firstValue,
+              2 => _secondValue,
+              3 => _thirdValue,
+              _ => _forthValue,
+            },
+            items: [
+              for (final item in items)
+                DropdownMenuItem(value: item, child: normalText(item)),
+            ],
+            onChanged: items.length == 1
+                ? null
+                : (value) {
+                    setState(() {
+                      switch (ordinal) {
+                        case 1:
+                          _firstValue = value.toString();
+                        case 2:
+                          _secondValue = value.toString();
+                        case 3:
+                          _thirdValue = value.toString();
+                        default:
+                          _forthValue = value.toString();
+                      }
+                    });
+                  },
+          ),
+        ),
+      ),
+    );
+  }
+
+  TableRow tableRow(String item, String value) {
+    return TableRow(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          color: primary100,
+          child: normalText(item),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          color: white,
+          child: normalText(value),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _displayDynamicWidgetList(
+    ProductCategory category,
+    Map<String, List<String>> options,
+  ) {
+    final keys = options.keys.toList();
+    return [
+      titleText(switch (category) {
+        ProductCategory.deposit => "예치 기간",
+        ProductCategory.installment => "예치 종류 및 기간(개월)",
+        ProductCategory.annuity => "연금수령 기간 및 납입 기간",
+        _ => "상환 방법 및 대출 기간",
+      }),
+      const SizedBox(height: 2.0),
+      if (category == ProductCategory.deposit)
+        dropdownCard(1, options[keys[0]] ?? [])
+      else
+        Row(
+          children: [
+            Expanded(child: dropdownCard(1, options[keys[0]] ?? [])),
+            const SizedBox(width: 8.0),
+            if (category == ProductCategory.installment &&
+                _firstValue == "자유적립식")
+              Expanded(
+                child: TextField(
+                  controller: _periodController,
+                  decoration: const InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: primary900),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: primary900),
+                    ),
+                    helperText: "12",
+                    counterText: "",
+                  ),
+                ),
+              )
+            else
+              Expanded(child: dropdownCard(2, options[keys[1]] ?? [])),
+          ],
+        ),
+      const SizedBox(height: 32.0),
+      if (category == ProductCategory.installment &&
+          _firstValue == "자유적립식") ...[
+        titleText("계약 기간"),
+        const SizedBox(height: 2.0),
+        dropdownCard(2, options[keys[1]] ?? []),
+        const SizedBox(height: 32.0,)
+      ],
+      titleText(switch (category) {
+        ProductCategory.deposit => "예치 금리",
+        ProductCategory.installment => "예치 기간 및 종류",
+        ProductCategory.annuity => "가입 연령 및 개시 연령",
+        _ => "대출 금리",
+      }),
+      const SizedBox(height: 2.0),
+      if (category == ProductCategory.annuity)
+        Row(
+          children: [
+            Expanded(child: dropdownCard(3, options[keys[2]] ?? [])),
+            const SizedBox(width: 8.0),
+            Expanded(child: dropdownCard(4, options[keys[3]] ?? [])),
+          ],
+        )
+      else if (category == ProductCategory.deposit ||
+          category == ProductCategory.installment)
+        Row(
+          children: [
+            SizedBox(
+              width: 100,
+              child: dropdownCard(3, options[keys[2]] ?? []),
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(child: dropdownCard(4, options[keys[3]] ?? [])),
+          ],
+        )
+      else
+        dropdownCard(3, options[keys[2]] ?? []),
+    ];
+  }
+
+  Widget _displayResult(ProductCategory category, List<String> values) {
+    if (category == ProductCategory.mortage ||
+        category == ProductCategory.rent ||
+        category == ProductCategory.credit) {
+      return SingleChildScrollView(child: Center());
+    } else {
+      return SizedBox(
+        width: double.infinity,
+        child: Table(
+          defaultColumnWidth: FlexColumnWidth(1.0),
+          children: [
+            for (var i = 0; i < values.length; i++)
+              tableRow(switch (category) {
+                ProductCategory.annuity => "월 납입 금액",
+                _ => "예치금",
+              }, values[i]),
+          ],
+        ),
       );
+    }
   }
 }
