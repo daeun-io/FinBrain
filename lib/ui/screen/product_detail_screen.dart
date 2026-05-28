@@ -47,36 +47,38 @@ class ProductDetailScreen extends ConsumerWidget {
     switch (category) {
       case ProductCategory.deposit:
         values.add(
-          (options as List<DepositAndInstallmentSavingsOption>).map(
-            (e) => e.saveTerm,
-          ),
+          List.of((options as List<DepositAndInstallmentSavingsOption>).map(
+            (e) => "${e.saveTerm}개월",
+          ).toSet().toList()),
         );
-        values.add(options.map((e) => e.intRateTypeName));
+        values.add(List.of(options.map((e) => e.intRateTypeName!).toSet().toList()));
       case ProductCategory.installment:
         values.add(
-          (options as List<DepositAndInstallmentSavingsOption>).map(
-            (e) => e.reserveTypeName,
-          ),
+          List.of((options as List<DepositAndInstallmentSavingsOption>).map(
+            (e) => e.reserveTypeName!,
+          ).toSet().toList()),
         );
-        values.add(options.map((e) => e.saveTerm));
-        values.add(options.map((e) => e.intRateTypeName));
+        values.add(List.of(options.map((e) => "${e.saveTerm}개월").toSet().toList()));
+        values.add(List.of(options.map((e) => e.intRateTypeName!).toSet().toList()));
       case ProductCategory.annuity:
         values.add(
-          (options as List<AnnuitySavingsOption>).map(
-            (e) => e.monthlyPaymentName,
-          ),
+          List.of((options as List<AnnuitySavingsOption>).map(
+            (e) => e.monthlyPaymentName!,
+          ).toSet().toList()),
         );
-        values.add(options.map((e) => e.receiptTermName));
-        values.add(options.map((e) => e.paymentPeriodName));
-        values.add(options.map((e) => e.entryAgeName));
-        values.add(options.map((e) => e.startAgeName));
+        values.add(List.of(options.map((e) => e.receiptTermName!).toSet().toList()));
+        values.add(List.of(options.map((e) => e.paymentPeriodName!).toSet().toList()));
+        values.add(List.of(options.map((e) => e.entryAgeName!).toSet().toList()));
+        values.add(List.of(options.map((e) => e.startAgeName!).toSet().toList()));
       default:
         values.add(["분할상환방식", "만기일시상환방식"]);
     }
+  
+    Map<String, List<String>> map = {
+      for(var i = 0; i < keys.length; i++) keys[i]:values[i]
+    };
 
-    return keys.asMap().map((index, key) {
-      return MapEntry(key, values[index]);
-    });
+    return map;
   }
 
   @override

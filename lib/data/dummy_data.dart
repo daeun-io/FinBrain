@@ -285,7 +285,7 @@ final dummyData = [
       ),
       CreditLoanOption(
         creditLendRateType: "A",
-        creditLendRateTypeName: "대출금리",
+        creditLendRateTypeName: "가산금리",
         gradeOver900: 2.62,
         grade801900: 2.89,
         grade701800: 3.1,
@@ -298,7 +298,7 @@ final dummyData = [
       ),
       CreditLoanOption(
         creditLendRateType: "A",
-        creditLendRateTypeName: "대출금리",
+        creditLendRateTypeName: "기준금리",
         gradeOver900: 2.62,
         grade801900: 2.89,
         grade701800: 3.1,

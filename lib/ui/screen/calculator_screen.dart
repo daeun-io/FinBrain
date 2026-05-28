@@ -1,3 +1,8 @@
+import 'package:collection/collection.dart';
+import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
+import 'package:finbrain/data/model/entities/credit_loan_option.dart';
+import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
+import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:flutter/material.dart';
@@ -22,34 +27,125 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   final _moneyController = TextEditingController();
   final _periodController = TextEditingController();
 
-  bool isSubmitted = false;
-
-  late String _firstValue;
-  late String _secondValue;
-  late String _thirdValue;
-  late String _forthValue;
+  bool _isSubmitted = false;
+  final Map<String, String> _selectedValues = {};
+  bool _isPrefSelected = false;
 
   @override
   void initState() {
     super.initState();
-    final List<String> dropdownValues = [];
-    final keys = widget.mapOptions.keys.toList();
-    if (widget.mapOptions.isNotEmpty && keys.isNotEmpty) {
-      for (var i = 0; i < keys.length; i++) {
-        if (widget.mapOptions[keys[i]] != null &&
-            widget.mapOptions[keys[i]]!.isNotEmpty) {
-          dropdownValues.add(widget.mapOptions[keys[i]]!.first);
-        }
-      }
 
-      _firstValue = dropdownValues[0];
-      _secondValue = dropdownValues[1];
-      if(keys.length >= 3){
-        _thirdValue = dropdownValues[2];
-      }
-      if(keys.length == 4){
-        _forthValue = dropdownValues[3];
-      }
+    if (widget.mapOptions.isNotEmpty) {
+      widget.mapOptions.forEach((key, list) {
+        _selectedValues[key] = list.first;
+      });
+    }
+  }
+
+  List<double> _returnRate(ProductCategory category) {
+    final keys = widget.mapOptions.keys.toList();
+    switch (category) {
+      case ProductCategory.deposit:
+        final option = widget.options
+            .where(
+              (e) =>
+                  "${(e as DepositAndInstallmentSavingsOption).saveTerm}개월" ==
+                      _selectedValues[keys[0]] &&
+                  e.intRateTypeName == _selectedValues[keys[1]],
+            )
+            .firstOrNull;
+        if (option != null) {
+          return [
+            (option as DepositAndInstallmentSavingsOption).intRate != null
+                ? option.intRate!
+                : -1.0,
+            option.maxIntRate != null ? option.maxIntRate! : -1.0,
+          ];
+        } else {
+          return [];
+        }
+      case ProductCategory.installment:
+        final option = widget.options
+            .where(
+              (e) =>
+                  (e as DepositAndInstallmentSavingsOption).reserveTypeName ==
+                      _selectedValues[keys[0]] &&
+                  "${e.saveTerm}개월" == _selectedValues[keys[1]] &&
+                  e.intRateTypeName == _selectedValues[keys[2]],
+            )
+            .firstOrNull;
+        if (option != null) {
+          final result = [
+            (option as DepositAndInstallmentSavingsOption).intRate != null
+                ? option.intRate!
+                : -1.0,
+            option.maxIntRate != null ? option.maxIntRate! : -1.0,
+          ];
+          return result;
+        } else {
+          return [];
+        }
+      case ProductCategory.annuity:
+        final option = widget.options.where(
+          (e) =>
+              (e as AnnuitySavingsOption).monthlyPaymentName ==
+                  _selectedValues[keys[0]] &&
+              e.receiptTermName == _selectedValues[keys[1]] &&
+              e.paymentPeriodName == _selectedValues[keys[2]] &&
+              e.entryAgeName == _selectedValues[keys[3]] &&
+              e.startAgeName == _selectedValues[keys[4]],
+        );
+        if (option.isNotEmpty && option.first != null) {
+          return [option.first.monthlyReceiptAmount];
+        } else {
+          return [];
+        }
+      default:
+        if (category == ProductCategory.credit) {
+          final rates = [
+            for (final option in widget.options)
+              {
+                if ((option as CreditLoanOption).creditLendRateTypeName ==
+                    "대출금리")
+                  {
+                    option.gradeOver900,
+                    option.grade801900,
+                    option.grade701800,
+                    option.grade601700,
+                    option.grade501600,
+                    option.grade401500,
+                    option.grade301400,
+                    option.gradeUnder300,
+                  },
+              },
+          ].whereType<double>();
+          final avgRates = [
+            for (final option in widget.options)
+              {
+                if ((option as CreditLoanOption).creditLendRateTypeName ==
+                    "대출금리")
+                  {option.averageGrade},
+              },
+          ].whereType<double>();
+          final min = rates.min;
+          final max = rates.max;
+          final avg = (avgRates.isNotEmpty) ? avgRates.first : rates.average;
+          return [min, max, avg];
+        } else {
+          final min = widget.options
+              .map((e) => (e as MortageAndRentLoanOption).lendRateMin)
+              .whereType<double>()
+              .min;
+          final max = widget.options
+              .map((e) => (e as MortageAndRentLoanOption).lendRateMax)
+              .whereType<double>()
+              .max;
+          final avg = widget.options
+              .map((e) => (e as MortageAndRentLoanOption).lendRateAvg)
+              .whereType<double>()
+              .average;
+          return [min, max, avg];
+        }
     }
   }
 
@@ -79,20 +175,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 _ => "대출 원금",
               }),
               const SizedBox(height: 2.0),
-              TextField(
-                controller: _moneyController,
-                decoration: const InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: primary900),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: primary900),
-                  ),
-                  counterText: "",
-                  helperText: "",
-                ),
-              ),
-              const SizedBox(height: 28.0),
               ..._displayDynamicWidgetList(widget.category, widget.mapOptions),
               const SizedBox(height: 32.0),
               Row(
@@ -102,7 +184,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     onPressed: () {
                       _moneyController.clear();
                       setState(() {
-                        isSubmitted = false;
+                        _isSubmitted = false;
                       });
                     },
                     style: TextButton.styleFrom(
@@ -126,7 +208,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        isSubmitted = true;
+                        _isSubmitted = true;
                       });
                     },
                     style: TextButton.styleFrom(
@@ -148,7 +230,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   ),
                 ],
               ),
-              if (isSubmitted)
+              if (_isSubmitted)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -187,7 +269,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  Widget dropdownCard(int ordinal, List<dynamic> items) {
+  Widget dropdownCard(String key, List<dynamic> items) {
     return Card(
       color: white,
       shape: const RoundedRectangleBorder(
@@ -199,29 +281,23 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           child: DropdownButton(
             isExpanded: true,
             dropdownColor: white,
-            value: switch (ordinal) {
-              1 => _firstValue,
-              2 => _secondValue,
-              3 => _thirdValue,
-              _ => _forthValue,
-            },
+            value: _selectedValues[key],
             items: [
               for (final item in items)
-                DropdownMenuItem(value: item, child: normalText(item)),
+                DropdownMenuItem(
+                  value: item,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: normalText(item),
+                  ),
+                ),
             ],
             onChanged: items.length == 1
                 ? null
                 : (value) {
                     setState(() {
-                      switch (ordinal) {
-                        case 1:
-                          _firstValue = value.toString();
-                        case 2:
-                          _secondValue = value.toString();
-                        case 3:
-                          _thirdValue = value.toString();
-                        default:
-                          _forthValue = value.toString();
+                      if (value != null) {
+                        _selectedValues[key] = value.toString();
                       }
                     });
                   },
@@ -250,10 +326,27 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   List<Widget> _displayDynamicWidgetList(
     ProductCategory category,
-    Map<String, List<String>> options,
+    Map<String, List<String>> mapOptions,
   ) {
-    final keys = options.keys.toList();
+    final keys = mapOptions.keys.toList();
     return [
+      if (category == ProductCategory.annuity)
+        dropdownCard(keys[0], mapOptions[keys[0]] ?? [])
+      else
+        TextField(
+          controller: _moneyController,
+          decoration: const InputDecoration(
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: primary900),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: primary900),
+            ),
+            counterText: "",
+            helperText: "숫자만 입력",
+          ),
+        ),
+      const SizedBox(height: 28.0),
       titleText(switch (category) {
         ProductCategory.deposit => "예치 기간",
         ProductCategory.installment => "예치 종류 및 기간(개월)",
@@ -262,14 +355,31 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       }),
       const SizedBox(height: 2.0),
       if (category == ProductCategory.deposit)
-        dropdownCard(1, options[keys[0]] ?? [])
+        dropdownCard(keys[0], mapOptions[keys[0]] ?? [])
       else
         Row(
           children: [
-            Expanded(child: dropdownCard(1, options[keys[0]] ?? [])),
+            Expanded(
+              child: dropdownCard(
+                category == ProductCategory.annuity ? keys[1] : keys[0],
+                category == ProductCategory.annuity
+                    ? mapOptions[keys[1]] ?? []
+                    : mapOptions[keys[0]] ?? [],
+              ),
+            ),
             const SizedBox(width: 8.0),
-            if (category == ProductCategory.installment &&
-                _firstValue == "자유적립식")
+            if (category == ProductCategory.annuity ||
+                (category == ProductCategory.installment &&
+                    _selectedValues[keys[0]] == "정액적립식"))
+              Expanded(
+                child: dropdownCard(
+                  category == ProductCategory.annuity ? keys[2] : keys[1],
+                  category == ProductCategory.annuity
+                      ? mapOptions[keys[2]] ?? []
+                      : mapOptions[keys[1]] ?? [],
+                ),
+              )
+            else
               Expanded(
                 child: TextField(
                   controller: _periodController,
@@ -280,22 +390,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: primary900),
                     ),
-                    helperText: "12",
+                    helperText: "숫자만 입력",
                     counterText: "",
                   ),
                 ),
-              )
-            else
-              Expanded(child: dropdownCard(2, options[keys[1]] ?? [])),
+              ),
           ],
         ),
       const SizedBox(height: 32.0),
       if (category == ProductCategory.installment &&
-          _firstValue == "자유적립식") ...[
+          _selectedValues[keys[0]] == "자유적립식") ...[
         titleText("계약 기간"),
         const SizedBox(height: 2.0),
-        dropdownCard(2, options[keys[1]] ?? []),
-        const SizedBox(height: 32.0,)
+        dropdownCard(keys[1], mapOptions[keys[1]] ?? []),
+        const SizedBox(height: 32.0),
       ],
       titleText(switch (category) {
         ProductCategory.deposit => "예치 금리",
@@ -307,25 +415,72 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       if (category == ProductCategory.annuity)
         Row(
           children: [
-            Expanded(child: dropdownCard(3, options[keys[2]] ?? [])),
+            Expanded(child: dropdownCard(keys[3], mapOptions[keys[3]] ?? [])),
             const SizedBox(width: 8.0),
-            Expanded(child: dropdownCard(4, options[keys[3]] ?? [])),
+            Expanded(child: dropdownCard(keys[4], mapOptions[keys[4]] ?? [])),
           ],
         )
       else if (category == ProductCategory.deposit ||
-          category == ProductCategory.installment)
+          category == ProductCategory.installment) ...[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            SizedBox(
+              width: 16.0,
+              height: 16.0,
+              child: Checkbox(
+                value: _isPrefSelected,
+                onChanged: (value) {
+                  setState(() {
+                    _isPrefSelected = value!;
+                  });
+                },
+                activeColor: primary900,
+              ),
+            ),
+            const SizedBox(width: 4.0),
+            const Text(
+              "우대 금리 적용",
+              style: TextStyle(
+                color: black,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 1.0),
         Row(
           children: [
             SizedBox(
               width: 100,
-              child: dropdownCard(3, options[keys[2]] ?? []),
+              child: dropdownCard(
+                category == ProductCategory.deposit ? keys[1] : keys[2],
+                category == ProductCategory.deposit
+                    ? mapOptions[keys[1]] ?? []
+                    : mapOptions[keys[2]] ?? [],
+              ),
             ),
             const SizedBox(width: 8.0),
-            Expanded(child: dropdownCard(4, options[keys[3]] ?? [])),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: primary900),
+                ),
+                alignment: Alignment.centerRight,
+                child: normalText(
+                  (_returnRate(category).isNotEmpty && _isPrefSelected == true &&
+                          _returnRate(category).last != -1.0)
+                      ? _returnRate(category).lastOrNull.toString()
+                      : _returnRate(category).firstOrNull.toString(),
+                ),
+              ),
+            ),
           ],
-        )
-      else
-        dropdownCard(3, options[keys[2]] ?? []),
+        ),
+      ] else
+        Text("이자"),
     ];
   }
 
