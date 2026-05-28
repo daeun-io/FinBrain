@@ -6,11 +6,13 @@ class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({
     super.key,
     required this.category,
+    required this.mapOptions,
     required this.options,
   });
 
   final ProductCategory category;
-  final Map<String, List<String>> options;
+  final Map<String, List<String>> mapOptions;
+  final List<dynamic> options;
 
   @override
   State<CalculatorScreen> createState() => _CalculatorScreenState();
@@ -31,12 +33,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   void initState() {
     super.initState();
     final List<String> dropdownValues = [];
-    final keys = widget.options.keys.toList();
-    if (widget.options.isNotEmpty && keys.isNotEmpty) {
+    final keys = widget.mapOptions.keys.toList();
+    if (widget.mapOptions.isNotEmpty && keys.isNotEmpty) {
       for (var i = 0; i < keys.length; i++) {
-        if (widget.options[keys[i]] != null &&
-            widget.options[keys[i]]!.isNotEmpty) {
-          dropdownValues.add(widget.options[keys[i]]!.first);
+        if (widget.mapOptions[keys[i]] != null &&
+            widget.mapOptions[keys[i]]!.isNotEmpty) {
+          dropdownValues.add(widget.mapOptions[keys[i]]!.first);
         }
       }
 
@@ -91,7 +93,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 ),
               ),
               const SizedBox(height: 28.0),
-              ..._displayDynamicWidgetList(widget.category, widget.options),
+              ..._displayDynamicWidgetList(widget.category, widget.mapOptions),
               const SizedBox(height: 32.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

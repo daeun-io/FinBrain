@@ -1,4 +1,5 @@
 import 'package:finbrain/data/model/entities/annuity_savings.dart';
+import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
@@ -25,38 +26,58 @@ class ProductDetailScreen extends ConsumerWidget {
   final String productName;
   final ProductCategory category;
 
-  // Map<String, List<String>> _mapProductOptions(ProductCategory category, List<dynamic> options){
-  //   for(var i=0; i < options.length; i++){
-  //     final firstValue = List.generate(options.length, (index){
-  //       switch(category){
-  //         case ProductCategory.deposit: options[i].intRateTypeName;
-  //         case ProductCategory.installment: options[i].intRateTypeName;
-  //         case ProductCategory.mortage: options[i].loanTypeName;
-  //         case ProductCategory.rent: options[i].repayTypeName;
-  //         // case ProductCategory.credit: options[i].creditLendRateTypeName;
-  //         default : null;
-  //     }});
-  //     final secondValue = List.generate(options.length, (index){
-  //       switch(category){
-  //         case ProductCategory.deposit: options[i].intRateTypeName;
-  //         case ProductCategory.installment: options[i].intRateTypeName;
-  //         case ProductCategory.mortage: options[i].loanTypeName;
-  //         case ProductCategory.rent: options[i].repayTypeName;
-  //         // case ProductCategory.credit: options[i].gradeOver900;
-  //         default : null;
-  //     }});
-  //     final firstValue = List.generate(options.length, (index){
-  //       switch(category){
-  //         case ProductCategory.deposit: options[i].intRateTypeName;
-  //         case ProductCategory.installment: options[i].intRateTypeName;
-  //         case ProductCategory.mortage: options[i].loanTypeName;
-  //         case ProductCategory.rent: options[i].repayTypeName;
-  //         // case ProductCategory.credit: options[i].gradeOver900;
-  //         default : null;
-  //     }});
-  //   }
+  Map<String, List<String>> _mapProductOptions(
+    ProductCategory category,
+    List<dynamic> options,
+  ) {
+    List<String> keys = switch (category) {
+      ProductCategory.deposit => ["예치 기간", "저축 금리 유형"],
+      ProductCategory.installment => ["예치 종류", "예치 기간", "저축 금리 유형"],
+      ProductCategory.annuity => [
+        "월 납입 금액",
+        "연금 수령 기간",
+        "납입 기간",
+        "가입 연령",
+        "개시 연령",
+      ],
+      _ => ["상환 방법"],
+    };
+    final values = [];
 
-  // }
+    switch (category) {
+      case ProductCategory.deposit:
+        values.add(
+          (options as List<DepositAndInstallmentSavingsOption>).map(
+            (e) => e.saveTerm,
+          ),
+        );
+        values.add(options.map((e) => e.intRateTypeName));
+      case ProductCategory.installment:
+        values.add(
+          (options as List<DepositAndInstallmentSavingsOption>).map(
+            (e) => e.reserveTypeName,
+          ),
+        );
+        values.add(options.map((e) => e.saveTerm));
+        values.add(options.map((e) => e.intRateTypeName));
+      case ProductCategory.annuity:
+        values.add(
+          (options as List<AnnuitySavingsOption>).map(
+            (e) => e.monthlyPaymentName,
+          ),
+        );
+        values.add(options.map((e) => e.receiptTermName));
+        values.add(options.map((e) => e.paymentPeriodName));
+        values.add(options.map((e) => e.entryAgeName));
+        values.add(options.map((e) => e.startAgeName));
+      default:
+        values.add(["분할상환방식", "만기일시상환방식"]);
+    }
+
+    return keys.asMap().map((index, key) {
+      return MapEntry(key, values[index]);
+    });
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -150,15 +171,29 @@ class ProductDetailScreen extends ConsumerWidget {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (ctx) => CalculatorScreen(
-                                category: category,
-                                options: {
-                                  "예치 종류": ["정액적립식", "자유적립식"],
-                                  "예치 기간": ["6개월", "12개월"],
-                                  "저축 금리 유향": ["단리"],
-                                  "저축 금리": ["1.15", "1.3"],
-                                },
-                              ),
+                              builder: (ctx) {
+                                final options = switch (category) {
+                                  ProductCategory.deposit =>
+                                    (product as DepositAndInstallmentSavings)
+                                        .options,
+                                  ProductCategory.installment =>
+                                    (product as DepositAndInstallmentSavings)
+                                        .options,
+                                  ProductCategory.credit =>
+                                    (product as CreditLoan).options,
+                                  ProductCategory.annuity =>
+                                    (product as AnnuitySavings).options,
+                                  _ => (product as MortageAndRentLoan).options,
+                                };
+                                return CalculatorScreen(
+                                  category: category,
+                                  mapOptions: _mapProductOptions(
+                                    category,
+                                    options,
+                                  ),
+                                  options: options,
+                                );
+                              },
                             ),
                           );
                         },
@@ -488,7 +523,7 @@ class ProductDetailScreen extends ConsumerWidget {
       ] else if (category == ProductCategory.mortage ||
           category == ProductCategory.rent) ...[
         textFrame("금리"),
-        const SizedBox(height: 14.0,),
+        const SizedBox(height: 14.0),
         dataTableFrame(
           category,
           (category == ProductCategory.mortage)
