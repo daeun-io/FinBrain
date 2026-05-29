@@ -30,6 +30,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   bool _isSubmitted = false;
   final Map<String, String> _selectedValues = {};
   bool _isPrefSelected = false;
+  late double _sliderValue;
 
   @override
   void initState() {
@@ -40,6 +41,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _selectedValues[key] = list.first;
       });
     }
+    _sliderValue =
+        _returnRate(widget.category).isNotEmpty &&
+            _returnRate(widget.category)[1] != null
+        ? _returnRate(widget.category)[1]
+        : 0.0;
   }
 
   List<double> _returnRate(ProductCategory category) {
@@ -102,35 +108,26 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         }
       default:
         if (category == ProductCategory.credit) {
+          final foundOption = widget.options.where(
+            (e) => (e as CreditLoanOption).creditLendRateTypeName == "대출금리",
+          ).firstOrNull;
+          if(foundOption == null) return [];
           final rates = [
-            for (final option in widget.options)
-              {
-                if ((option as CreditLoanOption).creditLendRateTypeName ==
-                    "대출금리")
-                  {
-                    option.gradeOver900,
-                    option.grade801900,
-                    option.grade701800,
-                    option.grade601700,
-                    option.grade501600,
-                    option.grade401500,
-                    option.grade301400,
-                    option.gradeUnder300,
-                  },
-              },
+            foundOption.gradeOver900,
+            foundOption.grade801900,
+            foundOption.grade701800,
+            foundOption.grade601700,
+            foundOption.grade501600,
+            foundOption.grade401500,
+            foundOption.grade301400,
+            foundOption.gradeUnder300,
           ].whereType<double>();
-          final avgRates = [
-            for (final option in widget.options)
-              {
-                if ((option as CreditLoanOption).creditLendRateTypeName ==
-                    "대출금리")
-                  {option.averageGrade},
-              },
-          ].whereType<double>();
+          final avgRates = foundOption.averageGrade;
+
           final min = rates.min;
           final max = rates.max;
-          final avg = (avgRates.isNotEmpty) ? avgRates.first : rates.average;
-          return [min, max, avg];
+          final avg = (avgRates != null) ? avgRates : rates.average;
+          return [min, avg, max];
         } else {
           final min = widget.options
               .map((e) => (e as MortageAndRentLoanOption).lendRateMin)
@@ -144,7 +141,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               .map((e) => (e as MortageAndRentLoanOption).lendRateAvg)
               .whereType<double>()
               .average;
-          return [min, max, avg];
+          return [min, avg, max];
         }
     }
   }
@@ -470,7 +467,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 ),
                 alignment: Alignment.centerRight,
                 child: normalText(
-                  (_returnRate(category).isNotEmpty && _isPrefSelected == true &&
+                  (_returnRate(category).isNotEmpty &&
+                          _isPrefSelected == true &&
                           _returnRate(category).last != -1.0)
                       ? _returnRate(category).lastOrNull.toString()
                       : _returnRate(category).firstOrNull.toString(),
@@ -480,7 +478,50 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           ],
         ),
       ] else
-        Text("이자"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              (_returnRate(category).firstOrNull ?? 0.0).toString(),
+              style: const TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+                color: black,
+              ),
+              textAlign: TextAlign.left,
+            ),
+            Expanded(
+              child: SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                  showValueIndicator: ShowValueIndicator.alwaysVisible,
+                ),
+                child: Slider(
+                  divisions: null,
+                  min: _returnRate(category).firstOrNull ?? 0.0,
+                  max: _returnRate(category).lastOrNull ?? 20.0,
+                  label: _sliderValue.toStringAsFixed(2),
+                  value: _sliderValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _sliderValue = value;
+                    });
+                  },
+                  activeColor: primary900,
+                  inactiveColor: primary300,
+                ),
+              ),
+            ),
+            Text(
+              (_returnRate(category).lastOrNull ?? 20.0).toString(),
+              style: const TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+                color: black,
+              ),
+              textAlign: TextAlign.right,
+            ),
+          ],
+        ),
     ];
   }
 
