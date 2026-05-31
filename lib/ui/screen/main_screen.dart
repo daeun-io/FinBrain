@@ -41,6 +41,7 @@ class _MainScreenState extends State<MainScreen>{
             padding: const EdgeInsets.only(top:20.0),
             child: AppBar(
               backgroundColor: white,
+              scrolledUnderElevation: 0.0,
               leading: Image.asset("assets/images/app_icon.png"),
               title: const Text(
                   "FinBrain", 

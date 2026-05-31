@@ -92,6 +92,7 @@ class ProductDetailScreen extends ConsumerWidget {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: primary100,
+        scrolledUnderElevation: 0.0,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -373,7 +374,12 @@ class ProductDetailScreen extends ConsumerWidget {
         columnSpacing: 36.0,
         columns: [
           for (final column in columns)
-            DataColumn(label: dataTableCellText(column)),
+            DataColumn(label: Expanded(child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                dataTableCellText(column),
+              ],
+            ))),
         ],
         rows: [
           if (category == ProductCategory.deposit)

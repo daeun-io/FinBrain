@@ -138,12 +138,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               .whereType<double>()
               .average;
           return [min, avg, max];
-        }else{
+        } else {
           return [];
         }
     }
   }
 
+  // todo: change equation later
   Map<String, dynamic> _returnResult(
     int principal,
     double? rate,
@@ -181,15 +182,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           "세후 이자(15.4%)": interestAfterTax,
         };
       case ProductCategory.annuity:
-        final option = widget.options.where(
-          (e) =>
-              (e as AnnuitySavingsOption).monthlyPaymentName ==
-                  _selectedValues[keys[0]] &&
-              e.receiptTermName == _selectedValues[keys[1]] &&
-              e.paymentPeriodName == _selectedValues[keys[2]] &&
-              e.entryAgeName == _selectedValues[keys[3]] &&
-              e.startAgeName == _selectedValues[keys[4]],
-        ).toList();
+        final option = widget.options
+            .where(
+              (e) =>
+                  (e as AnnuitySavingsOption).monthlyPaymentName ==
+                      _selectedValues[keys[0]] &&
+                  e.receiptTermName == _selectedValues[keys[1]] &&
+                  e.paymentPeriodName == _selectedValues[keys[2]] &&
+                  e.entryAgeName == _selectedValues[keys[3]] &&
+                  e.startAgeName == _selectedValues[keys[4]],
+            )
+            .toList();
         if ((option as List<AnnuitySavingsOption>).isNotEmpty) {
           return {
             "월 납입 금액": _selectedValues[keys[0]],
@@ -206,13 +209,16 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         final num = List.generate(term, (index) => index + 1);
         switch (type) {
           case "만기일시상환방식":
-            final returnPrincipal = List.generate(term - 1, (index) => 0);
-            returnPrincipal.add(principal);
-            final lastPrincipal = List.generate(term - 1, (index) => principal);
-            lastPrincipal.add(0);
+            final returnPrincipal = List.generate(term - 1, (index) => 0.0);
+            returnPrincipal.add(principal.toDouble());
+            final lastPrincipal = List.generate(
+              term - 1,
+              (index) => principal.toDouble(),
+            );
+            lastPrincipal.add(0.0);
             final interests = List.generate(
               term,
-              (index) => principal * rate! / 12,
+              (index) => principal * rate! / 12.0,
             );
             final monthlyPayment = List.of(interests);
             monthlyPayment[term - 1] += principal;
@@ -267,7 +273,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               (index) => monthlyPayment[index] - returnPrincipal[index],
             );
             final lastPrincipal = [principal - returnPrincipal[0]];
-            for (var i = 1; i < term; i++) {
+            for (var i = 0; i < term - 1; i++) {
               lastPrincipal.add(lastPrincipal[i] - returnPrincipal[i]);
             }
 
@@ -287,6 +293,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: white,
+        scrolledUnderElevation: 0.0,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -409,6 +416,52 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           );
                           return;
                         }
+                        final term = int.parse(
+                          (widget.category == ProductCategory.installment)
+                              ? _selectedValues[widget.mapOptions.keys
+                                        .toList()[1]]!
+                                    .substring(
+                                      0,
+                                      _selectedValues[widget.mapOptions.keys
+                                                  .toList()[1]]!
+                                              .length -
+                                          2,
+                                    )
+                              : _period,
+                        );
+                        if (int.parse(_period) > term) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext ctx) => AlertDialog(
+                              backgroundColor: white,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 24.0,
+                                horizontal: 16.0,
+                              ),
+                              content: const Text(
+                                "예치 기간은 계약 기간보다 \n길 수 없습니다!\n다시 입력해주세요",
+                                style: TextStyle(color: black, fontSize: 16.0),
+                                textAlign: TextAlign.center,
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, "ok"),
+                                  style: TextButton.styleFrom(
+                                    overlayColor: primary300,
+                                  ),
+                                  child: const Text(
+                                    "OK",
+                                    style: TextStyle(
+                                      color: primary900,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
                         _isSubmitted = true;
                       });
                     },
@@ -477,6 +530,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           _ => _selectedValues[widget.mapOptions.keys.first]!,
                         },
                       ),
+                      int.parse(_period),
                     ),
                   ],
                 ),
@@ -575,7 +629,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       else
         TextField(
           controller: _moneyController,
-          onChanged: (value) => setState(() {
+          onSubmitted: (value) => setState(() {
             _money = value;
           }),
           decoration: const InputDecoration(
@@ -627,7 +681,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               Expanded(
                 child: TextField(
                   controller: _periodController,
-                  onChanged: (value) => setState(() {
+                  onSubmitted: (value) => setState(() {
                     _period = value;
                   }),
                   decoration: const InputDecoration(
@@ -776,7 +830,88 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     ];
   }
 
-  Widget _displayResult(ProductCategory category, Map<String, dynamic> values) {
-    return Center(child: const Text("예시"));
+  Widget _displayResult(
+    ProductCategory category,
+    Map<String, dynamic> map,
+    int? term,
+  ) {
+    return (category == ProductCategory.mortage ||
+            category == ProductCategory.rent ||
+            category == ProductCategory.credit)
+        ? SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              headingRowColor: const WidgetStatePropertyAll(primary100),
+              headingRowHeight: 40.0,
+              dataRowColor: const WidgetStatePropertyAll(white),
+              columnSpacing: 36.0,
+              columns: [
+                ...map.keys.map((e) => DataColumn(label: Expanded(child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    normalText(e),
+                  ],
+                )))),
+              ],
+              rows: [
+                for (var i = 0; i < term!; i++)
+                  DataRow(
+                    cells: [
+                      ...map.values.map(
+                        (e) => DataCell(normalText(e[i].toString())),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          )
+        : Table(
+            border: TableBorder.all(color: primary300, width: 1),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: [
+              ...map.entries.map((e) {
+                return TableRow(
+                  children: [
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: primary100,
+                          border: BoxBorder.all(color: primary300),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: TableCell(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            child: Center(child: normalText(e.key)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: white,
+                          border: BoxBorder.all(color: primary300),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: TableCell(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            child: Center(
+                              child: normalText(e.value.toString()),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ],
+          );
   }
 }
