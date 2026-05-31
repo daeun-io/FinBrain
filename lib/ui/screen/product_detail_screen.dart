@@ -71,7 +71,7 @@ class ProductDetailScreen extends ConsumerWidget {
         values.add(List.of(options.map((e) => e.entryAgeName!).toSet().toList()));
         values.add(List.of(options.map((e) => e.startAgeName!).toSet().toList()));
       default:
-        values.add(["분할상환방식", "만기일시상환방식"]);
+        values.add(["원리금균등상환방식", "원금균등상환방식", "만기일시상환방식"]);
     }
   
     Map<String, List<String>> map = {

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
@@ -28,6 +29,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   final _periodController = TextEditingController();
 
   bool _isSubmitted = false;
+  late String _money;
+  late String _period;
   final Map<String, String> _selectedValues = {};
   bool _isPrefSelected = false;
   late double _sliderValue;
@@ -41,11 +44,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _selectedValues[key] = list.first;
       });
     }
-    _sliderValue =
-        _returnRate(widget.category).isNotEmpty &&
-            _returnRate(widget.category)[1] != null
+    _sliderValue = _returnRate(widget.category).isNotEmpty
         ? _returnRate(widget.category)[1]
         : 0.0;
+    _money = (widget.category == ProductCategory.annuity) ? "0" : "";
+    _period =
+        (widget.category == ProductCategory.deposit ||
+            widget.category == ProductCategory.annuity ||
+            (widget.category == ProductCategory.installment &&
+                _selectedValues[widget.mapOptions.keys.first] == "정액적립식"))
+        ? "0"
+        : "";
   }
 
   List<double> _returnRate(ProductCategory category) {
@@ -91,44 +100,31 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         } else {
           return [];
         }
-      case ProductCategory.annuity:
-        final option = widget.options.where(
-          (e) =>
-              (e as AnnuitySavingsOption).monthlyPaymentName ==
-                  _selectedValues[keys[0]] &&
-              e.receiptTermName == _selectedValues[keys[1]] &&
-              e.paymentPeriodName == _selectedValues[keys[2]] &&
-              e.entryAgeName == _selectedValues[keys[3]] &&
-              e.startAgeName == _selectedValues[keys[4]],
-        );
-        if (option.isNotEmpty && option.first != null) {
-          return [option.first.monthlyReceiptAmount];
-        } else {
-          return [];
-        }
+      case ProductCategory.credit:
+        final foundOption = widget.options
+            .where(
+              (e) => (e as CreditLoanOption).creditLendRateTypeName == "대출금리",
+            )
+            .firstOrNull;
+        if (foundOption == null) return [];
+        final rates = [
+          foundOption.gradeOver900,
+          foundOption.grade801900,
+          foundOption.grade701800,
+          foundOption.grade601700,
+          foundOption.grade501600,
+          foundOption.grade401500,
+          foundOption.grade301400,
+          foundOption.gradeUnder300,
+        ].whereType<double>();
+        final avgRates = foundOption.averageGrade;
+        final min = rates.min;
+        final max = rates.max;
+        final avg = (avgRates != null) ? avgRates : rates.average;
+        return [min, avg, max];
       default:
-        if (category == ProductCategory.credit) {
-          final foundOption = widget.options.where(
-            (e) => (e as CreditLoanOption).creditLendRateTypeName == "대출금리",
-          ).firstOrNull;
-          if(foundOption == null) return [];
-          final rates = [
-            foundOption.gradeOver900,
-            foundOption.grade801900,
-            foundOption.grade701800,
-            foundOption.grade601700,
-            foundOption.grade501600,
-            foundOption.grade401500,
-            foundOption.grade301400,
-            foundOption.gradeUnder300,
-          ].whereType<double>();
-          final avgRates = foundOption.averageGrade;
-
-          final min = rates.min;
-          final max = rates.max;
-          final avg = (avgRates != null) ? avgRates : rates.average;
-          return [min, avg, max];
-        } else {
+        if (category == ProductCategory.mortage ||
+            category == ProductCategory.rent) {
           final min = widget.options
               .map((e) => (e as MortageAndRentLoanOption).lendRateMin)
               .whereType<double>()
@@ -142,6 +138,146 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               .whereType<double>()
               .average;
           return [min, avg, max];
+        }else{
+          return [];
+        }
+    }
+  }
+
+  Map<String, dynamic> _returnResult(
+    int principal,
+    double? rate,
+    int term,
+    int? savedTerm,
+    String type,
+  ) {
+    final keys = widget.mapOptions.keys.toList();
+    if (widget.category != ProductCategory.annuity && rate == null) {
+      return {};
+    }
+    switch (widget.category) {
+      case ProductCategory.deposit:
+        final interest = (type == "단리")
+            ? principal * (1 + rate! * term / 12)
+            : principal * pow((1 + rate!), term / 12);
+        final interstAfterTax = interest * 15.4 / 100;
+        return {
+          "예치금": principal,
+          "이자": interest.toDouble(),
+          "세후 이자(15.4%)": interstAfterTax,
+          "만기수령액": principal + interstAfterTax,
+        };
+      case ProductCategory.installment:
+        final interest = switch (type) {
+          "단리 정액적립식" => principal * (1 + rate! * term / 12),
+          "복리 정액적립식" => principal * pow((1 + rate!), term / 12),
+          "단리 자유적립식" => principal * rate! * (term - savedTerm!) * 30 / 365,
+          _ => principal * pow((1 + rate! / 12), term - savedTerm!),
+        };
+        final interestAfterTax = interest * 15.4 / 100;
+        return {
+          "예치금": principal,
+          "이자": interest.toDouble(),
+          "세후 이자(15.4%)": interestAfterTax,
+        };
+      case ProductCategory.annuity:
+        final option = widget.options.where(
+          (e) =>
+              (e as AnnuitySavingsOption).monthlyPaymentName ==
+                  _selectedValues[keys[0]] &&
+              e.receiptTermName == _selectedValues[keys[1]] &&
+              e.paymentPeriodName == _selectedValues[keys[2]] &&
+              e.entryAgeName == _selectedValues[keys[3]] &&
+              e.startAgeName == _selectedValues[keys[4]],
+        ).toList();
+        if ((option as List<AnnuitySavingsOption>).isNotEmpty) {
+          return {
+            "월 납입 금액": _selectedValues[keys[0]],
+            "연금 수령 기간": _selectedValues[keys[1]],
+            "납입 기간": _selectedValues[keys[2]],
+            "가입 연령": _selectedValues[keys[3]],
+            "개시 연령": _selectedValues[keys[4]],
+            "예상 수령액": option.first.monthlyReceiptAmount,
+          };
+        } else {
+          return {};
+        }
+      default:
+        final num = List.generate(term, (index) => index + 1);
+        switch (type) {
+          case "만기일시상환방식":
+            final returnPrincipal = List.generate(term - 1, (index) => 0);
+            returnPrincipal.add(principal);
+            final lastPrincipal = List.generate(term - 1, (index) => principal);
+            lastPrincipal.add(0);
+            final interests = List.generate(
+              term,
+              (index) => principal * rate! / 12,
+            );
+            final monthlyPayment = List.of(interests);
+            monthlyPayment[term - 1] += principal;
+
+            return {
+              "회차": num,
+              "상환 원금": returnPrincipal,
+              "이자": interests,
+              "월 납입금": monthlyPayment,
+              "대출 잔액": lastPrincipal,
+            };
+
+          case "원금균등상환방식":
+            final interestPerMonth = List.generate(term, (index) {
+              return (principal / term - index) * rate! / 12;
+            });
+            final returnPrincipal = List.generate(
+              term,
+              (index) => principal / term,
+            );
+            final monthlyPayment = [
+              for (var i = 0; i < term; i++)
+                interestPerMonth[i] + returnPrincipal[i],
+            ];
+            final lastPrincipal = List.generate(
+              term,
+              (index) => principal - returnPrincipal[index],
+            );
+
+            return {
+              "회차": num,
+              "상환 원금": returnPrincipal,
+              "이자": interestPerMonth,
+              "월 납입금": monthlyPayment,
+              "대출 잔액": lastPrincipal,
+            };
+          default:
+            final monthlyPayment = List.generate(
+              term,
+              (index) =>
+                  principal *
+                  rate! *
+                  pow((1 + rate / 12), index + 1) /
+                  (rate * pow(1 + rate / 12, index + 1) - 1),
+            );
+            final returnPrincipal = List.generate(
+              term,
+              (index) => principal - monthlyPayment[index] * rate!,
+            );
+            final interestPerMonth = List.generate(
+              term,
+              (index) => monthlyPayment[index] - returnPrincipal[index],
+            );
+            final lastPrincipal = [principal - returnPrincipal[0]];
+            for (var i = 1; i < term; i++) {
+              lastPrincipal.add(lastPrincipal[i] - returnPrincipal[i]);
+            }
+
+            return {
+              "회차": num,
+              "상환 원금": returnPrincipal,
+              "이자": interestPerMonth,
+              "월 납입금": monthlyPayment,
+              "대출 잔액": lastPrincipal,
+            };
         }
     }
   }
@@ -180,6 +316,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   TextButton(
                     onPressed: () {
                       _moneyController.clear();
+                      _periodController.clear();
                       setState(() {
                         _isSubmitted = false;
                       });
@@ -205,6 +342,73 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   TextButton(
                     onPressed: () {
                       setState(() {
+                        if (_money.isEmpty || _period.isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext ctx) => AlertDialog(
+                              backgroundColor: white,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 24.0,
+                                horizontal: 16.0,
+                              ),
+                              content: const Text(
+                                "항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요",
+                                style: TextStyle(color: black, fontSize: 16.0),
+                                textAlign: TextAlign.center,
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, "ok"),
+                                  style: TextButton.styleFrom(
+                                    overlayColor: primary300,
+                                  ),
+                                  child: const Text(
+                                    "OK",
+                                    style: TextStyle(
+                                      color: primary900,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
+                        if (int.tryParse(_money) == null ||
+                            int.tryParse(_period) == null) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext ctx) => AlertDialog(
+                              backgroundColor: white,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 24.0,
+                                horizontal: 16.0,
+                              ),
+                              content: const Text(
+                                "입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요",
+                                style: TextStyle(color: black, fontSize: 16.0),
+                                textAlign: TextAlign.center,
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, "ok"),
+                                  style: TextButton.styleFrom(
+                                    overlayColor: primary300,
+                                  ),
+                                  child: const Text(
+                                    "OK",
+                                    style: TextStyle(
+                                      color: primary900,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
                         _isSubmitted = true;
                       });
                     },
@@ -234,7 +438,46 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     const SizedBox(height: 40.0),
                     titleText("계산 결과"),
                     const SizedBox(height: 16.0),
-                    _displayResult(widget.category, []),
+                    _displayResult(
+                      widget.category,
+                      _returnResult(
+                        int.parse(_money),
+                        (widget.category == ProductCategory.deposit ||
+                                widget.category == ProductCategory.installment)
+                            ? _returnRate(widget.category).firstOrNull
+                            : _sliderValue,
+                        switch (widget.category) {
+                          ProductCategory.deposit => int.parse(
+                            _selectedValues[widget.mapOptions.keys.first]!
+                                .substring(
+                                  0,
+                                  _selectedValues[widget.mapOptions.keys.first]!
+                                          .length -
+                                      2,
+                                ),
+                          ),
+                          ProductCategory.installment => int.parse(
+                            _selectedValues[widget.mapOptions.keys.toList()[1]]!
+                                .substring(
+                                  0,
+                                  _selectedValues[widget.mapOptions.keys
+                                              .toList()[1]]!
+                                          .length -
+                                      2,
+                                ),
+                          ),
+                          _ => int.parse(_period),
+                        },
+                        int.tryParse(_period),
+                        switch (widget.category) {
+                          ProductCategory.deposit =>
+                            _selectedValues[widget.mapOptions.keys.last]!,
+                          ProductCategory.installment =>
+                            "${_selectedValues[widget.mapOptions.keys.last]!} ${_selectedValues[widget.mapOptions.keys.first]!}",
+                          _ => _selectedValues[widget.mapOptions.keys.first]!,
+                        },
+                      ),
+                    ),
                   ],
                 ),
             ],
@@ -332,6 +575,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       else
         TextField(
           controller: _moneyController,
+          onChanged: (value) => setState(() {
+            _money = value;
+          }),
           decoration: const InputDecoration(
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: primary900),
@@ -342,6 +588,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             counterText: "",
             helperText: "숫자만 입력",
           ),
+          keyboardType: TextInputType.number,
         ),
       const SizedBox(height: 28.0),
       titleText(switch (category) {
@@ -380,6 +627,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               Expanded(
                 child: TextField(
                   controller: _periodController,
+                  onChanged: (value) => setState(() {
+                    _period = value;
+                  }),
                   decoration: const InputDecoration(
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: primary900),
@@ -390,6 +640,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     helperText: "숫자만 입력",
                     counterText: "",
                   ),
+                  keyboardType: TextInputType.number,
                 ),
               ),
           ],
@@ -525,25 +776,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     ];
   }
 
-  Widget _displayResult(ProductCategory category, List<String> values) {
-    if (category == ProductCategory.mortage ||
-        category == ProductCategory.rent ||
-        category == ProductCategory.credit) {
-      return SingleChildScrollView(child: Center());
-    } else {
-      return SizedBox(
-        width: double.infinity,
-        child: Table(
-          defaultColumnWidth: FlexColumnWidth(1.0),
-          children: [
-            for (var i = 0; i < values.length; i++)
-              tableRow(switch (category) {
-                ProductCategory.annuity => "월 납입 금액",
-                _ => "예치금",
-              }, values[i]),
-          ],
-        ),
-      );
-    }
+  Widget _displayResult(ProductCategory category, Map<String, dynamic> values) {
+    return Center(child: const Text("예시"));
   }
 }
