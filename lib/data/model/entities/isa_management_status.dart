@@ -13,7 +13,7 @@ class IsaManagementStatus {
   final String? category;
   final String? isaForm;
   final String? includeAssetCtg;
-  final int? amount;
+  final double? amount;
 
   const IsaManagementStatus({
     required this.baseDate,

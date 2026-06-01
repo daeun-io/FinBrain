@@ -15,7 +15,7 @@ enum ProductScreenCategory{
 
 enum IsaScreenCategory{
   join,
-  operation
+  management,
 }
 
 enum FilterTextCategory{

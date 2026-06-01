@@ -1,4 +1,7 @@
+import 'package:finbrain/data/model/entities/isa_join_status.dart';
+import 'package:finbrain/data/model/entities/isa_management_status.dart';
 import 'package:finbrain/provider/filters_provider.dart';
+import 'package:finbrain/provider/isa_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
@@ -7,118 +10,111 @@ import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class IsaBaseScreen extends ConsumerWidget{
-  const IsaBaseScreen({
-    super.key,
-    required this.category
-  });
-  
+class IsaBaseScreen extends ConsumerWidget {
+  const IsaBaseScreen({super.key, required this.category});
+
   final IsaScreenCategory category;
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final dummyData = ref.watch(
+      (category == IsaScreenCategory.join)
+          ? isaJoinProvider
+          : isaManagementProvider,
+    );
+
     final filters = ref.watch(filtersProvider);
     final selectedFilters = ref.watch(selectedFilterProvider);
 
+    final column = (category == IsaScreenCategory.join)
+        ? ["ISA 종류", "회사 수", "가입자 수", "업권값"]
+        : ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
+
     return Column(
       children: [
-        const SizedBox(height: 16.0,),
-        ProductFilter(filters: filters, selectedFilters: selectedFilters,),
-        const SizedBox(height: 24.0,),
-        const FilterText(category: FilterTextCategory.isa,),
+        const SizedBox(height: 16.0),
+        ProductFilter(filters: filters, selectedFilters: selectedFilters),
+        const SizedBox(height: 24.0),
+        const FilterText(category: FilterTextCategory.isa),
         Expanded(
-          child: Stack(children: [
-            SingleChildScrollView(
-              child: DataTable(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: primary300
-                  )
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: primary300),
+                    ),
+                    headingRowColor: const WidgetStatePropertyAll(primary100),
+                    headingRowHeight: 40.0,
+                    columnSpacing: 36,
+                    dividerThickness: 0.0,
+                    columns: [for (final label in column) columnText(label)],
+                    rows: [
+                      for (final data in dummyData)
+                        DataRow(
+                          cells: [
+                            if (category == IsaScreenCategory.join) ...[
+                              dataCell((data as IsaJoinStatus).isaForm!),
+                              dataCell(data.companyCount.toString()),
+                              dataCell(data.joinMemberCount.toString()),
+                              dataCell(data.category!),
+                            ] else ...[
+                              dataCell((data as IsaManagementStatus).isaForm!),
+                              dataCell(data.businessDomain!),
+                              dataCell(data.includeAssetCtg!),
+                              dataCell(data.category!),
+                              dataCell(data.amount.toString())
+                            ],
+                          ],
+                        ),
+                    ],
+                  ),
                 ),
-                headingRowColor: const WidgetStatePropertyAll(primary100),
-                headingRowHeight: 40.0,
-                columnSpacing: 36,
-                dividerThickness: 0.0,
-                columns: const [
-                  DataColumn(label: Text(
-                    "ISA 종류",
-                    style: TextStyle(
-                      color: textPrimary,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w600
-                    ),
-                  )),
-                  DataColumn(label: Text(
-                    "회사 수",
-                    style: TextStyle(
-                      color: textPrimary,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w600
-                    ),
-                  )),
-                  DataColumn(label: Text(
-                    "가입자 수",
-                    style: TextStyle(
-                      color: textPrimary,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w600
-                    ),
-                  )),
-                  DataColumn(label: Text(
-                    "업권값",
-                    style: TextStyle(
-                      color: textPrimary,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w600
-                    ),
-                  ))
-                ], 
-                rows: const [
-                  DataRow(cells:[
-                    DataCell(Text(
-                      "투자중개형 ISA",
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w400
-                      ),
-                    )),
-                    DataCell(Text(
-                      "25",
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w400
-                      ),
-                    )),
-                    DataCell(Text(
-                      "7,419,913",
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w400
-                      ),
-                    )),
-                    DataCell(Text(
-                      "총합",
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w400
-                      ),
-                    )),
-                  ])
-                ]
+              ),
+              Positioned(right: 0, bottom: 0, child: AiButton()),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  DataColumn columnText(String text) {
+    return DataColumn(
+      label: Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                color: textPrimary,
+                fontSize: 12.0,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: AiButton()
-            ),
-          ],),
-        )
-      ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  DataCell dataCell(String text) {
+    return DataCell(
+      Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            color: textPrimary,
+            fontSize: 12.0,
+            fontWeight: FontWeight.w400,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }
