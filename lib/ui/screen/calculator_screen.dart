@@ -144,7 +144,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     }
   }
 
-  // todo: change equation later
   Map<String, dynamic> _returnResult(
     int principal,
     double? rate,
@@ -156,30 +155,54 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     if (widget.category != ProductCategory.annuity && rate == null) {
       return {};
     }
+    final monthlyRate = (rate! / 100) / 12;
     switch (widget.category) {
       case ProductCategory.deposit:
         final interest = (type == "단리")
-            ? principal * (1 + rate! * term / 12)
-            : principal * pow((1 + rate!), term / 12);
-        final interstAfterTax = interest * 15.4 / 100;
+            ? principal * monthlyRate * term
+            : principal * (pow((1 + monthlyRate), term) - 1);
+        final tax = interest * 0.154;
+        final interestAfterTax = interest - tax;
         return {
           "예치금": principal,
-          "이자": interest.toDouble(),
-          "세후 이자(15.4%)": interstAfterTax,
-          "만기수령액": principal + interstAfterTax,
+          "이자": interest.floorToDouble(),
+          "세후 이자(15.4%)": interestAfterTax.floorToDouble(),
+          "만기수령액": principal + interestAfterTax.floorToDouble(),
         };
       case ProductCategory.installment:
-        final interest = switch (type) {
-          "단리 정액적립식" => principal * (1 + rate! * term / 12),
-          "복리 정액적립식" => principal * pow((1 + rate!), term / 12),
-          "단리 자유적립식" => principal * rate! * (term - savedTerm!) * 30 / 365,
-          _ => principal * pow((1 + rate! / 12), term - savedTerm!),
-        };
-        final interestAfterTax = interest * 15.4 / 100;
+        double interest = 0.0;
+        final monthlyDeposit = principal;
+        final totalPrincipal = monthlyDeposit * term;
+
+        if (type == "단리 정액적립식") {
+          interest = monthlyDeposit * monthlyRate * (term * (term + 1) / 2);
+        } else if (type == "복리 정액적립식") {
+          final totalAmount =
+              monthlyDeposit *
+              (1 + monthlyRate) *
+              (pow(1 + monthlyRate, term) - 1) /
+              monthlyRate;
+          interest = totalAmount - totalPrincipal;
+        } else if (type == "단리 자유적립식") {
+          final remainingTerm = term - savedTerm!;
+          interest = monthlyDeposit * monthlyRate * remainingTerm;
+        } else {
+          final remainingTerm = term - savedTerm!;
+          final totalAmount =
+              monthlyDeposit * pow(1 + monthlyRate, remainingTerm);
+          interest = totalAmount - monthlyDeposit.toDouble();
+        }
+        final tax = interest * 0.154;
+        final interestAfterTax = interest - tax;
+
         return {
-          "예치금": principal,
-          "이자": interest.toDouble(),
-          "세후 이자(15.4%)": interestAfterTax,
+          "총 납입원금": type.contains("자유적립식") ? principal : totalPrincipal,
+          "총 이자": interest.floorToDouble(),
+          "세후 이자(15.4%)": interestAfterTax.floorToDouble(),
+          "만기수령액":
+              ((type.contains("자유적립식") ? principal : totalPrincipal) +
+                      interestAfterTax)
+                  .floorToDouble(),
         };
       case ProductCategory.annuity:
         final option = widget.options
@@ -207,84 +230,76 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         }
       default:
         final num = List.generate(term, (index) => index + 1);
+        List<double> monthlyPaymentList = []; // 월 납입금(원금 + 이자)
+        List<double> repaidPrincipalList = []; // 상환한 원금
+        List<double> interestList = []; // 매달 이자
+        List<double> remainingBalanceList = []; // 대출 잔액
+
         switch (type) {
-          case "만기일시상환방식":
-            final returnPrincipal = List.generate(term - 1, (index) => 0.0);
-            returnPrincipal.add(principal.toDouble());
-            final lastPrincipal = List.generate(
-              term - 1,
-              (index) => principal.toDouble(),
-            );
-            lastPrincipal.add(0.0);
-            final interests = List.generate(
-              term,
-              (index) => principal * rate! / 12.0,
-            );
-            final monthlyPayment = List.of(interests);
-            monthlyPayment[term - 1] += principal;
-
-            return {
-              "회차": num,
-              "상환 원금": returnPrincipal,
-              "이자": interests,
-              "월 납입금": monthlyPayment,
-              "대출 잔액": lastPrincipal,
-            };
-
-          case "원금균등상환방식":
-            final interestPerMonth = List.generate(term, (index) {
-              return (principal / term - index) * rate! / 12;
-            });
-            final returnPrincipal = List.generate(
-              term,
-              (index) => principal / term,
-            );
-            final monthlyPayment = [
-              for (var i = 0; i < term; i++)
-                interestPerMonth[i] + returnPrincipal[i],
-            ];
-            final lastPrincipal = List.generate(
-              term,
-              (index) => principal - returnPrincipal[index],
-            );
-
-            return {
-              "회차": num,
-              "상환 원금": returnPrincipal,
-              "이자": interestPerMonth,
-              "월 납입금": monthlyPayment,
-              "대출 잔액": lastPrincipal,
-            };
-          default:
-            final monthlyPayment = List.generate(
-              term,
-              (index) =>
+          case "원리금균등상환방식":
+            for (final currentMonth in num) {
+              double monthlyPayment =
                   principal *
-                  rate! *
-                  pow((1 + rate / 12), index + 1) /
-                  (rate * pow(1 + rate / 12, index + 1) - 1),
-            );
-            final returnPrincipal = List.generate(
-              term,
-              (index) => principal - monthlyPayment[index] * rate!,
-            );
-            final interestPerMonth = List.generate(
-              term,
-              (index) => monthlyPayment[index] - returnPrincipal[index],
-            );
-            final lastPrincipal = [principal - returnPrincipal[0]];
-            for (var i = 0; i < term - 1; i++) {
-              lastPrincipal.add(lastPrincipal[i] - returnPrincipal[i]);
-            }
+                  monthlyRate *
+                  pow(1 + monthlyRate, term) /
+                  (pow(1 + monthlyRate, term) - 1);
+              double previousBalance =
+                  principal *
+                  (pow(1 + monthlyRate, term) -
+                      pow(1 + monthlyRate, currentMonth - 1)) /
+                  (pow(1 + monthlyRate, term) - 1);
+              double interest = previousBalance * monthlyRate;
+              double repaidPrincipal = monthlyPayment - interest;
+              double remainingBalance = previousBalance - repaidPrincipal;
 
-            return {
-              "회차": num,
-              "상환 원금": returnPrincipal,
-              "이자": interestPerMonth,
-              "월 납입금": monthlyPayment,
-              "대출 잔액": lastPrincipal,
-            };
+              monthlyPaymentList.add(monthlyPayment.floorToDouble());
+              interestList.add(interest.floorToDouble());
+              repaidPrincipalList.add(repaidPrincipal.floorToDouble());
+              remainingBalanceList.add(remainingBalance.floorToDouble());
+            }
+            break;
+          case "원금균등상환방식":
+            for (final currentMonth in num) {
+              double repaidPrincipal = principal / term;
+              double previousBalance =
+                  principal - (repaidPrincipal * (currentMonth - 1));
+              double interest = previousBalance * monthlyRate;
+              double monthlyPayment = repaidPrincipal + interest;
+              double remainingBalance = previousBalance - repaidPrincipal;
+
+              repaidPrincipalList.add(repaidPrincipal.floorToDouble());
+              interestList.add(interest.floorToDouble());
+              monthlyPaymentList.add(monthlyPayment.floorToDouble());
+              remainingBalanceList.add(remainingBalance.floorToDouble());
+            }
+            break;
+          // 만기일시상환방식
+          default:
+            final interest = principal * monthlyRate;
+            interestList = List.generate(
+              term,
+              (index) => interest.floorToDouble(),
+            );
+            repaidPrincipalList = List.generate(term - 1, (index) => 0.0);
+            repaidPrincipalList.add(principal.floorToDouble());
+            monthlyPaymentList = List.generate(
+              term - 1,
+              (index) => interest.floorToDouble(),
+            );
+            monthlyPaymentList.add((interest + principal).floorToDouble());
+            remainingBalanceList = List.generate(
+              term - 1,
+              (index) => principal.floorToDouble(),
+            );
+            remainingBalanceList.add(0.0);
         }
+        return {
+          "회차": num,
+          "월 납입금": monthlyPaymentList,
+          "상환 원금": repaidPrincipalList,
+          "이자": interestList,
+          "대출 잔액": remainingBalanceList,
+        };
     }
   }
 
@@ -532,6 +547,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       ),
                       int.parse(_period),
                     ),
+                    const SizedBox(height: 40.0),
                   ],
                 ),
             ],
@@ -574,6 +590,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         child: DropdownButtonHideUnderline(
           child: DropdownButton(
             isExpanded: true,
+            onTap: () {
+              if (_isSubmitted == true) {
+                setState(() {
+                  _isSubmitted = false;
+                });
+              }
+            },
             dropdownColor: white,
             value: _selectedValues[key],
             items: [
@@ -632,6 +655,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           onSubmitted: (value) => setState(() {
             _money = value;
           }),
+          onTap: () {
+            if (_isSubmitted == true) {
+              setState(() {
+                _isSubmitted = false;
+              });
+            }
+          },
           decoration: const InputDecoration(
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: primary900),
@@ -684,6 +714,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   onSubmitted: (value) => setState(() {
                     _period = value;
                   }),
+                  onTap: () {
+                    if (_isSubmitted == true) {
+                      setState(() {
+                        _isSubmitted = false;
+                      });
+                    }
+                  },
                   decoration: const InputDecoration(
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: primary900),
@@ -735,6 +772,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 onChanged: (value) {
                   setState(() {
                     _isPrefSelected = value!;
+                    if(_isSubmitted == true){
+                      _isSubmitted = false;
+                    }
                   });
                 },
                 activeColor: primary900,
@@ -835,6 +875,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     Map<String, dynamic> map,
     int? term,
   ) {
+    if(map.isEmpty){
+      return Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Center(child: const Text("계산 결과를 제공할 수 없습니다", style: TextStyle(color: textPrimary, fontSize: 18.0, fontWeight: FontWeight.w600),)),
+      );
+    }
     return (category == ProductCategory.mortage ||
             category == ProductCategory.rent ||
             category == ProductCategory.credit)
@@ -846,12 +892,16 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               dataRowColor: const WidgetStatePropertyAll(white),
               columnSpacing: 36.0,
               columns: [
-                ...map.keys.map((e) => DataColumn(label: Expanded(child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    normalText(e),
-                  ],
-                )))),
+                ...map.keys.map(
+                  (e) => DataColumn(
+                    label: Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [normalText(e)],
+                      ),
+                    ),
+                  ),
+                ),
               ],
               rows: [
                 for (var i = 0; i < term!; i++)
