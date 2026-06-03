@@ -38,7 +38,7 @@ class LikedScreen extends ConsumerWidget {
           const SizedBox(height: 16.0),
           ProductFilter(filters: filters, selectedFilters: selectedFilters,),
           const SizedBox(height: 24.0),
-          const FilterText(category: FilterTextCategory.liked),
+          FilterText(category: FilterTextCategory.liked, onSortCriteriaChanged: (criteria){},),
           const SizedBox(height: 20.0),
           Expanded(
             child: Stack(

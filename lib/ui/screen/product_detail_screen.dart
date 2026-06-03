@@ -569,7 +569,7 @@ class ProductDetailScreen extends ConsumerWidget {
           "유지건수/설정액 ${((product as AnnuitySavings).maintenanceCount == null) ? "미제공" : product.maintenanceCount}",
         ),
         textFrame(
-          "평균 수익률: ${(product.averageCommision == null) ? "미제공" : product.averageCommision}",
+          "평균 수익률: ${(product.averageProfit == null) ? "미제공" : product.averageProfit}",
         ),
         textFrame(
           "공시 이율: ${(product.declaredRate == null) ? "미제공" : product.declaredRate}",

@@ -6,10 +6,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class FilterText extends StatefulWidget {
-  const FilterText({super.key, required this.category});
+  const FilterText({
+    super.key,
+    required this.category,
+    required this.onSortCriteriaChanged,
+  });
 
   final FilterTextCategory category;
-
+  final Function(String) onSortCriteriaChanged;
   @override
   State<FilterText> createState() => _FilterTextState();
 }
@@ -27,13 +31,13 @@ class _FilterTextState extends State<FilterText> {
     super.initState();
 
     optionList = switch (widget.category) {
-      FilterTextCategory.savings => ["최고 금리", "기본 금리"],
-      FilterTextCategory.loan => ["최저 금리", "최고 금리", "평균 금리"],
+      FilterTextCategory.savings => ["최고 금리(높은 순)", "기본 금리(높은 순)"],
+      FilterTextCategory.loan => ["최저 금리(낮은 순)", "최고 금리(낮은 순)", "평균 금리(낮은 순)"],
       FilterTextCategory.annuity => [
-        "평균 수익률",
-        "전년도 수익률",
-        "전전년도 수익률",
-        "전전전년도 수익률",
+        "평균 수익률(높은 순)",
+        "전년도 수익률(높은 순)",
+        "전전년도 수익률(높은 순)",
+        "전전전년도 수익률(높은 순)",
       ],
       FilterTextCategory.isa => ["최신순", "오래된 순"],
       FilterTextCategory.liked => [
@@ -58,18 +62,13 @@ class _FilterTextState extends State<FilterText> {
           ..removeAt(0)
           ..sort();
 
-    text = switch (widget.category) {
-      FilterTextCategory.savings => "최고 금리",
-      FilterTextCategory.loan => "최저 금리",
-      FilterTextCategory.annuity => "평균 수익률",
-      FilterTextCategory.isa => "$selectedYear년 기준, 최신순",
-      FilterTextCategory.liked => "모든 상품"
-    };
+    text = (widget.category == FilterTextCategory.isa)
+        ? "$selectedYear년 기준, ${optionList[0]}"
+        : optionList[0];
   }
-  
+
   @override
   Widget build(BuildContext context) {
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -125,9 +124,11 @@ class _FilterTextState extends State<FilterText> {
                                   });
                                   setState(() {
                                     text = "";
-                                    for(final option in selectedOptions){
+                                    for (final option in selectedOptions) {
                                       text = "$text $option,";
                                     }
+                                    if (text.isNotEmpty)
+                                      widget.onSortCriteriaChanged(text);
                                   });
                                 },
                                 icon:
@@ -152,11 +153,15 @@ class _FilterTextState extends State<FilterText> {
                                     selectedOption = optionList[index];
                                   });
                                   setState(() {
-                                    if(widget.category == FilterTextCategory.isa){
-                                      text = "$selectedYear년 기준, ${optionList[index]}";
-                                    }else{
+                                    if (widget.category ==
+                                        FilterTextCategory.isa) {
+                                      text =
+                                          "$selectedYear년 기준, ${optionList[index]}";
+                                    } else {
                                       text = optionList[index];
                                     }
+                                    if (text.isNotEmpty)
+                                      widget.onSortCriteriaChanged(text);
                                   });
                                 },
                                 icon: (selectedOption == optionList[index])
@@ -213,18 +218,18 @@ class _FilterTextState extends State<FilterText> {
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 16.0,),
+                                  const SizedBox(height: 16.0),
                                   SmoothPageIndicator(
-                                    controller: pageController, 
+                                    controller: pageController,
                                     count: 2,
                                     effect: ScrollingDotsEffect(
                                       spacing: 10.0,
                                       dotWidth: 8.0,
                                       dotHeight: 8.0,
                                       dotColor: primary300,
-                                      activeDotColor: primary700
+                                      activeDotColor: primary700,
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             )

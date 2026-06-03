@@ -101,6 +101,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           return [];
         }
       case ProductCategory.credit:
+        // todo: change later
         final foundOption = widget.options
             .where(
               (e) => (e as CreditLoanOption).creditLendRateTypeName == "대출금리",
@@ -125,6 +126,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       default:
         if (category == ProductCategory.mortage ||
             category == ProductCategory.rent) {
+          // todo: change later
           final min = widget.options
               .map((e) => (e as MortageAndRentLoanOption).lendRateMin)
               .whereType<double>()

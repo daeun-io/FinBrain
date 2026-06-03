@@ -1,17 +1,18 @@
+import 'package:collection/collection.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'mortage_and_rent_loan_option.dart';
 
 // 주택담보대출 & 전세자금대출
-class MortageAndRentLoan extends FinancialProduct{
-  // 프로퍼티명(필드명): 의미 
+class MortageAndRentLoan extends FinancialProduct {
+  // 프로퍼티명(필드명): 의미
   // commonInfo: 기본 정보
   // extraExpense(loan_inci_expn): 대출 부대비용
   // earlyReplayFee(erly_rpay_fee): 중도상환 수수료
   // delayRate(dly_rate): 연체 이자율
   // loanLimit(loan_lmt): 대출한도
   // options: 옵션 목록
-  
+
   final String? extraExpense;
   final String? earlyRepayFee;
   final String? delayRate;
@@ -31,24 +32,42 @@ class MortageAndRentLoan extends FinancialProduct{
     required String? submittedDay,
     required String? joinWay,
     required String? url,
-    
+
     required this.extraExpense,
     required this.earlyRepayFee,
     required this.delayRate,
     required this.loanLimit,
-    required this.options
-  }) : super(CommonInfo(
-        category: category,
-        submittedMonth: submittedMonth,
-        companyCode: companyCode,
-        companyName: companyName, 
-        productCode: productCode, 
-        productName: productName, 
-        startDay: startDay, 
-        endDay: endDay, 
-        submittedDay: submittedDay,
-        joinWay: joinWay, 
-        url: url,
-        isLiked: false,
-      ));
+    required this.options,
+  }) : super(
+         CommonInfo(
+           category: category,
+           submittedMonth: submittedMonth,
+           companyCode: companyCode,
+           companyName: companyName,
+           productCode: productCode,
+           productName: productName,
+           startDay: startDay,
+           endDay: endDay,
+           submittedDay: submittedDay,
+           joinWay: joinWay,
+           url: url,
+           isLiked: false,
+         ),
+       );
+
+  List<double> returnRates() {
+    final min = options
+        .map((e) => (e).lendRateMin)
+        .whereType<double>()
+        .min;
+    final max = options
+        .map((e) => (e).lendRateMax)
+        .whereType<double>()
+        .max;
+    final avg = options
+        .map((e) => (e).lendRateAvg)
+        .whereType<double>()
+        .average;
+    return [min, avg, max];
+  }
 }

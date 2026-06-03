@@ -329,12 +329,12 @@ final dummyData = [
     maintenanceCount: "73342945069",
     productType: "411",
     productTypeName: "채권형",
-    averageCommision: 4.05,
+    averageProfit: 4.05,
     declaredRate: null,
     guaranteedRate: null,
-    pyProfitRate: "2.96",
-    ppyProfitRate: "1.97",
-    pppyProfitRate: "3.35",
+    pyProfitRate: 2.96,
+    ppyProfitRate: 1.97,
+    pppyProfitRate: 3.35,
     etc: null,
     saleCompany:
         "KEB하나은행(구.외환은행),KEB하나은행(구.하나은행),우리은행,기업은행,수협중앙회,에스케이증권,현대증권,메리츠종금증권,삼성증권,한양증권,NH투자증권,교보증권,KDB대우증권,신한금융투자,유안타증권,아이비케이투자증권,이베스트투자증권,키움증권,리딩투자증권,하나금융투자,하이투자증권,동부증권,에이치엠씨투자증권,한화투자증권,미래에셋생명보험,삼성생명보험,한화생명보험,펀드온라인코리아 주식회사,케이티비투자증권,유진투자증권",
@@ -364,6 +364,156 @@ final dummyData = [
         startAge: "60",
         startAgeName: "60세",
         monthlyReceiptAmount: "840868",
+      ),
+    ],
+  ),
+];
+
+final dummyDeposit = [
+  DepositAndInstallmentSavings(
+    category: ProductCategory.deposit,
+    submittedMonth: "201609",
+    companyCode: "0010001",
+    companyName: "우리은행",
+    productCode: "WR0001A",
+    productName: "Woori WellRich",
+    startDay: "20160920",
+    endDay: null,
+    submittedDay: "201609201028",
+    joinWay: "영업점,인터넷,스마트폰",
+    url: "",
+    interestAfterExpiration: """만기 후
+	  - 1개월이내 : 만기시점약정이율×50%
+	  - 1개월초과 6개월이내: 만기시점약정이율×30%
+	  - 6개월초과 : 만기시점약정이율×20%
+	  ※ 만기시점 약정이율 : 일반정기예금 금리""",
+    specialCondition: """다음 중 하나 충족한 입금건에 대해  최고
+	    1. 순신규고객
+	    2. 가계대출이용고객
+	    3. 입금일 전월 주거래우대조건 2가지이상
+	    4. 건별3천만원이상
+	    5. 건별 만기 자동재예치""",
+    joinDeny: "제한 없음",
+    joinMember: "실명의 개인",
+    etc: """-추가입금은 신규가입 시 선택한 예치기간을 각 입금건
+	    -재예치는 입금건별 최초 입금일로부터 최장 10년간 가능""",
+    maxLimit: null,
+    options: [
+      DepositAndInstallmentSavingsOption(
+        intRateType: "S",
+        intRateTypeName: "단리",
+        saveTerm: 6,
+        intRate: 1.15,
+        maxIntRate: 1.35,
+        reserveType: null,
+        reserveTypeName: null,
+      ),
+      DepositAndInstallmentSavingsOption(
+        intRateType: "S",
+        intRateTypeName: "단리",
+        saveTerm: 12,
+        intRate: 1.3,
+        maxIntRate: 1.5,
+        reserveType: null,
+        reserveTypeName: null,
+      ),
+    ],
+  ),
+  DepositAndInstallmentSavings(
+    category: ProductCategory.deposit,
+    submittedMonth: "201609",
+    companyCode: "0010001",
+    companyName: "우리은행",
+    productCode: "WR0001A",
+    productName: "우리웰리치",
+    startDay: "20160920",
+    endDay: null,
+    submittedDay: "201609201028",
+    joinWay: "영업점,인터넷,스마트폰",
+    url: "",
+    interestAfterExpiration: """만기 후
+	  - 1개월이내 : 만기시점약정이율×50%
+	  - 1개월초과 6개월이내: 만기시점약정이율×30%
+	  - 6개월초과 : 만기시점약정이율×20%
+	  ※ 만기시점 약정이율 : 일반정기예금 금리""",
+    specialCondition: """다음 중 하나 충족한 입금건에 대해  최고
+	    1. 순신규고객
+	    2. 가계대출이용고객
+	    3. 입금일 전월 주거래우대조건 2가지이상
+	    4. 건별3천만원이상
+	    5. 건별 만기 자동재예치""",
+    joinDeny: "제한 없음",
+    joinMember: "실명의 개인",
+    etc: """-추가입금은 신규가입 시 선택한 예치기간을 각 입금건
+	    -재예치는 입금건별 최초 입금일로부터 최장 10년간 가능""",
+    maxLimit: null,
+    options: [
+      DepositAndInstallmentSavingsOption(
+        intRateType: "S",
+        intRateTypeName: "단리",
+        saveTerm: 6,
+        intRate: 1.65,
+        maxIntRate: 1.85,
+        reserveType: null,
+        reserveTypeName: null,
+      ),
+      DepositAndInstallmentSavingsOption(
+        intRateType: "S",
+        intRateTypeName: "단리",
+        saveTerm: 12,
+        intRate: 1.85,
+        maxIntRate: 2.0,
+        reserveType: null,
+        reserveTypeName: null,
+      ),
+    ],
+  ),
+  DepositAndInstallmentSavings(
+    category: ProductCategory.deposit,
+    submittedMonth: "201609",
+    companyCode: "0010001",
+    companyName: "우리은행",
+    productCode: "WR0001A",
+    productName: "우리웰리치2",
+    startDay: "20160920",
+    endDay: null,
+    submittedDay: "201609201028",
+    joinWay: "영업점,인터넷,스마트폰",
+    url: "",
+    interestAfterExpiration: """만기 후
+	  - 1개월이내 : 만기시점약정이율×50%
+	  - 1개월초과 6개월이내: 만기시점약정이율×30%
+	  - 6개월초과 : 만기시점약정이율×20%
+	  ※ 만기시점 약정이율 : 일반정기예금 금리""",
+    specialCondition: """다음 중 하나 충족한 입금건에 대해  최고
+	    1. 순신규고객
+	    2. 가계대출이용고객
+	    3. 입금일 전월 주거래우대조건 2가지이상
+	    4. 건별3천만원이상
+	    5. 건별 만기 자동재예치""",
+    joinDeny: "제한 없음",
+    joinMember: "실명의 개인",
+    etc: """-추가입금은 신규가입 시 선택한 예치기간을 각 입금건
+	    -재예치는 입금건별 최초 입금일로부터 최장 10년간 가능""",
+    maxLimit: null,
+    options: [
+      DepositAndInstallmentSavingsOption(
+        intRateType: "S",
+        intRateTypeName: "단리",
+        saveTerm: 6,
+        intRate: 1.5,
+        maxIntRate: 2.3,
+        reserveType: null,
+        reserveTypeName: null,
+      ),
+      DepositAndInstallmentSavingsOption(
+        intRateType: "S",
+        intRateTypeName: "단리",
+        saveTerm: 12,
+        intRate: 1.7,
+        maxIntRate: 2.5,
+        reserveType: null,
+        reserveTypeName: null,
       ),
     ],
   ),

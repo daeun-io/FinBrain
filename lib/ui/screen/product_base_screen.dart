@@ -28,7 +28,9 @@ class ProductBaseScreen extends ConsumerWidget{
       child: Column(children: [
         ProductFilter(filters: filters, selectedFilters: selectedFilters,),
         const SizedBox(height: 24.0,),
-        FilterText(category: filterCategory,),
+        FilterText(category: filterCategory, onSortCriteriaChanged: (criteria) {
+          ref.read(productProvider.notifier).sortByCriteria(criteria, productCategory);
+        },),
         const SizedBox(height: 12.0),
         Expanded(
           child: ListView.builder(

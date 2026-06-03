@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/ui/product_categories.dart';
@@ -56,4 +57,10 @@ class DepositAndInstallmentSavings extends FinancialProduct{
         url: url,
         isLiked: false,
       ));
+  
+  (double, double) returnHighestRateValue(){
+    final maxRate = options.map((e) => e.maxIntRate).whereType<double>().max;
+    final baseRate = options.map((e) => e.intRate).whereType<double>().max;
+    return (maxRate, baseRate);
+  }
 }

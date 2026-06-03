@@ -33,7 +33,7 @@ class IsaMpScreen extends ConsumerWidget {
         const SizedBox(height: 16.0),
         ProductFilter(filters: filters, selectedFilters: selectedFilters,),
         const SizedBox(height: 24.0),
-        const FilterText(category: FilterTextCategory.isa),
+        FilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
         const SizedBox(height: 20),
         if(dummies.isEmpty)
           Expanded(

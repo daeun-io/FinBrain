@@ -35,7 +35,7 @@ class IsaBaseScreen extends ConsumerWidget {
         const SizedBox(height: 16.0),
         ProductFilter(filters: filters, selectedFilters: selectedFilters),
         const SizedBox(height: 24.0),
-        const FilterText(category: FilterTextCategory.isa),
+        FilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
         Expanded(
           child: Stack(
             children: [
