@@ -1,3 +1,4 @@
+import 'package:finbrain/provider/filter_text_provider.dart';
 import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/provider/searched_provider.dart';
@@ -17,8 +18,9 @@ class IsaMpScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dummies = ref.watch(searchedProductProvider)(false);
     final searchedList = ref.watch(searchedListProvider);
-    final filters = ref.watch(filtersProvider);
+    final filters = ref.watch(filtersNotifierProvider);
     final selectedFilters = ref.watch(selectedFilterProvider);
+    final textFilter = ref.watch(FilterTextNotifierProvider(FilterTextCategory.isa));
 
     return Column(
       children: [
@@ -60,6 +62,7 @@ class IsaMpScreen extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: ProductItem(
                     productName: dummies[index].commonInfo.productName!,
+                    sortCriteria: textFilter.$1.toString(),
                   ),
                 );
               },

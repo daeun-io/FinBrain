@@ -5,10 +5,15 @@ import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dar
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/ui/product_categories.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'product_provider.g.dart';
 
-class ProductNotifier extends StateNotifier<List<FinancialProduct>> {
-  ProductNotifier() : super(dummyDeposit);
+@riverpod
+class ProductNotifier extends _$ProductNotifier {
+  @override
+  List<FinancialProduct> build(){
+    return dummyDeposit;
+  }
 
   void toggleLiked(String productName) {
     state = [
@@ -107,8 +112,3 @@ class ProductNotifier extends StateNotifier<List<FinancialProduct>> {
     }
   }
 }
-
-final productProvider =
-    StateNotifierProvider<ProductNotifier, List<FinancialProduct>>((ref) {
-      return ProductNotifier();
-    });

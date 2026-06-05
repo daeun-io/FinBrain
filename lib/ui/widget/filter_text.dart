@@ -1,11 +1,12 @@
+import 'package:finbrain/provider/filter_text_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/year_picker_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class FilterText extends StatefulWidget {
+class FilterText extends ConsumerStatefulWidget {
   const FilterText({
     super.key,
     required this.category,
@@ -15,13 +16,10 @@ class FilterText extends StatefulWidget {
   final FilterTextCategory category;
   final Function(String) onSortCriteriaChanged;
   @override
-  State<FilterText> createState() => _FilterTextState();
+  ConsumerState<FilterText> createState() => _FilterTextState();
 }
 
-class _FilterTextState extends State<FilterText> {
-  late List<String> optionList;
-  late String selectedOption;
-  late List<String> selectedOptions;
+class _FilterTextState extends ConsumerState<FilterText> {
   late int selectedYear;
   late List<int> years;
   late String text;
@@ -29,46 +27,23 @@ class _FilterTextState extends State<FilterText> {
   @override
   void initState() {
     super.initState();
-
-    optionList = switch (widget.category) {
-      FilterTextCategory.savings => ["최고 금리(높은 순)", "기본 금리(높은 순)"],
-      FilterTextCategory.loan => ["최저 금리(낮은 순)", "최고 금리(낮은 순)", "평균 금리(낮은 순)"],
-      FilterTextCategory.annuity => [
-        "평균 수익률(높은 순)",
-        "전년도 수익률(높은 순)",
-        "전전년도 수익률(높은 순)",
-        "전전전년도 수익률(높은 순)",
-      ],
-      FilterTextCategory.isa => ["최신순", "오래된 순"],
-      FilterTextCategory.liked => [
-        "모든 상품",
-        "정기예금",
-        "적금",
-        "ISA",
-        "주택담보대출",
-        "전세자금대출",
-        "개인신용대출",
-        "연금 저축",
-      ],
-    };
-
-    selectedOption = optionList[0];
-    selectedOptions = [optionList[0]];
-
     selectedYear = DateTime.now().year;
     years =
         (List.generate(25, (index) => DateTime.now().year - index) +
               List.generate(25, (index) => DateTime.now().year + index))
           ..removeAt(0)
           ..sort();
-
-    text = (widget.category == FilterTextCategory.isa)
-        ? "$selectedYear년 기준, ${optionList[0]}"
-        : optionList[0];
   }
 
   @override
   Widget build(BuildContext context) {
+    final filter = ref.watch(filterTextNotifierProvider(widget.category));
+    String selectedOption = (widget.category == FilterTextCategory.liked) ? (filter.$1 as List<String>).join(", "): filter.$1.toString();
+    List<String> selectedOptions = (widget.category == FilterTextCategory.liked) ? filter.$1 as List<String> : [];
+    String text = (widget.category == FilterTextCategory.isa)
+        ? "$selectedYear 기준, $selectedOption"
+        : selectedOption;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -97,43 +72,53 @@ class _FilterTextState extends State<FilterText> {
                     final pageController = PageController();
 
                     Widget optionView = ListView.builder(
-                      itemCount: optionList.length,
+                      itemCount: filter.$2.length,
                       itemBuilder: (context, index) {
                         return Row(
                           children: [
                             Text(
-                              optionList[index],
+                              filter.$2[index],
                               style: const TextStyle(fontSize: 16.0),
                             ),
                             const Spacer(),
                             if (widget.category == FilterTextCategory.liked)
                               IconButton(
                                 onPressed: () {
-                                  // selecedOption 변경되는 지 확인
                                   setModalState(() {
                                     if (index == 0) {
-                                      selectedOptions = [optionList[0]];
+                                      selectedOptions = [selectedOption];
                                     } else if (selectedOptions.contains(
-                                      optionList[index],
+                                      filter.$2[index],
                                     )) {
-                                      selectedOptions.remove(optionList[index]);
+                                      selectedOptions.remove(
+                                        filter.$2[index],
+                                      );
                                     } else {
-                                      selectedOptions.add(optionList[index]);
-                                      selectedOptions.remove(optionList[0]);
+                                      selectedOptions.add(filter.$2[index]);
+                                      selectedOptions.remove(filter.$2[0]);
                                     }
                                   });
                                   setState(() {
                                     text = "";
                                     for (final option in selectedOptions) {
                                       text = "$text $option,";
+                                      print("text $text");
                                     }
-                                    if (text.isNotEmpty)
+                                    if (text.isNotEmpty) {
                                       widget.onSortCriteriaChanged(text);
+                                    }
                                   });
+                                  ref
+                                      .read(
+                                        filterTextNotifierProvider(
+                                          widget.category,
+                                        ).notifier,
+                                      )
+                                      .changeCriteria(selectedOptions);
                                 },
                                 icon:
                                     (selectedOptions.contains(
-                                      optionList[index],
+                                      filter.$2[index],
                                     ))
                                     ? const Icon(
                                         Icons.check_circle,
@@ -150,25 +135,36 @@ class _FilterTextState extends State<FilterText> {
                               IconButton(
                                 onPressed: () {
                                   setModalState(() {
-                                    selectedOption = optionList[index];
+                                    selectedOption = filter.$2[index];
                                   });
                                   setState(() {
                                     if (widget.category ==
                                         FilterTextCategory.isa) {
                                       text =
-                                          "$selectedYear년 기준, ${optionList[index]}";
+                                          "$selectedYear년 기준, ${filter.$2[index]}";
                                     } else {
-                                      text = optionList[index];
+                                      text = filter.$2[index];
                                     }
-                                    if (text.isNotEmpty)
+                                    if (text.isNotEmpty) {
                                       widget.onSortCriteriaChanged(text);
+                                    }
                                   });
-                                },
-                                icon: (selectedOption == optionList[index])
-                                    ? SvgPicture.asset(
-                                        "assets/images/radio_button.svg",
+                                  ref
+                                      .read(
+                                        filterTextNotifierProvider(
+                                          widget.category,
+                                        ).notifier,
                                       )
-                                    : Icon(
+                                      .changeCriteria(selectedOption);
+                                },
+
+                                icon: (selectedOption == filter.$2[index])
+                                    ? const Icon(
+                                        Icons.radio_button_checked,
+                                        size: 24.0,
+                                        color: primary500,
+                                      )
+                                    : const Icon(
                                         Icons.circle_outlined,
                                         size: 24.0,
                                         color: primary300,

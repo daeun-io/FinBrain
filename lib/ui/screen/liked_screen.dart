@@ -1,3 +1,4 @@
+import 'package:finbrain/provider/filter_text_provider.dart';
 import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/provider/searched_provider.dart';
 import 'package:finbrain/ui/product_categories.dart';
@@ -16,8 +17,9 @@ class LikedScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final likedDummies = ref.watch(searchedProductProvider)(true);
     final searchedList = ref.watch(searchedListProvider);
-    final filters = ref.watch(filtersProvider);
+    final filters = ref.watch(filtersNotifierProvider);
     final selectedFilters = ref.watch(selectedFilterProvider);
+    final textFilter = ref.watch(FilterTextNotifierProvider(FilterTextCategory.liked));
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -52,6 +54,7 @@ class LikedScreen extends ConsumerWidget {
                         child: ProductItem(
                           productName:
                               likedDummies[index].commonInfo.productName!,
+                          sortCriteria: "기본",
                         ),
                       );
                     },

@@ -84,7 +84,7 @@ class ProductDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final product = ref
-        .watch(productProvider)
+        .watch(productNotifierProvider)
         .firstWhere((p) => p.commonInfo.productName == productName);
 
     return Scaffold(
@@ -111,7 +111,7 @@ class ProductDetailScreen extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () {
-              ref.read(productProvider.notifier).toggleLiked(productName);
+              ref.read(productNotifierProvider.notifier).toggleLiked(productName);
             },
             icon: product.commonInfo.isLiked
                 ? const Icon(Icons.favorite, color: likedColor, size: 32.0)

@@ -23,7 +23,7 @@ class IsaBaseScreen extends ConsumerWidget {
           : isaManagementProvider,
     );
 
-    final filters = ref.watch(filtersProvider);
+    final filters = ref.watch(filtersNotifierProvider);
     final selectedFilters = ref.watch(selectedFilterProvider);
 
     final column = (category == IsaScreenCategory.join)

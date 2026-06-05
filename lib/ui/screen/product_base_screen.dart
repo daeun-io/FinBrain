@@ -1,3 +1,4 @@
+import 'package:finbrain/provider/filter_text_provider.dart';
 import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/ui/product_categories.dart';
@@ -19,9 +20,13 @@ class ProductBaseScreen extends ConsumerWidget{
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dummies = ref.watch(productProvider);
-    final filters = ref.watch(filtersProvider);
+    final dummies = ref.watch(productNotifierProvider);
+    final filters = ref.watch(filtersNotifierProvider);
     final selectedFilters = ref.watch(selectedFilterProvider);
+    final textFilter = ref.watch(FilterTextNotifierProvider(filterCategory));
+
+    var sortCriteria = textFilter.$1;
+    print("sortCriteria: $sortCriteria");
 
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
@@ -29,7 +34,9 @@ class ProductBaseScreen extends ConsumerWidget{
         ProductFilter(filters: filters, selectedFilters: selectedFilters,),
         const SizedBox(height: 24.0,),
         FilterText(category: filterCategory, onSortCriteriaChanged: (criteria) {
-          ref.read(productProvider.notifier).sortByCriteria(criteria, productCategory);
+          ref.read(productNotifierProvider.notifier).sortByCriteria(criteria, productCategory);
+          sortCriteria = criteria;
+          print("Base Screen criteria: $sortCriteria");
         },),
         const SizedBox(height: 12.0),
         Expanded(
@@ -40,6 +47,7 @@ class ProductBaseScreen extends ConsumerWidget{
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: ProductItem(
                   productName: dummies[index].commonInfo.productName!,
+                  sortCriteria: sortCriteria.toString(),
                 ),
               );
             },

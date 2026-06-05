@@ -24,7 +24,7 @@ class _ProductFilterItemState extends ConsumerState<ProductFilterItem> {
     return GestureDetector(
       onTap: (){
         setState(() {
-          ref.read(filtersProvider.notifier).toggleSelected(widget.text, localIsSelected);
+          ref.read(filtersNotifierProvider.notifier).toggleSelected(widget.text, localIsSelected);
         });
       },
       child: Card(
