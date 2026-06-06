@@ -51,7 +51,8 @@ class AnnuitySavings extends FinancialProduct {
     required String? submittedDay,
     required String? joinWay,
     required String? url,
-
+    required bool isLiked,
+    
     required this.pensionKind,
     required this.pensionKindName,
     required this.saleStartDay,
@@ -80,9 +81,42 @@ class AnnuitySavings extends FinancialProduct {
            submittedDay: submittedDay,
            joinWay: joinWay,
            url: url,
-           isLiked: false,
+           isLiked: isLiked,
          ),
        );
+
+  @override
+  FinancialProduct copyWith(bool isLiked) {
+    return AnnuitySavings(
+      isLiked : isLiked,
+      category: commonInfo.category,
+      submittedMonth: commonInfo.submittedMonth,
+      companyCode: commonInfo.companyCode,
+      companyName: commonInfo.companyName,
+      productCode: commonInfo.productCode,
+      productName: commonInfo.productName,
+      startDay: commonInfo.startDay,
+      endDay: commonInfo.endDay,
+      submittedDay: commonInfo.submittedDay,
+      joinWay: commonInfo.joinWay,
+      url: commonInfo.url,
+      pensionKind: pensionKind,
+      pensionKindName: pensionKindName,
+      saleStartDay: saleStartDay,
+      maintenanceCount: maintenanceCount,
+      productType: productType,
+      productTypeName: productTypeName,
+      averageProfit: averageProfit,
+      declaredRate: declaredRate,
+      guaranteedRate: guaranteedRate,
+      pyProfitRate: pyProfitRate,
+      ppyProfitRate: ppyProfitRate,
+      pppyProfitRate: pppyProfitRate,
+      etc: etc,
+      saleCompany: saleCompany,
+      options: options,
+    );
+  }
 
   List<double> returnProfits() {
     return [

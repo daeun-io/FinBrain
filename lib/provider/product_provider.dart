@@ -12,17 +12,20 @@ part 'product_provider.g.dart';
 class ProductNotifier extends _$ProductNotifier {
   @override
   List<FinancialProduct> build(){
-    return dummyDeposit;
+    return dummyData;
   }
 
   void toggleLiked(String productName) {
-    state = [
-      for (final item in state)
-        if (item.commonInfo.productName == productName)
-          item.copyWith(item.commonInfo.copyWith(!item.commonInfo.isLiked))
-        else
-          item,
-    ];
+    print("before");
+    print(state.firstWhere((e) => e.commonInfo.productName == productName).commonInfo.isLiked);
+    state = state.map((e){
+      if(e.commonInfo.productName == productName){
+        return e.copyWith(!e.commonInfo.isLiked);
+      }
+      return e;
+    }).toList();
+    print("after");
+    print(state.firstWhere((e) => e.commonInfo.productName == productName).commonInfo.isLiked);
   }
 
   void sortByCriteria(String criteria, ProductCategory category) {

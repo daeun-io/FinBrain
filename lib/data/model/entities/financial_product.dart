@@ -28,39 +28,25 @@ class CommonInfo {
   final String? url;
   var isLiked = false;
 
-  CommonInfo(
-    {
-      required this.category,
-      this.submittedMonth,
-      this.companyCode,
-      required this.companyName, 
-      this.productCode, 
-      required this.productName, 
-      this.startDay, 
-      this.endDay,
-      this.submittedDay,
-      this.joinWay,
-      required this.url,
-      required this.isLiked,
-    }
-  );
-
-  CommonInfo copyWith(bool isLiked){
-    return CommonInfo(
-      category: category,
-      companyName: companyName,
-      productName: productName,
-      url: url,
-      isLiked: isLiked,
-    );
-  }
+  CommonInfo({
+    required this.category,
+    this.submittedMonth,
+    this.companyCode,
+    required this.companyName,
+    this.productCode,
+    required this.productName,
+    this.startDay,
+    this.endDay,
+    this.submittedDay,
+    this.joinWay,
+    required this.url,
+    required this.isLiked,
+  });
 }
 
-class FinancialProduct {
+abstract class FinancialProduct {
   final CommonInfo commonInfo;
   FinancialProduct(this.commonInfo);
 
-  FinancialProduct copyWith(CommonInfo commonInfo){
-    return FinancialProduct(commonInfo);
-  }
+  FinancialProduct copyWith(bool isLiked);
 }

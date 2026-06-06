@@ -21,7 +21,7 @@ class ProductItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print("Product Item criteria: $sortCriteria");
+    //print("Product Item criteria: $sortCriteria");
     final product = ref
         .watch(productNotifierProvider)
         .firstWhere((p) => p.commonInfo.productName == productName);

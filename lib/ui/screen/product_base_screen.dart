@@ -26,7 +26,7 @@ class ProductBaseScreen extends ConsumerWidget{
     final textFilter = ref.watch(FilterTextNotifierProvider(filterCategory));
 
     var sortCriteria = textFilter.$1;
-    print("sortCriteria: $sortCriteria");
+    //print("sortCriteria: $sortCriteria");
 
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
@@ -36,7 +36,7 @@ class ProductBaseScreen extends ConsumerWidget{
         FilterText(category: filterCategory, onSortCriteriaChanged: (criteria) {
           ref.read(productNotifierProvider.notifier).sortByCriteria(criteria, productCategory);
           sortCriteria = criteria;
-          print("Base Screen criteria: $sortCriteria");
+          //print("Base Screen criteria: $sortCriteria");
         },),
         const SizedBox(height: 12.0),
         Expanded(

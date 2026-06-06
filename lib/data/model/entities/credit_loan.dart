@@ -30,6 +30,7 @@ class CreditLoan extends FinancialProduct {
     required String? submittedDay,
     required String? joinWay,
     required String? url,
+    required bool isLiked,
 
     required this.productType,
     required this.productTypeName,
@@ -48,15 +49,37 @@ class CreditLoan extends FinancialProduct {
            submittedDay: submittedDay,
            joinWay: joinWay,
            url: url,
-           isLiked: false,
+           isLiked: isLiked,
          ),
        );
+
+  @override
+  FinancialProduct copyWith(bool isLiked) {
+    return CreditLoan(
+      isLiked: isLiked,
+      category: commonInfo.category,
+      submittedMonth: commonInfo.submittedMonth,
+      companyCode: commonInfo.companyCode,
+      companyName: commonInfo.companyName,
+      productCode: commonInfo.productCode,
+      productName: commonInfo.productName,
+      startDay: commonInfo.startDay,
+      endDay: commonInfo.endDay,
+      submittedDay: commonInfo.submittedDay,
+      joinWay: commonInfo.joinWay,
+      url: commonInfo.url,
+      productType: productType,
+      productTypeName: productTypeName,
+      cbName: cbName,
+      options: options,
+    );
+  }
 
   List<double> returnRates() {
     final foundOption = options
         .where((e) => e.creditLendRateTypeName == "대출금리")
         .firstOrNull;
-    
+
     if (foundOption == null) return [];
     final rates = [
       foundOption.gradeOver900,

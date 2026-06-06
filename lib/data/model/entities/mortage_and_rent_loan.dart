@@ -32,6 +32,7 @@ class MortageAndRentLoan extends FinancialProduct {
     required String? submittedDay,
     required String? joinWay,
     required String? url,
+    required bool isLiked,
 
     required this.extraExpense,
     required this.earlyRepayFee,
@@ -51,23 +52,37 @@ class MortageAndRentLoan extends FinancialProduct {
            submittedDay: submittedDay,
            joinWay: joinWay,
            url: url,
-           isLiked: false,
+           isLiked: isLiked,
          ),
        );
+  
+  @override
+  FinancialProduct copyWith(bool isLiked) {
+    return MortageAndRentLoan(
+      isLiked: isLiked,
+      category: commonInfo.category,
+      submittedMonth: commonInfo.submittedMonth,
+      companyCode: commonInfo.companyCode,
+      companyName: commonInfo.companyName,
+      productCode: commonInfo.productCode,
+      productName: commonInfo.productName,
+      startDay: commonInfo.startDay,
+      endDay: commonInfo.endDay,
+      submittedDay: commonInfo.submittedDay,
+      joinWay: commonInfo.joinWay,
+      url: commonInfo.url,
+      extraExpense: extraExpense,
+      earlyRepayFee: earlyRepayFee,
+      delayRate: delayRate,
+      loanLimit: loanLimit,
+      options: options,
+    );
+  }
 
   List<double> returnRates() {
-    final min = options
-        .map((e) => (e).lendRateMin)
-        .whereType<double>()
-        .min;
-    final max = options
-        .map((e) => (e).lendRateMax)
-        .whereType<double>()
-        .max;
-    final avg = options
-        .map((e) => (e).lendRateAvg)
-        .whereType<double>()
-        .average;
+    final min = options.map((e) => (e).lendRateMin).whereType<double>().min;
+    final max = options.map((e) => (e).lendRateMax).whereType<double>().max;
+    final avg = options.map((e) => (e).lendRateAvg).whereType<double>().average;
     return [min, avg, max];
   }
 }

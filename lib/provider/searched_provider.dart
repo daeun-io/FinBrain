@@ -7,7 +7,7 @@ final searchQueryProvider = StateProvider<String>((ref) => "");
 
 final searchedProductProvider = Provider<List<FinancialProduct> Function(bool)>((ref) {
   final allProducts = ref.watch(productNotifierProvider);
-  final likedProducts = ref.watch(likedProvider);
+  final likedProducts = ref.watch(likedNotifierProvider);
   final query = ref.watch(searchQueryProvider);
 
   return (bool isLikedList) {

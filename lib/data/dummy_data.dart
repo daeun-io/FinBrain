@@ -20,6 +20,7 @@ final dummyData = [
     endDay: null,
     submittedDay: "201609201028",
     joinWay: "영업점,인터넷,스마트폰",
+    isLiked: false,
     url: "",
     interestAfterExpiration: """만기 후
 		  - 1개월이내 : 만기시점약정이율×50%
@@ -70,6 +71,7 @@ final dummyData = [
     endDay: null,
     submittedDay: "201609201049",
     joinWay: "영업점",
+    isLiked: false,
     url: "",
     interestAfterExpiration: """만기 후
 - 1개월이내 : 만기시점약정이율×50%
@@ -163,6 +165,7 @@ final dummyData = [
     endDay: null,
     submittedDay: "201601191355",
     joinWay: "영업점,모집인",
+    isLiked: false,
     url: "",
     extraExpense: """
     - 인지세 : 해당세액의 50%(대출금액 4천만원 이하시 없음)
@@ -214,6 +217,7 @@ final dummyData = [
     endDay: null,
     submittedDay: "201601191355",
     joinWay: "영업점,모집인",
+    isLiked: false,
     url: "",
     extraExpense: """
     - 인지세 : 해당세액의 50%(대출금액 4천만원 이하시 없음)
@@ -265,6 +269,7 @@ final dummyData = [
     endDay: null,
     submittedDay: "201601191355",
     joinWay: "영업점,인터넷,스마트폰",
+    isLiked: false,
     url: "",
     cbName: "KCB",
     productType: "1",
@@ -322,6 +327,7 @@ final dummyData = [
     endDay: null,
     submittedDay: "201510301534",
     joinWay: "영업점,인터넷,스마트폰,모집인,전화(텔레뱅킹),기타",
+    isLiked: false,
     url: null,
     pensionKind: "4",
     pensionKindName: "연금저축펀드",
@@ -381,6 +387,7 @@ final dummyDeposit = [
     endDay: null,
     submittedDay: "201609201028",
     joinWay: "영업점,인터넷,스마트폰",
+    isLiked: false,
     url: "",
     interestAfterExpiration: """만기 후
 	  - 1개월이내 : 만기시점약정이율×50%
@@ -430,6 +437,7 @@ final dummyDeposit = [
     endDay: null,
     submittedDay: "201609201028",
     joinWay: "영업점,인터넷,스마트폰",
+    isLiked: false,
     url: "",
     interestAfterExpiration: """만기 후
 	  - 1개월이내 : 만기시점약정이율×50%
@@ -479,6 +487,7 @@ final dummyDeposit = [
     endDay: null,
     submittedDay: "201609201028",
     joinWay: "영업점,인터넷,스마트폰",
+    isLiked: false,
     url: "",
     interestAfterExpiration: """만기 후
 	  - 1개월이내 : 만기시점약정이율×50%

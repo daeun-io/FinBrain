@@ -2,7 +2,7 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/ui/product_categories.dart';
 
-class IsaMpBenefitRate extends FinancialProduct{
+class IsaMpBenefitRate extends FinancialProduct {
   // 프로퍼티명(필드명): 의미
   // mpName(mpNm): mp명칭
   // releaseDate(rlsDt): 출시일
@@ -26,18 +26,38 @@ class IsaMpBenefitRate extends FinancialProduct{
     required String? companyName,
     required String? mpName,
     required String? releaseDate,
+    required bool isLiked,
 
     required this.term,
     required this.benefitRate,
     required this.baseDate,
     required this.businessDomain,
     required this.mpType,
-  }):super(CommonInfo(
-    category: category,
-    companyName: companyName,
-    productName: mpName,
-    submittedDay: releaseDate,
-    url: url,
-    isLiked: false,
-  ));
+  }) : super(
+         CommonInfo(
+           category: category,
+           companyName: companyName,
+           productName: mpName,
+           submittedDay: releaseDate,
+           url: url,
+           isLiked: isLiked,
+         ),
+       );
+
+  @override
+  FinancialProduct copyWith(bool isLiked) {
+    return IsaMpBenefitRate(
+      isLiked: isLiked,
+      category: commonInfo.category,
+      url: commonInfo.url,
+      companyName: commonInfo.companyName,
+      mpName: commonInfo.productName,
+      releaseDate: commonInfo.submittedDay,
+      term: term,
+      benefitRate: benefitRate,
+      baseDate: baseDate,
+      businessDomain: businessDomain,
+      mpType: mpType,
+    );
+  }
 }

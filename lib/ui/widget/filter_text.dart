@@ -102,7 +102,7 @@ class _FilterTextState extends ConsumerState<FilterText> {
                                     text = "";
                                     for (final option in selectedOptions) {
                                       text = "$text $option,";
-                                      print("text $text");
+                                      //print("text $text");
                                     }
                                     if (text.isNotEmpty) {
                                       widget.onSortCriteriaChanged(text);
