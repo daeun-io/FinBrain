@@ -16,16 +16,12 @@ class ProductNotifier extends _$ProductNotifier {
   }
 
   void toggleLiked(String productName) {
-    print("before");
-    print(state.firstWhere((e) => e.commonInfo.productName == productName).commonInfo.isLiked);
     state = state.map((e){
       if(e.commonInfo.productName == productName){
         return e.copyWith(!e.commonInfo.isLiked);
       }
       return e;
     }).toList();
-    print("after");
-    print(state.firstWhere((e) => e.commonInfo.productName == productName).commonInfo.isLiked);
   }
 
   void sortByCriteria(String criteria, ProductCategory category) {

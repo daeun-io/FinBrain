@@ -1,6 +1,6 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/provider/filter_text_provider.dart';
 import 'package:finbrain/ui/product_categories.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'product_provider.dart';
 part 'liked_provider.g.dart';
@@ -10,16 +10,22 @@ class LikedNotifier extends _$LikedNotifier {
   @override
   List<FinancialProduct> build() {
     final allProducts = ref.watch(productNotifierProvider);
-    return allProducts
-        .where((element) => element.commonInfo.isLiked == true)
-        .toList();
-  }
+    final filters = ref.watch(
+      filterTextNotifierProvider(FilterTextCategory.liked),
+    );
 
-  void filterByCategory(List<String> filters) {
-    final categories = (filters[0] == "모든 상품")
-        ? []
+    final categories = ((filters.$1 as List<String>).first == "모든 상품")
+        ? [
+            ProductCategory.deposit,
+            ProductCategory.installment,
+            ProductCategory.isa,
+            ProductCategory.mortage,
+            ProductCategory.rent,
+            ProductCategory.credit,
+            ProductCategory.annuity,
+          ]
         : [
-            for (final item in filters)
+            for (final item in (filters.$1 as List<String>))
               if (item == "정기예금")
                 ProductCategory.deposit
               else if (item == "적금")
@@ -35,6 +41,13 @@ class LikedNotifier extends _$LikedNotifier {
               else
                 ProductCategory.annuity,
           ];
-    state = state.where((e) => categories.contains(e.commonInfo.category)).toList();
+
+    return allProducts
+        .where(
+          (element) =>
+              element.commonInfo.isLiked == true &&
+              categories.contains(element.commonInfo.category),
+        )
+        .toList();
   }
 }

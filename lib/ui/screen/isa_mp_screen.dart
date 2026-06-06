@@ -1,6 +1,5 @@
 import 'package:finbrain/provider/filter_text_provider.dart';
 import 'package:finbrain/provider/filters_provider.dart';
-import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/provider/searched_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';

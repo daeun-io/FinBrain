@@ -1,5 +1,4 @@
 import 'package:finbrain/ui/product_categories.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'filter_text_provider.g.dart';
 

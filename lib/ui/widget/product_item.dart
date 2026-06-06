@@ -21,7 +21,6 @@ class ProductItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //print("Product Item criteria: $sortCriteria");
     final product = ref
         .watch(productNotifierProvider)
         .firstWhere((p) => p.commonInfo.productName == productName);
@@ -75,7 +74,7 @@ class ProductItem extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    sortCriteria,
+                    sortCriteria.split('(').first,
                     style: const TextStyle(
                       fontSize: 12.0,
                       fontWeight: FontWeight.w400,

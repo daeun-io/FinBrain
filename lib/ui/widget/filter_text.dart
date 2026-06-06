@@ -86,7 +86,7 @@ class _FilterTextState extends ConsumerState<FilterText> {
                                 onPressed: () {
                                   setModalState(() {
                                     if (index == 0) {
-                                      selectedOptions = [selectedOption];
+                                      selectedOptions = [filter.$2[0]];
                                     } else if (selectedOptions.contains(
                                       filter.$2[index],
                                     )) {
@@ -102,7 +102,6 @@ class _FilterTextState extends ConsumerState<FilterText> {
                                     text = "";
                                     for (final option in selectedOptions) {
                                       text = "$text $option,";
-                                      //print("text $text");
                                     }
                                     if (text.isNotEmpty) {
                                       widget.onSortCriteriaChanged(text);

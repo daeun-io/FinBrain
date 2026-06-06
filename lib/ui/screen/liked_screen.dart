@@ -1,10 +1,7 @@
-import 'package:finbrain/provider/filter_text_provider.dart';
-import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/provider/searched_provider.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/filter_text.dart';
-import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +14,6 @@ class LikedScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final likedDummies = ref.watch(searchedProductProvider)(true);
     final searchedList = ref.watch(searchedListProvider);
-    final filters = ref.watch(filtersNotifierProvider);
-    final selectedFilters = ref.watch(selectedFilterProvider);
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -36,12 +31,8 @@ class LikedScreen extends ConsumerWidget {
             },
             searchedList: searchedList,
           ),
-          const SizedBox(height: 16.0),
-          ProductFilter(filters: filters, selectedFilters: selectedFilters,),
           const SizedBox(height: 24.0),
-          FilterText(category: FilterTextCategory.liked, onSortCriteriaChanged: (criteria){
-            
-          },),
+          FilterText(category: FilterTextCategory.liked, onSortCriteriaChanged: (criteria){},),
           const SizedBox(height: 20.0),
           Expanded(
             child: Stack(
@@ -55,7 +46,12 @@ class LikedScreen extends ConsumerWidget {
                         child: ProductItem(
                           productName:
                               likedDummies[index].commonInfo.productName!,
-                          sortCriteria: "기본",
+                          sortCriteria: switch(likedDummies[index].commonInfo.category){
+                            ProductCategory.deposit => "최고 금리(높은순)",
+                            ProductCategory.installment => "최고 금리(높은순)",
+                            ProductCategory.annuity => "평균 수익률(높은 순)",
+                            _ => "최저 금리(낮은 순)"
+                          },
                         ),
                       );
                     },

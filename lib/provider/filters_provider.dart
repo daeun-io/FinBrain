@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:finbrain/data/dummy_filters.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'filters_provider.g.dart';
