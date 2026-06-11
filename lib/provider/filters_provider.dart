@@ -3,33 +3,41 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'filters_provider.g.dart';
 
 @riverpod
-class FiltersNotifier extends _$FiltersNotifier{
+class FiltersNotifier extends _$FiltersNotifier {
   @override
-  Map<String, List<(String, bool,)>> build(){
+  Map<String, List<(String, bool)>> build() {
     return dummyFilters;
+  }
+
+  void saveChanges(Map<String, List<(String, bool)>> newFilters) {
+    state = newFilters;
+  }
+}
+
+@riverpod
+class DialogFilterNotifier extends _$DialogFilterNotifier {
+  @override
+  Map<String, List<(String, bool)>> build() {
+    final filters = ref.watch(filtersNotifierProvider);
+    return filters;
   }
 
   void toggleSelected(String text, bool selected) {
     state = {
-    for (final entry in state.entries)
-      if (entry.value.contains((text, selected)))
-        entry.key: entry.value.map((e){
-          return e.$1 == text ? (e.$1, !selected) : e;
-        }).toList()
-      else
-        entry.key: entry.value,
-  };
-}
-}
-
-final selectedFilterProvider = Provider<List<(String, bool)>>((ref) {
-  final List<(String, bool)> selectedFilters = [];
-  final allFilters = ref.watch(filtersNotifierProvider);
-
-  for (var pair in allFilters.values.expand((e) => e).toList()) {
-    if (pair.$2) {
-      selectedFilters.add(pair);
-    }
+      for (final entry in state.entries)
+        if (entry.value.contains((text, selected)))
+          entry.key: entry.value.map((e) {
+            if(entry.key == "금융 회사"){
+              return e.$1 == text ? (e.$1, true) : (e.$1, false);
+            }
+            return e.$1 == text ? (e.$1, !selected) : e;
+          }).toList()
+        else
+          entry.key: entry.value,
+    };
   }
-  return selectedFilters;
-});
+  
+  void resetChanges(){
+    state = ref.read(filtersNotifierProvider);
+  }
+}

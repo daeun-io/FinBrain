@@ -22,7 +22,6 @@ class ProductBaseScreen extends ConsumerWidget{
   Widget build(BuildContext context, WidgetRef ref) {
     final dummies = ref.watch(productNotifierProvider);
     final filters = ref.watch(filtersNotifierProvider);
-    final selectedFilters = ref.watch(selectedFilterProvider);
     final textFilter = ref.watch(FilterTextNotifierProvider(filterCategory));
 
     var sortCriteria = textFilter.$1;
@@ -30,7 +29,7 @@ class ProductBaseScreen extends ConsumerWidget{
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
       child: Column(children: [
-        ProductFilter(filters: filters, selectedFilters: selectedFilters,),
+        ProductFilter(category: productCategory),
         const SizedBox(height: 24.0,),
         FilterText(category: filterCategory, onSortCriteriaChanged: (criteria) {
           ref.read(productNotifierProvider.notifier).sortByCriteria(criteria, productCategory);

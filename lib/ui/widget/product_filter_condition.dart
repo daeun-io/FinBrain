@@ -1,6 +1,8 @@
+import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/product_filter_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductFilterCondition extends StatelessWidget {
   const ProductFilterCondition({
@@ -13,7 +15,7 @@ class ProductFilterCondition extends StatelessWidget {
   final List<(String, bool)> filterList;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

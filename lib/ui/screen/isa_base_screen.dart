@@ -24,7 +24,6 @@ class IsaBaseScreen extends ConsumerWidget {
     );
 
     final filters = ref.watch(filtersNotifierProvider);
-    final selectedFilters = ref.watch(selectedFilterProvider);
 
     final column = (category == IsaScreenCategory.join)
         ? ["ISA 종류", "회사 수", "가입자 수", "업권값"]
@@ -33,7 +32,7 @@ class IsaBaseScreen extends ConsumerWidget {
     return Column(
       children: [
         const SizedBox(height: 16.0),
-        ProductFilter(filters: filters, selectedFilters: selectedFilters),
+        ProductFilter(category: ProductCategory.isa),
         const SizedBox(height: 24.0),
         FilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
         Expanded(

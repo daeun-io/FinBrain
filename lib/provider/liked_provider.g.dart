@@ -6,7 +6,7 @@ part of 'liked_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$likedNotifierHash() => r'7647818685bfee282a56f794ad92e7c0ba7f55b7';
+String _$likedNotifierHash() => r'8288bddf36d0b4b8fe00a3b436469e9008ab28b8';
 
 /// See also [LikedNotifier].
 @ProviderFor(LikedNotifier)

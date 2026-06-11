@@ -74,8 +74,6 @@ flutter:
   - assets/images/app_icon.png
   - assets/images/ai_assist.svg
   - assets/images/send_icon.svg
-  - assets/images/radio_button.svg
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
