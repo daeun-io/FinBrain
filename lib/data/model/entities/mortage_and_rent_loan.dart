@@ -30,7 +30,7 @@ class MortageAndRentLoan extends FinancialProduct {
     required String? startDay,
     required String? endDay,
     required String? submittedDay,
-    required String? joinWay,
+    required List<String>? joinWay,
     required String? url,
     required bool isLiked,
 

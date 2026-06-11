@@ -24,7 +24,7 @@ class CommonInfo {
   final String? startDay;
   final String? endDay;
   final String? submittedDay;
-  final String? joinWay;
+  final List<String>? joinWay;
   final String? url;
   var isLiked = false;
 

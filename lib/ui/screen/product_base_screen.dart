@@ -21,7 +21,6 @@ class ProductBaseScreen extends ConsumerWidget{
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dummies = ref.watch(productNotifierProvider);
-    final filters = ref.watch(filtersNotifierProvider);
     final textFilter = ref.watch(FilterTextNotifierProvider(filterCategory));
 
     var sortCriteria = textFilter.$1;

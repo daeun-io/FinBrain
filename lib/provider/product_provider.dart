@@ -4,6 +4,7 @@ import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
+import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_provider.g.dart';
@@ -11,13 +12,46 @@ part 'product_provider.g.dart';
 @riverpod
 class ProductNotifier extends _$ProductNotifier {
   @override
-  List<FinancialProduct> build(){
-    return dummyData;
+  List<FinancialProduct> build() {
+    final filters = ref.watch(filtersNotifierProvider);
+    Map<String, List<String>> selectedFilters = {};
+    for (final entry in filters.entries) {
+      selectedFilters[entry.key] = entry.value
+          .where((e) => e.$2 == true)
+          .map((e) => e.$1)
+          .toList();
+    }
+    
+    if(selectedFilters["회사 선택"]!.isEmpty){
+      final List<String> companies = [];
+      for(final filter in filters["회사 선택"]!){
+        companies.add(filter.$1);
+      }
+      selectedFilters["회사 선택"] = companies;
+    }
+
+    return dummyData.where((e) {
+      // todo: change later(for ISA)
+      if (e.commonInfo.category == ProductCategory.isa) {
+        return selectedFilters["회사 선택"]!.contains(
+          e.commonInfo.companyName!,
+        );
+      }
+      return selectedFilters["회사 선택"]!.contains(
+            e.commonInfo.companyName!,
+          ) &&
+          e.commonInfo.joinWay!.any(
+            (e) =>
+                (selectedFilters["가입 방법"] ??
+                        ["영업점", "인터넷", "스마트폰", "모집인", "전화(텔레뱅킹)", "기타"])
+                    .contains(e),
+          );
+    }).toList();
   }
 
   void toggleLiked(String productName) {
-    state = state.map((e){
-      if(e.commonInfo.productName == productName){
+    state = state.map((e) {
+      if (e.commonInfo.productName == productName) {
         return e.copyWith(!e.commonInfo.isLiked);
       }
       return e;
@@ -107,7 +141,10 @@ class ProductNotifier extends _$ProductNotifier {
         state = sorted;
         break;
       // todo: implement later
-      default: state = dummyData;
+      default:
+        state = dummyData;
     }
   }
+
+  void filterProducts(ProductCategory category) {}
 }
