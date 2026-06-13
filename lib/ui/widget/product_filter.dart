@@ -1,65 +1,57 @@
+import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/ui/widget/product_dialog.dart';
 import 'package:finbrain/ui/widget/product_filter_condition.dart';
-import 'package:finbrain/ui/widget/product_filter_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductFilter extends StatefulWidget{
-  const ProductFilter({super.key});
+
+class ProductFilter extends StatefulWidget {
+  const ProductFilter({super.key, required this.category});
+
+  final ProductCategory category;
 
   @override
   State<ProductFilter> createState() => _ProductFilterState();
 }
 
 class _ProductFilterState extends State<ProductFilter> {
-  var isExpanded = false;
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-        color: primary100,
-        shape: RoundedRectangleBorder(
+    return TextButton(
+      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+      onPressed: () {
+        setState(() {
+          showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return ProductDialog(category: widget.category,);
+            },
+          );
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
+          color: primary100,
         ),
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
-          child: Column(
-            children: [
-              Row(
-                  children: [
-                    // todo: change later
-                    const ProductFilterItem(),
-                    const ProductFilterItem(),
-                    const ProductFilterItem(),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: (){
-                        setState(() {
-                          if(isExpanded){
-                            isExpanded = false;
-                          }else{
-                            isExpanded = true;
-                          }
-                        });
-                      },
-                      icon: isExpanded ? const Icon(Icons.arrow_drop_up, color: primary700, size: 32.0,) : const Icon(Icons.arrow_drop_down_outlined, color: primary700, size: 32.0,)
-                    )
-                  ]
-                ),
-                if(isExpanded)
-                  SizedBox(
-                    height: 100,
-                    child: ListView.builder(
-                      // change later
-                      itemCount: 2,
-                      itemBuilder: (context, index){
-                        return ProductFilterCondition();
-                      }
-                    ),
-                  ),
-              ],
+        margin: EdgeInsets.zero,
+        padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        child: Row(
+          children: const [
+            Icon(Icons.tune, color: primary900, size: 24.0),
+            Text(
+              "필터",
+              style: TextStyle(
+                color: primary900,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-        )
-        );
+          ],
+        ),
+      ),
+    );
   }
 }

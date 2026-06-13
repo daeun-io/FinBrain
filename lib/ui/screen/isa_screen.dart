@@ -1,4 +1,5 @@
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';
 import 'package:finbrain/ui/screen/isa_mp_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +12,12 @@ class IsaScreen extends StatelessWidget{
     return DefaultTabController(
       length: 3,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
-          children: [
+          children:[
             Card(
               color: primary100,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               elevation: 0,
@@ -31,7 +32,7 @@ class IsaScreen extends StatelessWidget{
                   fontWeight: FontWeight.w400,
                   color: textSecondary
                 ),
-                indicator: BoxDecoration(
+                indicator: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   color: primary700,
                 ),
@@ -60,8 +61,8 @@ class IsaScreen extends StatelessWidget{
             Expanded(
               child: TabBarView(
                 children: [
-                  const IsaBaseScreen(),
-                  const IsaBaseScreen(),
+                  const IsaBaseScreen(category: IsaScreenCategory.join,),
+                  const IsaBaseScreen(category: IsaScreenCategory.management,),
                   const IsaMpScreen()
                 ]
               ),

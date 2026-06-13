@@ -14,12 +14,12 @@ class IsaJoinStatus {
   final String? isaForm;
   final String? category;
 
-  const IsaJoinStatus(
-    this.companyCount,
-    this.joinMemberCount,
-    this.investmentAmount,
-    this.baseDate,
-    this.isaForm,
-    this.category
-  );
+  const IsaJoinStatus({
+    required this.companyCount,
+    required this.joinMemberCount,
+    required this.investmentAmount,
+    required this.baseDate,
+    required this.isaForm,
+    required this.category
+  });
 }

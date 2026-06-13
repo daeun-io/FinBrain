@@ -37,10 +37,13 @@ dependencies:
   google_fonts: ^8.0.2
   http: ^1.6.0
   xml: ^6.6.1
-  flutter_riverpod: ^3.3.1
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
   convert: ^3.1.2
   uuid: ^4.5.3
   flutter_svg: ^2.0.9
+  smooth_page_indicator: ^2.0.1
+  riverpod_generator: ^2.4.0
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +55,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+
+  build_runner: ^2.5.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -69,7 +74,6 @@ flutter:
   - assets/images/app_icon.png
   - assets/images/ai_assist.svg
   - assets/images/send_icon.svg
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

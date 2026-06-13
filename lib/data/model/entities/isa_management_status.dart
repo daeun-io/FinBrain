@@ -13,14 +13,14 @@ class IsaManagementStatus {
   final String? category;
   final String? isaForm;
   final String? includeAssetCtg;
-  final int? amount;
+  final double? amount;
 
-  const IsaManagementStatus(
-    this.baseDate,
-    this.businessDomain,
-    this.category,
-    this.isaForm,
-    this.includeAssetCtg,
-    this.amount
-  );
+  const IsaManagementStatus({
+    required this.baseDate,
+    required this.businessDomain,
+    required this.category,
+    required this.isaForm,
+    required this.includeAssetCtg,
+    required this.amount
+  });
 }

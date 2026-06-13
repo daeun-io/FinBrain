@@ -1,4 +1,6 @@
 // 공통 정보
+import 'package:finbrain/ui/product_categories.dart';
+
 class CommonInfo {
   // 프로퍼티명(필드명): 의미
   // submittedMonth(dcls_month): 공시 제출월
@@ -13,6 +15,7 @@ class CommonInfo {
   // url: 페이지 주소
   // isLiked: 관심 여부
 
+  final ProductCategory category;
   final String? submittedMonth;
   final String? companyCode;
   final String? companyName;
@@ -21,20 +24,29 @@ class CommonInfo {
   final String? startDay;
   final String? endDay;
   final String? submittedDay;
-  final String? joinWay;
+  final List<String>? joinWay;
   final String? url;
   var isLiked = false;
 
-  CommonInfo(
+  CommonInfo({
+    required this.category,
     this.submittedMonth,
     this.companyCode,
-    this.companyName, 
-    this.productCode, 
-    this.productName, 
-    this.startDay, 
-    this.endDay, 
-    this.submittedDay, 
+    required this.companyName,
+    this.productCode,
+    required this.productName,
+    this.startDay,
+    this.endDay,
+    this.submittedDay,
     this.joinWay,
-    this.url
-  );
+    required this.url,
+    required this.isLiked,
+  });
+}
+
+abstract class FinancialProduct {
+  final CommonInfo commonInfo;
+  FinancialProduct(this.commonInfo);
+
+  FinancialProduct copyWith(bool isLiked);
 }

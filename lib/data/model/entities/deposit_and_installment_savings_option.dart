@@ -17,13 +17,13 @@ class DepositAndInstallmentSavingsOption {
   final String? reserveType;
   final String? reserveTypeName;
 
-  const DepositAndInstallmentSavingsOption(
-    this.intRateType,
-    this.intRateTypeName,
-    this.saveTerm,
-    this.intRate,
-    this.maxIntRate,
-    this.reserveType,
-    this.reserveTypeName
-  );
+  const DepositAndInstallmentSavingsOption({
+    required this.intRateType,
+    required this.intRateTypeName,
+    required this.saveTerm,
+    required this.intRate,
+    required this.maxIntRate,
+    required this.reserveType,
+    required this.reserveTypeName
+  });
 }
