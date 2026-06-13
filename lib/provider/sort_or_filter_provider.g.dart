@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'filter_text_provider.dart';
+part of 'sort_or_filter_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filterTextNotifierHash() =>
-    r'c5b8829810707ae17e98af7082a764925de0e5d9';
+String _$sortOrFilterTextNotifierHash() =>
+    r'4e86c2a90d2cd51d27b5f987005db795e8ce46cb';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,30 +30,30 @@ class _SystemHash {
   }
 }
 
-abstract class _$FilterTextNotifier
+abstract class _$SortOrFilterTextNotifier
     extends BuildlessAutoDisposeNotifier<(Object, List<String>)> {
   late final FilterTextCategory category;
 
   (Object, List<String>) build(FilterTextCategory category);
 }
 
-/// See also [FilterTextNotifier].
-@ProviderFor(FilterTextNotifier)
-const filterTextNotifierProvider = FilterTextNotifierFamily();
+/// See also [SortOrFilterTextNotifier].
+@ProviderFor(SortOrFilterTextNotifier)
+const sortOrFilterTextNotifierProvider = SortOrFilterTextNotifierFamily();
 
-/// See also [FilterTextNotifier].
-class FilterTextNotifierFamily extends Family<(Object, List<String>)> {
-  /// See also [FilterTextNotifier].
-  const FilterTextNotifierFamily();
+/// See also [SortOrFilterTextNotifier].
+class SortOrFilterTextNotifierFamily extends Family<(Object, List<String>)> {
+  /// See also [SortOrFilterTextNotifier].
+  const SortOrFilterTextNotifierFamily();
 
-  /// See also [FilterTextNotifier].
-  FilterTextNotifierProvider call(FilterTextCategory category) {
-    return FilterTextNotifierProvider(category);
+  /// See also [SortOrFilterTextNotifier].
+  SortOrFilterTextNotifierProvider call(FilterTextCategory category) {
+    return SortOrFilterTextNotifierProvider(category);
   }
 
   @override
-  FilterTextNotifierProvider getProviderOverride(
-    covariant FilterTextNotifierProvider provider,
+  SortOrFilterTextNotifierProvider getProviderOverride(
+    covariant SortOrFilterTextNotifierProvider provider,
   ) {
     return call(provider.category);
   }
@@ -70,32 +70,32 @@ class FilterTextNotifierFamily extends Family<(Object, List<String>)> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'filterTextNotifierProvider';
+  String? get name => r'sortOrFilterTextNotifierProvider';
 }
 
-/// See also [FilterTextNotifier].
-class FilterTextNotifierProvider
+/// See also [SortOrFilterTextNotifier].
+class SortOrFilterTextNotifierProvider
     extends
         AutoDisposeNotifierProviderImpl<
-          FilterTextNotifier,
+          SortOrFilterTextNotifier,
           (Object, List<String>)
         > {
-  /// See also [FilterTextNotifier].
-  FilterTextNotifierProvider(FilterTextCategory category)
+  /// See also [SortOrFilterTextNotifier].
+  SortOrFilterTextNotifierProvider(FilterTextCategory category)
     : this._internal(
-        () => FilterTextNotifier()..category = category,
-        from: filterTextNotifierProvider,
-        name: r'filterTextNotifierProvider',
+        () => SortOrFilterTextNotifier()..category = category,
+        from: sortOrFilterTextNotifierProvider,
+        name: r'sortOrFilterTextNotifierProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
             ? null
-            : _$filterTextNotifierHash,
-        dependencies: FilterTextNotifierFamily._dependencies,
+            : _$sortOrFilterTextNotifierHash,
+        dependencies: SortOrFilterTextNotifierFamily._dependencies,
         allTransitiveDependencies:
-            FilterTextNotifierFamily._allTransitiveDependencies,
+            SortOrFilterTextNotifierFamily._allTransitiveDependencies,
         category: category,
       );
 
-  FilterTextNotifierProvider._internal(
+  SortOrFilterTextNotifierProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -109,16 +109,16 @@ class FilterTextNotifierProvider
 
   @override
   (Object, List<String>) runNotifierBuild(
-    covariant FilterTextNotifier notifier,
+    covariant SortOrFilterTextNotifier notifier,
   ) {
     return notifier.build(category);
   }
 
   @override
-  Override overrideWith(FilterTextNotifier Function() create) {
+  Override overrideWith(SortOrFilterTextNotifier Function() create) {
     return ProviderOverride(
       origin: this,
-      override: FilterTextNotifierProvider._internal(
+      override: SortOrFilterTextNotifierProvider._internal(
         () => create()..category = category,
         from: from,
         name: null,
@@ -131,14 +131,18 @@ class FilterTextNotifierProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<FilterTextNotifier, (Object, List<String>)>
+  AutoDisposeNotifierProviderElement<
+    SortOrFilterTextNotifier,
+    (Object, List<String>)
+  >
   createElement() {
-    return _FilterTextNotifierProviderElement(this);
+    return _SortOrFilterTextNotifierProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FilterTextNotifierProvider && other.category == category;
+    return other is SortOrFilterTextNotifierProvider &&
+        other.category == category;
   }
 
   @override
@@ -152,24 +156,24 @@ class FilterTextNotifierProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin FilterTextNotifierRef
+mixin SortOrFilterTextNotifierRef
     on AutoDisposeNotifierProviderRef<(Object, List<String>)> {
   /// The parameter `category` of this provider.
   FilterTextCategory get category;
 }
 
-class _FilterTextNotifierProviderElement
+class _SortOrFilterTextNotifierProviderElement
     extends
         AutoDisposeNotifierProviderElement<
-          FilterTextNotifier,
+          SortOrFilterTextNotifier,
           (Object, List<String>)
         >
-    with FilterTextNotifierRef {
-  _FilterTextNotifierProviderElement(super.provider);
+    with SortOrFilterTextNotifierRef {
+  _SortOrFilterTextNotifierProviderElement(super.provider);
 
   @override
   FilterTextCategory get category =>
-      (origin as FilterTextNotifierProvider).category;
+      (origin as SortOrFilterTextNotifierProvider).category;
 }
 
 // ignore_for_file: type=lint

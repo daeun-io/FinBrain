@@ -1,9 +1,9 @@
-import 'package:finbrain/provider/filter_text_provider.dart';
+import 'package:finbrain/provider/sort_or_filter_provider.dart';
 import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/provider/searched_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
-import 'package:finbrain/ui/widget/filter_text.dart';
+import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
@@ -18,7 +18,7 @@ class IsaMpScreen extends ConsumerWidget {
     final dummies = ref.watch(searchedProductProvider)(false);
     final searchedList = ref.watch(searchedListProvider);
     final filters = ref.watch(filtersNotifierProvider);
-    final textFilter = ref.watch(FilterTextNotifierProvider(FilterTextCategory.isa));
+    final textSort = ref.watch(sortOrFilterTextNotifierProvider(FilterTextCategory.isa));
 
     return Column(
       children: [
@@ -33,7 +33,7 @@ class IsaMpScreen extends ConsumerWidget {
         const SizedBox(height: 16.0),
         ProductFilter(category: ProductCategory.isa,),
         const SizedBox(height: 24.0),
-        FilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
+        SortOrFilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
         const SizedBox(height: 20),
         if(dummies.isEmpty)
           Expanded(
@@ -60,7 +60,7 @@ class IsaMpScreen extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: ProductItem(
                     productName: dummies[index].commonInfo.productName!,
-                    sortCriteria: textFilter.$1.toString(),
+                    sortCriteria: textSort.$1.toString(),
                   ),
                 );
               },

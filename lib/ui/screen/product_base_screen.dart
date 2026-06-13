@@ -1,8 +1,7 @@
-import 'package:finbrain/provider/filter_text_provider.dart';
-import 'package:finbrain/provider/filters_provider.dart';
+import 'package:finbrain/provider/sort_or_filter_provider.dart';
 import 'package:finbrain/provider/product_provider.dart';
 import 'package:finbrain/ui/product_categories.dart';
-import 'package:finbrain/ui/widget/filter_text.dart';
+import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +20,16 @@ class ProductBaseScreen extends ConsumerWidget{
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dummies = ref.watch(productNotifierProvider);
-    final textFilter = ref.watch(FilterTextNotifierProvider(filterCategory));
+    final textSort = ref.watch(sortOrFilterTextNotifierProvider(filterCategory));
 
-    var sortCriteria = textFilter.$1;
+    var sortCriteria = textSort.$1;
 
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
       child: Column(children: [
         ProductFilter(category: productCategory),
         const SizedBox(height: 24.0,),
-        FilterText(category: filterCategory, onSortCriteriaChanged: (criteria) {
+        SortOrFilterText(category: filterCategory, onSortCriteriaChanged: (criteria) {
           ref.read(productNotifierProvider.notifier).sortByCriteria(criteria, productCategory);
           sortCriteria = criteria;
         },),

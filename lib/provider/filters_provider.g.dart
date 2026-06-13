@@ -27,7 +27,7 @@ final filtersNotifierProvider =
 typedef _$FiltersNotifier =
     AutoDisposeNotifier<Map<String, List<(String, bool)>>>;
 String _$dialogFilterNotifierHash() =>
-    r'54f1027ccb9f6d2eac1bed05d2291c50f96bb5e8';
+    r'c85a43b6f08d016a2757a6f894753b3563acdd50';
 
 /// See also [DialogFilterNotifier].
 @ProviderFor(DialogFilterNotifier)

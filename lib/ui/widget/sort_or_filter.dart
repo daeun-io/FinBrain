@@ -1,4 +1,4 @@
-import 'package:finbrain/provider/filter_text_provider.dart';
+import 'package:finbrain/provider/sort_or_filter_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/year_picker_page.dart';
@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class FilterText extends ConsumerStatefulWidget {
-  const FilterText({
+class SortOrFilterText extends ConsumerStatefulWidget {
+  const SortOrFilterText({
     super.key,
     required this.category,
     required this.onSortCriteriaChanged,
@@ -16,10 +16,10 @@ class FilterText extends ConsumerStatefulWidget {
   final FilterTextCategory category;
   final Function(String) onSortCriteriaChanged;
   @override
-  ConsumerState<FilterText> createState() => _FilterTextState();
+  ConsumerState<SortOrFilterText> createState() => _FilterTextState();
 }
 
-class _FilterTextState extends ConsumerState<FilterText> {
+class _FilterTextState extends ConsumerState<SortOrFilterText> {
   late int selectedYear;
   late List<int> years;
   late String text;
@@ -37,7 +37,7 @@ class _FilterTextState extends ConsumerState<FilterText> {
 
   @override
   Widget build(BuildContext context) {
-    final filter = ref.watch(filterTextNotifierProvider(widget.category));
+    final filter = ref.watch(sortOrFilterTextNotifierProvider(widget.category));
     String selectedOption = (widget.category == FilterTextCategory.liked) ? (filter.$1 as List<String>).join(", "): filter.$1.toString();
     List<String> selectedOptions = (widget.category == FilterTextCategory.liked) ? filter.$1 as List<String> : [];
     String text = (widget.category == FilterTextCategory.isa)
@@ -109,7 +109,7 @@ class _FilterTextState extends ConsumerState<FilterText> {
                                   });
                                   ref
                                       .read(
-                                        filterTextNotifierProvider(
+                                        sortOrFilterTextNotifierProvider(
                                           widget.category,
                                         ).notifier,
                                       )
@@ -150,7 +150,7 @@ class _FilterTextState extends ConsumerState<FilterText> {
                                   });
                                   ref
                                       .read(
-                                        filterTextNotifierProvider(
+                                        sortOrFilterTextNotifierProvider(
                                           widget.category,
                                         ).notifier,
                                       )

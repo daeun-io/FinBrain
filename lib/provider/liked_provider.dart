@@ -1,5 +1,5 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
-import 'package:finbrain/provider/filter_text_provider.dart';
+import 'package:finbrain/provider/sort_or_filter_provider.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'product_provider.dart';
@@ -11,7 +11,7 @@ class LikedNotifier extends _$LikedNotifier {
   List<FinancialProduct> build() {
     final allProducts = ref.watch(productNotifierProvider);
     final filters = ref.watch(
-      filterTextNotifierProvider(FilterTextCategory.liked),
+      sortOrFilterTextNotifierProvider(FilterTextCategory.liked),
     );
 
     final categories = ((filters.$1 as List<String>).first == "모든 상품")

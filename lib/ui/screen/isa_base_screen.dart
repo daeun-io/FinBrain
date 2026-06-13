@@ -5,7 +5,7 @@ import 'package:finbrain/provider/isa_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
-import 'package:finbrain/ui/widget/filter_text.dart';
+import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +34,7 @@ class IsaBaseScreen extends ConsumerWidget {
         const SizedBox(height: 16.0),
         ProductFilter(category: ProductCategory.isa),
         const SizedBox(height: 24.0),
-        FilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
+        SortOrFilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
         Expanded(
           child: Stack(
             children: [
