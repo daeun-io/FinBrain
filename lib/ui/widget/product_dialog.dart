@@ -16,7 +16,6 @@ class ProductDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filters = ref.watch(dialogFiltersViewModelProvider);
-    final currentFilters = filters.valueOrNull ?? {};
     return Consumer(
       builder: (ctx, ref, child) {
         return AlertDialog(
@@ -80,7 +79,7 @@ class ProductDialog extends ConsumerWidget {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      ...currentFilters.entries.map(
+                      ...filters.entries.map(
                         (e) => ProductFilterCondition(
                           filter: e.key,
                           filterList: e.value,
@@ -94,7 +93,7 @@ class ProductDialog extends ConsumerWidget {
                     Expanded(
                       child: TextButton(
                         onPressed: () {
-                          ref.read(filtersViewmodelProvider.notifier).saveChanges(currentFilters);
+                          ref.read(filtersViewmodelProvider.notifier).saveChanges(filters);
                           Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

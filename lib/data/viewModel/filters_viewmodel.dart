@@ -26,9 +26,9 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
     return filters.value ?? {};
   }
 
-  void toggleSelected(String text, bool selected){
-    state = AsyncData((state.value != null) ?{
-      for (final entry in state.value!.entries)
+  void toggleSelected(String text, bool selected) {
+    state = {
+      for (final entry in state.entries)
         if (entry.value.contains((text, selected)))
           entry.key: entry.value.map((e) {
             if (entry.key == "금융 회사") {
@@ -38,7 +38,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
           }).toList()
         else
           entry.key: entry.value,
-    } : {});
+    };
   }
 
   void resetChanges() => state = state;

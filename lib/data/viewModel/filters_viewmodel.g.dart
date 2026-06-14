@@ -6,7 +6,7 @@ part of 'filters_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filtersViewmodelHash() => r'4d45795da31943e657cc58d68e6c7dce92542c51';
+String _$filtersViewmodelHash() => r'd284e3e4a3ff09d292868b70194a2f8c58535ecc';
 
 /// See also [FiltersViewmodel].
 @ProviderFor(FiltersViewmodel)
@@ -27,12 +27,12 @@ final filtersViewmodelProvider =
 typedef _$FiltersViewmodel =
     AutoDisposeAsyncNotifier<Map<String, List<(String, bool)>>>;
 String _$dialogFiltersViewModelHash() =>
-    r'f99fcde1752dfd03a0d1ba417a15353fd2e4c649';
+    r'b0fe9fe0b4ba6a9c91ec9bbd27d704b93fdede46';
 
 /// See also [DialogFiltersViewModel].
 @ProviderFor(DialogFiltersViewModel)
 final dialogFiltersViewModelProvider =
-    AutoDisposeAsyncNotifierProvider<
+    AutoDisposeNotifierProvider<
       DialogFiltersViewModel,
       Map<String, List<(String, bool)>>
     >.internal(
@@ -46,6 +46,6 @@ final dialogFiltersViewModelProvider =
     );
 
 typedef _$DialogFiltersViewModel =
-    AutoDisposeAsyncNotifier<Map<String, List<(String, bool)>>>;
+    AutoDisposeNotifier<Map<String, List<(String, bool)>>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
