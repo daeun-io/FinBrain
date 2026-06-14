@@ -8,7 +8,7 @@ import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
-import 'package:finbrain/provider/product_provider.dart';
+import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
@@ -83,9 +83,8 @@ class ProductDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final product = ref
-        .watch(productNotifierProvider)
-        .firstWhere((p) => p.commonInfo.productName == productName);
+    final products = ref.watch(productViewmodelProvider).valueOrNull;
+    final product = (products ?? []).firstWhere((p) => p.commonInfo.productName == productName);
 
     return Scaffold(
       backgroundColor: white,
@@ -111,7 +110,7 @@ class ProductDetailScreen extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () {
-              ref.read(productNotifierProvider.notifier).toggleLiked(productName);
+              ref.read(productViewmodelProvider.notifier).toggleLiked(productName);
             },
             icon: product.commonInfo.isLiked
                 ? const Icon(Icons.favorite, color: likedColor, size: 32.0)

@@ -1,11 +1,7 @@
-import 'package:finbrain/provider/filters_provider.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/product_dialog.dart';
-import 'package:finbrain/ui/widget/product_filter_condition.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 class ProductFilter extends StatefulWidget {
   const ProductFilter({super.key, required this.category});

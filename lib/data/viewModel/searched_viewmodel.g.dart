@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'liked_provider.dart';
+part of 'searched_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$likedNotifierHash() => r'8288bddf36d0b4b8fe00a3b436469e9008ab28b8';
+String _$searchedViewmodelHash() => r'f14151ad30b313ee412f88270da682082423ef7f';
 
-/// See also [LikedNotifier].
-@ProviderFor(LikedNotifier)
-final likedNotifierProvider =
-    AutoDisposeNotifierProvider<LikedNotifier, List<FinancialProduct>>.internal(
-      LikedNotifier.new,
-      name: r'likedNotifierProvider',
+/// See also [SearchedViewmodel].
+@ProviderFor(SearchedViewmodel)
+final searchedViewmodelProvider =
+    AutoDisposeNotifierProvider<SearchedViewmodel, List<String>>.internal(
+      SearchedViewmodel.new,
+      name: r'searchedViewmodelProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$likedNotifierHash,
+          : _$searchedViewmodelHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$LikedNotifier = AutoDisposeNotifier<List<FinancialProduct>>;
+typedef _$SearchedViewmodel = AutoDisposeNotifier<List<String>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,4 +1,4 @@
-import 'package:finbrain/provider/filters_provider.dart';
+import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/product_filter_condition.dart';
@@ -15,7 +15,8 @@ class ProductDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filters = ref.watch(dialogFilterNotifierProvider);
+    final filters = ref.watch(dialogFiltersViewModelProvider);
+    final currentFilters = filters.valueOrNull ?? {};
     return Consumer(
       builder: (ctx, ref, child) {
         return AlertDialog(
@@ -46,7 +47,7 @@ class ProductDialog extends ConsumerWidget {
                     TextButton(
                       onPressed: () {
                         ref
-                            .read(dialogFilterNotifierProvider.notifier)
+                            .read(dialogFiltersViewModelProvider.notifier)
                             .resetChanges();
                       },
                       style: TextButton.styleFrom(
@@ -79,7 +80,7 @@ class ProductDialog extends ConsumerWidget {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      ...filters.entries.map(
+                      ...currentFilters.entries.map(
                         (e) => ProductFilterCondition(
                           filter: e.key,
                           filterList: e.value,
@@ -93,7 +94,7 @@ class ProductDialog extends ConsumerWidget {
                     Expanded(
                       child: TextButton(
                         onPressed: () {
-                          ref.read(filtersNotifierProvider.notifier).saveChanges(filters);
+                          ref.read(filtersViewmodelProvider.notifier).saveChanges(currentFilters);
                           Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

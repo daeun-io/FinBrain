@@ -1,9 +1,9 @@
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-part 'sort_or_filter_provider.g.dart';
+part 'sort_or_filter_viewmodel.g.dart';
 
 @riverpod
-class SortOrFilterTextNotifier extends _$SortOrFilterTextNotifier {
+class SortOrFilterTextViewModel extends _$SortOrFilterTextViewModel {
   @override
   (Object, List<String>) build(FilterTextCategory category) {
     final optionList = switch (category) {

@@ -1,4 +1,4 @@
-import 'package:finbrain/provider/sort_or_filter_provider.dart';
+import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/year_picker_page.dart';
@@ -37,7 +37,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
 
   @override
   Widget build(BuildContext context) {
-    final filter = ref.watch(sortOrFilterTextNotifierProvider(widget.category));
+    final filter = ref.watch(sortOrFilterTextViewModelProvider(widget.category));
     String selectedOption = (widget.category == FilterTextCategory.liked) ? (filter.$1 as List<String>).join(", "): filter.$1.toString();
     List<String> selectedOptions = (widget.category == FilterTextCategory.liked) ? filter.$1 as List<String> : [];
     String text = (widget.category == FilterTextCategory.isa)
@@ -109,7 +109,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                   });
                                   ref
                                       .read(
-                                        sortOrFilterTextNotifierProvider(
+                                        sortOrFilterTextViewModelProvider(
                                           widget.category,
                                         ).notifier,
                                       )
@@ -150,7 +150,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                   });
                                   ref
                                       .read(
-                                        sortOrFilterTextNotifierProvider(
+                                        sortOrFilterTextViewModelProvider(
                                           widget.category,
                                         ).notifier,
                                       )
