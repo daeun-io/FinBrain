@@ -1,5 +1,5 @@
-import 'package:finbrain/provider/sort_or_filter_provider.dart';
-import 'package:finbrain/provider/product_provider.dart';
+import 'package:finbrain/data/viewModel/product_viewmodel.dart';
+import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
@@ -7,11 +7,11 @@ import 'package:finbrain/ui/widget/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductBaseScreen extends ConsumerWidget{
+class ProductBaseScreen extends ConsumerWidget {
   const ProductBaseScreen({
     super.key,
     required this.productCategory,
-    required this.filterCategory
+    required this.filterCategory,
   });
 
   final ProductCategory productCategory;
@@ -19,36 +19,48 @@ class ProductBaseScreen extends ConsumerWidget{
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dummies = ref.watch(productNotifierProvider);
-    final textSort = ref.watch(sortOrFilterTextNotifierProvider(filterCategory));
-
-    var sortCriteria = textSort.$1;
+    final products = ref.watch(productViewmodelProvider);
+    final textSort = ref.watch(
+      sortOrFilterTextViewModelProvider(filterCategory),
+    );
 
     return Padding(
-      padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
-      child: Column(children: [
-        ProductFilter(category: productCategory),
-        const SizedBox(height: 24.0,),
-        SortOrFilterText(category: filterCategory, onSortCriteriaChanged: (criteria) {
-          ref.read(productNotifierProvider.notifier).sortByCriteria(criteria, productCategory);
-          sortCriteria = criteria;
-        },),
-        const SizedBox(height: 12.0),
-        Expanded(
-          child: ListView.builder(
-            itemCount: dummies.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: ProductItem(
-                  productName: dummies[index].commonInfo.productName!,
-                  sortCriteria: sortCriteria.toString(),
-                ),
-              );
+      padding: const EdgeInsets.only(
+        top: 24.0,
+        left: 20.0,
+        right: 20.0,
+        bottom: 20.0,
+      ),
+      child: Column(
+        children: [
+          ProductFilter(category: productCategory),
+          const SizedBox(height: 24.0),
+          SortOrFilterText(
+            category: filterCategory,
+            onSortCriteriaChanged: (criteria) {
+              ref
+                  .read(productViewmodelProvider.notifier)
+                  .sortByCriteria(criteria, productCategory);
             },
           ),
-        )
-      ],),
+          const SizedBox(height: 12.0),
+          if (products.valueOrNull != null)
+            Expanded(
+              child: ListView.builder(
+                itemCount: products.value!.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: ProductItem(
+                      productName: products.value![index].commonInfo.productName!,
+                      filterTextCategory: filterCategory,
+                    ),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

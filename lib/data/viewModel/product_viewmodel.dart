@@ -4,42 +4,44 @@ import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
-import 'package:finbrain/provider/filters_provider.dart';
+import 'package:finbrain/data/repository/product_repository.dart';
+import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-part 'product_provider.g.dart';
+part 'product_viewmodel.g.dart';
+
+final repository = ProductRepository();
 
 @riverpod
-class ProductNotifier extends _$ProductNotifier {
+class ProductViewmodel extends _$ProductViewmodel {
   @override
-  List<FinancialProduct> build() {
-    final filters = ref.watch(filtersNotifierProvider);
+  Future<List<FinancialProduct>> build() async {
+    final filters = ref.watch(filtersViewmodelProvider);
+    final currentFilters = filters.value ?? {};
     Map<String, List<String>> selectedFilters = {};
-    for (final entry in filters.entries) {
+    for (final entry in currentFilters.entries) {
       selectedFilters[entry.key] = entry.value
           .where((e) => e.$2 == true)
           .map((e) => e.$1)
           .toList();
     }
-    
-    if(selectedFilters["회사 선택"]!.isEmpty){
+
+    if (selectedFilters["회사 선택"]!.isEmpty) {
       final List<String> companies = [];
-      for(final filter in filters["회사 선택"]!){
+      for (final filter in currentFilters["회사 선택"]!) {
         companies.add(filter.$1);
       }
       selectedFilters["회사 선택"] = companies;
     }
 
-    return dummyData.where((e) {
-      // todo: change later(for ISA)
+    final products = await repository.fetchProducts();
+    return products.where((e) {
       if (e.commonInfo.category == ProductCategory.isa) {
-        return selectedFilters["회사 선택"]!.contains(
-          e.commonInfo.companyName!,
-        );
+        // todo: change later
+        return selectedFilters["회사 선택"]!.contains(e.commonInfo.companyName!);
       }
-      return selectedFilters["회사 선택"]!.contains(
-            e.commonInfo.companyName!,
-          ) &&
+      return selectedFilters["회사 선택"]!.contains(e.commonInfo.companyName!) &&
           e.commonInfo.joinWay!.any(
             (e) =>
                 (selectedFilters["가입 방법"] ??
@@ -50,20 +52,27 @@ class ProductNotifier extends _$ProductNotifier {
   }
 
   void toggleLiked(String productName) {
-    state = state.map((e) {
+    final products = state.value ?? [];
+    final updated = products.map((e) {
       if (e.commonInfo.productName == productName) {
         return e.copyWith(!e.commonInfo.isLiked);
+      } else {
+        return e;
       }
-      return e;
     }).toList();
+
+    state = AsyncData(updated);
+    // todo: later updated at server
   }
 
   void sortByCriteria(String criteria, ProductCategory category) {
+    final products = state.value ?? [];
+
     switch (category) {
       case ProductCategory.deposit:
       case ProductCategory.installment:
-        final sorted = [...state]
-          ..sort(
+        state = AsyncData(
+          products..sort(
             (criteria == "최고 금리(높은 순)")
                 ? (a, b) => (b as DepositAndInstallmentSavings)
                       .returnHighestRateValue()
@@ -81,12 +90,12 @@ class ProductNotifier extends _$ProductNotifier {
                             .returnHighestRateValue()
                             .$2,
                       ),
-          );
-        state = sorted;
+          ),
+        );
         break;
       case ProductCategory.annuity:
-        final sorted = [...state]
-          ..sort(switch (criteria) {
+        state = AsyncData(
+          products..sort(switch (criteria) {
             "평균 수익률(높은 순)" =>
               (a, b) => (b as AnnuitySavings).returnProfits()[0].compareTo(
                 (a as AnnuitySavings).returnProfits()[0],
@@ -102,13 +111,13 @@ class ProductNotifier extends _$ProductNotifier {
             _ => (a, b) => (b as AnnuitySavings).returnProfits()[3].compareTo(
               (a as AnnuitySavings).returnProfits()[3],
             ),
-          });
-        state = sorted;
+          }),
+        );
         break;
       case ProductCategory.mortage:
       case ProductCategory.rent:
-        final sorted = [...state]
-          ..sort(switch (criteria) {
+        state = AsyncData(
+          products..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>
               (a, b) => (b as MortageAndRentLoan).returnRates()[0].compareTo(
                 (a as MortageAndRentLoan).returnRates()[0],
@@ -120,12 +129,11 @@ class ProductNotifier extends _$ProductNotifier {
             _ => (a, b) => (b as MortageAndRentLoan).returnRates()[1].compareTo(
               (a as MortageAndRentLoan).returnRates()[1],
             ),
-          });
-        state = sorted;
-        break;
+          }),
+        );
       case ProductCategory.credit:
-        final sorted = [...state]
-          ..sort(switch (criteria) {
+        state = AsyncData(
+          products..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>
               (a, b) => (b as CreditLoan).returnRates()[0].compareTo(
                 (a as CreditLoan).returnRates()[0],
@@ -137,14 +145,77 @@ class ProductNotifier extends _$ProductNotifier {
             _ => (a, b) => (b as CreditLoan).returnRates()[1].compareTo(
               (a as CreditLoan).returnRates()[1],
             ),
-          });
-        state = sorted;
-        break;
+          }),
+        );
       // todo: implement later
       default:
-        state = dummyData;
+        state = AsyncData(dummyData);
     }
   }
 
-  void filterProducts(ProductCategory category) {}
+  void filterByKeyword(String keyword) {
+    if (keyword.isNotEmpty) {
+      state = AsyncData(
+        (state.value ?? [])
+            .where((e) => e.commonInfo.productName!.contains(keyword))
+            .toList(),
+      );
+    }
+  }
+}
+
+@riverpod
+class LikedProductViewmodel extends _$LikedProductViewmodel {
+  @override
+  Future<List<FinancialProduct>> build() async {
+    final products = ref.watch(productViewmodelProvider);
+    final filters = ref.watch(
+      sortOrFilterTextViewModelProvider(FilterTextCategory.liked),
+    );
+    final categories = ((filters.$1 as List<String>).first == "모든 상품")
+        ? [
+            ProductCategory.deposit,
+            ProductCategory.installment,
+            ProductCategory.isa,
+            ProductCategory.mortage,
+            ProductCategory.rent,
+            ProductCategory.credit,
+            ProductCategory.annuity,
+          ]
+        : [
+            for (final item in (filters.$1 as List<String>))
+              if (item == "정기예금")
+                ProductCategory.deposit
+              else if (item == "적금")
+                ProductCategory.installment
+              else if (item == "ISA")
+                ProductCategory.isa
+              else if (item == "주택담보대출")
+                ProductCategory.mortage
+              else if (item == "전세자금대출")
+                ProductCategory.rent
+              else if (item == "개인신용대출")
+                ProductCategory.credit
+              else
+                ProductCategory.annuity,
+          ];
+
+    return (products.value ?? [])
+        .where(
+          (e) =>
+              e.commonInfo.isLiked == true &&
+              categories.contains(e.commonInfo.category),
+        )
+        .toList();
+  }
+
+  void filterByKeyword(String keyword) {
+    if (keyword.isNotEmpty) {
+      state = AsyncData(
+        (state.value ?? [])
+            .where((e) => e.commonInfo.productName!.contains(keyword))
+            .toList(),
+      );
+    }
+  }
 }

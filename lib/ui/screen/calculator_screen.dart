@@ -1,14 +1,10 @@
-import 'dart:math';
-import 'package:collection/collection.dart';
-import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
-import 'package:finbrain/data/model/entities/credit_loan_option.dart';
-import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
+import 'package:finbrain/data/viewModel/calculator_screen_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CalculatorScreen extends StatefulWidget {
+class CalculatorScreen extends ConsumerStatefulWidget {
   const CalculatorScreen({
     super.key,
     required this.category,
@@ -18,13 +14,13 @@ class CalculatorScreen extends StatefulWidget {
 
   final ProductCategory category;
   final Map<String, List<String>> mapOptions;
-  final List<dynamic> options;
+  final List<Object> options;
 
   @override
-  State<CalculatorScreen> createState() => _CalculatorScreenState();
+  ConsumerState<CalculatorScreen> createState() => _CalculatorScreenState();
 }
 
-class _CalculatorScreenState extends State<CalculatorScreen> {
+class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   final _moneyController = TextEditingController();
   final _periodController = TextEditingController();
 
@@ -44,9 +40,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _selectedValues[key] = list.first;
       });
     }
-    _sliderValue = _returnRate(widget.category).isNotEmpty
-        ? _returnRate(widget.category)[1]
-        : 0.0;
+    final value = ref
+        .read(calculatorScreenViewmodelProvider.notifier)
+        .returnRate(widget.category, widget.options, _selectedValues);
+    _sliderValue = value.isNotEmpty ? value[1] : 0.0;
     _money = (widget.category == ProductCategory.annuity) ? "0" : "";
     _period =
         (widget.category == ProductCategory.deposit ||
@@ -55,254 +52,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 _selectedValues[widget.mapOptions.keys.first] == "정액적립식"))
         ? "0"
         : "";
-  }
-
-  List<double> _returnRate(ProductCategory category) {
-    final keys = widget.mapOptions.keys.toList();
-    switch (category) {
-      case ProductCategory.deposit:
-        final option = widget.options
-            .where(
-              (e) =>
-                  "${(e as DepositAndInstallmentSavingsOption).saveTerm}개월" ==
-                      _selectedValues[keys[0]] &&
-                  e.intRateTypeName == _selectedValues[keys[1]],
-            )
-            .firstOrNull;
-        if (option != null) {
-          return [
-            (option as DepositAndInstallmentSavingsOption).intRate != null
-                ? option.intRate!
-                : -1.0,
-            option.maxIntRate != null ? option.maxIntRate! : -1.0,
-          ];
-        } else {
-          return [];
-        }
-      case ProductCategory.installment:
-        final option = widget.options
-            .where(
-              (e) =>
-                  (e as DepositAndInstallmentSavingsOption).reserveTypeName ==
-                      _selectedValues[keys[0]] &&
-                  "${e.saveTerm}개월" == _selectedValues[keys[1]] &&
-                  e.intRateTypeName == _selectedValues[keys[2]],
-            )
-            .firstOrNull;
-        if (option != null) {
-          final result = [
-            (option as DepositAndInstallmentSavingsOption).intRate != null
-                ? option.intRate!
-                : -1.0,
-            option.maxIntRate != null ? option.maxIntRate! : -1.0,
-          ];
-          return result;
-        } else {
-          return [];
-        }
-      case ProductCategory.credit:
-        // todo: change later
-        final foundOption = widget.options
-            .where(
-              (e) => (e as CreditLoanOption).creditLendRateTypeName == "대출금리",
-            )
-            .firstOrNull;
-        if (foundOption == null) return [];
-        final rates = [
-          foundOption.gradeOver900,
-          foundOption.grade801900,
-          foundOption.grade701800,
-          foundOption.grade601700,
-          foundOption.grade501600,
-          foundOption.grade401500,
-          foundOption.grade301400,
-          foundOption.gradeUnder300,
-        ].whereType<double>();
-        final avgRates = foundOption.averageGrade;
-        final min = rates.min;
-        final max = rates.max;
-        final avg = (avgRates != null) ? avgRates : rates.average;
-        return [min, avg, max];
-      default:
-        if (category == ProductCategory.mortage ||
-            category == ProductCategory.rent) {
-          // todo: change later
-          final min = widget.options
-              .map((e) => (e as MortageAndRentLoanOption).lendRateMin)
-              .whereType<double>()
-              .min;
-          final max = widget.options
-              .map((e) => (e as MortageAndRentLoanOption).lendRateMax)
-              .whereType<double>()
-              .max;
-          final avg = widget.options
-              .map((e) => (e as MortageAndRentLoanOption).lendRateAvg)
-              .whereType<double>()
-              .average;
-          return [min, avg, max];
-        } else {
-          return [];
-        }
-    }
-  }
-
-  Map<String, dynamic> _returnResult(
-    int principal,
-    double? rate,
-    int term,
-    int? savedTerm,
-    String type,
-  ) {
-    final keys = widget.mapOptions.keys.toList();
-    if (widget.category != ProductCategory.annuity && rate == null) {
-      return {};
-    }
-    final monthlyRate = (rate! / 100) / 12;
-    switch (widget.category) {
-      case ProductCategory.deposit:
-        final interest = (type == "단리")
-            ? principal * monthlyRate * term
-            : principal * (pow((1 + monthlyRate), term) - 1);
-        final tax = interest * 0.154;
-        final interestAfterTax = interest - tax;
-        return {
-          "예치금": principal,
-          "이자": interest.floorToDouble(),
-          "세후 이자(15.4%)": interestAfterTax.floorToDouble(),
-          "만기수령액": principal + interestAfterTax.floorToDouble(),
-        };
-      case ProductCategory.installment:
-        double interest = 0.0;
-        final monthlyDeposit = principal;
-        final totalPrincipal = monthlyDeposit * term;
-
-        if (type == "단리 정액적립식") {
-          interest = monthlyDeposit * monthlyRate * (term * (term + 1) / 2);
-        } else if (type == "복리 정액적립식") {
-          final totalAmount =
-              monthlyDeposit *
-              (1 + monthlyRate) *
-              (pow(1 + monthlyRate, term) - 1) /
-              monthlyRate;
-          interest = totalAmount - totalPrincipal;
-        } else if (type == "단리 자유적립식") {
-          final remainingTerm = term - savedTerm!;
-          interest = monthlyDeposit * monthlyRate * remainingTerm;
-        } else {
-          final remainingTerm = term - savedTerm!;
-          final totalAmount =
-              monthlyDeposit * pow(1 + monthlyRate, remainingTerm);
-          interest = totalAmount - monthlyDeposit.toDouble();
-        }
-        final tax = interest * 0.154;
-        final interestAfterTax = interest - tax;
-
-        return {
-          "총 납입원금": type.contains("자유적립식") ? principal : totalPrincipal,
-          "총 이자": interest.floorToDouble(),
-          "세후 이자(15.4%)": interestAfterTax.floorToDouble(),
-          "만기수령액":
-              ((type.contains("자유적립식") ? principal : totalPrincipal) +
-                      interestAfterTax)
-                  .floorToDouble(),
-        };
-      case ProductCategory.annuity:
-        final option = widget.options
-            .where(
-              (e) =>
-                  (e as AnnuitySavingsOption).monthlyPaymentName ==
-                      _selectedValues[keys[0]] &&
-                  e.receiptTermName == _selectedValues[keys[1]] &&
-                  e.paymentPeriodName == _selectedValues[keys[2]] &&
-                  e.entryAgeName == _selectedValues[keys[3]] &&
-                  e.startAgeName == _selectedValues[keys[4]],
-            )
-            .toList();
-        if ((option as List<AnnuitySavingsOption>).isNotEmpty) {
-          return {
-            "월 납입 금액": _selectedValues[keys[0]],
-            "연금 수령 기간": _selectedValues[keys[1]],
-            "납입 기간": _selectedValues[keys[2]],
-            "가입 연령": _selectedValues[keys[3]],
-            "개시 연령": _selectedValues[keys[4]],
-            "예상 수령액": option.first.monthlyReceiptAmount,
-          };
-        } else {
-          return {};
-        }
-      default:
-        final num = List.generate(term, (index) => index + 1);
-        List<double> monthlyPaymentList = []; // 월 납입금(원금 + 이자)
-        List<double> repaidPrincipalList = []; // 상환한 원금
-        List<double> interestList = []; // 매달 이자
-        List<double> remainingBalanceList = []; // 대출 잔액
-
-        switch (type) {
-          case "원리금균등상환방식":
-            for (final currentMonth in num) {
-              double monthlyPayment =
-                  principal *
-                  monthlyRate *
-                  pow(1 + monthlyRate, term) /
-                  (pow(1 + monthlyRate, term) - 1);
-              double previousBalance =
-                  principal *
-                  (pow(1 + monthlyRate, term) -
-                      pow(1 + monthlyRate, currentMonth - 1)) /
-                  (pow(1 + monthlyRate, term) - 1);
-              double interest = previousBalance * monthlyRate;
-              double repaidPrincipal = monthlyPayment - interest;
-              double remainingBalance = previousBalance - repaidPrincipal;
-
-              monthlyPaymentList.add(monthlyPayment.floorToDouble());
-              interestList.add(interest.floorToDouble());
-              repaidPrincipalList.add(repaidPrincipal.floorToDouble());
-              remainingBalanceList.add(remainingBalance.floorToDouble());
-            }
-            break;
-          case "원금균등상환방식":
-            for (final currentMonth in num) {
-              double repaidPrincipal = principal / term;
-              double previousBalance =
-                  principal - (repaidPrincipal * (currentMonth - 1));
-              double interest = previousBalance * monthlyRate;
-              double monthlyPayment = repaidPrincipal + interest;
-              double remainingBalance = previousBalance - repaidPrincipal;
-
-              repaidPrincipalList.add(repaidPrincipal.floorToDouble());
-              interestList.add(interest.floorToDouble());
-              monthlyPaymentList.add(monthlyPayment.floorToDouble());
-              remainingBalanceList.add(remainingBalance.floorToDouble());
-            }
-            break;
-          // 만기일시상환방식
-          default:
-            final interest = principal * monthlyRate;
-            interestList = List.generate(
-              term,
-              (index) => interest.floorToDouble(),
-            );
-            repaidPrincipalList = List.generate(term - 1, (index) => 0.0);
-            repaidPrincipalList.add(principal.floorToDouble());
-            monthlyPaymentList = List.generate(
-              term - 1,
-              (index) => interest.floorToDouble(),
-            );
-            monthlyPaymentList.add((interest + principal).floorToDouble());
-            remainingBalanceList = List.generate(
-              term - 1,
-              (index) => principal.floorToDouble(),
-            );
-            remainingBalanceList.add(0.0);
-        }
-        return {
-          "회차": num,
-          "월 납입금": monthlyPaymentList,
-          "상환 원금": repaidPrincipalList,
-          "이자": interestList,
-          "대출 잔액": remainingBalanceList,
-        };
-    }
   }
 
   @override
@@ -332,7 +81,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 _ => "대출 원금",
               }),
               const SizedBox(height: 2.0),
-              ..._displayDynamicWidgetList(widget.category, widget.mapOptions),
+              ..._displayDynamicWidgetList(
+                widget.category,
+                widget.mapOptions,
+                ref
+                    .read(calculatorScreenViewmodelProvider.notifier)
+                    .returnRate(
+                      widget.category,
+                      widget.options,
+                      _selectedValues,
+                    ),
+              ),
               const SizedBox(height: 32.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -510,43 +269,64 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     const SizedBox(height: 16.0),
                     _displayResult(
                       widget.category,
-                      _returnResult(
-                        int.parse(_money),
-                        (widget.category == ProductCategory.deposit ||
-                                widget.category == ProductCategory.installment)
-                            ? _returnRate(widget.category).firstOrNull
-                            : _sliderValue,
-                        switch (widget.category) {
-                          ProductCategory.deposit => int.parse(
-                            _selectedValues[widget.mapOptions.keys.first]!
-                                .substring(
-                                  0,
-                                  _selectedValues[widget.mapOptions.keys.first]!
-                                          .length -
-                                      2,
-                                ),
+                      ref
+                          .read(calculatorScreenViewmodelProvider.notifier)
+                          .returnResult(
+                            int.parse(_money),
+                            (widget.category == ProductCategory.deposit ||
+                                    widget.category ==
+                                        ProductCategory.installment)
+                                ? ref
+                                      .read(
+                                        calculatorScreenViewmodelProvider
+                                            .notifier,
+                                      )
+                                      .returnRate(
+                                        widget.category,
+                                        widget.options,
+                                        _selectedValues,
+                                      )
+                                      .firstOrNull
+                                : _sliderValue,
+                            switch (widget.category) {
+                              ProductCategory.deposit => int.parse(
+                                _selectedValues[widget.mapOptions.keys.first]!
+                                    .substring(
+                                      0,
+                                      _selectedValues[widget
+                                                  .mapOptions
+                                                  .keys
+                                                  .first]!
+                                              .length -
+                                          2,
+                                    ),
+                              ),
+                              ProductCategory.installment => int.parse(
+                                _selectedValues[widget.mapOptions.keys
+                                        .toList()[1]]!
+                                    .substring(
+                                      0,
+                                      _selectedValues[widget.mapOptions.keys
+                                                  .toList()[1]]!
+                                              .length -
+                                          2,
+                                    ),
+                              ),
+                              _ => int.parse(_period),
+                            },
+                            int.tryParse(_period),
+                            switch (widget.category) {
+                              ProductCategory.deposit =>
+                                _selectedValues[widget.mapOptions.keys.last]!,
+                              ProductCategory.installment =>
+                                "${_selectedValues[widget.mapOptions.keys.last]!} ${_selectedValues[widget.mapOptions.keys.first]!}",
+                              _ =>
+                                _selectedValues[widget.mapOptions.keys.first]!,
+                            },
+                            widget.category,
+                            widget.options,
+                            _selectedValues,
                           ),
-                          ProductCategory.installment => int.parse(
-                            _selectedValues[widget.mapOptions.keys.toList()[1]]!
-                                .substring(
-                                  0,
-                                  _selectedValues[widget.mapOptions.keys
-                                              .toList()[1]]!
-                                          .length -
-                                      2,
-                                ),
-                          ),
-                          _ => int.parse(_period),
-                        },
-                        int.tryParse(_period),
-                        switch (widget.category) {
-                          ProductCategory.deposit =>
-                            _selectedValues[widget.mapOptions.keys.last]!,
-                          ProductCategory.installment =>
-                            "${_selectedValues[widget.mapOptions.keys.last]!} ${_selectedValues[widget.mapOptions.keys.first]!}",
-                          _ => _selectedValues[widget.mapOptions.keys.first]!,
-                        },
-                      ),
                       int.parse(_period),
                     ),
                     const SizedBox(height: 40.0),
@@ -646,6 +426,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   List<Widget> _displayDynamicWidgetList(
     ProductCategory category,
     Map<String, List<String>> mapOptions,
+    List<double> rates,
   ) {
     final keys = mapOptions.keys.toList();
     return [
@@ -774,7 +555,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 onChanged: (value) {
                   setState(() {
                     _isPrefSelected = value!;
-                    if(_isSubmitted == true){
+                    if (_isSubmitted == true) {
                       _isSubmitted = false;
                     }
                   });
@@ -814,11 +595,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 ),
                 alignment: Alignment.centerRight,
                 child: normalText(
-                  (_returnRate(category).isNotEmpty &&
+                  (rates.isNotEmpty &&
                           _isPrefSelected == true &&
-                          _returnRate(category).last != -1.0)
-                      ? _returnRate(category).lastOrNull.toString()
-                      : _returnRate(category).firstOrNull.toString(),
+                          rates.last != -1.0)
+                      ? rates.lastOrNull.toString()
+                      : rates.firstOrNull.toString(),
                 ),
               ),
             ),
@@ -829,7 +610,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              (_returnRate(category).firstOrNull ?? 0.0).toString(),
+              (rates.firstOrNull ?? 0.0).toString(),
               style: const TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w400,
@@ -844,8 +625,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 ),
                 child: Slider(
                   divisions: null,
-                  min: _returnRate(category).firstOrNull ?? 0.0,
-                  max: _returnRate(category).lastOrNull ?? 20.0,
+                  min: rates.firstOrNull ?? 0.0,
+                  max: rates.lastOrNull ?? 20.0,
                   label: _sliderValue.toStringAsFixed(2),
                   value: _sliderValue,
                   onChanged: (value) {
@@ -859,7 +640,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ),
             ),
             Text(
-              (_returnRate(category).lastOrNull ?? 20.0).toString(),
+              (rates.lastOrNull ?? 20.0).toString(),
               style: const TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w400,
@@ -877,10 +658,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     Map<String, dynamic> map,
     int? term,
   ) {
-    if(map.isEmpty){
+    if (map.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(24.0),
-        child: Center(child: const Text("계산 결과를 제공할 수 없습니다", style: TextStyle(color: textPrimary, fontSize: 18.0, fontWeight: FontWeight.w600),)),
+        child: Center(
+          child: const Text(
+            "계산 결과를 제공할 수 없습니다",
+            style: TextStyle(
+              color: textPrimary,
+              fontSize: 18.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
       );
     }
     return (category == ProductCategory.mortage ||

@@ -1,7 +1,7 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
-import 'package:finbrain/provider/filters_provider.dart';
-import 'package:finbrain/provider/isa_provider.dart';
+import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/data/viewModel/isa_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
@@ -19,11 +19,11 @@ class IsaBaseScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dummyData = ref.watch(
       (category == IsaScreenCategory.join)
-          ? isaJoinProvider
-          : isaManagementProvider,
+          ? isaJoinStatusViewModelProvider
+          : isaManagementStatusViewModelProvider,
     );
 
-    final filters = ref.watch(filtersNotifierProvider);
+    final filters = ref.watch(filtersViewmodelProvider);
 
     final column = (category == IsaScreenCategory.join)
         ? ["ISA 종류", "회사 수", "가입자 수", "업권값"]
@@ -34,7 +34,10 @@ class IsaBaseScreen extends ConsumerWidget {
         const SizedBox(height: 16.0),
         ProductFilter(category: ProductCategory.isa),
         const SizedBox(height: 24.0),
-        SortOrFilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
+        SortOrFilterText(
+          category: FilterTextCategory.isa,
+          onSortCriteriaChanged: (criteria) {},
+        ),
         Expanded(
           child: Stack(
             children: [
@@ -52,23 +55,26 @@ class IsaBaseScreen extends ConsumerWidget {
                     dividerThickness: 0.0,
                     columns: [for (final label in column) columnText(label)],
                     rows: [
-                      for (final data in dummyData)
-                        DataRow(
-                          cells: [
-                            if (category == IsaScreenCategory.join) ...[
-                              dataCell((data as IsaJoinStatus).isaForm!),
-                              dataCell(data.companyCount.toString()),
-                              dataCell(data.joinMemberCount.toString()),
-                              dataCell(data.category!),
-                            ] else ...[
-                              dataCell((data as IsaManagementStatus).isaForm!),
-                              dataCell(data.businessDomain!),
-                              dataCell(data.includeAssetCtg!),
-                              dataCell(data.category!),
-                              dataCell(data.amount.toString())
+                      if (dummyData.valueOrNull != null)
+                        for (final data in dummyData.value!)
+                          DataRow(
+                            cells: [
+                              if (category == IsaScreenCategory.join) ...[
+                                dataCell((data as IsaJoinStatus).isaForm!),
+                                dataCell(data.companyCount.toString()),
+                                dataCell(data.joinMemberCount.toString()),
+                                dataCell(data.category!),
+                              ] else ...[
+                                dataCell(
+                                  (data as IsaManagementStatus).isaForm!,
+                                ),
+                                dataCell(data.businessDomain!),
+                                dataCell(data.includeAssetCtg!),
+                                dataCell(data.category!),
+                                dataCell(data.amount.toString()),
+                              ],
                             ],
-                          ],
-                        ),
+                          ),
                     ],
                   ),
                 ),

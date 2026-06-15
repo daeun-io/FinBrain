@@ -1,6 +1,6 @@
-import 'package:finbrain/provider/sort_or_filter_provider.dart';
-import 'package:finbrain/provider/filters_provider.dart';
-import 'package:finbrain/provider/searched_provider.dart';
+import 'package:finbrain/data/viewModel/product_viewmodel.dart';
+import 'package:finbrain/data/viewModel/searched_viewmodel.dart';
+import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
@@ -15,18 +15,17 @@ class IsaMpScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dummies = ref.watch(searchedProductProvider)(false);
-    final searchedList = ref.watch(searchedListProvider);
-    final filters = ref.watch(filtersNotifierProvider);
-    final textSort = ref.watch(sortOrFilterTextNotifierProvider(FilterTextCategory.isa));
+    final searchedList = ref.watch(searchedViewmodelProvider);
+    final products = ref.watch(productViewmodelProvider);
+    final textSort = ref.watch(sortOrFilterTextViewModelProvider(FilterTextCategory.isa));
 
     return Column(
       children: [
         const SizedBox(height: 16.0),
         SearchBox(
           searchItem: (value) {
-            ref.read(searchQueryProvider.notifier).state = value;
-            ref.read(searchedListProvider.notifier).addItem(value);
+            ref.read(productViewmodelProvider.notifier).filterByKeyword(value);
+            ref.read(searchedViewmodelProvider.notifier).addItem(value);
           },
           searchedList: searchedList,
         ),
@@ -35,7 +34,7 @@ class IsaMpScreen extends ConsumerWidget {
         const SizedBox(height: 24.0),
         SortOrFilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
         const SizedBox(height: 20),
-        if(dummies.isEmpty)
+        if(products.valueOrNull == null && products.value!.isEmpty)
           Expanded(
             child: Center(
               child: Text(
@@ -51,16 +50,16 @@ class IsaMpScreen extends ConsumerWidget {
         else
           Expanded(
             child: ListView.builder(
-              itemCount: dummies.length,
+              itemCount: products.value!.length,
               itemBuilder: (context, index) {
-                if(index >= dummies.length){
+                if(index >= products.value!.length){
                   return const SizedBox.shrink();
                 }
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: ProductItem(
-                    productName: dummies[index].commonInfo.productName!,
-                    sortCriteria: textSort.$1.toString(),
+                    productName: products.value![index].commonInfo.productName!,
+                    filterTextCategory: FilterTextCategory.isa,
                   ),
                 );
               },

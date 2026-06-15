@@ -1,51 +1,51 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'filters_provider.dart';
+part of 'filters_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filtersNotifierHash() => r'dc77925ceca99397df9ed75a6ecc5782a24f0c0c';
+String _$filtersViewmodelHash() => r'd284e3e4a3ff09d292868b70194a2f8c58535ecc';
 
-/// See also [FiltersNotifier].
-@ProviderFor(FiltersNotifier)
-final filtersNotifierProvider =
-    AutoDisposeNotifierProvider<
-      FiltersNotifier,
+/// See also [FiltersViewmodel].
+@ProviderFor(FiltersViewmodel)
+final filtersViewmodelProvider =
+    AutoDisposeAsyncNotifierProvider<
+      FiltersViewmodel,
       Map<String, List<(String, bool)>>
     >.internal(
-      FiltersNotifier.new,
-      name: r'filtersNotifierProvider',
+      FiltersViewmodel.new,
+      name: r'filtersViewmodelProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$filtersNotifierHash,
+          : _$filtersViewmodelHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$FiltersNotifier =
-    AutoDisposeNotifier<Map<String, List<(String, bool)>>>;
-String _$dialogFilterNotifierHash() =>
-    r'c85a43b6f08d016a2757a6f894753b3563acdd50';
+typedef _$FiltersViewmodel =
+    AutoDisposeAsyncNotifier<Map<String, List<(String, bool)>>>;
+String _$dialogFiltersViewModelHash() =>
+    r'b0fe9fe0b4ba6a9c91ec9bbd27d704b93fdede46';
 
-/// See also [DialogFilterNotifier].
-@ProviderFor(DialogFilterNotifier)
-final dialogFilterNotifierProvider =
+/// See also [DialogFiltersViewModel].
+@ProviderFor(DialogFiltersViewModel)
+final dialogFiltersViewModelProvider =
     AutoDisposeNotifierProvider<
-      DialogFilterNotifier,
+      DialogFiltersViewModel,
       Map<String, List<(String, bool)>>
     >.internal(
-      DialogFilterNotifier.new,
-      name: r'dialogFilterNotifierProvider',
+      DialogFiltersViewModel.new,
+      name: r'dialogFiltersViewModelProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$dialogFilterNotifierHash,
+          : _$dialogFiltersViewModelHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$DialogFilterNotifier =
+typedef _$DialogFiltersViewModel =
     AutoDisposeNotifier<Map<String, List<(String, bool)>>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

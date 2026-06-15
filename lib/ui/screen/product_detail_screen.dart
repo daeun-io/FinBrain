@@ -8,7 +8,8 @@ import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
-import 'package:finbrain/provider/product_provider.dart';
+import 'package:finbrain/data/viewModel/product_detail_screen_viewmodel.dart';
+import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
@@ -26,66 +27,12 @@ class ProductDetailScreen extends ConsumerWidget {
   final String productName;
   final ProductCategory category;
 
-  Map<String, List<String>> _mapProductOptions(
-    ProductCategory category,
-    List<dynamic> options,
-  ) {
-    List<String> keys = switch (category) {
-      ProductCategory.deposit => ["예치 기간", "저축 금리 유형"],
-      ProductCategory.installment => ["예치 종류", "예치 기간", "저축 금리 유형"],
-      ProductCategory.annuity => [
-        "월 납입 금액",
-        "연금 수령 기간",
-        "납입 기간",
-        "가입 연령",
-        "개시 연령",
-      ],
-      _ => ["상환 방법"],
-    };
-    final values = [];
-
-    switch (category) {
-      case ProductCategory.deposit:
-        values.add(
-          List.of((options as List<DepositAndInstallmentSavingsOption>).map(
-            (e) => "${e.saveTerm}개월",
-          ).toSet().toList()),
-        );
-        values.add(List.of(options.map((e) => e.intRateTypeName!).toSet().toList()));
-      case ProductCategory.installment:
-        values.add(
-          List.of((options as List<DepositAndInstallmentSavingsOption>).map(
-            (e) => e.reserveTypeName!,
-          ).toSet().toList()),
-        );
-        values.add(List.of(options.map((e) => "${e.saveTerm}개월").toSet().toList()));
-        values.add(List.of(options.map((e) => e.intRateTypeName!).toSet().toList()));
-      case ProductCategory.annuity:
-        values.add(
-          List.of((options as List<AnnuitySavingsOption>).map(
-            (e) => e.monthlyPaymentName!,
-          ).toSet().toList()),
-        );
-        values.add(List.of(options.map((e) => e.receiptTermName!).toSet().toList()));
-        values.add(List.of(options.map((e) => e.paymentPeriodName!).toSet().toList()));
-        values.add(List.of(options.map((e) => e.entryAgeName!).toSet().toList()));
-        values.add(List.of(options.map((e) => e.startAgeName!).toSet().toList()));
-      default:
-        values.add(["원리금균등상환방식", "원금균등상환방식", "만기일시상환방식"]);
-    }
-  
-    Map<String, List<String>> map = {
-      for(var i = 0; i < keys.length; i++) keys[i]:values[i]
-    };
-
-    return map;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final product = ref
-        .watch(productNotifierProvider)
-        .firstWhere((p) => p.commonInfo.productName == productName);
+    final products = ref.watch(productViewmodelProvider).valueOrNull;
+    final product = (products ?? []).firstWhere(
+      (p) => p.commonInfo.productName == productName,
+    );
 
     return Scaffold(
       backgroundColor: white,
@@ -111,7 +58,9 @@ class ProductDetailScreen extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () {
-              ref.read(productNotifierProvider.notifier).toggleLiked(productName);
+              ref
+                  .read(productViewmodelProvider.notifier)
+                  .toggleLiked(productName);
             },
             icon: product.commonInfo.isLiked
                 ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
@@ -190,10 +139,12 @@ class ProductDetailScreen extends ConsumerWidget {
                                 };
                                 return CalculatorScreen(
                                   category: category,
-                                  mapOptions: _mapProductOptions(
-                                    category,
-                                    options,
-                                  ),
+                                  mapOptions: ref
+                                      .read(
+                                        productDetailScreenViewmodelProvider
+                                            .notifier,
+                                      )
+                                      .mapProductOptions(category, options),
                                   options: options,
                                 );
                               },
@@ -374,12 +325,14 @@ class ProductDetailScreen extends ConsumerWidget {
         columnSpacing: 36.0,
         columns: [
           for (final column in columns)
-            DataColumn(label: Expanded(child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                dataTableCellText(column),
-              ],
-            ))),
+            DataColumn(
+              label: Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [dataTableCellText(column)],
+                ),
+              ),
+            ),
         ],
         rows: [
           if (category == ProductCategory.deposit)

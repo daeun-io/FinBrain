@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sort_or_filter_provider.dart';
+part of 'sort_or_filter_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sortOrFilterTextNotifierHash() =>
-    r'4e86c2a90d2cd51d27b5f987005db795e8ce46cb';
+String _$sortOrFilterTextViewModelHash() =>
+    r'c3aa69babf216ede8c17a77efd678f87fbfbc0ea';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,30 +30,30 @@ class _SystemHash {
   }
 }
 
-abstract class _$SortOrFilterTextNotifier
+abstract class _$SortOrFilterTextViewModel
     extends BuildlessAutoDisposeNotifier<(Object, List<String>)> {
   late final FilterTextCategory category;
 
   (Object, List<String>) build(FilterTextCategory category);
 }
 
-/// See also [SortOrFilterTextNotifier].
-@ProviderFor(SortOrFilterTextNotifier)
-const sortOrFilterTextNotifierProvider = SortOrFilterTextNotifierFamily();
+/// See also [SortOrFilterTextViewModel].
+@ProviderFor(SortOrFilterTextViewModel)
+const sortOrFilterTextViewModelProvider = SortOrFilterTextViewModelFamily();
 
-/// See also [SortOrFilterTextNotifier].
-class SortOrFilterTextNotifierFamily extends Family<(Object, List<String>)> {
-  /// See also [SortOrFilterTextNotifier].
-  const SortOrFilterTextNotifierFamily();
+/// See also [SortOrFilterTextViewModel].
+class SortOrFilterTextViewModelFamily extends Family<(Object, List<String>)> {
+  /// See also [SortOrFilterTextViewModel].
+  const SortOrFilterTextViewModelFamily();
 
-  /// See also [SortOrFilterTextNotifier].
-  SortOrFilterTextNotifierProvider call(FilterTextCategory category) {
-    return SortOrFilterTextNotifierProvider(category);
+  /// See also [SortOrFilterTextViewModel].
+  SortOrFilterTextViewModelProvider call(FilterTextCategory category) {
+    return SortOrFilterTextViewModelProvider(category);
   }
 
   @override
-  SortOrFilterTextNotifierProvider getProviderOverride(
-    covariant SortOrFilterTextNotifierProvider provider,
+  SortOrFilterTextViewModelProvider getProviderOverride(
+    covariant SortOrFilterTextViewModelProvider provider,
   ) {
     return call(provider.category);
   }
@@ -70,32 +70,32 @@ class SortOrFilterTextNotifierFamily extends Family<(Object, List<String>)> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'sortOrFilterTextNotifierProvider';
+  String? get name => r'sortOrFilterTextViewModelProvider';
 }
 
-/// See also [SortOrFilterTextNotifier].
-class SortOrFilterTextNotifierProvider
+/// See also [SortOrFilterTextViewModel].
+class SortOrFilterTextViewModelProvider
     extends
         AutoDisposeNotifierProviderImpl<
-          SortOrFilterTextNotifier,
+          SortOrFilterTextViewModel,
           (Object, List<String>)
         > {
-  /// See also [SortOrFilterTextNotifier].
-  SortOrFilterTextNotifierProvider(FilterTextCategory category)
+  /// See also [SortOrFilterTextViewModel].
+  SortOrFilterTextViewModelProvider(FilterTextCategory category)
     : this._internal(
-        () => SortOrFilterTextNotifier()..category = category,
-        from: sortOrFilterTextNotifierProvider,
-        name: r'sortOrFilterTextNotifierProvider',
+        () => SortOrFilterTextViewModel()..category = category,
+        from: sortOrFilterTextViewModelProvider,
+        name: r'sortOrFilterTextViewModelProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
             ? null
-            : _$sortOrFilterTextNotifierHash,
-        dependencies: SortOrFilterTextNotifierFamily._dependencies,
+            : _$sortOrFilterTextViewModelHash,
+        dependencies: SortOrFilterTextViewModelFamily._dependencies,
         allTransitiveDependencies:
-            SortOrFilterTextNotifierFamily._allTransitiveDependencies,
+            SortOrFilterTextViewModelFamily._allTransitiveDependencies,
         category: category,
       );
 
-  SortOrFilterTextNotifierProvider._internal(
+  SortOrFilterTextViewModelProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -109,16 +109,16 @@ class SortOrFilterTextNotifierProvider
 
   @override
   (Object, List<String>) runNotifierBuild(
-    covariant SortOrFilterTextNotifier notifier,
+    covariant SortOrFilterTextViewModel notifier,
   ) {
     return notifier.build(category);
   }
 
   @override
-  Override overrideWith(SortOrFilterTextNotifier Function() create) {
+  Override overrideWith(SortOrFilterTextViewModel Function() create) {
     return ProviderOverride(
       origin: this,
-      override: SortOrFilterTextNotifierProvider._internal(
+      override: SortOrFilterTextViewModelProvider._internal(
         () => create()..category = category,
         from: from,
         name: null,
@@ -132,16 +132,16 @@ class SortOrFilterTextNotifierProvider
 
   @override
   AutoDisposeNotifierProviderElement<
-    SortOrFilterTextNotifier,
+    SortOrFilterTextViewModel,
     (Object, List<String>)
   >
   createElement() {
-    return _SortOrFilterTextNotifierProviderElement(this);
+    return _SortOrFilterTextViewModelProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is SortOrFilterTextNotifierProvider &&
+    return other is SortOrFilterTextViewModelProvider &&
         other.category == category;
   }
 
@@ -156,24 +156,24 @@ class SortOrFilterTextNotifierProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin SortOrFilterTextNotifierRef
+mixin SortOrFilterTextViewModelRef
     on AutoDisposeNotifierProviderRef<(Object, List<String>)> {
   /// The parameter `category` of this provider.
   FilterTextCategory get category;
 }
 
-class _SortOrFilterTextNotifierProviderElement
+class _SortOrFilterTextViewModelProviderElement
     extends
         AutoDisposeNotifierProviderElement<
-          SortOrFilterTextNotifier,
+          SortOrFilterTextViewModel,
           (Object, List<String>)
         >
-    with SortOrFilterTextNotifierRef {
-  _SortOrFilterTextNotifierProviderElement(super.provider);
+    with SortOrFilterTextViewModelRef {
+  _SortOrFilterTextViewModelProviderElement(super.provider);
 
   @override
   FilterTextCategory get category =>
-      (origin as SortOrFilterTextNotifierProvider).category;
+      (origin as SortOrFilterTextViewModelProvider).category;
 }
 
 // ignore_for_file: type=lint
