@@ -15,7 +15,14 @@ class SortOrFilterTextViewModel extends _$SortOrFilterTextViewModel {
         "전전년도 수익률(높은 순)",
         "전전전년도 수익률(높은 순)",
       ],
-      FilterTextCategory.isa => ["최신순", "오래된 순"],
+      FilterTextCategory.isaJoin => [
+        "회사 수(오름차순)",
+        "회사 수(내림차순)",
+        "가입자 수(오름차순)",
+        "가입자 수(내림차순)",
+      ],
+      FilterTextCategory.isaManagement => ["금액/비율(오름차순)", "금액/비율(내림차순)"],
+      FilterTextCategory.isaMp => ["평균 수익률(높은 순)", "중위 수익률(높은 순)"],
       FilterTextCategory.liked => [
         "모든 상품",
         "정기예금",
@@ -28,14 +35,14 @@ class SortOrFilterTextViewModel extends _$SortOrFilterTextViewModel {
       ],
     };
 
-    if(category == FilterTextCategory.liked){
+    if (category == FilterTextCategory.liked) {
       return ([optionList[0]], optionList);
-    }else{
+    } else {
       return (optionList[0], optionList);
     }
   }
-
-  void changeCriteria(dynamic criteria){
+  
+  void changeCriteria(dynamic criteria) {
     state = (criteria, state.$2);
   }
 }

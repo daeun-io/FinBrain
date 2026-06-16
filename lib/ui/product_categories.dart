@@ -20,7 +20,9 @@ enum IsaScreenCategory{
 
 enum FilterTextCategory{
   savings,
-  isa,
+  isaJoin,
+  isaManagement,
+  isaMp,
   loan,
   annuity,
   liked

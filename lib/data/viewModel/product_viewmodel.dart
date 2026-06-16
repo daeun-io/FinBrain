@@ -3,6 +3,7 @@ import 'package:finbrain/data/model/entities/annuity_savings.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/repository/product_repository.dart';
 import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
@@ -147,9 +148,19 @@ class ProductViewmodel extends _$ProductViewmodel {
             ),
           }),
         );
-      // todo: implement later
       default:
-        state = AsyncData(dummyData);
+        // todo: 평균 수익률, 중위 수익률 비교 연산은 데이터 구조 변경 후 진행
+        state = AsyncData(
+          products..sort(switch (criteria) {
+            "평균 수익률(높은 순)" =>
+              (a, b) => (b as IsaMpBenefitRate).benefitRate!.compareTo(
+                (a as IsaMpBenefitRate).benefitRate!,
+              ),
+            _ => (a, b) => (b as IsaMpBenefitRate).benefitRate!.compareTo(
+              (a as IsaMpBenefitRate).benefitRate!,
+            ),
+          }),
+        );
     }
   }
 

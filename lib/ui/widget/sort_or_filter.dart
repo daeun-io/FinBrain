@@ -1,10 +1,8 @@
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/product_categories.dart';
-import 'package:finbrain/ui/widget/year_picker_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class SortOrFilterText extends ConsumerStatefulWidget {
   const SortOrFilterText({
@@ -20,29 +18,19 @@ class SortOrFilterText extends ConsumerStatefulWidget {
 }
 
 class _FilterTextState extends ConsumerState<SortOrFilterText> {
-  late int selectedYear;
-  late List<int> years;
-  late String text;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedYear = DateTime.now().year;
-    years =
-        (List.generate(25, (index) => DateTime.now().year - index) +
-              List.generate(25, (index) => DateTime.now().year + index))
-          ..removeAt(0)
-          ..sort();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final filter = ref.watch(sortOrFilterTextViewModelProvider(widget.category));
-    String selectedOption = (widget.category == FilterTextCategory.liked) ? (filter.$1 as List<String>).join(", "): filter.$1.toString();
-    List<String> selectedOptions = (widget.category == FilterTextCategory.liked) ? filter.$1 as List<String> : [];
-    String text = (widget.category == FilterTextCategory.isa)
-        ? "$selectedYear 기준, $selectedOption"
-        : selectedOption;
+    final filter = ref.watch(
+      sortOrFilterTextViewModelProvider(widget.category),
+    );
+    String selectedOption = switch (widget.category) {
+      FilterTextCategory.liked => (filter.$1 as List<String>).join(", "),
+      _ => filter.$1.toString(),
+    };
+    List<String> selectedOptions = (widget.category == FilterTextCategory.liked)
+        ? filter.$1 as List<String>
+        : [];
+    String text = selectedOption;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -90,9 +78,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                     } else if (selectedOptions.contains(
                                       filter.$2[index],
                                     )) {
-                                      selectedOptions.remove(
-                                        filter.$2[index],
-                                      );
+                                      selectedOptions.remove(filter.$2[index]);
                                     } else {
                                       selectedOptions.add(filter.$2[index]);
                                       selectedOptions.remove(filter.$2[0]);
@@ -116,9 +102,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                       .changeCriteria(selectedOptions);
                                 },
                                 icon:
-                                    (selectedOptions.contains(
-                                      filter.$2[index],
-                                    ))
+                                    (selectedOptions.contains(filter.$2[index]))
                                     ? const Icon(
                                         Icons.check_circle,
                                         size: 24.0,
@@ -135,18 +119,14 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                 onPressed: () {
                                   setModalState(() {
                                     selectedOption = filter.$2[index];
+                                    if (selectedOption.isNotEmpty) {
+                                      widget.onSortCriteriaChanged(
+                                        selectedOption,
+                                      );
+                                    }
                                   });
                                   setState(() {
-                                    if (widget.category ==
-                                        FilterTextCategory.isa) {
-                                      text =
-                                          "$selectedYear년 기준, ${filter.$2[index]}";
-                                    } else {
-                                      text = filter.$2[index];
-                                    }
-                                    if (text.isNotEmpty) {
-                                      widget.onSortCriteriaChanged(text);
-                                    }
+                                    text = filter.$2[index];
                                   });
                                   ref
                                       .read(
@@ -194,42 +174,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                             ),
                           ),
                           const SizedBox(height: 28.0),
-                          if (widget.category == FilterTextCategory.isa)
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: PageView(
-                                      controller: pageController,
-                                      children: [
-                                        YearPickerPage(
-                                          selectedYear: selectedYear,
-                                          yearsList: years,
-                                          onYearChanged: (value) {
-                                            selectedYear = value;
-                                          },
-                                        ),
-                                        optionView,
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16.0),
-                                  SmoothPageIndicator(
-                                    controller: pageController,
-                                    count: 2,
-                                    effect: ScrollingDotsEffect(
-                                      spacing: 10.0,
-                                      dotWidth: 8.0,
-                                      dotHeight: 8.0,
-                                      dotColor: primary300,
-                                      activeDotColor: primary700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          else
-                            Expanded(child: optionView),
+                          Expanded(child: optionView),
                         ],
                       ),
                     );

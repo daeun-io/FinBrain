@@ -17,7 +17,7 @@ class IsaMpScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final searchedList = ref.watch(searchedViewmodelProvider);
     final products = ref.watch(productViewmodelProvider);
-    final textSort = ref.watch(sortOrFilterTextViewModelProvider(FilterTextCategory.isa));
+    final textSort = ref.watch(sortOrFilterTextViewModelProvider(FilterTextCategory.isaMp));
 
     return Column(
       children: [
@@ -32,7 +32,9 @@ class IsaMpScreen extends ConsumerWidget {
         const SizedBox(height: 16.0),
         ProductFilter(category: ProductCategory.isa,),
         const SizedBox(height: 24.0),
-        SortOrFilterText(category: FilterTextCategory.isa, onSortCriteriaChanged: (criteria){},),
+        SortOrFilterText(category: FilterTextCategory.isaMp, onSortCriteriaChanged: (criteria){
+          ref.read(productViewmodelProvider.notifier).sortByCriteria(criteria, ProductCategory.isa);
+        },),
         const SizedBox(height: 20),
         if(products.valueOrNull == null && products.value!.isEmpty)
           Expanded(
@@ -59,7 +61,7 @@ class IsaMpScreen extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: ProductItem(
                     productName: products.value![index].commonInfo.productName!,
-                    filterTextCategory: FilterTextCategory.isa,
+                    filterTextCategory: FilterTextCategory.isaMp,
                   ),
                 );
               },

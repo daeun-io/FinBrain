@@ -35,8 +35,18 @@ class IsaBaseScreen extends ConsumerWidget {
         ProductFilter(category: ProductCategory.isa),
         const SizedBox(height: 24.0),
         SortOrFilterText(
-          category: FilterTextCategory.isa,
-          onSortCriteriaChanged: (criteria) {},
+          category: (category == IsaScreenCategory.join)
+              ? FilterTextCategory.isaJoin
+              : FilterTextCategory.isaManagement,
+          onSortCriteriaChanged: (criteria) {
+            (category == IsaScreenCategory.join)
+                ? ref
+                      .read(isaJoinStatusViewModelProvider.notifier)
+                      .sortByCriteria(criteria)
+                : ref
+                      .read(isaManagementStatusViewModelProvider.notifier)
+                      .sortByCriteria(criteria);
+          },
         ),
         Expanded(
           child: Stack(
