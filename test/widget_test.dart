@@ -9,7 +9,7 @@ import 'package:finbrain/ui/screen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:finbrain/ui/main.dart';
+import 'package:finbrain/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
