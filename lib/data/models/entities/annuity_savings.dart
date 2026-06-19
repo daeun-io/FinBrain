@@ -1,4 +1,4 @@
-import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/data/models/entities/financial_product.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'annuity_savings_option.dart';
 
@@ -50,7 +50,6 @@ class AnnuitySavings extends FinancialProduct {
     required String? endDay,
     required String? submittedDay,
     required List<String>? joinWay,
-    required String? url,
     required bool isLiked,
     
     required this.pensionKind,
@@ -80,7 +79,6 @@ class AnnuitySavings extends FinancialProduct {
            endDay: endDay,
            submittedDay: submittedDay,
            joinWay: joinWay,
-           url: url,
            isLiked: isLiked,
          ),
        );
@@ -99,7 +97,6 @@ class AnnuitySavings extends FinancialProduct {
       endDay: commonInfo.endDay,
       submittedDay: commonInfo.submittedDay,
       joinWay: commonInfo.joinWay,
-      url: commonInfo.url,
       pensionKind: pensionKind,
       pensionKindName: pensionKindName,
       saleStartDay: saleStartDay,

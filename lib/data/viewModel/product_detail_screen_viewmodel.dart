@@ -1,5 +1,5 @@
-import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
-import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
+import 'package:finbrain/data/models/entities/annuity_savings_option.dart';
+import 'package:finbrain/data/models/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/ui/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_detail_screen_viewmodel.g.dart';

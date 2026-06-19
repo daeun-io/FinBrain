@@ -25,7 +25,6 @@ class CommonInfo {
   final String? endDay;
   final String? submittedDay;
   final List<String>? joinWay;
-  final String? url;
   var isLiked = false;
 
   CommonInfo({
@@ -39,7 +38,6 @@ class CommonInfo {
     this.endDay,
     this.submittedDay,
     this.joinWay,
-    required this.url,
     required this.isLiked,
   });
 }

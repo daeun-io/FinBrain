@@ -1,7 +1,7 @@
-import 'package:finbrain/data/model/entities/annuity_savings.dart';
-import 'package:finbrain/data/model/entities/credit_loan.dart';
-import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
+import 'package:finbrain/data/models/entities/annuity_savings.dart';
+import 'package:finbrain/data/models/entities/credit_loan.dart';
+import 'package:finbrain/data/models/entities/deposit_and_installment_savings.dart';
+import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';

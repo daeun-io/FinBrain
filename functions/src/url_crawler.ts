@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions";
+import { onRequest } from "firebase-functions/https";
 
 const USER_AGENT =
   "Mozilla/5.0 (compatible; FinbrainBot/1.0; +https://github.com/finbrain)";
@@ -32,13 +32,20 @@ function extractFirstResultUrl(html: string): string | null {
   return null;
 }
 
-export const searchProductUrl = functions.https.onCall(async (request: functions.https.CallableRequest<ProductUrlInput>) => {
-  // call auth later
-  const { data } = request;
-  const query = encodeURIComponent(`${data.cmpyNm} ${data.prdtNm}`);
-  const searchUrl = `https://html.duckduckgo.com/html/?q=${query}`;
-
+export const searchProductUrl = onRequest( async (request, response) => {
+  response.set("Access-Control-Allow-Origin", "*");
+  
   try {
+    const { cmpyNm, prdtNm } = request.query;
+
+    if(!cmpyNm || !prdtNm){
+      response.status(400).send("Give proper arguments");
+      return;
+    }
+
+    const query = encodeURIComponent(`${cmpyNm} ${prdtNm}`);
+    const searchUrl = `https://html.duckduckgo.com/html/?q=${query}`;
+
     const res = await fetch(searchUrl, {
       headers: {
         "Accept": "text/html",
@@ -46,19 +53,25 @@ export const searchProductUrl = functions.https.onCall(async (request: functions
       },
     });
 
-    if (!res.ok) return "";
-
+    if (!res.ok){
+      response.status(res.status).send("Failed to load API");
+      return;
+    }
+    
     const html = await res.text();
     const result = extractFirstResultUrl(html) ?? "";
+
     if(result == ""){
-      return { success: false, data: result };
+      response.status(200).send("No result found");
     }else{
-      return { success: true, data: result };
+      response.status(200).send(result);
     }
-  }catch(error){
+  
+  }catch (error){
     console.log(error);
-    throw new functions.https.HttpsError("internal", String(error));
+    response.status(500).send(error);
   }
+
 });
 // export async function searchProductUrl(
   // companyName: string,

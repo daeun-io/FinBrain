@@ -1,0 +1,87 @@
+import 'dart:convert';
+import 'package:finbrain/data/models/request/finlife_search_options.dart';
+import 'package:finbrain/data/models/request/isa_search_options.dart';
+import 'package:http/http.dart' as http;
+import 'package:finbrain/data/api_constants.dart';
+import 'package:finbrain/ui/product_categories.dart';
+import 'package:xml2json/xml2json.dart';
+
+class ProductRemoteDataSource {
+  final http.Client _client;
+  ProductRemoteDataSource(this._client);
+
+  Future<Map<String, Object>> fetchFinlifeProducts(
+    ProductCategory ctg,
+    FinlifeSearchOptions options,
+  ) async {
+    final uri = switch (ctg) {
+      ProductCategory.deposit => Uri.http(
+        '$ApiConstants.finlife',
+        '/depositProductsSearch.xml',
+        options.toQueryParams(),
+      ),
+      ProductCategory.installment => Uri.http(
+        '$ApiConstants.finlife',
+        '/savingProductsSearch.xml',
+        options.toQueryParams(),
+      ),
+      ProductCategory.annuity => Uri.http(
+        '$ApiConstants.finlife',
+        '/savingProductsSearch.xml',
+        options.toQueryParams(),
+      ),
+      ProductCategory.mortage => Uri.http(
+        '$ApiConstants.finlife',
+        '/mortgageLoanProductsSearch.xml',
+        options.toQueryParams(),
+      ),
+      ProductCategory.rent => Uri.http(
+        '$ApiConstants.finlife',
+        '/rentHouseLoanProductsSearch.xml',
+        options.toQueryParams(),
+      ),
+      _ => Uri.http(
+        '$ApiConstants.finlife',
+        '/creditLoanProductsSearch.xml',
+        options.toQueryParams(),
+      ),
+    };
+
+    try {
+      final res = await _client.get(uri);
+
+      if (res.statusCode == 200) {
+        final formatter = Xml2Json();
+        formatter.parse(res.body);
+        final jsonStr = formatter.toParker();
+        final Map<String, Object> jsonMap = jsonDecode(jsonStr);
+        return jsonMap;
+      } else {
+        throw Exception("Failed to load data, ${res.statusCode}");
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
+    }
+  }
+
+  Future<Map<String, Object>> fetchIsaMpProducts(
+    IsaSearchOptions options,
+  ) async {
+    final uri = Uri.https(
+      "$ApiConstants.firebase",
+      "/fetchAndGroupProducts",
+      options.toQueryParams(),
+    );
+
+    try {
+      final res = await _client.get(uri);
+      if (res.statusCode == 200) {
+        return jsonDecode(res.body) as Map<String, Object>;
+      } else {
+        throw Exception("Failed to load data, ${res.statusCode}");
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
+    }
+  }
+}

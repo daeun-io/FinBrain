@@ -1,8 +1,7 @@
-import * as functions from "firebase-functions";
+import { onRequest } from "firebase-functions/https";
 import { XMLParser } from "fast-xml-parser";
 import type { CmpyNameApiResponse } from "./cmpy_types";
 import { transformToCmpyName } from "./cmpy_transform";
-import { FetchOptions } from "./fetch_options";
 
 const xmlParser = new XMLParser({
   ignoreAttributes: true,
@@ -20,30 +19,28 @@ export function parseXmlToCmpyName(xml: string): CmpyNameApiResponse {
 }
 
 // API 호출 후 Json 반환
-export const fetchCmpyNameList = functions.https.onCall(async (request: functions.https.CallableRequest<FetchOptions>) => {
-  // call auth later
-  const { data } = request;
-  const url = new URL(data.url);
-  url.searchParams.set("auth", data.key);
-  url.searchParams.set("topFinGrpNo", String(data.topFinGrpNo));
-  url.searchParams.set("pageNo", String(data.pageNo));
+export const fetchCmpyNameList = onRequest(async (request, response) => {
+  response.set("Access-Control-Allow-Origin", "*");
 
   try {
-    const res = await fetch(url, {
-      headers: {Accept: "application/xml, text/xml"},
-    });
+    const auth = request.query.auth as string;
+    const pageNo = request.query.pageNo as string;
+    const topFinGrpNo = request.query.topFinGrpNo as string;
+    const url = `http://finlife.fss.or.kr/finlifeapi/companySearch.xml?key:${auth}&topFinGrpNo=${topFinGrpNo}&pageNo=${pageNo}`;
 
-    if (!res.ok) {
-      throw new Error(`Failed to call API: ${res.status} ${res.statusText}`);
+    const res = await fetch(url);
+    if(!res.ok){
+      response.status(res.status).send("Failed to load API");
+      return;
     }
-
+    
     const xml = await res.text();
     const parsed = parseXmlToCmpyName(xml);
-    return { success: true, data: parsed };
+    response.status(200).json(parsed);
 
-  }catch(error) {
-    console.error(error);
-    throw new functions.https.HttpsError("internal", String(error));
+  } catch(error){
+    console.error("Error occurred", error);
+    response.status(500).send("Internal servere error");
   }
 });
 

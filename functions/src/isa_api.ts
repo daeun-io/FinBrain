@@ -1,30 +1,30 @@
-import * as functions from "firebase-functions";
+import { onRequest } from "firebase-functions/https";
 import { transformApiResponse } from "./isa_transform";
-import { FetchOptions } from "./fetch_options";
 
-export const fetchAndGroupProducts = functions.https.onCall(async (request: functions.https.CallableRequest<FetchOptions>) => {
-  // call auth later
-  const { data } = request;
-  const url = new URL(data.url);
-  url.searchParams.set("serviceKey", data.key);
-  url.searchParams.set("pageNo", String(data.pageNo));
-  url.searchParams.set("numOfRows", String(data.numOfRows));
-  url.searchParams.set("resultType", "json");
+export const fetchAndGroupProducts = onRequest(async (request, response) => {
+  response.set("Access-Control-Allow-Origin", "*");
 
   try {
+    const serviceKey = request.query.serviceKey as string;
+    const resultType = request.query.resultType as string;
+    const pageNo = request.query.pageNo as string;
+    const numOfRows = request.query.numOfRows as string;
+    const url = `https://apis.data.go.kr/1160100/GetISAInfoService_V2/getMPBenefitRateInfo_V2?key:${serviceKey}&resultType=${resultType}&pageNo=${pageNo}&numOfRows=${numOfRows}`;
+
     const res = await fetch(url);
 
-    if (!res.ok) {
-      throw new Error(`Failed to call API: ${res.status} ${res.statusText}`);
+    if(!res.ok){
+      response.status(res.status).send("Failed to load API");
+      return;
     }
-    
+
     const raw = await res.json();
     const transformed = transformApiResponse(raw);
-    return { success: true, data: transformed };
+    response.status(200).send(transformed);
 
-  }catch(error){
-    console.error(error);
-    throw new functions.https.HttpsError("internal", String(error));
+  } catch(error) {
+    console.error("Error occurred", error);
+    response.status(500).send("Internal servere error");
   }
 });
 

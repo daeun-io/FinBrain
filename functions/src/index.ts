@@ -35,7 +35,10 @@ import { searchProductUrl } from "./url_crawler";
 // this will be the maximum concurrent request count.
 
 
-export { fetchAndGroupProducts, fetchCmpyNameList, searchProductUrl };
+exports.fetchAndGroupProducts = fetchAndGroupProducts;
+exports.fetchCmpyNameList = fetchCmpyNameList;
+exports.searchProductUrl = searchProductUrl;
+
 // export const helloWorld = onRequest((request, response) => {
 //   logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");

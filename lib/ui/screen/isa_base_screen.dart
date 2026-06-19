@@ -1,5 +1,5 @@
-import 'package:finbrain/data/model/entities/isa_join_status.dart';
-import 'package:finbrain/data/model/entities/isa_management_status.dart';
+import 'package:finbrain/data/models/entities/isa_join_status.dart';
+import 'package:finbrain/data/models/entities/isa_management_status.dart';
 import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/data/viewModel/isa_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';

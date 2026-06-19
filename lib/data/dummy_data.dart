@@ -1,11 +1,11 @@
-import 'package:finbrain/data/model/entities/annuity_savings.dart';
-import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
-import 'package:finbrain/data/model/entities/credit_loan.dart';
-import 'package:finbrain/data/model/entities/credit_loan_option.dart';
-import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
-import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
+import 'package:finbrain/data/models/entities/annuity_savings.dart';
+import 'package:finbrain/data/models/entities/annuity_savings_option.dart';
+import 'package:finbrain/data/models/entities/credit_loan.dart';
+import 'package:finbrain/data/models/entities/credit_loan_option.dart';
+import 'package:finbrain/data/models/entities/deposit_and_installment_savings_option.dart';
+import 'package:finbrain/data/models/entities/deposit_and_installment_savings.dart';
+import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
+import 'package:finbrain/data/models/entities/mortage_and_rent_loan_option.dart';
 import 'package:finbrain/ui/product_categories.dart';
 
 final dummyData = [
@@ -21,7 +21,6 @@ final dummyData = [
     submittedDay: "201609201028",
     joinWay: ["영업점","인터넷","스마트폰"],
     isLiked: false,
-    url: "",
     interestAfterExpiration: """만기 후
 		  - 1개월이내 : 만기시점약정이율×50%
 		  - 1개월초과 6개월이내: 만기시점약정이율×30%
@@ -72,7 +71,6 @@ final dummyData = [
     submittedDay: "201609201049",
     joinWay: ["영업점"],
     isLiked: false,
-    url: "",
     interestAfterExpiration: """만기 후
 - 1개월이내 : 만기시점약정이율×50%
 - 1개월초과 6개월이내: 만기시점약정이율×30%
@@ -166,7 +164,6 @@ final dummyData = [
     submittedDay: "201601191355",
     joinWay: ["영업점","모집인"],
     isLiked: false,
-    url: "",
     extraExpense: """
     - 인지세 : 해당세액의 50%(대출금액 4천만원 이하시 없음)
 		- 국민주택채권 매입 : 대출금액 × 120% × 1% × 채권할인율
@@ -218,7 +215,6 @@ final dummyData = [
     submittedDay: "201601191355",
     joinWay: ["영업점","모집인"],
     isLiked: false,
-    url: "",
     extraExpense: """
     - 인지세 : 해당세액의 50%(대출금액 4천만원 이하시 없음)
     - 주택신보출연료 : 0.29%
@@ -270,7 +266,6 @@ final dummyData = [
     submittedDay: "201601191355",
     joinWay: ["영업점","인터넷","스마트폰"],
     isLiked: false,
-    url: "",
     cbName: "KCB",
     productType: "1",
     productTypeName: "일반신용대출",
@@ -328,7 +323,6 @@ final dummyData = [
     submittedDay: "201510301534",
     joinWay: ["영업점","인터넷","스마트폰","모집인","전화(텔레뱅킹)","기타"],
     isLiked: false,
-    url: null,
     pensionKind: "4",
     pensionKindName: "연금저축펀드",
     saleStartDay: "20010201",
@@ -388,7 +382,6 @@ final dummyDeposit = [
     submittedDay: "201609201028",
     joinWay: ["영업점","인터넷","스마트폰"],
     isLiked: false,
-    url: "",
     interestAfterExpiration: """만기 후
 	  - 1개월이내 : 만기시점약정이율×50%
 	  - 1개월초과 6개월이내: 만기시점약정이율×30%
@@ -438,7 +431,6 @@ final dummyDeposit = [
     submittedDay: "201609201028",
     joinWay: ["영업점","인터넷","스마트폰"],
     isLiked: false,
-    url: "",
     interestAfterExpiration: """만기 후
 	  - 1개월이내 : 만기시점약정이율×50%
 	  - 1개월초과 6개월이내: 만기시점약정이율×30%
@@ -488,7 +480,6 @@ final dummyDeposit = [
     submittedDay: "201609201028",
     joinWay: ["영업점","인터넷","스마트폰"],
     isLiked: false,
-    url: "",
     interestAfterExpiration: """만기 후
 	  - 1개월이내 : 만기시점약정이율×50%
 	  - 1개월초과 6개월이내: 만기시점약정이율×30%

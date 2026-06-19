@@ -1,7 +1,6 @@
 export interface FetchOptions{
-  url: string;
   key: string;
-  pageNo: number;
+  pageNo: string;
   topFinGrpNo? : string;
-  numOfRows?: number;
+  numOfRows?: string;
 }
