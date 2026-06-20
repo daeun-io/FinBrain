@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:finbrain/data/models/entities/financial_product.dart';
 import 'package:finbrain/data/models/entities/deposit_and_installment_savings_option.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 
 // 정기예금, 적금
 class DepositAndInstallmentSavings extends FinancialProduct {

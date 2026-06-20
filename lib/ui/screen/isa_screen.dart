@@ -1,5 +1,5 @@
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';
 import 'package:finbrain/ui/screen/isa_mp_screen.dart';
 import 'package:flutter/material.dart';

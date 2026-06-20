@@ -5,11 +5,9 @@ export const fetchAndGroupProducts = onRequest(async (request, response) => {
   response.set("Access-Control-Allow-Origin", "*");
 
   try {
-    const serviceKey = request.query.serviceKey as string;
-    const resultType = request.query.resultType as string;
-    const pageNo = request.query.pageNo as string;
-    const numOfRows = request.query.numOfRows as string;
-    const url = `https://apis.data.go.kr/1160100/GetISAInfoService_V2/getMPBenefitRateInfo_V2?key:${serviceKey}&resultType=${resultType}&pageNo=${pageNo}&numOfRows=${numOfRows}`;
+    const baseUrl = "https://apis.data.go.kr/1160100/GetISAInfoService_V2/getMPBenefitRateInfo_V2?";
+    const queries = new URLSearchParams(request.query as any).toString();
+    const url = `${baseUrl}${queries}`;
 
     const res = await fetch(url);
 

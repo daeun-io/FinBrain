@@ -6,7 +6,7 @@ import 'package:finbrain/data/models/entities/deposit_and_installment_savings_op
 import 'package:finbrain/data/models/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/models/entities/mortage_and_rent_loan_option.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 
 final dummyData = [
   DepositAndInstallmentSavings(

@@ -1,6 +1,6 @@
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';

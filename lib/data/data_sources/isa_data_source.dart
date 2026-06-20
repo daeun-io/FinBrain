@@ -1,20 +1,21 @@
 import 'dart:convert';
 import 'package:finbrain/data/api_constants.dart';
+import 'package:finbrain/data/models/request/isa_search_options.dart';
 import 'package:http/http.dart' as http;
 
 class IsaRemoteDataSource {
   final http.Client _client;
   IsaRemoteDataSource(this._client);
 
-  Future<Map<String, Object>> fetchJoinStatus(
-    String pageNo,
-    String numOfRows,
+  Future<Map<String, dynamic>> fetchJoinStatus(
+    IsaSearchOptions options,
+    String domain,
+    String isaForm,
   ) async {
     final queryParams = {
-      "serviceKey": "",
-      "resultType": "json",
-      "pageNo": pageNo,
-      "numOfRows": numOfRows,
+      ...options.toQueryParams(),
+      "ctg": domain,
+      "likeIsaForm": isaForm,
     };
     final uri = Uri.http(ApiConstants.isa, "/getJoinStatus_V2", queryParams);
 
@@ -30,17 +31,17 @@ class IsaRemoteDataSource {
     }
   }
 
-  Future<Map<String, Object>> fetchManagementStatus(
-    String pageNo,
-    String numOfRows,
+  Future<Map<String, dynamic>> fetchManagementStatus(
+    IsaSearchOptions options,
     String ctg,
+    String domain,
+    String isaForm,
   ) async {
     final queryParams = {
-      "serviceKey": "",
-      "resultType": "json",
-      "pageNo": pageNo,
-      "numOfRows": numOfRows,
-      "ctg": ctg
+      ...options.toQueryParams(),
+      "ctg": ctg,
+      "bzds": domain,
+      "likeIsaForm": isaForm,
     };
     final uri = Uri.http(
       ApiConstants.isa,

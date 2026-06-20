@@ -11,7 +11,7 @@ import 'package:finbrain/data/models/entities/mortage_and_rent_loan_option.dart'
 import 'package:finbrain/data/viewModel/product_detail_screen_viewmodel.dart';
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:flutter/material.dart';

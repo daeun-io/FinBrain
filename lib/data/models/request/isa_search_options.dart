@@ -3,12 +3,14 @@ class IsaSearchOptions {
   final String resultType;
   final String pageNo;
   final String numOfRows;
+  final String baseYearMonth;
 
   IsaSearchOptions({
     required this.serviceKey,
     required this.resultType,
     required this.pageNo,
-    required this.numOfRows
+    required this.numOfRows,
+    required this.baseYearMonth,
   });
 
   Map<String, String> toQueryParams(){
@@ -16,7 +18,8 @@ class IsaSearchOptions {
        "serviceKey": serviceKey,
        "resultType": resultType,
        "pageNo": pageNo,
-       "numOfRows": numOfRows
+       "numOfRows": numOfRows,
+       "likeBasDt": baseYearMonth,
     };
   }
 }

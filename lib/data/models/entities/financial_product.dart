@@ -1,5 +1,5 @@
 // 공통 정보
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 
 class CommonInfo {
   // 프로퍼티명(필드명): 의미

@@ -23,10 +23,9 @@ export const fetchCmpyNameList = onRequest(async (request, response) => {
   response.set("Access-Control-Allow-Origin", "*");
 
   try {
-    const auth = request.query.auth as string;
-    const pageNo = request.query.pageNo as string;
-    const topFinGrpNo = request.query.topFinGrpNo as string;
-    const url = `http://finlife.fss.or.kr/finlifeapi/companySearch.xml?key:${auth}&topFinGrpNo=${topFinGrpNo}&pageNo=${pageNo}`;
+    const baseUrl = "http://finlife.fss.or.kr/finlifeapi/companySearch.xml";
+    const queries = new URLSearchParams(request.query as any).toString();
+    const url = `${baseUrl}${queries}`;
 
     const res = await fetch(url);
     if(!res.ok){

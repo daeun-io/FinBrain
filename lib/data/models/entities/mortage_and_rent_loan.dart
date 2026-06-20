@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:finbrain/data/models/entities/financial_product.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'mortage_and_rent_loan_option.dart';
 
 // 주택담보대출 & 전세자금대출

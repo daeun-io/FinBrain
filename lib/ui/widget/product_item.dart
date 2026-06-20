@@ -5,7 +5,7 @@ import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

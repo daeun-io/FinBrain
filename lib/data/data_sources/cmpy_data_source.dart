@@ -8,7 +8,7 @@ class CmpyRemoteDataSource {
   final http.Client _client;
   CmpyRemoteDataSource(this._client);
 
-  Future<Map<String, Object>> fetchCmpyNames(
+  Future<Map<String, dynamic>> fetchCmpyNames(
     FinlifeSearchOptions options,
   ) async {
     final uri = Uri.https(
@@ -20,7 +20,7 @@ class CmpyRemoteDataSource {
     try {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {
-        return jsonDecode(res.body) as Map<String, Object>;
+        return jsonDecode(res.body) as Map<String, dynamic>;
       } else {
         throw Exception("Failed to load API, ${res.statusCode}");
       }

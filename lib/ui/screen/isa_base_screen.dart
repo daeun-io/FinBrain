@@ -3,7 +3,7 @@ import 'package:finbrain/data/models/entities/isa_management_status.dart';
 import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/data/viewModel/isa_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';

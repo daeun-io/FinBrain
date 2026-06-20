@@ -1,4 +1,4 @@
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'sort_or_filter_viewmodel.g.dart';
 

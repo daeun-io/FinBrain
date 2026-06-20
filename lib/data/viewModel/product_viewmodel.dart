@@ -8,7 +8,7 @@ import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/repository/product_repository.dart';
 import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_viewmodel.g.dart';
 

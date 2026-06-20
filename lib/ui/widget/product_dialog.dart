@@ -1,6 +1,6 @@
 import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/product_filter_condition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';

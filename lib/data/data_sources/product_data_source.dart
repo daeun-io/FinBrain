@@ -3,14 +3,14 @@ import 'package:finbrain/data/models/request/finlife_search_options.dart';
 import 'package:finbrain/data/models/request/isa_search_options.dart';
 import 'package:http/http.dart' as http;
 import 'package:finbrain/data/api_constants.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:xml2json/xml2json.dart';
 
 class ProductRemoteDataSource {
   final http.Client _client;
   ProductRemoteDataSource(this._client);
 
-  Future<Map<String, Object>> fetchFinlifeProducts(
+  Future<Map<String, dynamic>> fetchFinlifeProducts(
     ProductCategory ctg,
     FinlifeSearchOptions options,
   ) async {
@@ -54,7 +54,7 @@ class ProductRemoteDataSource {
         final formatter = Xml2Json();
         formatter.parse(res.body);
         final jsonStr = formatter.toParker();
-        final Map<String, Object> jsonMap = jsonDecode(jsonStr);
+        final Map<String, dynamic> jsonMap = jsonDecode(jsonStr);
         return jsonMap;
       } else {
         throw Exception("Failed to load data, ${res.statusCode}");
@@ -64,19 +64,28 @@ class ProductRemoteDataSource {
     }
   }
 
-  Future<Map<String, Object>> fetchIsaMpProducts(
+  Future<Map<String, dynamic>> fetchIsaMpProducts(
     IsaSearchOptions options,
+    String domain,
+    String type,
+    String cmpy,
   ) async {
+    final queryParams = {
+      ...options.toQueryParams(),
+      "bzds": domain,
+      "mpTp": type,
+      "likeCmpyNm": cmpy,
+    };
     final uri = Uri.https(
       "$ApiConstants.firebase",
       "/fetchAndGroupProducts",
-      options.toQueryParams(),
+      queryParams,
     );
 
     try {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {
-        return jsonDecode(res.body) as Map<String, Object>;
+        return jsonDecode(res.body) as Map<String, dynamic>;
       } else {
         throw Exception("Failed to load data, ${res.statusCode}");
       }
