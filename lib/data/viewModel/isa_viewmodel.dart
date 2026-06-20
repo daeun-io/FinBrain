@@ -9,8 +9,20 @@ final repository = IsaRepository();
 @riverpod
 class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
   @override
-  Future<List<IsaJoinStatus>> build() async {
-    return await repository.fetchJoinStatus();
+  Future<List<IsaJoinStatus>> build(
+    String pageNo,
+    String numOfRows,
+    String baseYearMonth,
+    String domain,
+    String isaForm,
+  ) async {
+    return await repository.fetchJoinStatus(
+      pageNo,
+      numOfRows,
+      baseYearMonth,
+      domain,
+      isaForm,
+    );
   }
 
   void sortByCriteria(String criteria) {
@@ -31,8 +43,22 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
 @riverpod
 class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
   @override
-  Future<List<IsaManagementStatus>> build() async {
-    return await repository.fetchManagementStatus();
+  Future<List<IsaManagementStatus>> build(
+    String pageNo,
+    String numOfRows,
+    String baseYearMonth,
+    String ctg,
+    String domain,
+    String isaForm,
+  ) async {
+    return await repository.fetchManagementStatus(
+      pageNo,
+      numOfRows,
+      baseYearMonth,
+      ctg,
+      domain,
+      isaForm,
+    );
   }
 
   void sortByCriteria(String criteria) {

@@ -1,4 +1,5 @@
 import 'package:finbrain/data/repository/filters_repository.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'filters_viewmodel.g.dart';
 
@@ -7,8 +8,12 @@ final repository = FiltersRepository();
 @riverpod
 class FiltersViewmodel extends _$FiltersViewmodel {
   @override
-  Future<Map<String, List<(String, bool)>>> build() async {
-    return await repository.fetchFilters();
+  Future<Map<String, List<(String, bool)>>> build(
+    FilterTextCategory ctg,
+    String topFinGrpNo,
+    String pageNo,
+  ) async {
+    return await repository.fetchFilters(ctg, topFinGrpNo, pageNo);
   }
 
   Future<void> saveChanges(Map<String, List<(String, bool)>> newFilters) async {
@@ -21,8 +26,12 @@ class FiltersViewmodel extends _$FiltersViewmodel {
 @riverpod
 class DialogFiltersViewModel extends _$DialogFiltersViewModel {
   @override
-  Map<String, List<(String, bool)>> build() {
-    final filters = ref.watch(filtersViewmodelProvider);
+  Map<String, List<(String, bool)>> build(
+    FilterTextCategory ctg,
+    String topFinGrpNo,
+    String pageNo,
+  ) {
+    final filters = ref.watch(filtersViewmodelProvider(ctg, topFinGrpNo, pageNo));
     return filters.value ?? {};
   }
 
@@ -31,7 +40,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
       for (final entry in state.entries)
         if (entry.value.contains((text, selected)))
           entry.key: entry.value.map((e) {
-            if (entry.key == "금융 회사") {
+            if (entry.key == "금융회사" || entry.key == "구분") {
               return e.$1 == text ? (e.$1, true) : (e.$1, false);
             }
             return e.$1 == text ? (e.$1, !selected) : e;

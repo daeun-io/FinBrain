@@ -1,4 +1,5 @@
 // ISA MP 대표수익률
+import 'package:collection/collection.dart';
 import 'package:finbrain/data/models/entities/financial_product.dart';
 import 'package:finbrain/data/models/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/product_categories.dart';
@@ -52,5 +53,18 @@ class IsaMpBenefitRate extends FinancialProduct {
       mpType: mpType,
       options: options,
     );
+  }
+
+  (double, double) returnAvgMedProfits() {
+    final profits =
+        options.map((e) => e.benefitRate).whereType<double>().toList()
+          ..sorted((a, b) => a.compareTo(b));
+    final middle = profits.length ~/ 2;
+    final average = profits.average;
+    final median = (profits.length % 2 == 1)
+        ? profits[middle]
+        : (profits[middle - 1] + profits[middle]) / 2;
+
+    return (average, median);
   }
 }

@@ -1,4 +1,3 @@
-import 'package:finbrain/data/dummy_data.dart';
 import 'package:finbrain/data/models/entities/annuity_savings.dart';
 import 'package:finbrain/data/models/entities/credit_loan.dart';
 import 'package:finbrain/data/models/entities/deposit_and_installment_savings.dart';
@@ -17,8 +16,20 @@ final repository = ProductRepository();
 @riverpod
 class ProductViewmodel extends _$ProductViewmodel {
   @override
-  Future<List<FinancialProduct>> build() async {
-    final filters = ref.watch(filtersViewmodelProvider);
+  Future<List<FinancialProduct>> build(
+    ProductCategory ctg,
+    FilterTextCategory filterCtg,
+    String topFinGrpNo,
+    String pageNo,
+    String numOfRows,
+    String baseYearMonth,
+    String domain,
+    String mpType,
+    String cmpy,
+  ) async {
+    final filters = ref.watch(
+      filtersViewmodelProvider(filterCtg, topFinGrpNo, pageNo),
+    );
     final currentFilters = filters.value ?? {};
     Map<String, List<String>> selectedFilters = {};
     for (final entry in currentFilters.entries) {
@@ -36,7 +47,16 @@ class ProductViewmodel extends _$ProductViewmodel {
       selectedFilters["회사 선택"] = companies;
     }
 
-    final products = await repository.fetchProducts();
+    final products = await repository.fetchProducts(
+      ctg,
+      topFinGrpNo,
+      pageNo,
+      numOfRows,
+      baseYearMonth,
+      domain,
+      mpType,
+      cmpy,
+    );
     return products.where((e) {
       if (e.commonInfo.category == ProductCategory.isa) {
         // todo: change later
@@ -52,6 +72,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     }).toList();
   }
 
+  // todo: change later(insert a product in db)
   void toggleLiked(String productName) {
     final products = state.value ?? [];
     final updated = products.map((e) {
@@ -149,16 +170,18 @@ class ProductViewmodel extends _$ProductViewmodel {
           }),
         );
       default:
-        // todo: 평균 수익률, 중위 수익률 비교 연산은 데이터 구조 변경 후 진행
         state = AsyncData(
           products..sort(switch (criteria) {
             "평균 수익률(높은 순)" =>
-              (a, b) => (b as IsaMpBenefitRate).benefitRate!.compareTo(
-                (a as IsaMpBenefitRate).benefitRate!,
-              ),
-            _ => (a, b) => (b as IsaMpBenefitRate).benefitRate!.compareTo(
-              (a as IsaMpBenefitRate).benefitRate!,
-            ),
+              (a, b) => (b as IsaMpBenefitRate)
+                  .returnAvgMedProfits()
+                  .$1
+                  .compareTo((a as IsaMpBenefitRate).returnAvgMedProfits().$1),
+            _ =>
+              (a, b) => (b as IsaMpBenefitRate)
+                  .returnAvgMedProfits()
+                  .$2
+                  .compareTo((a as IsaMpBenefitRate).returnAvgMedProfits().$2),
           }),
         );
     }
@@ -175,11 +198,34 @@ class ProductViewmodel extends _$ProductViewmodel {
   }
 }
 
+// todo: change later(load db)
 @riverpod
 class LikedProductViewmodel extends _$LikedProductViewmodel {
   @override
-  Future<List<FinancialProduct>> build() async {
-    final products = ref.watch(productViewmodelProvider);
+  Future<List<FinancialProduct>> build(
+    ProductCategory ctg,
+    FilterTextCategory filterCtg,
+    String topFinGrpNo,
+    String pageNo,
+    String numOfRows,
+    String baseYearMonth,
+    String domain,
+    String mpType,
+    String cmpy,
+  ) async {
+    final products = ref.watch(
+      productViewmodelProvider(
+        ctg,
+        filterCtg,
+        topFinGrpNo,
+        pageNo,
+        numOfRows,
+        baseYearMonth,
+        domain,
+        mpType,
+        cmpy,
+      ),
+    );
     final filters = ref.watch(
       sortOrFilterTextViewModelProvider(FilterTextCategory.liked),
     );

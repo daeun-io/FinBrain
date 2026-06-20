@@ -6,17 +6,17 @@ import 'package:http/http.dart' as http;
 import 'package:finbrain/product_categories.dart';
 
 class FiltersRepository {
-  Future<Map<String, Object>> fetchFilters(
+  Future<Map<String, List<(String, bool)>>> fetchFilters(
     FilterTextCategory ctg,
     String topFinGrpNo,
     String pageNo,
   ) async {
-    final Map<String, Object> filters = {};
+    final Map<String, List<(String, bool)>> filters = {};
     if (ctg == FilterTextCategory.isaJoin ||
         ctg == FilterTextCategory.isaManagement ||
         ctg == FilterTextCategory.isaMp) {
       final now = DateTime.now();
-      filters["기준 연월"] = "${now.year}${now.month}";
+      filters["기준 연월"] = [("${now.year}${now.month}", true)];
       filters["업권"] = switch (ctg) {
         FilterTextCategory.isaJoin => [
           ("총합", true),
@@ -36,6 +36,9 @@ class FiltersRepository {
         filters["MP 종류"] = [("저위험", true), ("중위험", true), ("고위험", true)];
       } else {
         filters["ISA 형태"] = [("신탁형", true), ("일임형", true), ("투자중개형", true)];
+        if(ctg == FilterTextCategory.isaManagement){
+          filters["구분"] = [("비중", true), ("금액", false)];
+        }
       }
     } else {
       final client = http.Client();
@@ -72,7 +75,7 @@ class FiltersRepository {
     return filters;
   }
 
-  Future<Map<String, Object>> saveChanges(
-    Map<String, Object> newFilters,
+  Future<Map<String, List<(String, bool)>>> saveChanges(
+    Map<String, List<(String, bool)>> newFilters,
   ) async => newFilters;
 }
