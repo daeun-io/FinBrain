@@ -1,3 +1,4 @@
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/product_filter_item.dart';
 import 'package:flutter/material.dart';
@@ -5,10 +6,12 @@ import 'package:flutter/material.dart';
 class ProductFilterCondition extends StatelessWidget {
   const ProductFilterCondition({
     super.key,
+    required this.category,
     required this.filter,
     required this.filterList,
   });
 
+  final FilterTextCategory category;
   final String filter;
   final List<(String, bool)> filterList;
 
@@ -43,7 +46,7 @@ class ProductFilterCondition extends StatelessWidget {
           alignment: WrapAlignment.start,
           children: [
             ...filterList.map(
-              (e) => ProductFilterItem(isSelected: e.$2, text: e.$1),
+              (e) => ProductFilterItem(category: category, isSelected: e.$2, text: e.$1),
             ),
           ],
         ),

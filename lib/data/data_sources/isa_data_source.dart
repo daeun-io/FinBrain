@@ -17,14 +17,14 @@ class IsaRemoteDataSource {
       "ctg": domain,
       "likeIsaForm": isaForm,
     };
-    final uri = Uri.http(ApiConstants.isa, "/getJoinStatus_V2", queryParams);
+    final uri = Uri.https(public, '$isa/getJoinStatus_V2', queryParams);
 
     try {
       final res = await _client.get(uri);
-      if (res.statusCode == 20) {
+      if (res.statusCode == 200) {
         return jsonDecode(res.body);
       } else {
-        throw Exception("Failed to load data, ${res.statusCode}");
+        throw Exception("error: Failed to get a response, ${res.statusCode}");
       }
     } catch (error) {
       throw Exception(error);
@@ -44,16 +44,16 @@ class IsaRemoteDataSource {
       "likeIsaForm": isaForm,
     };
     final uri = Uri.http(
-      ApiConstants.isa,
-      "/getManagementStatus_V2",
+      public,
+      '$isa/getManagementStatus_V2',
       queryParams,
     );
     try {
       final res = await _client.get(uri);
-      if (res.statusCode == 20) {
+      if (res.statusCode == 200) {
         return jsonDecode(res.body);
       } else {
-        throw Exception("Failed to load data, ${res.statusCode}");
+        throw Exception("error: Failed to get a response, ${res.statusCode}");
       }
     } catch (error) {
       throw Exception(error);

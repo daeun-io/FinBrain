@@ -61,8 +61,8 @@ class IsaScreen extends StatelessWidget{
             Expanded(
               child: TabBarView(
                 children: [
-                  const IsaBaseScreen(category: IsaScreenCategory.join,),
-                  const IsaBaseScreen(category: IsaScreenCategory.management,),
+                  const IsaBaseScreen(category: FilterTextCategory.isaJoin,),
+                  const IsaBaseScreen(category: FilterTextCategory.isaManagement,),
                   const IsaMpScreen()
                 ]
               ),

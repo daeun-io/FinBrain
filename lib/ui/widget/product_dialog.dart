@@ -9,13 +9,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductDialog extends ConsumerWidget {
   const ProductDialog({
     super.key,
-    required this.category
+    required this.filterCategory
   });
-  final ProductCategory category;
+  final FilterTextCategory filterCategory;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filters = ref.watch(dialogFiltersViewModelProvider);
+    final provider = dialogFiltersViewModelProvider(filterCategory, "020000", "1");
+    final filters = ref.watch(provider);
+
     return Consumer(
       builder: (ctx, ref, child) {
         return AlertDialog(
@@ -46,7 +48,7 @@ class ProductDialog extends ConsumerWidget {
                     TextButton(
                       onPressed: () {
                         ref
-                            .read(dialogFiltersViewModelProvider.notifier)
+                            .read(provider.notifier)
                             .resetChanges();
                       },
                       style: TextButton.styleFrom(
@@ -81,6 +83,7 @@ class ProductDialog extends ConsumerWidget {
                     children: [
                       ...filters.entries.map(
                         (e) => ProductFilterCondition(
+                          category: filterCategory,
                           filter: e.key,
                           filterList: e.value,
                         ),
@@ -93,7 +96,7 @@ class ProductDialog extends ConsumerWidget {
                     Expanded(
                       child: TextButton(
                         onPressed: () {
-                          ref.read(filtersViewmodelProvider.notifier).saveChanges(filters);
+                          ref.read(filtersViewmodelProvider(filterCategory, "020000", "1").notifier).saveChanges(filters);
                           Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

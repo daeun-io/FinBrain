@@ -13,39 +13,48 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class IsaBaseScreen extends ConsumerWidget {
   const IsaBaseScreen({super.key, required this.category});
 
-  final IsaScreenCategory category;
+  final FilterTextCategory category;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dummyData = ref.watch(
-      (category == IsaScreenCategory.join)
-          ? isaJoinStatusViewModelProvider
-          : isaManagementStatusViewModelProvider,
+    final joinProvider = isaJoinStatusViewModelProvider(
+      "1",
+      "100",
+      "2026",
+      "",
+      "",
+    );
+    final mngmProvider = isaManagementStatusViewModelProvider(
+      "1",
+      "100",
+      "2026",
+      "비중",
+      "",
+      "",
+    );
+    final items = (category == FilterTextCategory.isaJoin)
+        ? ref.watch(joinProvider)
+        : ref.watch(mngmProvider);
+
+    final filters = ref.watch(
+      filtersViewmodelProvider(category, "020000", "1"),
     );
 
-    final filters = ref.watch(filtersViewmodelProvider);
-
-    final column = (category == IsaScreenCategory.join)
+    final column = (category == FilterTextCategory.isaJoin)
         ? ["ISA 종류", "회사 수", "가입자 수", "업권값"]
         : ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
     return Column(
       children: [
         const SizedBox(height: 16.0),
-        ProductFilter(category: ProductCategory.isa),
+        ProductFilter(category: category),
         const SizedBox(height: 24.0),
         SortOrFilterText(
-          category: (category == IsaScreenCategory.join)
-              ? FilterTextCategory.isaJoin
-              : FilterTextCategory.isaManagement,
+          category: category,
           onSortCriteriaChanged: (criteria) {
-            (category == IsaScreenCategory.join)
-                ? ref
-                      .read(isaJoinStatusViewModelProvider.notifier)
-                      .sortByCriteria(criteria)
-                : ref
-                      .read(isaManagementStatusViewModelProvider.notifier)
-                      .sortByCriteria(criteria);
+            (category == FilterTextCategory.isaJoin)
+                ? ref.read(joinProvider.notifier).sortByCriteria(criteria)
+                : ref.read(mngmProvider.notifier).sortByCriteria(criteria);
           },
         ),
         Expanded(
@@ -65,23 +74,23 @@ class IsaBaseScreen extends ConsumerWidget {
                     dividerThickness: 0.0,
                     columns: [for (final label in column) columnText(label)],
                     rows: [
-                      if (dummyData.valueOrNull != null)
-                        for (final data in dummyData.value!)
+                      if (items.valueOrNull != null)
+                        for (final item in items.value!)
                           DataRow(
                             cells: [
-                              if (category == IsaScreenCategory.join) ...[
-                                dataCell((data as IsaJoinStatus).isaForm!),
-                                dataCell(data.companyCount.toString()),
-                                dataCell(data.joinMemberCount.toString()),
-                                dataCell(data.category!),
+                              if (category == FilterTextCategory.isaJoin) ...[
+                                dataCell((item as IsaJoinStatus).isaForm!),
+                                dataCell(item.companyCount.toString()),
+                                dataCell(item.joinMemberCount.toString()),
+                                dataCell(item.category!),
                               ] else ...[
                                 dataCell(
-                                  (data as IsaManagementStatus).isaForm!,
+                                  (item as IsaManagementStatus).isaForm!,
                                 ),
-                                dataCell(data.businessDomain!),
-                                dataCell(data.includeAssetCtg!),
-                                dataCell(data.category!),
-                                dataCell(data.amount.toString()),
+                                dataCell(item.businessDomain!),
+                                dataCell(item.includeAssetCtg!),
+                                dataCell(item.category!),
+                                dataCell(item.amount.toString()),
                               ],
                             ],
                           ),

@@ -21,15 +21,28 @@ class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen({
     super.key,
     required this.productName,
-    required this.category,
+    required this.productCategory,
+    required this.filterCategory
   });
 
   final String productName;
-  final ProductCategory category;
+  final ProductCategory productCategory;
+  final FilterTextCategory filterCategory;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final products = ref.watch(productViewmodelProvider).valueOrNull;
+    final provider = productViewmodelProvider(
+      productCategory,
+      filterCategory,
+      "020000",
+      "1",
+      "100",
+      "202604",
+      "",
+      "",
+      ""
+    );
+    final products = ref.watch(provider).valueOrNull;
     final product = (products ?? []).firstWhere(
       (p) => p.commonInfo.productName == productName,
     );
@@ -59,7 +72,7 @@ class ProductDetailScreen extends ConsumerWidget {
           IconButton(
             onPressed: () {
               ref
-                  .read(productViewmodelProvider.notifier)
+                  .read(provider.notifier)
                   .toggleLiked(productName);
             },
             icon: product.commonInfo.isLiked
@@ -84,7 +97,7 @@ class ProductDetailScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ..._displayDefaultWidgetList(product),
-                      ..._displayDynamicWidgetList(category, product),
+                      ..._displayDynamicWidgetList(productCategory, product),
                       SizedBox(height: 80.0),
                     ],
                   ),
@@ -92,7 +105,7 @@ class ProductDetailScreen extends ConsumerWidget {
               ),
             ),
             Positioned(right: 20, bottom: 100, child: const AiButton()),
-            if (category == ProductCategory.isa)
+            if (productCategory == ProductCategory.isa)
               Positioned(
                 child: Expanded(
                   child: Container(
@@ -124,7 +137,7 @@ class ProductDetailScreen extends ConsumerWidget {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (ctx) {
-                                final options = switch (category) {
+                                final options = switch (productCategory) {
                                   ProductCategory.deposit =>
                                     (product as DepositAndInstallmentSavings)
                                         .options,
@@ -138,13 +151,13 @@ class ProductDetailScreen extends ConsumerWidget {
                                   _ => (product as MortageAndRentLoan).options,
                                 };
                                 return CalculatorScreen(
-                                  category: category,
+                                  category: productCategory,
                                   mapOptions: ref
                                       .read(
                                         productDetailScreenViewmodelProvider
                                             .notifier,
                                       )
-                                      .mapProductOptions(category, options),
+                                      .mapProductOptions(productCategory, options),
                                   options: options,
                                 );
                               },

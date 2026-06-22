@@ -1,4 +1,5 @@
 import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,10 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductFilterItem extends ConsumerWidget {
   const ProductFilterItem({
     super.key,
+    required this.category,
     required this.isSelected,
     required this.text,
   });
 
+  final FilterTextCategory category;
   final bool isSelected;
   final String text;
 
@@ -20,7 +23,7 @@ class ProductFilterItem extends ConsumerWidget {
     return GestureDetector(
       onTap: () {
         ref
-            .read(dialogFiltersViewModelProvider.notifier)
+            .read(dialogFiltersViewModelProvider(category, "020000", "1").notifier)
             .toggleSelected(text, localIsSelected);
       },
       child: Card(

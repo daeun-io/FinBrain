@@ -12,7 +12,7 @@ class CmpyRemoteDataSource {
     FinlifeSearchOptions options,
   ) async {
     final uri = Uri.https(
-      "$ApiConstants.firebase",
+      firebase,
       "/fetchCmpyNameList",
       options.toQueryParams(),
     );

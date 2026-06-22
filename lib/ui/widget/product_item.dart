@@ -14,15 +14,28 @@ class ProductItem extends ConsumerWidget {
   const ProductItem({
     super.key,
     required this.productName,
+    required this.productCategory,
     required this.filterTextCategory,
   });
 
   final String productName;
+  final ProductCategory productCategory;
   final FilterTextCategory filterTextCategory;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final products = ref.watch(productViewmodelProvider);
+    final provider = productViewmodelProvider(
+      productCategory,
+      filterTextCategory,
+      "020000",
+      "1",
+      "100",
+      "202604",
+      "",
+      "",
+      ""
+    );
+    final products = ref.watch(provider);
     final product = (products.valueOrNull ?? []).firstWhere(
       (p) => p.commonInfo.productName == productName,
     );
@@ -42,7 +55,8 @@ class ProductItem extends ConsumerWidget {
           MaterialPageRoute(
             builder: (ctx) => ProductDetailScreen(
               productName: productName,
-              category: product.commonInfo.category,
+              productCategory: product.commonInfo.category,
+              filterCategory: filterTextCategory,
             ),
           ),
         );
@@ -183,7 +197,7 @@ class ProductItem extends ConsumerWidget {
               IconButton(
                 onPressed: () {
                   ref
-                      .read(productViewmodelProvider.notifier)
+                      .read(provider.notifier)
                       .toggleLiked(productName);
                 },
                 icon: product.commonInfo.isLiked

@@ -75,6 +75,7 @@ class ProductRepository {
       } else {
         final Map<String, dynamic> result = await dataStore
             .fetchFinlifeProducts(ctg, options as FinlifeSearchOptions);
+        print("prdt result: $result");
         final products = result["result"]["products"]["product"].map(
           (e) => switch (ctg) {
             ProductCategory.deposit => DepositAndInstallmentSavings(

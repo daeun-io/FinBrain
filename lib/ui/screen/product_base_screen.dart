@@ -19,7 +19,19 @@ class ProductBaseScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final products = ref.watch(productViewmodelProvider);
+    final provider = productViewmodelProvider(
+      productCategory,
+      filterCategory,
+      "020000",
+      "1",
+      "100",
+      "202604",
+      "",
+      "",
+      ""
+    );
+    final products = ref.watch(provider);
+    print("products ${products.value}");
     final textSort = ref.watch(
       sortOrFilterTextViewModelProvider(filterCategory),
     );
@@ -33,13 +45,13 @@ class ProductBaseScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          ProductFilter(category: productCategory),
+          ProductFilter(category: filterCategory),
           const SizedBox(height: 24.0),
           SortOrFilterText(
             category: filterCategory,
             onSortCriteriaChanged: (criteria) {
               ref
-                  .read(productViewmodelProvider.notifier)
+                  .read(provider.notifier)
                   .sortByCriteria(criteria, productCategory);
             },
           ),
@@ -53,6 +65,7 @@ class ProductBaseScreen extends ConsumerWidget {
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: ProductItem(
                       productName: products.value![index].commonInfo.productName!,
+                      productCategory: productCategory,
                       filterTextCategory: filterCategory,
                     ),
                   );

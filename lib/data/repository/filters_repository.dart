@@ -51,6 +51,7 @@ class FiltersRepository {
       final Map<String, dynamic> result = await dataStore.fetchCmpyNames(
         options,
       );
+      print("cmpy result: $result");
       final List<String> cmpyList = result["result"]["products"];
       final selectedFinGroup = getFinGroupName[topFinGrpNo] ?? "";
       final List<String> finGroups = switch (ctg) {

@@ -15,28 +15,48 @@ class IsaMpScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final provider = productViewmodelProvider(
+      ProductCategory.isa,
+      FilterTextCategory.isaMp,
+      "020000",
+      "1",
+      "100",
+      "2026",
+      "",
+      "",
+      "",
+    );
     final searchedList = ref.watch(searchedViewmodelProvider);
-    final products = ref.watch(productViewmodelProvider);
-    final textSort = ref.watch(sortOrFilterTextViewModelProvider(FilterTextCategory.isaMp));
+    final products = ref.watch(provider);
+    final textSort = ref.watch(
+      sortOrFilterTextViewModelProvider(FilterTextCategory.isaMp),
+    );
 
     return Column(
       children: [
         const SizedBox(height: 16.0),
         SearchBox(
           searchItem: (value) {
-            ref.read(productViewmodelProvider.notifier).filterByKeyword(value);
+            ref
+                .read(provider.notifier)
+                .filterByKeyword(value);
             ref.read(searchedViewmodelProvider.notifier).addItem(value);
           },
           searchedList: searchedList,
         ),
         const SizedBox(height: 16.0),
-        ProductFilter(category: ProductCategory.isa,),
+        ProductFilter(category: FilterTextCategory.isaMp),
         const SizedBox(height: 24.0),
-        SortOrFilterText(category: FilterTextCategory.isaMp, onSortCriteriaChanged: (criteria){
-          ref.read(productViewmodelProvider.notifier).sortByCriteria(criteria, ProductCategory.isa);
-        },),
+        SortOrFilterText(
+          category: FilterTextCategory.isaMp,
+          onSortCriteriaChanged: (criteria) {
+            ref
+                .read(provider.notifier)
+                .sortByCriteria(criteria, ProductCategory.isa);
+          },
+        ),
         const SizedBox(height: 20),
-        if(products.valueOrNull == null && products.value!.isEmpty)
+        if (products.valueOrNull == null && products.value!.isEmpty)
           Expanded(
             child: Center(
               child: Text(
@@ -54,13 +74,14 @@ class IsaMpScreen extends ConsumerWidget {
             child: ListView.builder(
               itemCount: products.value!.length,
               itemBuilder: (context, index) {
-                if(index >= products.value!.length){
+                if (index >= products.value!.length) {
                   return const SizedBox.shrink();
                 }
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: ProductItem(
                     productName: products.value![index].commonInfo.productName!,
+                    productCategory: ProductCategory.isa,
                     filterTextCategory: FilterTextCategory.isaMp,
                   ),
                 );

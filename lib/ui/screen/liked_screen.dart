@@ -11,9 +11,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class LikedScreen extends ConsumerWidget {
   const LikedScreen({super.key});
 
+  // todo: change later
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final likedDummies = ref.watch(likedProductViewmodelProvider);
+    final provider = likedProductViewmodelProvider(
+      ProductCategory.deposit,
+      FilterTextCategory.savings,
+      "020000",
+      "1",
+      "",
+      "",
+      "",
+      "",
+      ""
+    );
+    final likedDummies = ref.watch(provider);
     final searchedList = ref.watch(searchedViewmodelProvider);
 
     return Padding(
@@ -28,7 +40,7 @@ class LikedScreen extends ConsumerWidget {
           SearchBox(
             searchItem: (value) {
               ref
-                  .read(likedProductViewmodelProvider.notifier)
+                  .read(provider.notifier)
                   .filterByKeyword(value);
               ref.read(searchedViewmodelProvider.notifier).addItem(value);
             },
@@ -51,9 +63,12 @@ class LikedScreen extends ConsumerWidget {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
-                            productName:
-                                likedDummies.value![index].commonInfo.productName!,
-                                filterTextCategory: FilterTextCategory.liked,
+                            productName: likedDummies
+                                .value![index]
+                                .commonInfo
+                                .productName!,
+                            productCategory: likedDummies.value![index].commonInfo.category,
+                            filterTextCategory: FilterTextCategory.liked,
                           ),
                         );
                       },

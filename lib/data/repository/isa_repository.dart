@@ -20,26 +20,42 @@ class IsaRepository {
       resultType: "json",
       pageNo: pageNo,
       numOfRows: numOfRows,
-      baseYearMonth: baseYearMonth
+      baseYearMonth: baseYearMonth,
     );
 
     try {
       final Map<String, dynamic> result = await dataStore.fetchJoinStatus(
-        options, domain, isaForm
+        options,
+        domain,
+        isaForm,
       );
-      final items = result["response"]["body"]["items"]["item"].map(
-        (e) => IsaJoinStatus(
-          companyCount: e["cmpyCnt"],
-          joinMemberCount: e["jnpnCnt"],
-          investmentAmount: e["invAmt"],
-          baseDate: e["basDt"],
-          isaForm: e["isaForm"],
-          category: e["ctg"],
-        ),
-      );
+      final rawItems =
+          result["response"]["body"]["items"]["item"] as Iterable<dynamic>;
+      final List<IsaJoinStatus> items = rawItems
+          .map<IsaJoinStatus?>((e) {
+            if (e == null ||
+                e["cmpyCnt"] == null ||
+                e["jnpnCnt"] == null ||
+                e["invAmt"] == null ||
+                e["basDt"] == null ||
+                e["isaForm"] == null ||
+                e["ctg"] == null) {
+              return null;
+            }
+            return IsaJoinStatus(
+              companyCount: int.tryParse(e["cmpyCnt"]),
+              joinMemberCount: int.tryParse(e["jnpnCnt"]),
+              investmentAmount: int.tryParse(e["invAmt"]),
+              baseDate: e["basDt"],
+              isaForm: e["isaForm"],
+              category: e["ctg"],
+            );
+          })
+          .whereType<IsaJoinStatus>()
+          .toList();
       return items;
     } catch (error) {
-      print("error: Failed to load data");
+      print("error: Failed to load data $error");
       return [];
     } finally {
       client.close();
@@ -52,7 +68,7 @@ class IsaRepository {
     String baseYearMonth,
     String ctg,
     String domain,
-    String isaForm
+    String isaForm,
   ) async {
     final client = http.Client();
     final dataStore = IsaRemoteDataSource(client);
@@ -63,23 +79,36 @@ class IsaRepository {
       numOfRows: numOfRows,
       baseYearMonth: baseYearMonth,
     );
-
     try {
       final Map<String, dynamic> response = await dataStore
           .fetchManagementStatus(options, ctg, domain, isaForm);
-      final items = response["response"]["body"]["items"]["item"].map(
-        (e) => IsaManagementStatus(
-          baseDate: e["basDt"],
-          businessDomain: e["bzds"],
-          category: e["ctg"],
-          isaForm: e["isaForm"],
-          includeAssetCtg: e["incAstCtg"],
-          amount: e["amt"],
-        ),
-      );
+      final rawItems =
+          response["response"]["body"]["items"]["item"] as Iterable<dynamic>;
+      final List<IsaManagementStatus> items = rawItems
+          .map<IsaManagementStatus?>((e) {
+            if (e == null ||
+                e["basDt"] == null ||
+                e["bzds"] == null ||
+                e["ctg"] == null ||
+                e["isaForm"] == null ||
+                e["incAstCtg"] == null ||
+                e["amt"] == null) {
+              return null;
+            }
+            return IsaManagementStatus(
+              baseDate: e["basDt"],
+              businessDomain: e["bzds"],
+              category: e["ctg"],
+              isaForm: e["isaForm"],
+              includeAssetCtg: e["incAstCtg"],
+              amount: double.tryParse(e["amt"]),
+            );
+          })
+          .whereType<IsaManagementStatus>()
+          .toList();
       return items;
     } catch (error) {
-      print("error: Failed to load data");
+      print("error: Failed to load data, $error");
       return [];
     } finally {
       client.close();

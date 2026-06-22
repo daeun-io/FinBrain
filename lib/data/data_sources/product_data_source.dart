@@ -16,40 +16,40 @@ class ProductRemoteDataSource {
   ) async {
     final uri = switch (ctg) {
       ProductCategory.deposit => Uri.http(
-        '$ApiConstants.finlife',
-        '/depositProductsSearch.xml',
+        finlife,
+        '/finlifeapi/depositProductsSearch.xml',
         options.toQueryParams(),
       ),
       ProductCategory.installment => Uri.http(
-        '$ApiConstants.finlife',
-        '/savingProductsSearch.xml',
+        finlife,
+        '/finlifeapi/savingProductsSearch.xml',
         options.toQueryParams(),
       ),
       ProductCategory.annuity => Uri.http(
-        '$ApiConstants.finlife',
-        '/savingProductsSearch.xml',
+        finlife,
+        '/finlifeapi/savingProductsSearch.xml',
         options.toQueryParams(),
       ),
       ProductCategory.mortage => Uri.http(
-        '$ApiConstants.finlife',
-        '/mortgageLoanProductsSearch.xml',
+        'finlife',
+        '/finlifeapi/mortgageLoanProductsSearch.xml',
         options.toQueryParams(),
       ),
       ProductCategory.rent => Uri.http(
-        '$ApiConstants.finlife',
-        '/rentHouseLoanProductsSearch.xml',
+        'finlife',
+        '/finlifeapi/rentHouseLoanProductsSearch.xml',
         options.toQueryParams(),
       ),
       _ => Uri.http(
-        '$ApiConstants.finlife',
-        '/creditLoanProductsSearch.xml',
+        'finlife',
+        '/finlifeapi/creditLoanProductsSearch.xml',
         options.toQueryParams(),
       ),
     };
 
     try {
       final res = await _client.get(uri);
-
+      print("response, $res");
       if (res.statusCode == 200) {
         final formatter = Xml2Json();
         formatter.parse(res.body);
@@ -77,7 +77,7 @@ class ProductRemoteDataSource {
       "likeCmpyNm": cmpy,
     };
     final uri = Uri.https(
-      "$ApiConstants.firebase",
+      firebase,
       "/fetchAndGroupProducts",
       queryParams,
     );
@@ -86,7 +86,8 @@ class ProductRemoteDataSource {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {
         return jsonDecode(res.body) as Map<String, dynamic>;
-      } else {
+      } 
+      else {
         throw Exception("Failed to load data, ${res.statusCode}");
       }
     } catch (error) {
