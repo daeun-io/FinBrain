@@ -16,60 +16,73 @@ final repository = ProductRepository();
 @riverpod
 class ProductViewmodel extends _$ProductViewmodel {
   @override
-  Future<List<FinancialProduct>> build(
+  Future<List<FinancialProduct>> build() async {
+    return [];
+  }
+
+  void fetchFinlifeProducts(
     ProductCategory ctg,
-    FilterTextCategory filterCtg,
     String topFinGrpNo,
     String pageNo,
+  ) async {
+    // final filters = ref.watch(
+    // filtersViewmodelProvider(filterCtg, topFinGrpNo, pageNo),
+    // );
+    // final currentFilters = filters.value ?? {};
+    // Map<String, List<String>> selectedFilters = {};
+    // for (final entry in currentFilters.entries) {
+    // selectedFilters[entry.key] = entry.value
+    // .where((e) => e.$2 == true)
+    // .map((e) => e.$1)
+    // .toList();
+    // }
+    // if (selectedFilters["회사 선택"]!.isEmpty) {
+    // final List<String> companies = [];
+    // for (final filter in currentFilters["회사 선택"]!) {
+    // companies.add(filter.$1);
+    // }
+    // selectedFilters["회사 선택"] = companies;
+    // }
+
+    // return products.where((e) {
+    // if (e.commonInfo.category == ProductCategory.isa) {
+    // todo: change later
+    // return selectedFilters["회사 선택"]!.contains(e.commonInfo.companyName!);
+    // }
+    // return selectedFilters["회사 선택"]!.contains(e.commonInfo.companyName!) &&
+    // e.commonInfo.joinWay!.any(
+    // (e) =>
+    // (selectedFilters["가입 방법"] ??
+    // ["영업점", "인터넷", "스마트폰", "모집인", "전화(텔레뱅킹)", "기타"])
+    // .contains(e),
+    // );
+    // }).toList();
+
+    final products = await repository.fetchFinlifeProducts(
+      ctg,
+      topFinGrpNo,
+      pageNo,
+    );
+    state = AsyncData(products);
+  }
+
+  void fetchIsaMpProducts(
+    String pageNo,
     String numOfRows,
-    String baseYearMonth,
+    String baseYear,
     String domain,
     String mpType,
     String cmpy,
   ) async {
-    final filters = ref.watch(
-      filtersViewmodelProvider(filterCtg, topFinGrpNo, pageNo),
-    );
-    final currentFilters = filters.value ?? {};
-    Map<String, List<String>> selectedFilters = {};
-    for (final entry in currentFilters.entries) {
-      selectedFilters[entry.key] = entry.value
-          .where((e) => e.$2 == true)
-          .map((e) => e.$1)
-          .toList();
-    }
-
-    if (selectedFilters["회사 선택"]!.isEmpty) {
-      final List<String> companies = [];
-      for (final filter in currentFilters["회사 선택"]!) {
-        companies.add(filter.$1);
-      }
-      selectedFilters["회사 선택"] = companies;
-    }
-
-    final products = await repository.fetchProducts(
-      ctg,
-      topFinGrpNo,
+    final products = await repository.fetchIsaMpProducts(
       pageNo,
       numOfRows,
-      baseYearMonth,
+      baseYear,
       domain,
       mpType,
       cmpy,
     );
-    return products.where((e) {
-      if (e.commonInfo.category == ProductCategory.isa) {
-        // todo: change later
-        return selectedFilters["회사 선택"]!.contains(e.commonInfo.companyName!);
-      }
-      return selectedFilters["회사 선택"]!.contains(e.commonInfo.companyName!) &&
-          e.commonInfo.joinWay!.any(
-            (e) =>
-                (selectedFilters["가입 방법"] ??
-                        ["영업점", "인터넷", "스마트폰", "모집인", "전화(텔레뱅킹)", "기타"])
-                    .contains(e),
-          );
-    }).toList();
+    state = AsyncData(products);
   }
 
   // todo: change later(insert a product in db)
@@ -202,28 +215,19 @@ class ProductViewmodel extends _$ProductViewmodel {
 @riverpod
 class LikedProductViewmodel extends _$LikedProductViewmodel {
   @override
-  Future<List<FinancialProduct>> build(
-    ProductCategory ctg,
-    FilterTextCategory filterCtg,
-    String topFinGrpNo,
-    String pageNo,
-    String numOfRows,
-    String baseYearMonth,
-    String domain,
-    String mpType,
-    String cmpy,
-  ) async {
-    final products = ref.watch(
-      productViewmodelProvider(
-        ctg,
-        filterCtg,
-        topFinGrpNo,
-        pageNo,
-        numOfRows,
-        baseYearMonth,
-        domain,
-        mpType,
-        cmpy,
+  Future<List<FinancialProduct>> build() async {
+    final products = List.generate(
+      3,
+      (index) => IsaMpBenefitRate(
+        category: ProductCategory.isa,
+        companyName: "cmpy_nm",
+        mpName: "mp_nm",
+        releaseDate: "20260622",
+        isLiked: false,
+        baseDate: "20260622",
+        businessDomain: "bzds",
+        mpType: "mp_type",
+        options: [],
       ),
     );
     final filters = ref.watch(
@@ -257,7 +261,7 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
                 ProductCategory.annuity,
           ];
 
-    return (products.value ?? [])
+    return (products)
         .where(
           (e) =>
               e.commonInfo.isLiked == true &&

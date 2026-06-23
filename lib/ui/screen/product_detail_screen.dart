@@ -20,32 +20,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen({
     super.key,
-    required this.productName,
+    required this.product,
     required this.productCategory,
     required this.filterCategory
   });
 
-  final String productName;
+  final FinancialProduct product;
   final ProductCategory productCategory;
   final FilterTextCategory filterCategory;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = productViewmodelProvider(
-      productCategory,
-      filterCategory,
-      "020000",
-      "1",
-      "100",
-      "202604",
-      "",
-      "",
-      ""
-    );
-    final products = ref.watch(provider).valueOrNull;
-    final product = (products ?? []).firstWhere(
-      (p) => p.commonInfo.productName == productName,
-    );
 
     return Scaffold(
       backgroundColor: white,
@@ -60,7 +45,7 @@ class ProductDetailScreen extends ConsumerWidget {
           icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
         ),
         title: Text(
-          productName,
+          product.commonInfo.productName!,
           style: TextStyle(
             color: textPrimary,
             fontSize: 20.0,
@@ -72,8 +57,8 @@ class ProductDetailScreen extends ConsumerWidget {
           IconButton(
             onPressed: () {
               ref
-                  .read(provider.notifier)
-                  .toggleLiked(productName);
+                  .read(productViewmodelProvider.notifier)
+                  .toggleLiked(product.commonInfo.productName!);
             },
             icon: product.commonInfo.isLiked
                 ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
@@ -353,7 +338,7 @@ class ProductDetailScreen extends ConsumerWidget {
                 in options as List<DepositAndInstallmentSavingsOption>)
               DataRow(
                 cells: [
-                  DataCell(dataTableCellText(option.intRateTypeName!)),
+                  DataCell(dataTableCellText(option.intRateTypeName.toString())),
                   DataCell(dataTableCellText(option.saveTerm.toString())),
                   DataCell(dataTableCellText(option.intRate.toString())),
                   DataCell(dataTableCellText(option.maxIntRate.toString())),
@@ -423,7 +408,7 @@ class ProductDetailScreen extends ConsumerWidget {
     return [
       if (category != ProductCategory.isa)
         textFrame(
-          "가입 방법: ${(product.commonInfo.joinWay == null) ? "미제공" : product.commonInfo.joinWay}",
+          "가입 방법: ${(product.commonInfo.joinWay == null) ? "미제공" : product.commonInfo.joinWay!.join(",")}",
         ),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
@@ -510,7 +495,7 @@ class ProductDetailScreen extends ConsumerWidget {
                   "평균 금리",
                 ]
               : const ["대출 상환 유형", "대출 금리 유형", "최저 금리", "최대 금리", "평균 금리"],
-          (product as MortageAndRentLoan).options!,
+          (product as MortageAndRentLoan).options,
         ),
         const SizedBox(height: 14.0),
         textFrame(

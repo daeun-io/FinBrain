@@ -15,19 +15,8 @@ class IsaMpScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = productViewmodelProvider(
-      ProductCategory.isa,
-      FilterTextCategory.isaMp,
-      "020000",
-      "1",
-      "100",
-      "2026",
-      "",
-      "",
-      "",
-    );
     final searchedList = ref.watch(searchedViewmodelProvider);
-    final products = ref.watch(provider);
+    final products = ref.watch(productViewmodelProvider);
     final textSort = ref.watch(
       sortOrFilterTextViewModelProvider(FilterTextCategory.isaMp),
     );
@@ -38,7 +27,7 @@ class IsaMpScreen extends ConsumerWidget {
         SearchBox(
           searchItem: (value) {
             ref
-                .read(provider.notifier)
+                .read(productViewmodelProvider.notifier)
                 .filterByKeyword(value);
             ref.read(searchedViewmodelProvider.notifier).addItem(value);
           },
@@ -51,7 +40,7 @@ class IsaMpScreen extends ConsumerWidget {
           category: FilterTextCategory.isaMp,
           onSortCriteriaChanged: (criteria) {
             ref
-                .read(provider.notifier)
+                .read(productViewmodelProvider.notifier)
                 .sortByCriteria(criteria, ProductCategory.isa);
           },
         ),
@@ -80,7 +69,7 @@ class IsaMpScreen extends ConsumerWidget {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: ProductItem(
-                    productName: products.value![index].commonInfo.productName!,
+                    product: products.value![index],
                     productCategory: ProductCategory.isa,
                     filterTextCategory: FilterTextCategory.isaMp,
                   ),

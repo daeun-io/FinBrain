@@ -24,10 +24,7 @@ class _MainScreenState extends State<MainScreen>{
     const ProductScreen(
       category: ProductScreenCategory.loan,
     ),
-    const ProductBaseScreen(
-      productCategory: ProductCategory.annuity,
-      filterCategory: FilterTextCategory.annuity,
-    ),
+    const ProductScreen(category: ProductScreenCategory.annuity),
     const LikedScreen(),
   ];
 

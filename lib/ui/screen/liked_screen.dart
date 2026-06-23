@@ -14,18 +14,7 @@ class LikedScreen extends ConsumerWidget {
   // todo: change later
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = likedProductViewmodelProvider(
-      ProductCategory.deposit,
-      FilterTextCategory.savings,
-      "020000",
-      "1",
-      "",
-      "",
-      "",
-      "",
-      ""
-    );
-    final likedDummies = ref.watch(provider);
+    final likedDummies = ref.watch(likedProductViewmodelProvider);
     final searchedList = ref.watch(searchedViewmodelProvider);
 
     return Padding(
@@ -40,7 +29,7 @@ class LikedScreen extends ConsumerWidget {
           SearchBox(
             searchItem: (value) {
               ref
-                  .read(provider.notifier)
+                  .read(likedProductViewmodelProvider.notifier)
                   .filterByKeyword(value);
               ref.read(searchedViewmodelProvider.notifier).addItem(value);
             },
@@ -63,11 +52,9 @@ class LikedScreen extends ConsumerWidget {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
-                            productName: likedDummies
-                                .value![index]
-                                .commonInfo
-                                .productName!,
-                            productCategory: likedDummies.value![index].commonInfo.category,
+                            product: likedDummies.value![index],
+                            productCategory:
+                                likedDummies.value![index].commonInfo.category,
                             filterTextCategory: FilterTextCategory.liked,
                           ),
                         );

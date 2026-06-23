@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:charset_converter/charset_converter.dart';
 import 'package:finbrain/data/models/request/finlife_search_options.dart';
 import 'package:finbrain/data/models/request/isa_search_options.dart';
 import 'package:http/http.dart' as http;
@@ -27,32 +28,31 @@ class ProductRemoteDataSource {
       ),
       ProductCategory.annuity => Uri.http(
         finlife,
-        '/finlifeapi/savingProductsSearch.xml',
+        '/finlifeapi/annuitySavingProductsSearch.xml',
         options.toQueryParams(),
       ),
       ProductCategory.mortage => Uri.http(
-        'finlife',
+        finlife,
         '/finlifeapi/mortgageLoanProductsSearch.xml',
         options.toQueryParams(),
       ),
       ProductCategory.rent => Uri.http(
-        'finlife',
+        finlife,
         '/finlifeapi/rentHouseLoanProductsSearch.xml',
         options.toQueryParams(),
       ),
       _ => Uri.http(
-        'finlife',
+        finlife,
         '/finlifeapi/creditLoanProductsSearch.xml',
         options.toQueryParams(),
       ),
     };
-
     try {
       final res = await _client.get(uri);
-      print("response, $res");
       if (res.statusCode == 200) {
+        final String xmlBody = await CharsetConverter.decode("EUC-KR", res.bodyBytes);
         final formatter = Xml2Json();
-        formatter.parse(res.body);
+        formatter.parse(xmlBody);
         final jsonStr = formatter.toParker();
         final Map<String, dynamic> jsonMap = jsonDecode(jsonStr);
         return jsonMap;

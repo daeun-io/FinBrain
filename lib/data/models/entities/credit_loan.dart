@@ -90,8 +90,8 @@ class CreditLoan extends FinancialProduct {
     ].whereType<double>();
 
     final avgRates = foundOption.averageGrade;
-    final min = rates.min;
-    final max = rates.max;
+    final min = rates.minOrNull ?? double.infinity;
+    final max = rates.minOrNull ?? double.infinity;
     final avg = (avgRates != null) ? avgRates : rates.average;
     return [min, avg, max];
   }

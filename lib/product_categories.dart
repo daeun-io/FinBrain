@@ -10,7 +10,8 @@ enum ProductCategory{
 
 enum ProductScreenCategory{
   savings,
-  loan
+  loan,
+  annuity
 }
 
 enum IsaScreenCategory{
