@@ -47,7 +47,7 @@ class IsaBaseScreen extends ConsumerWidget {
     return Column(
       children: [
         const SizedBox(height: 16.0),
-        ProductFilter(category: category),
+        ProductFilter(filterTextCategory: category),
         const SizedBox(height: 24.0),
         SortOrFilterText(
           category: category,

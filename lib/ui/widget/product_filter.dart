@@ -4,9 +4,14 @@ import 'package:finbrain/ui/widget/product_dialog.dart';
 import 'package:flutter/material.dart';
 
 class ProductFilter extends StatefulWidget {
-  const ProductFilter({super.key, required this.category});
+  const ProductFilter({
+    super.key,
+    // required this.productCategory,
+    required this.filterTextCategory,
+  });
 
-  final FilterTextCategory category;
+  // final ProductCategory productCategory;
+  final FilterTextCategory filterTextCategory;
 
   @override
   State<ProductFilter> createState() => _ProductFilterState();
@@ -22,7 +27,10 @@ class _ProductFilterState extends State<ProductFilter> {
           showDialog(
             context: context,
             builder: (BuildContext ctx) {
-              return ProductDialog(filterCategory: widget.category,);
+              return ProductDialog(
+                // productCategory: widget.productCategory,
+                filterCategory: widget.filterTextCategory,
+              );
             },
           );
         });

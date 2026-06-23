@@ -1,16 +1,18 @@
 import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/product_filter_condition.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductDialog extends ConsumerWidget {
   const ProductDialog({
     super.key,
+    // required this.productCategory,
     required this.filterCategory
   });
+  // final ProductCategory productCategory;
   final FilterTextCategory filterCategory;
 
   @override
@@ -97,6 +99,7 @@ class ProductDialog extends ConsumerWidget {
                       child: TextButton(
                         onPressed: () {
                           ref.read(filtersViewmodelProvider(filterCategory, "020000", "1").notifier).saveChanges(filters);
+                          // ref.read(productViewmodelProvider.notifier).fetchFinlifeProducts(productCategory, topFinGrpNo, "1");
                           Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

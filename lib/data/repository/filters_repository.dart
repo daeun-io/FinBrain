@@ -16,7 +16,7 @@ class FiltersRepository {
         ctg == FilterTextCategory.isaManagement ||
         ctg == FilterTextCategory.isaMp) {
       final now = DateTime.now();
-      filters["기준 연월"] = [("${now.year}${now.month}", true)];
+      filters["기준 연도"] = [("${now.year}", true)];
       filters["업권"] = switch (ctg) {
         FilterTextCategory.isaJoin => [
           ("총합", true),

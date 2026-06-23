@@ -39,7 +39,7 @@ class ProductBaseScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          ProductFilter(category: filterCategory),
+          ProductFilter(filterTextCategory: filterCategory),
           const SizedBox(height: 24.0),
           SortOrFilterText(
             category: filterCategory,
