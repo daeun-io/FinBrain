@@ -1,20 +1,12 @@
 import { onRequest } from "firebase-functions/https";
-import { XMLParser } from "fast-xml-parser";
 import type { CmpyNameApiResponse } from "./cmpy_types";
 import { transformToCmpyName } from "./cmpy_transform";
-
-const xmlParser = new XMLParser({
-  ignoreAttributes: true,
-  trimValues: true,
-  isArray: (_tagName, jPath) => {
-    // product가 1개일 때도 배열로 처리
-    return jPath === "result.products.product";
-  },
-});
+import iconv from "iconv-lite";
+import { parseStringPromise } from "xml2js";
 
 // XML -> CmpyNameApiResponse
-export function parseXmlToCmpyName(xml: string): CmpyNameApiResponse {
-  const parsed = xmlParser.parse(xml);
+async function parseXmlToCmpyName(xml: string): Promise<CmpyNameApiResponse> {
+  const parsed = await parseStringPromise(xml, { explicitArray: false });
   return transformToCmpyName(parsed);
 }
 
@@ -24,17 +16,31 @@ export const fetchCmpyNameList = onRequest(async (request, response) => {
 
   try {
     const baseUrl = "http://finlife.fss.or.kr/finlifeapi/companySearch.xml";
-    const queries = new URLSearchParams(request.query as any).toString();
-    const url = `${baseUrl}${queries}`;
+    const urlObj = new URL(baseUrl);
 
+    if(request.query){
+      Object.keys(request.query).forEach((key) => {
+        urlObj.searchParams.append(key, request.query[key] as string);
+      });
+    }
+
+    const url = urlObj.toString();
+    console.log(`url: ${url}`);
+    
     const res = await fetch(url);
+    
     if(!res.ok){
-      response.status(res.status).send("Failed to load API");
+      const errorBody = await res.text();
+      console.log(`error: ${errorBody}`);
+      response.status(res.status).send(errorBody);
       return;
     }
+
+    const arrayBuffer = await res.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
     
-    const xml = await res.text();
-    const parsed = parseXmlToCmpyName(xml);
+    const decodeXml = iconv.decode(buffer, "euc-kr");
+    const parsed = await parseXmlToCmpyName(decodeXml);
     response.status(200).json(parsed);
 
   } catch(error){

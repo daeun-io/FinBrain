@@ -52,7 +52,16 @@ class FiltersRepository {
         options,
       );
       print("cmpy result: $result");
-      final List<String> cmpyList = result["result"]["products"];
+      if(result["result"] == null){
+        print("error: result is null");
+        return {};
+      }
+      if(result["result"]["products"] == null){
+        print("error: product is null");
+        return {};
+      }
+
+      final cmpyList = result["result"]["products"] as Iterable<dynamic>;
       final selectedFinGroup = getFinGroupName[topFinGrpNo] ?? "";
       final List<String> finGroups = switch (ctg) {
         FilterTextCategory.savings => ["은행", "저축은행"],
@@ -60,10 +69,11 @@ class FiltersRepository {
         FilterTextCategory.annuity => ["보험", "금융투자"],
         _ => [],
       };
+      
       filters["금융회사"] = finGroups
           .map((e) => (e, e == selectedFinGroup))
           .toList();
-      filters["회사 선택"] = cmpyList.map((e) => (e, false)).toList();
+      filters["회사 선택"] = cmpyList.map<(String, bool)>((e) => (e, false)).toList();
       filters["가입 방법"] = [
         ("영업점", true),
         ("인터넷", true),

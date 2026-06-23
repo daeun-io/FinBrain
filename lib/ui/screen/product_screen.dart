@@ -47,14 +47,13 @@ class _ProductScreenState extends ConsumerState<ProductScreen>
     _controller.addListener(() {
       if (!_controller.indexIsChanging) {
         final currentCtg = _categories[_controller.index];
-        if (currentCtg == ProductCategory.isa) {
+        if (currentCtg != ProductCategory.isa) {
+          // ref
+          // .read(productViewmodelProvider.notifier)
+          // .fetchFinlifeProducts(currentCtg, "020000", "1");
           ref
               .read(productViewmodelProvider.notifier)
               .fetchIsaMpProducts("1", "100", "2026", "", "", "");
-        } else {
-          ref
-              .read(productViewmodelProvider.notifier)
-              .fetchFinlifeProducts(currentCtg, "020000", "1");
         }
       }
     });

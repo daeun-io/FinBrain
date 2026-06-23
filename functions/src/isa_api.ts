@@ -6,13 +6,22 @@ export const fetchAndGroupProducts = onRequest(async (request, response) => {
 
   try {
     const baseUrl = "https://apis.data.go.kr/1160100/GetISAInfoService_V2/getMPBenefitRateInfo_V2?";
-    const queries = new URLSearchParams(request.query as any).toString();
-    const url = `${baseUrl}${queries}`;
+    const urlObj = new URL(baseUrl);
 
+    if(request.query){
+      Object.keys(request.query).forEach((key) => {
+        urlObj.searchParams.append(key, request.query[key] as string);
+      });
+    }
+
+    const url = urlObj.toString();
+    console.log(`url: ${url}`);
     const res = await fetch(url);
 
     if(!res.ok){
-      response.status(res.status).send("Failed to load API");
+      const errorBody = res.text();
+      console.log(`error: ${errorBody}`);
+      response.status(res.status).send(errorBody);
       return;
     }
 

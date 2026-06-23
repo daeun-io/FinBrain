@@ -24,7 +24,7 @@ interface ParsedXmlResult {
 export function transformToCmpyName(parsed: ParsedXmlResult): CmpyNameApiResponse {
   const { result } = parsed;
   const products = normalizeArray(result.products?.product);
-  const cmpyList = products.map((product) => product.baseInfo.kor_co_nm);
+  const cmpyList = products.map((product) => product.baseinfo.kor_co_nm);
 
   return {
     result: {

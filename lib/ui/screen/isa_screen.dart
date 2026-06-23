@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 class IsaScreen extends StatelessWidget{
   const IsaScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

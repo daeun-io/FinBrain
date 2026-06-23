@@ -26,9 +26,7 @@ class IsaMpScreen extends ConsumerWidget {
         const SizedBox(height: 16.0),
         SearchBox(
           searchItem: (value) {
-            ref
-                .read(productViewmodelProvider.notifier)
-                .filterByKeyword(value);
+            ref.read(productViewmodelProvider.notifier).filterByKeyword(value);
             ref.read(searchedViewmodelProvider.notifier).addItem(value);
           },
           searchedList: searchedList,

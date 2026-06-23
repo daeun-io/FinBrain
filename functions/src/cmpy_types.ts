@@ -1,5 +1,5 @@
 export interface Company {
-  baseInfo: {
+  baseinfo: {
     dcls_month: string,
     fin_co_no: string,
     kor_co_nm: string,

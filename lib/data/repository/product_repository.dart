@@ -35,7 +35,7 @@ class ProductRepository {
         ctg,
         options,
       );
-      
+
       if (result["result"] == null) {
         print("error: result is null");
         return [];
@@ -499,23 +499,50 @@ class ProductRepository {
         mpType,
         cmpy,
       );
+      print("response: $response");
+      if (response["response"] == null ||
+          response["response"]["body"] == null) {
+        print("error: response is null");
+        return [];
+      }
       final body = response["response"]["body"];
-      final items = body["items"]["item"].map(
-        (e) => IsaMpBenefitRate(
-          category: ProductCategory.isa,
-          companyName: e["cmpyNm"],
-          mpName: e["mpNm"],
-          releaseDate: e["rlsDt"],
-          isLiked: false,
-          baseDate: e["basDt"],
-          businessDomain: e["bzds"],
-          mpType: e["mpTp"],
-          options: e["options"].map(
-            (e) =>
-                IsaMpBenefitRateOption(term: e["trm"], benefitRate: e["bnfRt"]),
-          ),
-        ),
-      );
+      if (body["items"] == null || body["items"]["item"] == null) {
+        print("error: item is null");
+        return [];
+      }
+      final rawItems = body["items"]["item"] as Iterable<dynamic>;
+
+      final items = rawItems
+          .map<IsaMpBenefitRate?>((e) {
+            if (e == null || e["cmpyNm"] == null || e["mpNm"] == null) {
+              return null;
+            }
+            final itemOptions =
+                ((e["options"] is! List) || e["options"].isEmpty)
+                ? []
+                : e["options"];
+            return IsaMpBenefitRate(
+              category: ProductCategory.isa,
+              companyName: e["cmpyNm"],
+              mpName: e["mpNm"],
+              releaseDate: e["rlsDt"],
+              isLiked: false,
+              baseDate: e["basDt"],
+              businessDomain: e["bzds"],
+              mpType: e["mpTp"],
+              options: itemOptions.map<IsaMpBenefitRateOption>(
+                (e) => IsaMpBenefitRateOption(
+                  term: e["trm"],
+                  benefitRate: double.tryParse(
+                    e["bnfRt"] ?? double.negativeInfinity,
+                  ),
+                ),
+              ).toList(),
+            );
+          })
+          .nonNulls
+          .toList()
+          .cast<IsaMpBenefitRate>();
       return items;
     } catch (error) {
       print("error: Failed to load data $error");
