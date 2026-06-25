@@ -97,7 +97,7 @@ class ProductItem extends ConsumerWidget {
                   Text(
                     switch (product.commonInfo.category) {
                       ProductCategory.deposit =>
-                        (sortCriteria == "최고 금리(높은순)")
+                        (sortCriteria == "최고 금리(높은 순)")
                             ? (product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$1
@@ -107,7 +107,7 @@ class ProductItem extends ConsumerWidget {
                                   .$2
                                   .toString(),
                       ProductCategory.installment =>
-                        (sortCriteria == "최고 금리(높은순)")
+                        (sortCriteria == "최고 금리(높은 순)")
                             ? (product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$1

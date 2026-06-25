@@ -8,8 +8,7 @@ import 'package:finbrain/product_categories.dart';
 class FiltersRepository {
   Future<Map<String, List<(String, bool)>>> fetchFilters(
     FilterTextCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
+    String topFinGrpNo
   ) async {
     final Map<String, List<(String, bool)>> filters = {};
     if (ctg == FilterTextCategory.isaJoin ||
@@ -36,32 +35,13 @@ class FiltersRepository {
         filters["MP 종류"] = [("저위험", true), ("중위험", true), ("고위험", true)];
       } else {
         filters["ISA 형태"] = [("신탁형", true), ("일임형", true), ("투자중개형", true)];
-        if(ctg == FilterTextCategory.isaManagement){
+        if (ctg == FilterTextCategory.isaManagement) {
           filters["구분"] = [("비중", true), ("금액", false)];
         }
       }
     } else {
-      final client = http.Client();
-      final dataStore = CmpyRemoteDataSource(client);
-      final options = FinlifeSearchOptions(
-        auth: dotenv.env["FINLIFE_API"] ?? "",
-        topFinGrpNo: topFinGrpNo,
-        pageNo: pageNo,
-      );
-      final Map<String, dynamic> result = await dataStore.fetchCmpyNames(
-        options,
-      );
-      print("cmpy result: $result");
-      if(result["result"] == null){
-        print("error: result is null");
-        return {};
-      }
-      if(result["result"]["products"] == null){
-        print("error: product is null");
-        return {};
-      }
-
-      final cmpyList = result["result"]["products"] as Iterable<dynamic>;
+      final cmpyList = await fetchCmpyNames(topFinGrpNo);
+      
       final selectedFinGroup = getFinGroupName[topFinGrpNo] ?? "";
       final List<String> finGroups = switch (ctg) {
         FilterTextCategory.savings => ["은행", "저축은행"],
@@ -69,11 +49,13 @@ class FiltersRepository {
         FilterTextCategory.annuity => ["보험", "금융투자"],
         _ => [],
       };
-      
+
       filters["금융회사"] = finGroups
           .map((e) => (e, e == selectedFinGroup))
           .toList();
-      filters["회사 선택"] = cmpyList.map<(String, bool)>((e) => (e, false)).toList();
+      filters["회사 선택"] = cmpyList
+          .map<(String, bool)>((e) => (e, false))
+          .toList();
       filters["가입 방법"] = [
         ("영업점", true),
         ("인터넷", true),
@@ -89,4 +71,26 @@ class FiltersRepository {
   Future<Map<String, List<(String, bool)>>> saveChanges(
     Map<String, List<(String, bool)>> newFilters,
   ) async => newFilters;
+
+  Future<Iterable<dynamic>> fetchCmpyNames(String topFinGrpNo) async {
+    final client = http.Client();
+    final dataStore = CmpyRemoteDataSource(client);
+    final options = FinlifeSearchOptions(
+      auth: dotenv.env["FINLIFE_API"] ?? "",
+      topFinGrpNo: topFinGrpNo,
+      pageNo: "1",
+    );
+    final Map<String, dynamic> result = await dataStore.fetchCmpyNames(options);
+    print("cmpy result: $result");
+    if (result["result"] == null) {
+      print("error: result is null");
+      return {};
+    }
+    if (result["result"]["products"] == null) {
+      print("error: product is null");
+      return {};
+    }
+    
+    return result["result"]["products"] as Iterable<dynamic>;
+  }
 }

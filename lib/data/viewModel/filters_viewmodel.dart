@@ -1,4 +1,6 @@
+import 'package:finbrain/data/fin_group_code.dart';
 import 'package:finbrain/data/repository/filters_repository.dart';
+import 'package:finbrain/data/viewModel/selected_topFinGrpNo_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'filters_viewmodel.g.dart';
@@ -10,10 +12,15 @@ class FiltersViewmodel extends _$FiltersViewmodel {
   @override
   Future<Map<String, List<(String, bool)>>> build(
     FilterTextCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
   ) async {
-    return await repository.fetchFilters(ctg, topFinGrpNo, pageNo);
+    final topFinGrpMap = ref.watch(selectedTopfingrpnoViewmodelProvider);
+    final topFinGrpNo = topFinGrpMap[switch(ctg){
+      FilterTextCategory.savings => "예적금",
+      FilterTextCategory.loan => "대출",
+      FilterTextCategory.annuity => "연금저축",
+      _ => ""
+    }] ?? "020000";
+    return await repository.fetchFilters(ctg, topFinGrpNo);
   }
 
   Future<void> saveChanges(Map<String, List<(String, bool)>> newFilters) async {
@@ -28,10 +35,8 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
   @override
   Map<String, List<(String, bool)>> build(
     FilterTextCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
   ) {
-    final filters = ref.watch(filtersViewmodelProvider(ctg, topFinGrpNo, pageNo));
+    final filters = ref.watch(filtersViewmodelProvider(ctg));
     return filters.value ?? {};
   }
 

@@ -6,7 +6,7 @@ part of 'filters_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filtersViewmodelHash() => r'a8938c7c47a5c879f72116d555be3795f6c50236';
+String _$filtersViewmodelHash() => r'e024d94b1a58e1924e1aff707f10bef9cf223c2b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,14 +33,8 @@ abstract class _$FiltersViewmodel
     extends
         BuildlessAutoDisposeAsyncNotifier<Map<String, List<(String, bool)>>> {
   late final FilterTextCategory ctg;
-  late final String topFinGrpNo;
-  late final String pageNo;
 
-  FutureOr<Map<String, List<(String, bool)>>> build(
-    FilterTextCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
-  );
+  FutureOr<Map<String, List<(String, bool)>>> build(FilterTextCategory ctg);
 }
 
 /// See also [FiltersViewmodel].
@@ -54,19 +48,15 @@ class FiltersViewmodelFamily
   const FiltersViewmodelFamily();
 
   /// See also [FiltersViewmodel].
-  FiltersViewmodelProvider call(
-    FilterTextCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
-  ) {
-    return FiltersViewmodelProvider(ctg, topFinGrpNo, pageNo);
+  FiltersViewmodelProvider call(FilterTextCategory ctg) {
+    return FiltersViewmodelProvider(ctg);
   }
 
   @override
   FiltersViewmodelProvider getProviderOverride(
     covariant FiltersViewmodelProvider provider,
   ) {
-    return call(provider.ctg, provider.topFinGrpNo, provider.pageNo);
+    return call(provider.ctg);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -92,15 +82,9 @@ class FiltersViewmodelProvider
           Map<String, List<(String, bool)>>
         > {
   /// See also [FiltersViewmodel].
-  FiltersViewmodelProvider(
-    FilterTextCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
-  ) : this._internal(
-        () => FiltersViewmodel()
-          ..ctg = ctg
-          ..topFinGrpNo = topFinGrpNo
-          ..pageNo = pageNo,
+  FiltersViewmodelProvider(FilterTextCategory ctg)
+    : this._internal(
+        () => FiltersViewmodel()..ctg = ctg,
         from: filtersViewmodelProvider,
         name: r'filtersViewmodelProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -110,8 +94,6 @@ class FiltersViewmodelProvider
         allTransitiveDependencies:
             FiltersViewmodelFamily._allTransitiveDependencies,
         ctg: ctg,
-        topFinGrpNo: topFinGrpNo,
-        pageNo: pageNo,
       );
 
   FiltersViewmodelProvider._internal(
@@ -122,19 +104,15 @@ class FiltersViewmodelProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.ctg,
-    required this.topFinGrpNo,
-    required this.pageNo,
   }) : super.internal();
 
   final FilterTextCategory ctg;
-  final String topFinGrpNo;
-  final String pageNo;
 
   @override
   FutureOr<Map<String, List<(String, bool)>>> runNotifierBuild(
     covariant FiltersViewmodel notifier,
   ) {
-    return notifier.build(ctg, topFinGrpNo, pageNo);
+    return notifier.build(ctg);
   }
 
   @override
@@ -142,18 +120,13 @@ class FiltersViewmodelProvider
     return ProviderOverride(
       origin: this,
       override: FiltersViewmodelProvider._internal(
-        () => create()
-          ..ctg = ctg
-          ..topFinGrpNo = topFinGrpNo
-          ..pageNo = pageNo,
+        () => create()..ctg = ctg,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         ctg: ctg,
-        topFinGrpNo: topFinGrpNo,
-        pageNo: pageNo,
       ),
     );
   }
@@ -169,18 +142,13 @@ class FiltersViewmodelProvider
 
   @override
   bool operator ==(Object other) {
-    return other is FiltersViewmodelProvider &&
-        other.ctg == ctg &&
-        other.topFinGrpNo == topFinGrpNo &&
-        other.pageNo == pageNo;
+    return other is FiltersViewmodelProvider && other.ctg == ctg;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, ctg.hashCode);
-    hash = _SystemHash.combine(hash, topFinGrpNo.hashCode);
-    hash = _SystemHash.combine(hash, pageNo.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -192,12 +160,6 @@ mixin FiltersViewmodelRef
     on AutoDisposeAsyncNotifierProviderRef<Map<String, List<(String, bool)>>> {
   /// The parameter `ctg` of this provider.
   FilterTextCategory get ctg;
-
-  /// The parameter `topFinGrpNo` of this provider.
-  String get topFinGrpNo;
-
-  /// The parameter `pageNo` of this provider.
-  String get pageNo;
 }
 
 class _FiltersViewmodelProviderElement
@@ -211,26 +173,16 @@ class _FiltersViewmodelProviderElement
 
   @override
   FilterTextCategory get ctg => (origin as FiltersViewmodelProvider).ctg;
-  @override
-  String get topFinGrpNo => (origin as FiltersViewmodelProvider).topFinGrpNo;
-  @override
-  String get pageNo => (origin as FiltersViewmodelProvider).pageNo;
 }
 
 String _$dialogFiltersViewModelHash() =>
-    r'c7eb0b27819e5af6758a6dd63b6616e2e2e8e47c';
+    r'9ceaf3007ce6a8015feaff76b564d89a0fb485d0';
 
 abstract class _$DialogFiltersViewModel
     extends BuildlessAutoDisposeNotifier<Map<String, List<(String, bool)>>> {
   late final FilterTextCategory ctg;
-  late final String topFinGrpNo;
-  late final String pageNo;
 
-  Map<String, List<(String, bool)>> build(
-    FilterTextCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
-  );
+  Map<String, List<(String, bool)>> build(FilterTextCategory ctg);
 }
 
 /// See also [DialogFiltersViewModel].
@@ -244,19 +196,15 @@ class DialogFiltersViewModelFamily
   const DialogFiltersViewModelFamily();
 
   /// See also [DialogFiltersViewModel].
-  DialogFiltersViewModelProvider call(
-    FilterTextCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
-  ) {
-    return DialogFiltersViewModelProvider(ctg, topFinGrpNo, pageNo);
+  DialogFiltersViewModelProvider call(FilterTextCategory ctg) {
+    return DialogFiltersViewModelProvider(ctg);
   }
 
   @override
   DialogFiltersViewModelProvider getProviderOverride(
     covariant DialogFiltersViewModelProvider provider,
   ) {
-    return call(provider.ctg, provider.topFinGrpNo, provider.pageNo);
+    return call(provider.ctg);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -282,15 +230,9 @@ class DialogFiltersViewModelProvider
           Map<String, List<(String, bool)>>
         > {
   /// See also [DialogFiltersViewModel].
-  DialogFiltersViewModelProvider(
-    FilterTextCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
-  ) : this._internal(
-        () => DialogFiltersViewModel()
-          ..ctg = ctg
-          ..topFinGrpNo = topFinGrpNo
-          ..pageNo = pageNo,
+  DialogFiltersViewModelProvider(FilterTextCategory ctg)
+    : this._internal(
+        () => DialogFiltersViewModel()..ctg = ctg,
         from: dialogFiltersViewModelProvider,
         name: r'dialogFiltersViewModelProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -300,8 +242,6 @@ class DialogFiltersViewModelProvider
         allTransitiveDependencies:
             DialogFiltersViewModelFamily._allTransitiveDependencies,
         ctg: ctg,
-        topFinGrpNo: topFinGrpNo,
-        pageNo: pageNo,
       );
 
   DialogFiltersViewModelProvider._internal(
@@ -312,19 +252,15 @@ class DialogFiltersViewModelProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.ctg,
-    required this.topFinGrpNo,
-    required this.pageNo,
   }) : super.internal();
 
   final FilterTextCategory ctg;
-  final String topFinGrpNo;
-  final String pageNo;
 
   @override
   Map<String, List<(String, bool)>> runNotifierBuild(
     covariant DialogFiltersViewModel notifier,
   ) {
-    return notifier.build(ctg, topFinGrpNo, pageNo);
+    return notifier.build(ctg);
   }
 
   @override
@@ -332,18 +268,13 @@ class DialogFiltersViewModelProvider
     return ProviderOverride(
       origin: this,
       override: DialogFiltersViewModelProvider._internal(
-        () => create()
-          ..ctg = ctg
-          ..topFinGrpNo = topFinGrpNo
-          ..pageNo = pageNo,
+        () => create()..ctg = ctg,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         ctg: ctg,
-        topFinGrpNo: topFinGrpNo,
-        pageNo: pageNo,
       ),
     );
   }
@@ -359,18 +290,13 @@ class DialogFiltersViewModelProvider
 
   @override
   bool operator ==(Object other) {
-    return other is DialogFiltersViewModelProvider &&
-        other.ctg == ctg &&
-        other.topFinGrpNo == topFinGrpNo &&
-        other.pageNo == pageNo;
+    return other is DialogFiltersViewModelProvider && other.ctg == ctg;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, ctg.hashCode);
-    hash = _SystemHash.combine(hash, topFinGrpNo.hashCode);
-    hash = _SystemHash.combine(hash, pageNo.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -382,12 +308,6 @@ mixin DialogFiltersViewModelRef
     on AutoDisposeNotifierProviderRef<Map<String, List<(String, bool)>>> {
   /// The parameter `ctg` of this provider.
   FilterTextCategory get ctg;
-
-  /// The parameter `topFinGrpNo` of this provider.
-  String get topFinGrpNo;
-
-  /// The parameter `pageNo` of this provider.
-  String get pageNo;
 }
 
 class _DialogFiltersViewModelProviderElement
@@ -401,11 +321,6 @@ class _DialogFiltersViewModelProviderElement
 
   @override
   FilterTextCategory get ctg => (origin as DialogFiltersViewModelProvider).ctg;
-  @override
-  String get topFinGrpNo =>
-      (origin as DialogFiltersViewModelProvider).topFinGrpNo;
-  @override
-  String get pageNo => (origin as DialogFiltersViewModelProvider).pageNo;
 }
 
 // ignore_for_file: type=lint

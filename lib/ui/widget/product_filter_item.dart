@@ -23,7 +23,7 @@ class ProductFilterItem extends ConsumerWidget {
     return GestureDetector(
       onTap: () {
         ref
-            .read(dialogFiltersViewModelProvider(category, "020000", "1").notifier)
+            .read(dialogFiltersViewModelProvider(category).notifier)
             .toggleSelected(text, localIsSelected);
       },
       child: Card(

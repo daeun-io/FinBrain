@@ -37,7 +37,7 @@ class IsaBaseScreen extends ConsumerWidget {
         : ref.watch(mngmProvider);
 
     final filters = ref.watch(
-      filtersViewmodelProvider(category, "020000", "1"),
+      filtersViewmodelProvider(category),
     );
 
     final column = (category == FilterTextCategory.isaJoin)

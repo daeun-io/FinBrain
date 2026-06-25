@@ -25,45 +25,59 @@ class ProductViewmodel extends _$ProductViewmodel {
     String topFinGrpNo,
     String pageNo,
   ) async {
-    // final filters = ref.watch(
-    // filtersViewmodelProvider(filterCtg, topFinGrpNo, pageNo),
-    // );
-    // final currentFilters = filters.value ?? {};
-    // Map<String, List<String>> selectedFilters = {};
-    // for (final entry in currentFilters.entries) {
-    // selectedFilters[entry.key] = entry.value
-    // .where((e) => e.$2 == true)
-    // .map((e) => e.$1)
-    // .toList();
-    // }
-    // if (selectedFilters["회사 선택"]!.isEmpty) {
-    // final List<String> companies = [];
-    // for (final filter in currentFilters["회사 선택"]!) {
-    // companies.add(filter.$1);
-    // }
-    // selectedFilters["회사 선택"] = companies;
-    // }
+    if (ctg == ProductCategory.isa) {
+      state = AsyncData([]);
+    }
 
-    // return products.where((e) {
-    // if (e.commonInfo.category == ProductCategory.isa) {
-    // todo: change later
-    // return selectedFilters["회사 선택"]!.contains(e.commonInfo.companyName!);
-    // }
-    // return selectedFilters["회사 선택"]!.contains(e.commonInfo.companyName!) &&
-    // e.commonInfo.joinWay!.any(
-    // (e) =>
-    // (selectedFilters["가입 방법"] ??
-    // ["영업점", "인터넷", "스마트폰", "모집인", "전화(텔레뱅킹)", "기타"])
-    // .contains(e),
-    // );
-    // }).toList();
+    final filterCtg = switch (ctg) {
+      ProductCategory.annuity => FilterTextCategory.annuity,
+      ProductCategory.deposit => FilterTextCategory.savings,
+      ProductCategory.installment => FilterTextCategory.savings,
+      _ => FilterTextCategory.loan,
+    };
+
+    final filters = await ref.read(
+      filtersViewmodelProvider(filterCtg).future,
+    );
+    Map<String, List<String>> selectedFilters = {};
+    for (final entry in filters.entries) {
+      selectedFilters[entry.key] = entry.value
+          .where((e) => e.$2 == true)
+          .map((e) => e.$1)
+          .toList();
+    }
+    if (selectedFilters["회사 선택"] != null && selectedFilters["회사 선택"]!.isEmpty) {
+      final List<String> companies = [];
+      for (final filter in filters["회사 선택"]!) {
+        companies.add(filter.$1);
+      }
+      selectedFilters["회사 선택"] = companies;
+    }
+
+    final criteria = ref
+        .read(sortOrFilterTextViewModelProvider(filterCtg))
+        .$1
+        .toString();
 
     final products = await repository.fetchFinlifeProducts(
       ctg,
       topFinGrpNo,
       pageNo,
     );
-    state = AsyncData(products);
+
+    final filtered = products.where((element) {
+      return (selectedFilters["회사 선택"] ?? []).contains(
+            element.commonInfo.companyName,
+          ) &&
+          element.commonInfo.joinWay!.any(
+            (e) =>
+                (selectedFilters["가입 방법"] ??
+                        ["영업점", "인터넷", "스마트폰", "모집인", "전화(텔레뱅킹)", "기타"])
+                    .contains(e),
+          );
+    }).toList();
+
+    sortByCriteria(criteria, ctg, filtered);
   }
 
   void fetchIsaMpProducts(
@@ -100,37 +114,42 @@ class ProductViewmodel extends _$ProductViewmodel {
     // todo: later updated at server
   }
 
-  void sortByCriteria(String criteria, ProductCategory category) {
-    final products = state.value ?? [];
+  void sortByCriteria(
+    String criteria,
+    ProductCategory category, [
+    List<FinancialProduct>? prdt,
+  ]) {
+    final products = prdt ?? state.valueOrNull;
+    final nonNullPrdt = products ?? [];
 
     switch (category) {
       case ProductCategory.deposit:
       case ProductCategory.installment:
         state = AsyncData(
-          products..sort(
+          nonNullPrdt..sort(
             (criteria == "최고 금리(높은 순)")
-                ? (a, b) => (b as DepositAndInstallmentSavings)
+                ? (a, b) => ((b as DepositAndInstallmentSavings)
                       .returnHighestRateValue()
-                      .$1
+                      .$1)
                       .compareTo(
-                        (a as DepositAndInstallmentSavings)
+                        ((a as DepositAndInstallmentSavings)
                             .returnHighestRateValue()
-                            .$1,
+                            .$1),
                       )
-                : (a, b) => (b as DepositAndInstallmentSavings)
+                : (a, b) => ((b as DepositAndInstallmentSavings)
                       .returnHighestRateValue()
-                      .$2
+                      .$2)
                       .compareTo(
-                        (a as DepositAndInstallmentSavings)
+                        ((a as DepositAndInstallmentSavings)
                             .returnHighestRateValue()
-                            .$2,
+                            .$2),
                       ),
           ),
         );
         break;
       case ProductCategory.annuity:
         state = AsyncData(
-          products..sort(switch (criteria) {
+          nonNullPrdt..sort(switch (criteria) {
             "평균 수익률(높은 순)" =>
               (a, b) => (b as AnnuitySavings).returnProfits()[0].compareTo(
                 (a as AnnuitySavings).returnProfits()[0],
@@ -152,39 +171,39 @@ class ProductViewmodel extends _$ProductViewmodel {
       case ProductCategory.mortage:
       case ProductCategory.rent:
         state = AsyncData(
-          products..sort(switch (criteria) {
+          nonNullPrdt..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>
-              (a, b) => (b as MortageAndRentLoan).returnRates()[0].compareTo(
-                (a as MortageAndRentLoan).returnRates()[0],
+              (a, b) => (a as MortageAndRentLoan).returnRates()[0].compareTo(
+                (b as MortageAndRentLoan).returnRates()[0],
               ),
             "최고 금리(낮은 순)" =>
-              (a, b) => (b as MortageAndRentLoan).returnRates()[2].compareTo(
-                (a as MortageAndRentLoan).returnRates()[2],
+              (a, b) => (a as MortageAndRentLoan).returnRates()[2].compareTo(
+                (b as MortageAndRentLoan).returnRates()[2],
               ),
-            _ => (a, b) => (b as MortageAndRentLoan).returnRates()[1].compareTo(
-              (a as MortageAndRentLoan).returnRates()[1],
+            _ => (a, b) => (a as MortageAndRentLoan).returnRates()[1].compareTo(
+              (b as MortageAndRentLoan).returnRates()[1],
             ),
           }),
         );
       case ProductCategory.credit:
         state = AsyncData(
-          products..sort(switch (criteria) {
+          nonNullPrdt..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>
-              (a, b) => (b as CreditLoan).returnRates()[0].compareTo(
-                (a as CreditLoan).returnRates()[0],
+              (a, b) => (a as CreditLoan).returnRates()[0].compareTo(
+                (b as CreditLoan).returnRates()[0],
               ),
             "최고 금리(낮은 순)" =>
-              (a, b) => (b as CreditLoan).returnRates()[2].compareTo(
-                (a as CreditLoan).returnRates()[2],
+              (a, b) => (a as CreditLoan).returnRates()[2].compareTo(
+                (b as CreditLoan).returnRates()[2],
               ),
-            _ => (a, b) => (b as CreditLoan).returnRates()[1].compareTo(
-              (a as CreditLoan).returnRates()[1],
+            _ => (a, b) => (a as CreditLoan).returnRates()[1].compareTo(
+              (b as CreditLoan).returnRates()[1],
             ),
           }),
         );
       default:
         state = AsyncData(
-          products..sort(switch (criteria) {
+          nonNullPrdt..sort(switch (criteria) {
             "평균 수익률(높은 순)" =>
               (a, b) => (b as IsaMpBenefitRate)
                   .returnAvgMedProfits()

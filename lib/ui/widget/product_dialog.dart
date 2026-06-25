@@ -17,8 +17,7 @@ class ProductDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = dialogFiltersViewModelProvider(filterCategory, "020000", "1");
-    final filters = ref.watch(provider);
+    final filters = ref.watch(dialogFiltersViewModelProvider(filterCategory));
 
     return Consumer(
       builder: (ctx, ref, child) {
@@ -50,7 +49,7 @@ class ProductDialog extends ConsumerWidget {
                     TextButton(
                       onPressed: () {
                         ref
-                            .read(provider.notifier)
+                            .read(dialogFiltersViewModelProvider(filterCategory).notifier)
                             .resetChanges();
                       },
                       style: TextButton.styleFrom(
@@ -98,8 +97,8 @@ class ProductDialog extends ConsumerWidget {
                     Expanded(
                       child: TextButton(
                         onPressed: () {
-                          ref.read(filtersViewmodelProvider(filterCategory, "020000", "1").notifier).saveChanges(filters);
-                          // ref.read(productViewmodelProvider.notifier).fetchFinlifeProducts(productCategory, topFinGrpNo, "1");
+                          ref.read(filtersViewmodelProvider(filterCategory).notifier).saveChanges(filters);
+                          //ref.read(productViewmodelProvider.notifier).fetchFinlifeProducts(productCategory, topFinGrpNo, "1");
                           Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

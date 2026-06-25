@@ -1,12 +1,13 @@
 import 'package:finbrain/data/models/entities/annuity_savings_option.dart';
 import 'package:finbrain/data/models/entities/deposit_and_installment_savings_option.dart';
+import 'package:finbrain/data/repository/url_repository.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_detail_screen_viewmodel.g.dart';
 
 @riverpod
 class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
-  Map<String, List<String>> build() => {};
+  Future<bool> build() async => false;
 
   Map<String, List<String>> mapProductOptions(
     ProductCategory category,
@@ -82,5 +83,14 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
       for (var i = 0; i < keys.length; i++) keys[i]: values[i],
     };
     return map;
+  }
+
+  Future<bool> fetchAndOpenProductUrl(String companyName, String productName) async{
+    final repository = UrlRepository();
+    final urlString = await repository.fetchAndOpenProductUrl(
+      companyName,
+      productName,
+    );
+    return await repository.launchInBrowser(urlString);
   }
 }

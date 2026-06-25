@@ -6,6 +6,7 @@ import 'package:finbrain/data/models/entities/deposit_and_installment_savings.da
 import 'package:finbrain/data/models/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/data/models/entities/financial_product.dart';
 import 'package:finbrain/data/models/entities/isa_mp_benefit_rate.dart';
+import 'package:finbrain/data/models/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/models/entities/mortage_and_rent_loan_option.dart';
 import 'package:finbrain/data/viewModel/product_detail_screen_viewmodel.dart';
@@ -22,16 +23,34 @@ class ProductDetailScreen extends ConsumerWidget {
     super.key,
     required this.product,
     required this.productCategory,
-    required this.filterCategory
+    required this.filterCategory,
   });
 
   final FinancialProduct product;
   final ProductCategory productCategory;
   final FilterTextCategory filterCategory;
 
+  void launchPrdtUrl(WidgetRef ref, BuildContext context) {
+    ref
+        .read(productDetailScreenViewmodelProvider.notifier)
+        .fetchAndOpenProductUrl(
+          product.commonInfo.companyName!,
+          product.commonInfo.productName!,
+        )
+        .then((isSuccess) {
+          if (!isSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: Duration(seconds: 3),
+                content: const Text("오류: 외부 url으로의 이동이 실패했습니다, 다시 시도해주세요"),
+              ),
+            );
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return Scaffold(
       backgroundColor: white,
       resizeToAvoidBottomInset: false,
@@ -92,7 +111,11 @@ class ProductDetailScreen extends ConsumerWidget {
             Positioned(right: 20, bottom: 100, child: const AiButton()),
             if (productCategory == ProductCategory.isa)
               Positioned(
-                child: Expanded(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: GestureDetector(
+                  onTap: () => launchPrdtUrl(ref, context),
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
                     color: primary100,
@@ -142,7 +165,10 @@ class ProductDetailScreen extends ConsumerWidget {
                                         productDetailScreenViewmodelProvider
                                             .notifier,
                                       )
-                                      .mapProductOptions(productCategory, options),
+                                      .mapProductOptions(
+                                        productCategory,
+                                        options,
+                                      ),
                                   options: options,
                                 );
                               },
@@ -165,16 +191,19 @@ class ProductDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 20.0),
-                        color: primary100,
-                        alignment: Alignment.center,
-                        child: Text(
-                          "공식 홈페이지로 이동",
-                          style: TextStyle(
-                            color: textPrimary,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w400,
+                      child: GestureDetector(
+                        onTap: () => launchPrdtUrl(ref, context),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          color: primary100,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "공식 홈페이지로 이동",
+                            style: TextStyle(
+                              color: textPrimary,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ),
                       ),
@@ -223,11 +252,10 @@ class ProductDetailScreen extends ConsumerWidget {
     );
   }
 
-  // todo: implement logic for isa mp product
   Widget tableFrame(ProductCategory category, List<dynamic> options) {
-    return Column(
-      children: [
-        if (category == ProductCategory.credit)
+    if (category == ProductCategory.credit) {
+      return Column(
+        children: [
           for (final option in options as List<CreditLoanOption>)
             if (option.creditLendRateTypeName != null) ...[
               textFrame(option.creditLendRateTypeName!),
@@ -304,8 +332,32 @@ class ProductDetailScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 28.0),
             ],
-      ],
-    );
+        ],
+      );
+    } else {
+      return Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        border: TableBorder.all(color: primary300),
+        children: [
+          TableRow(
+            decoration: BoxDecoration(
+              color: primary100,
+              border: BoxBorder.all(color: primary300),
+            ),
+            children: [tableCellFrame("기간"), tableCellFrame("수익률")],
+          ),
+          for (final option in options as List<IsaMpBenefitRateOption>) ...[
+            if (option.term != null && option.benefitRate != null)
+              TableRow(
+                children: [
+                  tableCellFrame(option.term!),
+                  tableCellFrame(option.benefitRate.toString()),
+                ],
+              ),
+          ],
+        ],
+      );
+    }
   }
 
   Widget dataTableFrame(
@@ -338,7 +390,9 @@ class ProductDetailScreen extends ConsumerWidget {
                 in options as List<DepositAndInstallmentSavingsOption>)
               DataRow(
                 cells: [
-                  DataCell(dataTableCellText(option.intRateTypeName.toString())),
+                  DataCell(
+                    dataTableCellText(option.intRateTypeName.toString()),
+                  ),
                   DataCell(dataTableCellText(option.saveTerm.toString())),
                   DataCell(dataTableCellText(option.intRate.toString())),
                   DataCell(dataTableCellText(option.maxIntRate.toString())),
@@ -355,6 +409,7 @@ class ProductDetailScreen extends ConsumerWidget {
                   ),
                   DataCell(dataTableCellText(option.saveTerm.toString())),
                   DataCell(dataTableCellText(option.intRate.toString())),
+                  DataCell(dataTableCellText(option.maxIntRate.toString())),
                 ],
               ),
           if (category == ProductCategory.mortage)
@@ -465,8 +520,8 @@ class ProductDetailScreen extends ConsumerWidget {
         dataTableFrame(
           category,
           (category == ProductCategory.deposit)
-              ? const ["금리 유형", "기간(개월)", "기본 금리", "최대 우대 금리"]
-              : const ["금리 유형", "적금 유형", "기간(개월)", "금리"],
+              ? const ["금리 유형", "기간(개월)", "기본 금리", "최고 우대 금리"]
+              : const ["금리 유형", "적금 유형", "기간(개월)", "금리", "최고 우대 금리"],
           (product as DepositAndInstallmentSavings).options,
         ),
         const SizedBox(height: 14.0),
@@ -537,11 +592,8 @@ class ProductDetailScreen extends ConsumerWidget {
         textFrame(
           "전전전년도 수익률: ${(product.pppyProfitRate == null) ? "미제공" : product.pppyProfitRate}",
         ),
-      ]
-      // todo: isa
-      else
-        // todo: implement later
-        tableFrame(category, []),
+      ] else
+        tableFrame(category, (product as IsaMpBenefitRate).options),
     ];
   }
 }
