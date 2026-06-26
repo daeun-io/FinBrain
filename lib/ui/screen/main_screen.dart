@@ -30,7 +30,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     if (ctg == ProductCategory.isa) {
       ref
           .read(productViewmodelProvider.notifier)
-          .fetchIsaMpProducts("1", "100", "2026", "", "", "");
+          .fetchIsaMpProducts("1", "1000", "2026", "", "", "");
     } else {
       ref
           .read(productViewmodelProvider.notifier)

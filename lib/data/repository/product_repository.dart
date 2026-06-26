@@ -43,7 +43,8 @@ class ProductRepository {
 
       final maxPage = int.tryParse(result["result"]["max_page_no"]) ?? 0;
       if (maxPage == 0) {
-        return (0, <FinancialProduct>[]);;
+        return (0, <FinancialProduct>[]);
+        ;
       }
 
       if (result["result"]["products"] == null ||
@@ -510,17 +511,18 @@ class ProductRepository {
       if (response["response"] == null ||
           response["response"]["body"] == null) {
         print("error: response is null");
-        return (0, <FinancialProduct>[]);;
+        return (0, <FinancialProduct>[]);
       }
-      final totalCount = int.tryParse(response["response"]["totalCount"]) ?? 0;
-      if(totalCount == 0){
-        return (0, <FinancialProduct>[]);;
+      final totalCount =
+          int.tryParse(response["response"]["body"]["totalCount"].toString()) ?? 0;
+      if (totalCount == 0) {
+        return (0, <FinancialProduct>[]);
       }
 
       final body = response["response"]["body"];
       if (body["items"] == null || body["items"]["item"] == null) {
         print("error: item is null");
-        return (0, <FinancialProduct>[]);;
+        return (0, <FinancialProduct>[]);
       }
       final rawItems = body["items"]["item"] as Iterable<dynamic>;
 
@@ -533,26 +535,33 @@ class ProductRepository {
                 ((e["options"] is! List) || e["options"].isEmpty)
                 ? []
                 : e["options"];
-            return IsaMpBenefitRate(
-              category: ProductCategory.isa,
-              companyName: e["cmpyNm"],
-              mpName: e["mpNm"],
-              releaseDate: e["rlsDt"],
-              isLiked: false,
-              baseDate: e["basDt"],
-              businessDomain: e["bzds"],
-              mpType: e["mpTp"],
-              options: itemOptions
-                  .map<IsaMpBenefitRateOption>(
-                    (e) => IsaMpBenefitRateOption(
-                      term: e["trm"],
-                      benefitRate: double.tryParse(
-                        e["bnfRt"] ?? double.negativeInfinity,
+            try {
+              return IsaMpBenefitRate(
+                category: ProductCategory.isa,
+                companyName: e["cmpyNm"],
+                mpName: e["mpNm"],
+                releaseDate: e["rlsDt"],
+                isLiked: false,
+                baseDate: e["basDt"],
+                businessDomain: e["bzds"],
+                mpType: e["mpTp"],
+                options: itemOptions
+                    .map<IsaMpBenefitRateOption>(
+                      (e) => IsaMpBenefitRateOption(
+                        term: e["trm"],
+                        benefitRate:
+                            double.tryParse(e["bnfRt"].toString()) ??
+                            double.negativeInfinity,
                       ),
-                    ),
-                  )
-                  .toList(),
-            );
+                    )
+                    .toList(),
+              );
+            } catch (error, stackTrace) {
+              print("error: a mapping error: $error");
+              print("error: trace the mapping error: $stackTrace");
+              print("error: failed element: $e");
+              return null;
+            }
           })
           .nonNulls
           .toList()

@@ -64,10 +64,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       }
     }
     if (position.pixels <= position.minScrollExtent + 100) {
-      final data = ref.read(productViewmodelProvider);
-      if (data.hasValue && data.value != null) {
-        _maxPage = data.value!.$1;
-      }
       print("_cPage: $_cPage");
       if (_cPage > 1) {
         setState(() {
@@ -90,7 +86,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           "030300",
           _cPage.toString(),
         );
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
@@ -183,7 +179,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
             error: (err, stack) => Expanded(
               child: Center(
                 child: Text(
-                  "Error Occurred",
+                  "오류가 발생했습니다. 다시 시도해주세요",
                   style: TextStyle(
                     color: black,
                     fontSize: 12.0,

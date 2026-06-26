@@ -6,7 +6,7 @@ import 'package:finbrain/data/models/entities/isa_join_status.dart';
 import 'package:finbrain/data/models/entities/isa_management_status.dart';
 
 class IsaRepository {
-  Future<List<IsaJoinStatus>> fetchJoinStatus(
+  Future<(int, List<IsaJoinStatus>)> fetchJoinStatus(
     String pageNo,
     String numOfRows,
     String baseYearMonth,
@@ -29,6 +29,13 @@ class IsaRepository {
         domain,
         isaForm,
       );
+
+      final totalCount =
+          int.tryParse(result["response"]["body"]["totalCount"].toString()) ?? 0;
+      if (totalCount == 0) {
+        return (0, <IsaJoinStatus>[]);
+      }
+
       final rawItems =
           result["response"]["body"]["items"]["item"] as Iterable<dynamic>;
       final List<IsaJoinStatus> items = rawItems
@@ -53,16 +60,16 @@ class IsaRepository {
           })
           .whereType<IsaJoinStatus>()
           .toList();
-      return items;
+      return (totalCount, items);
     } catch (error) {
       print("error: Failed to load data $error");
-      return [];
+      return (0, <IsaJoinStatus>[]);
     } finally {
       client.close();
     }
   }
 
-  Future<List<IsaManagementStatus>> fetchManagementStatus(
+  Future<(int, List<IsaManagementStatus>)> fetchManagementStatus(
     String pageNo,
     String numOfRows,
     String baseYearMonth,
@@ -82,6 +89,13 @@ class IsaRepository {
     try {
       final Map<String, dynamic> response = await dataStore
           .fetchManagementStatus(options, ctg, domain, isaForm);
+
+      final totalCount =
+          int.tryParse(response["response"]["body"]["totalCount"].toString()) ?? 0;
+      if (totalCount == 0) {
+        return (0, <IsaManagementStatus>[]);
+      }
+
       final rawItems =
           response["response"]["body"]["items"]["item"] as Iterable<dynamic>;
       final List<IsaManagementStatus> items = rawItems
@@ -106,10 +120,10 @@ class IsaRepository {
           })
           .whereType<IsaManagementStatus>()
           .toList();
-      return items;
+      return (totalCount, items);
     } catch (error) {
       print("error: Failed to load data, $error");
-      return [];
+      return (0, <IsaManagementStatus>[]);
     } finally {
       client.close();
     }
