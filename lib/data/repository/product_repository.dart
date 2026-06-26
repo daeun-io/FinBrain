@@ -17,7 +17,7 @@ import 'package:finbrain/product_categories.dart';
 import 'package:http/http.dart' as http;
 
 class ProductRepository {
-  Future<List<FinancialProduct>> fetchFinlifeProducts(
+  Future<(int, List<FinancialProduct>)> fetchFinlifeProductsAndPageNo(
     ProductCategory ctg,
     String topFinGrpNo,
     String pageNo,
@@ -38,13 +38,20 @@ class ProductRepository {
 
       if (result["result"] == null) {
         print("error: result is null");
-        return [];
+        return (0, <FinancialProduct>[]);
       }
+
+      final maxPage = int.tryParse(result["result"]["max_page_no"]) ?? 0;
+      if (maxPage == 0) {
+        return (0, <FinancialProduct>[]);;
+      }
+
       if (result["result"]["products"] == null ||
           result["result"]["products"]["product"] == null) {
         print("error: No products found");
-        return [];
+        return (0, [] as List<FinancialProduct>);
       }
+
       final rawProducts =
           result["result"]["products"]["product"] as Iterable<dynamic>;
 
@@ -465,16 +472,16 @@ class ProductRepository {
               .toList()
               .cast<FinancialProduct>(),
       };
-      return products;
+      return (maxPage, products);
     } catch (error) {
       print("error: Failed to load data $error");
-      return [];
+      return (0, <FinancialProduct>[]);
     } finally {
       client.close();
     }
   }
 
-  Future<List<FinancialProduct>> fetchIsaMpProducts(
+  Future<(int, List<FinancialProduct>)> fetchIsaMpProductsAndCount(
     String pageNo,
     String numOfRows,
     String baseYearMonth,
@@ -503,12 +510,17 @@ class ProductRepository {
       if (response["response"] == null ||
           response["response"]["body"] == null) {
         print("error: response is null");
-        return [];
+        return (0, <FinancialProduct>[]);;
       }
+      final totalCount = int.tryParse(response["response"]["totalCount"]) ?? 0;
+      if(totalCount == 0){
+        return (0, <FinancialProduct>[]);;
+      }
+
       final body = response["response"]["body"];
       if (body["items"] == null || body["items"]["item"] == null) {
         print("error: item is null");
-        return [];
+        return (0, <FinancialProduct>[]);;
       }
       final rawItems = body["items"]["item"] as Iterable<dynamic>;
 
@@ -530,23 +542,25 @@ class ProductRepository {
               baseDate: e["basDt"],
               businessDomain: e["bzds"],
               mpType: e["mpTp"],
-              options: itemOptions.map<IsaMpBenefitRateOption>(
-                (e) => IsaMpBenefitRateOption(
-                  term: e["trm"],
-                  benefitRate: double.tryParse(
-                    e["bnfRt"] ?? double.negativeInfinity,
-                  ),
-                ),
-              ).toList(),
+              options: itemOptions
+                  .map<IsaMpBenefitRateOption>(
+                    (e) => IsaMpBenefitRateOption(
+                      term: e["trm"],
+                      benefitRate: double.tryParse(
+                        e["bnfRt"] ?? double.negativeInfinity,
+                      ),
+                    ),
+                  )
+                  .toList(),
             );
           })
           .nonNulls
           .toList()
-          .cast<IsaMpBenefitRate>();
-      return items;
+          .cast<FinancialProduct>();
+      return (totalCount, items);
     } catch (error) {
       print("error: Failed to load data $error");
-      return [];
+      return (0, <FinancialProduct>[]);
     } finally {
       client.close();
     }

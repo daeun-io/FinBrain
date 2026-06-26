@@ -39,11 +39,11 @@ class IsaMpScreen extends ConsumerWidget {
           onSortCriteriaChanged: (criteria) {
             ref
                 .read(productViewmodelProvider.notifier)
-                .sortByCriteria(criteria, ProductCategory.isa);
+                .sortByCriteria(criteria, ProductCategory.isa, products.value!.$1);
           },
         ),
         const SizedBox(height: 20),
-        if (products.valueOrNull == null && products.value!.isEmpty)
+        if (products.valueOrNull == null && products.value!.$2.isEmpty)
           Expanded(
             child: Center(
               child: Text(
@@ -59,15 +59,15 @@ class IsaMpScreen extends ConsumerWidget {
         else
           Expanded(
             child: ListView.builder(
-              itemCount: products.value!.length,
+              itemCount: products.value!.$2.length,
               itemBuilder: (context, index) {
-                if (index >= products.value!.length) {
+                if (index >= products.value!.$2.length) {
                   return const SizedBox.shrink();
                 }
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: ProductItem(
-                    product: products.value![index],
+                    product: products.value!.$2[index],
                     productCategory: ProductCategory.isa,
                     filterTextCategory: FilterTextCategory.isaMp,
                   ),

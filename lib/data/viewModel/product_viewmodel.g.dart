@@ -6,14 +6,14 @@ part of 'product_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productViewmodelHash() => r'8f2eaf9df3b5a82078d8a0ee5276e3948151acc2';
+String _$productViewmodelHash() => r'e33d23ebbb0746b3bd8444f39573613c6bd9de88';
 
 /// See also [ProductViewmodel].
 @ProviderFor(ProductViewmodel)
 final productViewmodelProvider =
     AutoDisposeAsyncNotifierProvider<
       ProductViewmodel,
-      List<FinancialProduct>
+      (int, List<FinancialProduct>)
     >.internal(
       ProductViewmodel.new,
       name: r'productViewmodelProvider',
@@ -24,7 +24,8 @@ final productViewmodelProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$ProductViewmodel = AutoDisposeAsyncNotifier<List<FinancialProduct>>;
+typedef _$ProductViewmodel =
+    AutoDisposeAsyncNotifier<(int, List<FinancialProduct>)>;
 String _$likedProductViewmodelHash() =>
     r'eebc4b79554df6779ce34a90b9ba8213aaf809fb';
 

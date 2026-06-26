@@ -36,7 +36,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           .read(productViewmodelProvider.notifier)
           .fetchFinlifeProducts(
             ctg,
-            (ctg == ProductCategory.annuity) ? "050000" : "020000",
+            (ctg == ProductCategory.annuity) ? "050000" : "030300",
             "1",
           );
     }

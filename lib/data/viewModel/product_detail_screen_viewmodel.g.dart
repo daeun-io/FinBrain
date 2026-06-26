@@ -7,7 +7,7 @@ part of 'product_detail_screen_viewmodel.dart';
 // **************************************************************************
 
 String _$productDetailScreenViewmodelHash() =>
-    r'4766bc31081abeefe7ad42852401369ede77025a';
+    r'e6f914e8c5edd403cf706ed0c30d6c4111fee1b7';
 
 /// See also [ProductDetailScreenViewmodel].
 @ProviderFor(ProductDetailScreenViewmodel)

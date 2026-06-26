@@ -6,10 +6,11 @@ import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductBaseScreen extends ConsumerWidget {
+class ProductBaseScreen extends ConsumerStatefulWidget {
   const ProductBaseScreen({
     super.key,
     required this.productCategory,
@@ -20,13 +21,98 @@ class ProductBaseScreen extends ConsumerWidget {
   final FilterTextCategory filterCategory;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductBaseScreen> createState() => _ProductBaseScreenState();
+}
+
+class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
+  final ScrollController _controller = ScrollController();
+  final GlobalKey _centerKey = GlobalKey();
+  bool _isLoading = false;
+  int _cPage = 1;
+  late int _maxPage;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() async {
+    if (_isLoading) return;
+    final position = _controller.position;
+    if (position.pixels >= position.maxScrollExtent - 100) {
+      final data = ref.read(productViewmodelProvider);
+      if (data.hasValue && data.value != null) {
+        _maxPage = data.value!.$1;
+      }
+      if (_cPage < _maxPage) {
+        setState(() {
+          _isLoading = true;
+          _cPage++;
+        });
+        print("_cPage: $_cPage");
+        await _fetchData();
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+    if (position.pixels <= position.minScrollExtent + 100) {
+      final data = ref.read(productViewmodelProvider);
+      if (data.hasValue && data.value != null) {
+        _maxPage = data.value!.$1;
+      }
+      print("_cPage: $_cPage");
+      if (_cPage > 1) {
+        setState(() {
+          _isLoading = true;
+          _cPage--;
+        });
+        await _fetchData();
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _fetchData() async {
+    ref
+        .read(productViewmodelProvider.notifier)
+        .fetchFinlifeProducts(
+          widget.productCategory,
+          "030300",
+          _cPage.toString(),
+        );
+    await Future.delayed(const Duration(seconds: 2));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final products = ref.watch(productViewmodelProvider);
     final textSort = ref.watch(
-      sortOrFilterTextViewModelProvider(filterCategory),
+      sortOrFilterTextViewModelProvider(widget.filterCategory),
     );
+    
+    // Move to center after fetching data
+    ref.listen(productViewmodelProvider, (prev, next){
+      if(next.hasValue && prev?.value != next.value){
+        WidgetsBinding.instance.addPostFrameCallback((_){
+          if(_controller.hasClients){
+            _controller.jumpTo(0);
+          }
+        });
+      }
+    });
+
     products.when(
-      data: (list) => print("🎉 진짜 성공해서 들어온 데이터 개수: ${list.length}"),
+      data: (list) => print("🎉 진짜 성공해서 들어온 데이터 개수: ${list.$2.length}"),
       error: (err, stack) => print("❌ 프로바이더 내부 에러: $err"),
       loading: () => print("⏳ 아직 서버에서 데이터 받아오는 중..."),
     );
@@ -39,19 +125,61 @@ class ProductBaseScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          ProductFilter(filterTextCategory: filterCategory),
+          ProductFilter(filterTextCategory: widget.filterCategory),
           const SizedBox(height: 24.0),
           SortOrFilterText(
-            category: filterCategory,
+            category: widget.filterCategory,
             onSortCriteriaChanged: (criteria) {
               ref
                   .read(productViewmodelProvider.notifier)
-                  .sortByCriteria(criteria, productCategory);
+                  .sortByCriteria(criteria, widget.productCategory, _maxPage);
             },
           ),
           const SizedBox(height: 12.0),
           products.when(
-            data: (products) => Expanded(child: dataListView(products)),
+            data: (data) {
+              final (maxPage, items) = data;
+              final index = items.length ~/ 2;
+              final prevItems = items.sublist(0, index);
+              final nextItems = items.sublist(index);
+
+              return Expanded(
+                child: CustomScrollView(
+                  controller: _controller,
+                  center: _centerKey,
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final item = prevItems[prevItems.length - 1 - index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: ProductItem(
+                            product: item,
+                            productCategory: widget.productCategory,
+                            filterTextCategory: widget.filterCategory,
+                          ),
+                        );
+                      }, childCount: prevItems.length),
+                    ),
+                    SliverPadding(key: _centerKey, padding: EdgeInsets.zero),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final item = nextItems[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: ProductItem(
+                            product: item,
+                            productCategory: widget.productCategory,
+                            filterTextCategory: widget.filterCategory,
+                          ),
+                        );
+                      }, childCount: nextItems.length),
+                    ),
+                  ],
+                ),
+              );
+            },
             error: (err, stack) => Expanded(
               child: Center(
                 child: Text(
@@ -64,37 +192,13 @@ class ProductBaseScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            loading: () => Expanded(child: CircularProgressIndicator()),
+            loading: () => Center(
+              child: const CircularProgressIndicator(color: primary500),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget dataListView(List<FinancialProduct> products) {
-    if (products.isNotEmpty) {
-      return ListView.builder(
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: ProductItem(
-              product: products[index],
-              productCategory: productCategory,
-              filterTextCategory: filterCategory,
-            ),
-          );
-        },
-      );
-    } else {
-      return const Text(
-        "No Items",
-        style: TextStyle(
-          color: black,
-          fontSize: 12.0,
-          fontWeight: FontWeight.w400,
-        ),
-      );
-    }
-  }
 }

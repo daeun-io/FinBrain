@@ -8,6 +8,7 @@ import 'package:finbrain/data/repository/product_repository.dart';
 import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_viewmodel.g.dart';
 
@@ -16,8 +17,8 @@ final repository = ProductRepository();
 @riverpod
 class ProductViewmodel extends _$ProductViewmodel {
   @override
-  Future<List<FinancialProduct>> build() async {
-    return [];
+  Future<(int, List<FinancialProduct>)> build() async {
+    return (0, <FinancialProduct>[]);
   }
 
   void fetchFinlifeProducts(
@@ -26,7 +27,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     String pageNo,
   ) async {
     if (ctg == ProductCategory.isa) {
-      state = AsyncData([]);
+      state = AsyncData((0, <FinancialProduct>[]));
     }
 
     final filterCtg = switch (ctg) {
@@ -36,9 +37,7 @@ class ProductViewmodel extends _$ProductViewmodel {
       _ => FilterTextCategory.loan,
     };
 
-    final filters = await ref.read(
-      filtersViewmodelProvider(filterCtg).future,
-    );
+    final filters = await ref.read(filtersViewmodelProvider(filterCtg).future);
     Map<String, List<String>> selectedFilters = {};
     for (final entry in filters.entries) {
       selectedFilters[entry.key] = entry.value
@@ -59,11 +58,13 @@ class ProductViewmodel extends _$ProductViewmodel {
         .$1
         .toString();
 
-    final products = await repository.fetchFinlifeProducts(
+    final result = await repository.fetchFinlifeProductsAndPageNo(
       ctg,
       topFinGrpNo,
       pageNo,
     );
+    final maxPage = result.$1;
+    final products = result.$2;
 
     final filtered = products.where((element) {
       return (selectedFilters["회사 선택"] ?? []).contains(
@@ -77,9 +78,10 @@ class ProductViewmodel extends _$ProductViewmodel {
           );
     }).toList();
 
-    sortByCriteria(criteria, ctg, filtered);
+    sortByCriteria(criteria, ctg, maxPage, products);
   }
 
+  // todo: implement sort logic
   void fetchIsaMpProducts(
     String pageNo,
     String numOfRows,
@@ -88,7 +90,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     String mpType,
     String cmpy,
   ) async {
-    final products = await repository.fetchIsaMpProducts(
+    final result = await repository.fetchIsaMpProductsAndCount(
       pageNo,
       numOfRows,
       baseYear,
@@ -96,12 +98,13 @@ class ProductViewmodel extends _$ProductViewmodel {
       mpType,
       cmpy,
     );
-    state = AsyncData(products);
+    state = AsyncData(result);
   }
 
   // todo: change later(insert a product in db)
   void toggleLiked(String productName) {
-    final products = state.value ?? [];
+    final currentState = state.valueOrNull ?? (0, <FinancialProduct>[]);
+    final products = currentState.$2;
     final updated = products.map((e) {
       if (e.commonInfo.productName == productName) {
         return e.copyWith(!e.commonInfo.isLiked);
@@ -110,46 +113,50 @@ class ProductViewmodel extends _$ProductViewmodel {
       }
     }).toList();
 
-    state = AsyncData(updated);
+    state = AsyncData((currentState.$1, updated));
     // todo: later updated at server
   }
 
   void sortByCriteria(
     String criteria,
-    ProductCategory category, [
+    ProductCategory category,
+    int maxPage, [
     List<FinancialProduct>? prdt,
   ]) {
-    final products = prdt ?? state.valueOrNull;
-    final nonNullPrdt = products ?? [];
+    final products = prdt ?? ((state.value == null) ? [] : state.value!.$2);
 
     switch (category) {
       case ProductCategory.deposit:
       case ProductCategory.installment:
-        state = AsyncData(
-          nonNullPrdt..sort(
+        state = AsyncData((
+          maxPage,
+          products..sort(
             (criteria == "최고 금리(높은 순)")
-                ? (a, b) => ((b as DepositAndInstallmentSavings)
-                      .returnHighestRateValue()
-                      .$1)
-                      .compareTo(
-                        ((a as DepositAndInstallmentSavings)
-                            .returnHighestRateValue()
-                            .$1),
-                      )
-                : (a, b) => ((b as DepositAndInstallmentSavings)
-                      .returnHighestRateValue()
-                      .$2)
-                      .compareTo(
-                        ((a as DepositAndInstallmentSavings)
-                            .returnHighestRateValue()
-                            .$2),
-                      ),
+                ? (a, b) =>
+                      ((b as DepositAndInstallmentSavings)
+                              .returnHighestRateValue()
+                              .$1)
+                          .compareTo(
+                            ((a as DepositAndInstallmentSavings)
+                                .returnHighestRateValue()
+                                .$1),
+                          )
+                : (a, b) =>
+                      ((b as DepositAndInstallmentSavings)
+                              .returnHighestRateValue()
+                              .$2)
+                          .compareTo(
+                            ((a as DepositAndInstallmentSavings)
+                                .returnHighestRateValue()
+                                .$2),
+                          ),
           ),
-        );
+        ));
         break;
       case ProductCategory.annuity:
-        state = AsyncData(
-          nonNullPrdt..sort(switch (criteria) {
+        state = AsyncData((
+          maxPage,
+          products..sort(switch (criteria) {
             "평균 수익률(높은 순)" =>
               (a, b) => (b as AnnuitySavings).returnProfits()[0].compareTo(
                 (a as AnnuitySavings).returnProfits()[0],
@@ -166,12 +173,13 @@ class ProductViewmodel extends _$ProductViewmodel {
               (a as AnnuitySavings).returnProfits()[3],
             ),
           }),
-        );
+        ));
         break;
       case ProductCategory.mortage:
       case ProductCategory.rent:
-        state = AsyncData(
-          nonNullPrdt..sort(switch (criteria) {
+        state = AsyncData((
+          maxPage,
+          products..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>
               (a, b) => (a as MortageAndRentLoan).returnRates()[0].compareTo(
                 (b as MortageAndRentLoan).returnRates()[0],
@@ -184,10 +192,11 @@ class ProductViewmodel extends _$ProductViewmodel {
               (b as MortageAndRentLoan).returnRates()[1],
             ),
           }),
-        );
+        ));
       case ProductCategory.credit:
-        state = AsyncData(
-          nonNullPrdt..sort(switch (criteria) {
+        state = AsyncData((
+          maxPage,
+          products..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>
               (a, b) => (a as CreditLoan).returnRates()[0].compareTo(
                 (b as CreditLoan).returnRates()[0],
@@ -200,10 +209,11 @@ class ProductViewmodel extends _$ProductViewmodel {
               (b as CreditLoan).returnRates()[1],
             ),
           }),
-        );
+        ));
       default:
-        state = AsyncData(
-          nonNullPrdt..sort(switch (criteria) {
+        state = AsyncData((
+          maxPage,
+          products..sort(switch (criteria) {
             "평균 수익률(높은 순)" =>
               (a, b) => (b as IsaMpBenefitRate)
                   .returnAvgMedProfits()
@@ -215,17 +225,19 @@ class ProductViewmodel extends _$ProductViewmodel {
                   .$2
                   .compareTo((a as IsaMpBenefitRate).returnAvgMedProfits().$2),
           }),
-        );
+        ));
     }
   }
 
   void filterByKeyword(String keyword) {
     if (keyword.isNotEmpty) {
-      state = AsyncData(
-        (state.value ?? [])
+      final currentState = state.value ?? (0, <FinancialProduct>[]);
+      state = AsyncData((
+        currentState.$1,
+        currentState.$2
             .where((e) => e.commonInfo.productName!.contains(keyword))
             .toList(),
-      );
+      ));
     }
   }
 }
