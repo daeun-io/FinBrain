@@ -1,5 +1,5 @@
 // 공통 정보
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 
 class CommonInfo {
   // 프로퍼티명(필드명): 의미
@@ -25,7 +25,6 @@ class CommonInfo {
   final String? endDay;
   final String? submittedDay;
   final List<String>? joinWay;
-  final String? url;
   var isLiked = false;
 
   CommonInfo({
@@ -39,7 +38,6 @@ class CommonInfo {
     this.endDay,
     this.submittedDay,
     this.joinWay,
-    required this.url,
     required this.isLiked,
   });
 }

@@ -7,14 +7,14 @@ part of 'product_detail_screen_viewmodel.dart';
 // **************************************************************************
 
 String _$productDetailScreenViewmodelHash() =>
-    r'87559aae1c8eb7d30d5e5a9d7fef1efd265bebd5';
+    r'e6f914e8c5edd403cf706ed0c30d6c4111fee1b7';
 
 /// See also [ProductDetailScreenViewmodel].
 @ProviderFor(ProductDetailScreenViewmodel)
 final productDetailScreenViewmodelProvider =
-    AutoDisposeNotifierProvider<
+    AutoDisposeAsyncNotifierProvider<
       ProductDetailScreenViewmodel,
-      Map<String, List<String>>
+      bool
     >.internal(
       ProductDetailScreenViewmodel.new,
       name: r'productDetailScreenViewmodelProvider',
@@ -25,7 +25,6 @@ final productDetailScreenViewmodelProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$ProductDetailScreenViewmodel =
-    AutoDisposeNotifier<Map<String, List<String>>>;
+typedef _$ProductDetailScreenViewmodel = AutoDisposeAsyncNotifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

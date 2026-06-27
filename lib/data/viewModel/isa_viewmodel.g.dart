@@ -7,14 +7,14 @@ part of 'isa_viewmodel.dart';
 // **************************************************************************
 
 String _$isaJoinStatusViewModelHash() =>
-    r'2722e1ac9be214067f27ddbb21e5c6df7dcded8d';
+    r'b70547728bce3beb1c9f9dbbaff2f1778b2e35bc';
 
 /// See also [IsaJoinStatusViewModel].
 @ProviderFor(IsaJoinStatusViewModel)
 final isaJoinStatusViewModelProvider =
     AutoDisposeAsyncNotifierProvider<
       IsaJoinStatusViewModel,
-      List<IsaJoinStatus>
+      (int, List<IsaJoinStatus>)
     >.internal(
       IsaJoinStatusViewModel.new,
       name: r'isaJoinStatusViewModelProvider',
@@ -26,16 +26,16 @@ final isaJoinStatusViewModelProvider =
     );
 
 typedef _$IsaJoinStatusViewModel =
-    AutoDisposeAsyncNotifier<List<IsaJoinStatus>>;
+    AutoDisposeAsyncNotifier<(int, List<IsaJoinStatus>)>;
 String _$isaManagementStatusViewModelHash() =>
-    r'f984d2498b858d1068456e774f49f5df7f82ce50';
+    r'6684db96d5cbafdc9603e38bf5b85c750882ea1d';
 
 /// See also [IsaManagementStatusViewModel].
 @ProviderFor(IsaManagementStatusViewModel)
 final isaManagementStatusViewModelProvider =
     AutoDisposeAsyncNotifierProvider<
       IsaManagementStatusViewModel,
-      List<IsaManagementStatus>
+      (int, List<IsaManagementStatus>)
     >.internal(
       IsaManagementStatusViewModel.new,
       name: r'isaManagementStatusViewModelProvider',
@@ -47,6 +47,6 @@ final isaManagementStatusViewModelProvider =
     );
 
 typedef _$IsaManagementStatusViewModel =
-    AutoDisposeAsyncNotifier<List<IsaManagementStatus>>;
+    AutoDisposeAsyncNotifier<(int, List<IsaManagementStatus>)>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

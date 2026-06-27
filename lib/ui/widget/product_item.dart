@@ -1,11 +1,13 @@
-import 'package:finbrain/data/model/entities/annuity_savings.dart';
-import 'package:finbrain/data/model/entities/credit_loan.dart';
-import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
+import 'package:finbrain/data/models/entities/annuity_savings.dart';
+import 'package:finbrain/data/models/entities/credit_loan.dart';
+import 'package:finbrain/data/models/entities/deposit_and_installment_savings.dart';
+import 'package:finbrain/data/models/entities/financial_product.dart';
+import 'package:finbrain/data/models/entities/isa_mp_benefit_rate.dart';
+import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,25 +15,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductItem extends ConsumerWidget {
   const ProductItem({
     super.key,
-    required this.productName,
+    required this.product,
+    required this.productCategory,
     required this.filterTextCategory,
   });
 
-  final String productName;
+  final FinancialProduct product;
+  final ProductCategory productCategory;
   final FilterTextCategory filterTextCategory;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final products = ref.watch(productViewmodelProvider);
-    final product = (products.valueOrNull ?? []).firstWhere(
-      (p) => p.commonInfo.productName == productName,
-    );
     final sortFilter = ref.watch(sortOrFilterTextViewModelProvider(filterTextCategory));
     final sortCriteria = (filterTextCategory == FilterTextCategory.liked)
         ? switch (product.commonInfo.category) {
             ProductCategory.deposit => "최고 금리(높은순)",
             ProductCategory.installment => "최고 금리(높은순)",
             ProductCategory.annuity => "평균 수익률(높은 순)",
+            ProductCategory.isa => "평균 수익률(높은 순)",
             _ => "최저 금리(낮은 순)",
           }
         : sortFilter.$1.toString();
@@ -41,8 +42,9 @@ class ProductItem extends ConsumerWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (ctx) => ProductDetailScreen(
-              productName: productName,
-              category: product.commonInfo.category,
+              product: product,
+              productCategory: product.commonInfo.category,
+              filterCategory: filterTextCategory,
             ),
           ),
         );
@@ -61,7 +63,7 @@ class ProductItem extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      productName,
+                      product.commonInfo.productName!.replaceAll(r'\\n', " "),
                       style: const TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w600,
@@ -96,7 +98,7 @@ class ProductItem extends ConsumerWidget {
                   Text(
                     switch (product.commonInfo.category) {
                       ProductCategory.deposit =>
-                        (sortCriteria == "최고 금리(높은순)")
+                        (sortCriteria == "최고 금리(높은 순)")
                             ? (product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$1
@@ -106,7 +108,7 @@ class ProductItem extends ConsumerWidget {
                                   .$2
                                   .toString(),
                       ProductCategory.installment =>
-                        (sortCriteria == "최고 금리(높은순)")
+                        (sortCriteria == "최고 금리(높은 순)")
                             ? (product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$1
@@ -169,7 +171,10 @@ class ProductItem extends ConsumerWidget {
                               .returnRates()[1]
                               .toString(),
                       },
-                      _ => "이자율",
+                      _ => switch(sortCriteria){
+                        "평균 수익률(높은 순)" => (product as IsaMpBenefitRate).returnAvgMedProfits().$1.toString(),
+                        _ => (product as IsaMpBenefitRate).returnAvgMedProfits().$2.toString()
+                      },
                     },
                     style: const TextStyle(
                       fontSize: 14.0,
@@ -184,7 +189,7 @@ class ProductItem extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(productViewmodelProvider.notifier)
-                      .toggleLiked(productName);
+                      .toggleLiked(product.commonInfo.productName!);
                 },
                 icon: product.commonInfo.isLiked
                     ? const Icon(Icons.favorite, color: likedColor, size: 32.0)

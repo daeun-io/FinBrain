@@ -8,7 +8,7 @@
             "name": "finbrain",
             "request": "launch",
             "type": "dart",
-            "program": "lib/ui/main.dart"
+            "program": "lib/main.dart"
         },
         {
             "name": "finbrain (profile mode)",

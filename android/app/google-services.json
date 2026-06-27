@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1026903577783",
+    "project_id": "finbrain-bb12c",
+    "storage_bucket": "finbrain-bb12c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026903577783:android:41e1cfe1262e39fcefe932",
+        "android_client_info": {
+          "package_name": "com.example.finbrain"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0xeYpuZNNcgT9F-kgGGbvzifDi6Bxt30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

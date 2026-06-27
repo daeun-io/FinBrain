@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:finbrain/data/model/entities/credit_loan_option.dart';
-import 'package:finbrain/data/model/entities/financial_product.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/data/models/entities/credit_loan_option.dart';
+import 'package:finbrain/data/models/entities/financial_product.dart';
+import 'package:finbrain/product_categories.dart';
 
 // 개인신용대출
 class CreditLoan extends FinancialProduct {
@@ -29,7 +29,6 @@ class CreditLoan extends FinancialProduct {
     required String? endDay,
     required String? submittedDay,
     required List<String>? joinWay,
-    required String? url,
     required bool isLiked,
 
     required this.productType,
@@ -48,7 +47,6 @@ class CreditLoan extends FinancialProduct {
            endDay: endDay,
            submittedDay: submittedDay,
            joinWay: joinWay,
-           url: url,
            isLiked: isLiked,
          ),
        );
@@ -67,7 +65,6 @@ class CreditLoan extends FinancialProduct {
       endDay: commonInfo.endDay,
       submittedDay: commonInfo.submittedDay,
       joinWay: commonInfo.joinWay,
-      url: commonInfo.url,
       productType: productType,
       productTypeName: productTypeName,
       cbName: cbName,
@@ -93,8 +90,8 @@ class CreditLoan extends FinancialProduct {
     ].whereType<double>();
 
     final avgRates = foundOption.averageGrade;
-    final min = rates.min;
-    final max = rates.max;
+    final min = rates.minOrNull ?? double.infinity;
+    final max = rates.minOrNull ?? double.infinity;
     final avg = (avgRates != null) ? avgRates : rates.average;
     return [min, avg, max];
   }

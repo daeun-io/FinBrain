@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:finbrain/data/model/entities/financial_product.dart';
-import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/data/models/entities/financial_product.dart';
+import 'package:finbrain/data/models/entities/deposit_and_installment_savings_option.dart';
+import 'package:finbrain/product_categories.dart';
 
 // 정기예금, 적금
 class DepositAndInstallmentSavings extends FinancialProduct {
@@ -34,7 +34,6 @@ class DepositAndInstallmentSavings extends FinancialProduct {
     required String? endDay,
     required String? submittedDay,
     required List<String>? joinWay,
-    required String? url,
     required bool isLiked,
 
     required this.interestAfterExpiration,
@@ -56,7 +55,6 @@ class DepositAndInstallmentSavings extends FinancialProduct {
            endDay: endDay,
            submittedDay: submittedDay,
            joinWay: joinWay,
-           url: url,
            isLiked: isLiked,
          ),
        );
@@ -75,7 +73,6 @@ class DepositAndInstallmentSavings extends FinancialProduct {
       endDay: commonInfo.endDay,
       submittedDay: commonInfo.submittedDay,
       joinWay: commonInfo.joinWay,
-      url: commonInfo.url,
       interestAfterExpiration: interestAfterExpiration,
       specialCondition: specialCondition,
       joinDeny: joinDeny,

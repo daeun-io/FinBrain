@@ -1,10 +1,12 @@
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/data/viewModel/current_ctg_viewmodel.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_screen.dart';
 import 'package:finbrain/ui/screen/product_base_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finbrain/themes/colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductScreen extends StatelessWidget{
+class ProductScreen extends ConsumerWidget{
   const ProductScreen({
     super.key,
     required this.category
@@ -13,14 +15,19 @@ class ProductScreen extends StatelessWidget{
   final ProductScreenCategory category;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     
-    var tabList = switch(category){
+    final tabList = switch(category){
       ProductScreenCategory.savings => ["정기예금", "적금", "ISA"],
       ProductScreenCategory.loan => ["주택담보대출", "전세자금대출", "개인신용대출"],
     };
 
-    var tabView = switch(category){
+    final categories = switch(category){
+      ProductScreenCategory.savings => [ProductCategory.deposit, ProductCategory.installment, ProductCategory.isa],
+      ProductScreenCategory.loan => [ProductCategory.mortage, ProductCategory.rent, ProductCategory.credit]
+    };
+
+    final tabView = switch(category){
       ProductScreenCategory.savings => TabBarView(children: [
         const ProductBaseScreen(productCategory: ProductCategory.deposit, filterCategory: FilterTextCategory.savings,),
         const ProductBaseScreen(productCategory: ProductCategory.installment, filterCategory: FilterTextCategory.savings),
@@ -38,6 +45,7 @@ class ProductScreen extends StatelessWidget{
         child: Column(
           children: [ 
             TabBar(
+              onTap: (value) => ref.read(currentCtgViewmodelProvider.notifier).setCurrentCtg(categories[value]),
               labelColor: textPrimary,
               labelStyle: const TextStyle(
                 fontSize: 14,
@@ -56,7 +64,7 @@ class ProductScreen extends StatelessWidget{
               indicatorSize: TabBarIndicatorSize.tab,
               splashFactory: NoSplash.splashFactory,
               tabs: [
-                for(final item in tabList!)
+                for(final item in tabList)
                   Container(
                     alignment: Alignment.center,
                     height: 60,

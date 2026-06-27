@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
-import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
-import 'package:finbrain/data/model/entities/credit_loan_option.dart';
-import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/data/models/entities/annuity_savings_option.dart';
+import 'package:finbrain/data/models/entities/credit_loan_option.dart';
+import 'package:finbrain/data/models/entities/deposit_and_installment_savings_option.dart';
+import 'package:finbrain/data/models/entities/mortage_and_rent_loan_option.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'calculator_screen_viewmodel.g.dart';
 

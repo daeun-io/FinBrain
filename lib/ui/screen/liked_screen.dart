@@ -1,6 +1,6 @@
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/searched_viewmodel.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class LikedScreen extends ConsumerWidget {
   const LikedScreen({super.key});
 
+  // todo: change later
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final likedDummies = ref.watch(likedProductViewmodelProvider);
@@ -51,9 +52,10 @@ class LikedScreen extends ConsumerWidget {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
-                            productName:
-                                likedDummies.value![index].commonInfo.productName!,
-                                filterTextCategory: FilterTextCategory.liked,
+                            product: likedDummies.value![index],
+                            productCategory:
+                                likedDummies.value![index].commonInfo.category,
+                            filterTextCategory: FilterTextCategory.liked,
                           ),
                         );
                       },

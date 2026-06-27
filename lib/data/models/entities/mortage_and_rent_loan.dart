@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
-import 'package:finbrain/data/model/entities/financial_product.dart';
-import 'package:finbrain/ui/product_categories.dart';
+import 'package:finbrain/data/models/entities/financial_product.dart';
+import 'package:finbrain/product_categories.dart';
 import 'mortage_and_rent_loan_option.dart';
 
 // 주택담보대출 & 전세자금대출
@@ -31,7 +31,6 @@ class MortageAndRentLoan extends FinancialProduct {
     required String? endDay,
     required String? submittedDay,
     required List<String>? joinWay,
-    required String? url,
     required bool isLiked,
 
     required this.extraExpense,
@@ -51,7 +50,6 @@ class MortageAndRentLoan extends FinancialProduct {
            endDay: endDay,
            submittedDay: submittedDay,
            joinWay: joinWay,
-           url: url,
            isLiked: isLiked,
          ),
        );
@@ -70,7 +68,6 @@ class MortageAndRentLoan extends FinancialProduct {
       endDay: commonInfo.endDay,
       submittedDay: commonInfo.submittedDay,
       joinWay: commonInfo.joinWay,
-      url: commonInfo.url,
       extraExpense: extraExpense,
       earlyRepayFee: earlyRepayFee,
       delayRate: delayRate,
@@ -80,9 +77,9 @@ class MortageAndRentLoan extends FinancialProduct {
   }
 
   List<double> returnRates() {
-    final min = options.map((e) => (e).lendRateMin).whereType<double>().min;
-    final max = options.map((e) => (e).lendRateMax).whereType<double>().max;
-    final avg = options.map((e) => (e).lendRateAvg).whereType<double>().average;
+    final min = options.map((e) => (e).lendRateMin).whereType<double>().minOrNull ?? double.infinity;
+    final max = options.map((e) => (e).lendRateMax).whereType<double>().minOrNull ?? double.infinity;
+    final avg = options.map((e) => (e).lendRateAvg).whereType<double>().minOrNull ?? double.infinity;
     return [min, avg, max];
   }
 }

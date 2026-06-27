@@ -7,7 +7,7 @@ part of 'sort_or_filter_viewmodel.dart';
 // **************************************************************************
 
 String _$sortOrFilterTextViewModelHash() =>
-    r'c3aa69babf216ede8c17a77efd678f87fbfbc0ea';
+    r'ffc8f592da57d6facbdcbf475df7a61603feec22';
 
 /// Copied from Dart SDK
 class _SystemHash {
