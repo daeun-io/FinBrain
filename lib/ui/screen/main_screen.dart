@@ -27,17 +27,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void loadData(ProductCategory ctg) {
-    if (ctg == ProductCategory.isa) {
+    if (ctg != ProductCategory.isa) {
       ref
           .read(productViewmodelProvider.notifier)
-          .fetchIsaMpProducts("1", "1000", "2026", "", "", "");
-    } else {
-      ref
-          .read(productViewmodelProvider.notifier)
-          .fetchFinlifeProducts(
-            ctg,
-            "1",
-          );
+          .fetchFinlifeProducts(ctg, "1");
     }
   }
 
@@ -57,8 +50,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           return ctgInVM;
         }
         return ProductCategory.mortage;
-      case 2: return ProductCategory.annuity;
-      default: return ctgInVM;
+      case 2:
+        return ProductCategory.annuity;
+      default:
+        return ctgInVM;
     }
   }
 
@@ -69,7 +64,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         loadData(next);
       }
     });
-    
+
     final pages = [
       ProductScreen(category: ProductScreenCategory.savings),
       ProductScreen(category: ProductScreenCategory.loan),
@@ -135,11 +130,13 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 _currentIndex = value;
               });
 
-              if(value != 3){
+              if (value != 3) {
                 final ctg = ref.read(currentCtgViewmodelProvider);
                 final targetCtg = _getCurrentCtgForIndex(value, ctg);
 
-                ref.read(currentCtgViewmodelProvider.notifier).setCurrentCtg(targetCtg);
+                ref
+                    .read(currentCtgViewmodelProvider.notifier)
+                    .setCurrentCtg(targetCtg);
                 loadData(targetCtg);
               }
             },

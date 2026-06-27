@@ -106,11 +106,11 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       }
     });
 
-    products.when(
-      data: (list) => print("🎉 진짜 성공해서 들어온 데이터 개수: ${list.$2.length}"),
-      error: (err, stack) => print("❌ 프로바이더 내부 에러: $err"),
-      loading: () => print("⏳ 아직 서버에서 데이터 받아오는 중..."),
-    );
+    // products.when(
+      // data: (list) => print("🎉 진짜 성공해서 들어온 데이터 개수: ${list.$2.length}"),
+      // error: (err, stack) => print("❌ 프로바이더 내부 에러: $err"),
+      // loading: () => print("⏳ 아직 서버에서 데이터 받아오는 중..."),
+    // );
     return Padding(
       padding: const EdgeInsets.only(
         top: 24.0,

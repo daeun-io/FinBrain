@@ -10,8 +10,6 @@ class IsaRepository {
     String pageNo,
     String numOfRows,
     String baseYearMonth,
-    String domain,
-    String isaForm,
   ) async {
     final client = http.Client();
     final dataStore = IsaRemoteDataSource(client);
@@ -26,12 +24,11 @@ class IsaRepository {
     try {
       final Map<String, dynamic> result = await dataStore.fetchJoinStatus(
         options,
-        domain,
-        isaForm,
       );
 
       final totalCount =
-          int.tryParse(result["response"]["body"]["totalCount"].toString()) ?? 0;
+          int.tryParse(result["response"]["body"]["totalCount"].toString()) ??
+          0;
       if (totalCount == 0) {
         return (0, <IsaJoinStatus>[]);
       }
@@ -74,8 +71,6 @@ class IsaRepository {
     String numOfRows,
     String baseYearMonth,
     String ctg,
-    String domain,
-    String isaForm,
   ) async {
     final client = http.Client();
     final dataStore = IsaRemoteDataSource(client);
@@ -88,10 +83,11 @@ class IsaRepository {
     );
     try {
       final Map<String, dynamic> response = await dataStore
-          .fetchManagementStatus(options, ctg, domain, isaForm);
+          .fetchManagementStatus(options, ctg);
 
       final totalCount =
-          int.tryParse(response["response"]["body"]["totalCount"].toString()) ?? 0;
+          int.tryParse(response["response"]["body"]["totalCount"].toString()) ??
+          0;
       if (totalCount == 0) {
         return (0, <IsaManagementStatus>[]);
       }

@@ -486,9 +486,6 @@ class ProductRepository {
     String pageNo,
     String numOfRows,
     String baseYearMonth,
-    String domain,
-    String mpType,
-    String cmpy,
   ) async {
     final client = http.Client();
     final dataStore = ProductRemoteDataSource(client);
@@ -503,9 +500,6 @@ class ProductRepository {
     try {
       final Map<String, dynamic> response = await dataStore.fetchIsaMpProducts(
         options,
-        domain,
-        mpType,
-        cmpy,
       );
       print("response: $response");
       if (response["response"] == null ||
@@ -514,7 +508,8 @@ class ProductRepository {
         return (0, <FinancialProduct>[]);
       }
       final totalCount =
-          int.tryParse(response["response"]["body"]["totalCount"].toString()) ?? 0;
+          int.tryParse(response["response"]["body"]["totalCount"].toString()) ??
+          0;
       if (totalCount == 0) {
         return (0, <FinancialProduct>[]);
       }

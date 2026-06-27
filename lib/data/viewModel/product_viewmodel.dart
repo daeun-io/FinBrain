@@ -41,6 +41,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     final filters =
         snapshot ??
         (await ref.read(filtersViewmodelProvider(filterCtg).future) ?? {});
+
     Map<String, List<String>> selectedFilters = {};
     for (final entry in filters.entries) {
       selectedFilters[entry.key] = entry.value
@@ -89,28 +90,47 @@ class ProductViewmodel extends _$ProductViewmodel {
     sortByCriteria(criteria, ctg, maxPage, filtered);
   }
 
-
   void fetchIsaMpProducts(
-    String pageNo,
-    String numOfRows,
-    String baseYear,
-    String domain,
-    String mpType,
-    String cmpy,
-  ) async {
+    String pageNo, [
+    Map<String, List<(String, bool)>>? snapshot,
+  ]) async {
+    final filters =
+        snapshot ??
+        (await ref.read(
+              filtersViewmodelProvider(FilterTextCategory.isaMp).future,
+            ) ??
+            {});
+    Map<String, List<String>> selectedFilters = {};
+    for (final entry in filters.entries) {
+      selectedFilters[entry.key] = entry.value
+          .where((e) => e.$2 == true)
+          .map((e) => e.$1)
+          .toList();
+    }
+
     final result = await repository.fetchIsaMpProductsAndCount(
       pageNo,
-      numOfRows,
-      baseYear,
-      domain,
-      mpType,
-      cmpy,
+      "1000",
+      // todo: change later
+      DateTime.now().year.toString(),
     );
+
+    final totalCount = result.$1;
+    final products = result.$2;
+
+    final filtered = products.where((element) {
+      return (selectedFilters["업권"] ?? []).contains(
+            (element as IsaMpBenefitRate).businessDomain,
+          ) &&
+          (selectedFilters["MP 종류"] ?? []).contains(element.mpType);
+    }).toList();
+
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaMp))
         .$1
         .toString();
-    sortByCriteria(criteria, ProductCategory.isa, result.$1, result.$2);
+
+    sortByCriteria(criteria, ProductCategory.isa, totalCount, filtered);
   }
 
   // todo: change later(insert a product in db)

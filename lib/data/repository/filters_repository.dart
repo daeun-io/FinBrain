@@ -14,8 +14,6 @@ class FiltersRepository {
     if (ctg == FilterTextCategory.isaJoin ||
         ctg == FilterTextCategory.isaManagement ||
         ctg == FilterTextCategory.isaMp) {
-      final now = DateTime.now();
-      filters["기준 연도"] = [("${now.year}", true)];
       filters["업권"] = switch (ctg) {
         FilterTextCategory.isaJoin => [
           ("총합", true),
@@ -32,9 +30,9 @@ class FiltersRepository {
         _ => [],
       };
       if (ctg == FilterTextCategory.isaMp) {
-        filters["MP 종류"] = [("저위험", true), ("중위험", true), ("고위험", true), ("초고위험", true)];
+        filters["MP 종류"] = [("초저위험", true), ("저위험", true), ("중위험", true), ("고위험", true), ("초고위험", true)];
       } else {
-        filters["ISA 형태"] = [("신탁형", true), ("일임형", true), ("투자중개형", true)];
+        filters["ISA 형태"] = [("신탁형 ISA", true), ("일임형 ISA", true), ("투자중개형 ISA", true)];
         if (ctg == FilterTextCategory.isaManagement) {
           filters["구분"] = [("비중", true), ("금액", false)];
         }
@@ -67,10 +65,6 @@ class FiltersRepository {
     }
     return filters;
   }
-
-  Future<Map<String, List<(String, bool)>>> saveChanges(
-    Map<String, List<(String, bool)>> newFilters,
-  ) async => newFilters;
 
   Future<Iterable<dynamic>> fetchCmpyNames(String topFinGrpNo) async {
     final client = http.Client();

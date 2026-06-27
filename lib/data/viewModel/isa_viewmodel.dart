@@ -1,6 +1,9 @@
 import 'package:finbrain/data/models/entities/isa_join_status.dart';
 import 'package:finbrain/data/models/entities/isa_management_status.dart';
 import 'package:finbrain/data/repository/isa_repository.dart';
+import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'isa_viewmodel.g.dart';
 
@@ -10,32 +13,63 @@ final repository = IsaRepository();
 class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
   @override
   Future<(int, List<IsaJoinStatus>)> build() async {
-    final status = await repository.fetchJoinStatus("1", "100", "2026", "", "");
-    return status;
+    return (0, <IsaJoinStatus>[]);
   }
 
   void fetchIsaJoinStatus(
-    String pageNo,
-    String numOfRows,
-    String baseYearMonth,
-    String domain,
-    String isaForm,
-  ) async {
+    String pageNo, [
+    Map<String, List<(String, bool)>>? snapshot,
+  ]) async {
+    final filters =
+        snapshot ??
+        (await ref.read(
+              filtersViewmodelProvider(FilterTextCategory.isaJoin).future,
+            ) ??
+            {});
+
+    Map<String, List<String>> selectedFilters = {};
+    for (final entry in filters.entries) {
+      selectedFilters[entry.key] = entry.value
+          .where((e) => e.$2 == true)
+          .map((e) => e.$1)
+          .toList();
+    }
+
     final joinStatus = await repository.fetchJoinStatus(
       pageNo,
-      numOfRows,
-      baseYearMonth,
-      domain,
-      isaForm,
+      "100",
+      // todo: change later
+      DateTime.now().year.toString(),
     );
-    state = AsyncData(joinStatus);
+
+    final totalCount = joinStatus.$1;
+    final status = joinStatus.$2;
+    final filtered = status.where((element) {
+      return (selectedFilters["업권"] ?? []).contains(element.category) &&
+          (selectedFilters["ISA 형태"] ?? []).contains(element.isaForm);
+    }).toList();
+
+    print("=====================");
+    print("joinStatus count, ${joinStatus.$1}");
+    print("selected filters, $selectedFilters");
+    print("filtered data, $filtered");
+    print("=====================");
+
+    final criteria = ref
+        .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaJoin))
+        .$1
+        .toString();
+
+    sortByCriteria(criteria, totalCount, filtered);
   }
 
-  void sortByCriteria(String criteria, [List<IsaJoinStatus>? status]) {
-    // final isaJoinData = status ?? ((state.value == null) ? [] : state.value!.$2);
-    final currentState = state.valueOrNull ?? (0, <IsaJoinStatus>[]);
-    final totalCount = currentState.$1;
-    final isaJoinData = currentState.$2;
+  void sortByCriteria(
+    String criteria,
+    int totalCount, [
+    List<IsaJoinStatus>? status,
+  ]) {
+    final isaJoinData =
+        status ?? ((state.value == null) ? [] : state.value!.$2);
 
     state = AsyncData((
       totalCount,
@@ -54,34 +88,59 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
 @riverpod
 class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
   @override
-  Future<(int, List<IsaManagementStatus>)> build() async{
-    final status = await repository.fetchManagementStatus("1", "100", "2026", "비중", "", "");
-    return status;
+  Future<(int, List<IsaManagementStatus>)> build() async {
+    return (0, <IsaManagementStatus>[]);
   }
 
   void fetchIsaManagementStatus(
-    String pageNo,
-    String numOfRows,
-    String baseYearMonth,
-    String ctg,
-    String domain,
-    String isaForm,
-  ) async {
+    String pageNo, [
+    Map<String, List<(String, bool)>>? snapshot,
+  ]) async {
+    final filters =
+        snapshot ??
+        (await ref.read(
+              filtersViewmodelProvider(FilterTextCategory.isaManagement).future,
+            ) ??
+            {});
+
+    Map<String, List<String>> selectedFilters = {};
+    for (final entry in filters.entries) {
+      selectedFilters[entry.key] = entry.value
+          .where((e) => e.$2 == true)
+          .map((e) => e.$1)
+          .toList();
+    }
+
     final mngmStatus = await repository.fetchManagementStatus(
       pageNo,
-      numOfRows,
-      baseYearMonth,
-      ctg,
-      domain,
-      isaForm,
+      "100",
+      // todo: change later
+      DateTime.now().year.toString(),
+      (selectedFilters["구분"]?.first ?? "비중"),
     );
-    state = AsyncData(mngmStatus);
+
+    final totalCount = mngmStatus.$1;
+    final status = mngmStatus.$2;
+    final filtered = status.where((element) {
+      return (selectedFilters["업권"] ?? []).contains(element.businessDomain) &&
+          (selectedFilters["ISA 형태"] ?? []).contains(element.isaForm);
+    }).toList();
+
+    final criteria = ref
+        .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaJoin))
+        .$1
+        .toString();
+
+    sortByCriteria(criteria, totalCount, filtered);
   }
 
-  void sortByCriteria(String criteria) {
-    final currentState = state.valueOrNull ?? (0, <IsaManagementStatus>[]);
-    final totalCount = currentState.$1;
-    final isaMnData = currentState.$2;
+  void sortByCriteria(
+    String criteria,
+    int totalCount, [
+    List<IsaManagementStatus>? status,
+  ]) {
+    final isaMnData =
+        status ?? ((state.value == null) ? [] : state.value!.$2);
 
     state = AsyncData((
       totalCount,

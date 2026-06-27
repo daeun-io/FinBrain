@@ -66,15 +66,12 @@ class ProductRemoteDataSource {
 
   Future<Map<String, dynamic>> fetchIsaMpProducts(
     IsaSearchOptions options,
-    String domain,
-    String type,
-    String cmpy,
   ) async {
     final queryParams = {
       ...options.toQueryParams(),
-      "bzds": domain,
-      "mpTp": type,
-      "likeCmpyNm": cmpy,
+      "bzds": "",
+      "mpTp": "",
+      "likeCmpyNm": "",
     };
     final uri = Uri.https(
       firebase,

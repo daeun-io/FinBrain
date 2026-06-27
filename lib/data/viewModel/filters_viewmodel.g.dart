@@ -176,7 +176,7 @@ class _FiltersViewmodelProviderElement
 }
 
 String _$dialogFiltersViewModelHash() =>
-    r'da4299a0326ebbb716c11756be6009ee771ff6fb';
+    r'c4361d837334a184f343a52ef3df8a3cb76424cd';
 
 abstract class _$DialogFiltersViewModel
     extends BuildlessAutoDisposeNotifier<Map<String, List<(String, bool)>>> {
@@ -323,21 +323,142 @@ class _DialogFiltersViewModelProviderElement
   FilterTextCategory get ctg => (origin as DialogFiltersViewModelProvider).ctg;
 }
 
-String _$savedFiltersHash() => r'de4a18f0c6fbb37b029864f91e25a73366f838d3';
+String _$savedFiltersHash() => r'bfff14d099fdab0e13647c3fbf19b4c92d0a1cd1';
+
+abstract class _$SavedFilters
+    extends BuildlessNotifier<Map<String, List<(String, bool)>>> {
+  late final FilterTextCategory ctg;
+
+  Map<String, List<(String, bool)>> build(FilterTextCategory ctg);
+}
 
 /// See also [SavedFilters].
 @ProviderFor(SavedFilters)
-final savedFiltersProvider =
-    NotifierProvider<SavedFilters, Map<String, List<(String, bool)>>>.internal(
-      SavedFilters.new,
-      name: r'savedFiltersProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$savedFiltersHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const savedFiltersProvider = SavedFiltersFamily();
 
-typedef _$SavedFilters = Notifier<Map<String, List<(String, bool)>>>;
+/// See also [SavedFilters].
+class SavedFiltersFamily extends Family<Map<String, List<(String, bool)>>> {
+  /// See also [SavedFilters].
+  const SavedFiltersFamily();
+
+  /// See also [SavedFilters].
+  SavedFiltersProvider call(FilterTextCategory ctg) {
+    return SavedFiltersProvider(ctg);
+  }
+
+  @override
+  SavedFiltersProvider getProviderOverride(
+    covariant SavedFiltersProvider provider,
+  ) {
+    return call(provider.ctg);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'savedFiltersProvider';
+}
+
+/// See also [SavedFilters].
+class SavedFiltersProvider
+    extends
+        NotifierProviderImpl<SavedFilters, Map<String, List<(String, bool)>>> {
+  /// See also [SavedFilters].
+  SavedFiltersProvider(FilterTextCategory ctg)
+    : this._internal(
+        () => SavedFilters()..ctg = ctg,
+        from: savedFiltersProvider,
+        name: r'savedFiltersProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$savedFiltersHash,
+        dependencies: SavedFiltersFamily._dependencies,
+        allTransitiveDependencies:
+            SavedFiltersFamily._allTransitiveDependencies,
+        ctg: ctg,
+      );
+
+  SavedFiltersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.ctg,
+  }) : super.internal();
+
+  final FilterTextCategory ctg;
+
+  @override
+  Map<String, List<(String, bool)>> runNotifierBuild(
+    covariant SavedFilters notifier,
+  ) {
+    return notifier.build(ctg);
+  }
+
+  @override
+  Override overrideWith(SavedFilters Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: SavedFiltersProvider._internal(
+        () => create()..ctg = ctg,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        ctg: ctg,
+      ),
+    );
+  }
+
+  @override
+  NotifierProviderElement<SavedFilters, Map<String, List<(String, bool)>>>
+  createElement() {
+    return _SavedFiltersProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SavedFiltersProvider && other.ctg == ctg;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, ctg.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin SavedFiltersRef
+    on NotifierProviderRef<Map<String, List<(String, bool)>>> {
+  /// The parameter `ctg` of this provider.
+  FilterTextCategory get ctg;
+}
+
+class _SavedFiltersProviderElement
+    extends
+        NotifierProviderElement<SavedFilters, Map<String, List<(String, bool)>>>
+    with SavedFiltersRef {
+  _SavedFiltersProviderElement(super.provider);
+
+  @override
+  FilterTextCategory get ctg => (origin as SavedFiltersProvider).ctg;
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

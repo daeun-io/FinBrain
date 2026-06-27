@@ -2,6 +2,7 @@ import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/widget/custom_year_picker.dart';
 import 'package:finbrain/ui/widget/product_filter_condition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,13 +87,46 @@ class ProductDialog extends ConsumerWidget {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      ...filters.entries.map(
-                        (e) => ProductFilterCondition(
-                          category: filterCategory,
-                          filter: e.key,
-                          filterList: e.value,
-                        ),
-                      ),
+                      ...filters.entries.map((e) {
+                        if (e.key == "기준 연도") {
+                          final filters = ref.read(
+                            dialogFiltersViewModelProvider(filterCategory),
+                          );
+                          final year = (filters["기준 연도"] ?? []).first.$1;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 8.0,),
+                              const Text(
+                                "기준 연도",
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: textSecondary,
+                                ),
+                              ),
+                              CustomYearPicker(
+                                selectedYear:
+                                    int.tryParse(year) ?? DateTime.now().year,
+                                onYearChanged: (value) => ref
+                                    .read(
+                                      dialogFiltersViewModelProvider(
+                                        filterCategory,
+                                      ).notifier,
+                                    )
+                                    .toggleSelected(value.toString(), true),
+                              ),
+                              const SizedBox(height: 20.0,),
+                            ],
+                          );
+                        } else {
+                          return ProductFilterCondition(
+                            category: filterCategory,
+                            filter: e.key,
+                            filterList: e.value,
+                          );
+                        }
+                      }),
                     ],
                   ),
                 ),
@@ -101,9 +135,13 @@ class ProductDialog extends ConsumerWidget {
                     Expanded(
                       child: TextButton(
                         onPressed: () async {
-                          final notifier = ref.read(dialogFiltersViewModelProvider(filterCategory).notifier);
-                          await notifier.applyChanges(productCategory, "1");
-                          if(context.mounted) Navigator.pop(ctx);
+                          final notifier = ref.read(
+                            dialogFiltersViewModelProvider(
+                              filterCategory,
+                            ).notifier,
+                          );
+                          await notifier.applyChanges(productCategory, "1", filterCategory);
+                          if (context.mounted) Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: primary100,

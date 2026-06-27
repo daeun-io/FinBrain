@@ -9,13 +9,9 @@ class IsaRemoteDataSource {
 
   Future<Map<String, dynamic>> fetchJoinStatus(
     IsaSearchOptions options,
-    String domain,
-    String isaForm,
   ) async {
     final queryParams = {
       ...options.toQueryParams(),
-      "ctg": domain,
-      "likeIsaForm": isaForm,
     };
     final uri = Uri.https(public, '$isa/getJoinStatus_V2', queryParams);
 
@@ -34,14 +30,10 @@ class IsaRemoteDataSource {
   Future<Map<String, dynamic>> fetchManagementStatus(
     IsaSearchOptions options,
     String ctg,
-    String domain,
-    String isaForm,
   ) async {
     final queryParams = {
       ...options.toQueryParams(),
       "ctg": ctg,
-      "bzds": domain,
-      "likeIsaForm": isaForm,
     };
     final uri = Uri.http(
       public,

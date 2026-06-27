@@ -25,6 +25,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   bool _isLoading = false;
   int _cPage = 1;
   late int totalCount;
+  
   @override
   void initState() {
     super.initState();
@@ -81,18 +82,11 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     if (widget.category == FilterTextCategory.isaJoin) {
       ref
           .read(isaJoinStatusViewModelProvider.notifier)
-          .fetchIsaJoinStatus(_cPage.toString(), "100", "2026", "", "");
+          .fetchIsaJoinStatus(_cPage.toString());
     } else {
       ref
           .read(isaManagementStatusViewModelProvider.notifier)
-          .fetchIsaManagementStatus(
-            _cPage.toString(),
-            "100",
-            "2026",
-            "비중",
-            "",
-            "",
-          );
+          .fetchIsaManagementStatus(_cPage.toString());
     }
     await Future.delayed(const Duration(seconds: 1));
   }
@@ -128,7 +122,10 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     return Column(
       children: [
         const SizedBox(height: 16.0),
-        ProductFilter(productCategory: ProductCategory.isa, filterTextCategory: widget.category,),
+        ProductFilter(
+          productCategory: ProductCategory.isa,
+          filterTextCategory: widget.category,
+        ),
         const SizedBox(height: 24.0),
         SortOrFilterText(
           category: widget.category,
@@ -136,10 +133,10 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
             (widget.category == FilterTextCategory.isaJoin)
                 ? ref
                       .read(isaJoinStatusViewModelProvider.notifier)
-                      .sortByCriteria(criteria)
+                      .sortByCriteria(criteria, totalCount)
                 : ref
                       .read(isaManagementStatusViewModelProvider.notifier)
-                      .sortByCriteria(criteria);
+                      .sortByCriteria(criteria, totalCount);
           },
         ),
         items.when(
@@ -171,7 +168,11 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                               children: [
                                 for (final label in column)
                                   Flexible(
-                                    flex: (label == "ISA 종류" || label == "편입자산 구분")? 3 : 2,
+                                    flex:
+                                        (label == "ISA 종류" ||
+                                            label == "편입자산 구분")
+                                        ? 3
+                                        : 2,
                                     child: Center(
                                       child: Text(
                                         label,
@@ -188,39 +189,37 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                           ),
                           // rows
                           Expanded(
-                              child: CustomScrollView(
-                                controller: _controller,
-                                center: _centerKey,
-                                physics: const BouncingScrollPhysics(),
-                                slivers: [
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate((
-                                      context,
-                                      index,
-                                    ) {
-                                      final item =
-                                          prevItems[prevItems.length -
-                                              1 -
-                                              index];
-                                      return _buildTableRow(item);
-                                    }, childCount: prevItems.length),
-                                  ),
-                                  SliverPadding(
-                                    key: _centerKey,
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate((
-                                      context,
-                                      index,
-                                    ) {
-                                      final item = nextItems[index];
-                                      return _buildTableRow(item);
-                                    }, childCount: nextItems.length),
-                                  ),
-                                ],
-                              ),
+                            child: CustomScrollView(
+                              controller: _controller,
+                              center: _centerKey,
+                              physics: const BouncingScrollPhysics(),
+                              slivers: [
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate((
+                                    context,
+                                    index,
+                                  ) {
+                                    final item =
+                                        prevItems[prevItems.length - 1 - index];
+                                    return _buildTableRow(item);
+                                  }, childCount: prevItems.length),
+                                ),
+                                SliverPadding(
+                                  key: _centerKey,
+                                  padding: EdgeInsets.zero,
+                                ),
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate((
+                                    context,
+                                    index,
+                                  ) {
+                                    final item = nextItems[index];
+                                    return _buildTableRow(item);
+                                  }, childCount: nextItems.length),
+                                ),
+                              ],
                             ),
+                          ),
                         ],
                       ),
                     ),

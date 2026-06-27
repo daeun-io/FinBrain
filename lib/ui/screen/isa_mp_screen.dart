@@ -75,7 +75,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   Future<void> _fetchData() async {
     ref
         .read(productViewmodelProvider.notifier)
-        .fetchIsaMpProducts(_cPage.toString(), "1000", "2026", "", "", "");
+        .fetchIsaMpProducts(_cPage.toString());
     await Future.delayed(const Duration(seconds: 1));
   }
 
