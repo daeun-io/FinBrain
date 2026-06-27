@@ -2,6 +2,7 @@ import 'package:finbrain/data/models/entities/annuity_savings.dart';
 import 'package:finbrain/data/models/entities/credit_loan.dart';
 import 'package:finbrain/data/models/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/models/entities/financial_product.dart';
+import 'package:finbrain/data/models/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
@@ -170,7 +171,10 @@ class ProductItem extends ConsumerWidget {
                               .returnRates()[1]
                               .toString(),
                       },
-                      _ => "이자율",
+                      _ => switch(sortCriteria){
+                        "평균 수익률(높은 순)" => (product as IsaMpBenefitRate).returnAvgMedProfits().$1.toString(),
+                        _ => (product as IsaMpBenefitRate).returnAvgMedProfits().$2.toString()
+                      },
                     },
                     style: const TextStyle(
                       fontSize: 14.0,

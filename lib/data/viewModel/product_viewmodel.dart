@@ -38,7 +38,9 @@ class ProductViewmodel extends _$ProductViewmodel {
       _ => FilterTextCategory.loan,
     };
 
-    final filters = snapshot ?? (await ref.read(filtersViewmodelProvider(filterCtg).future) ?? {});
+    final filters =
+        snapshot ??
+        (await ref.read(filtersViewmodelProvider(filterCtg).future) ?? {});
     Map<String, List<String>> selectedFilters = {};
     for (final entry in filters.entries) {
       selectedFilters[entry.key] = entry.value
@@ -87,7 +89,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     sortByCriteria(criteria, ctg, maxPage, filtered);
   }
 
-  // todo: implement sort logic
+
   void fetchIsaMpProducts(
     String pageNo,
     String numOfRows,
@@ -104,7 +106,11 @@ class ProductViewmodel extends _$ProductViewmodel {
       mpType,
       cmpy,
     );
-    state = AsyncData(result);
+    final criteria = ref
+        .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaMp))
+        .$1
+        .toString();
+    sortByCriteria(criteria, ProductCategory.isa, result.$1, result.$2);
   }
 
   // todo: change later(insert a product in db)
