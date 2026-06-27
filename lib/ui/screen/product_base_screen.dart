@@ -83,7 +83,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
         .read(productViewmodelProvider.notifier)
         .fetchFinlifeProducts(
           widget.productCategory,
-          "030300",
           _cPage.toString(),
         );
     await Future.delayed(const Duration(seconds: 1));
@@ -121,7 +120,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       ),
       child: Column(
         children: [
-          ProductFilter(filterTextCategory: widget.filterCategory),
+          ProductFilter(productCategory: widget.productCategory, filterTextCategory: widget.filterCategory,),
           const SizedBox(height: 24.0),
           SortOrFilterText(
             category: widget.filterCategory,

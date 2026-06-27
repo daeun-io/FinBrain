@@ -109,7 +109,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
           searchedList: searchedList,
         ),
         const SizedBox(height: 16.0),
-        ProductFilter(filterTextCategory: FilterTextCategory.isaMp),
+        ProductFilter(productCategory: ProductCategory.isa, filterTextCategory: FilterTextCategory.isaMp),
         const SizedBox(height: 24.0),
         SortOrFilterText(
           category: FilterTextCategory.isaMp,

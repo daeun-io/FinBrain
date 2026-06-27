@@ -128,7 +128,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     return Column(
       children: [
         const SizedBox(height: 16.0),
-        ProductFilter(filterTextCategory: widget.category),
+        ProductFilter(productCategory: ProductCategory.isa, filterTextCategory: widget.category,),
         const SizedBox(height: 24.0),
         SortOrFilterText(
           category: widget.category,

@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 class ProductFilter extends StatefulWidget {
   const ProductFilter({
     super.key,
-    // required this.productCategory,
+    required this.productCategory,
     required this.filterTextCategory,
   });
 
-  // final ProductCategory productCategory;
+  final ProductCategory productCategory;
   final FilterTextCategory filterTextCategory;
 
   @override
@@ -28,7 +28,7 @@ class _ProductFilterState extends State<ProductFilter> {
             context: context,
             builder: (BuildContext ctx) {
               return ProductDialog(
-                // productCategory: widget.productCategory,
+                productCategory: widget.productCategory,
                 filterCategory: widget.filterTextCategory,
               );
             },

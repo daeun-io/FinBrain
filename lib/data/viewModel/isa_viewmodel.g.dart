@@ -7,7 +7,7 @@ part of 'isa_viewmodel.dart';
 // **************************************************************************
 
 String _$isaJoinStatusViewModelHash() =>
-    r'10a6257b4010a0aa4fe5b3e4f7e6a56cfb7cc6c4';
+    r'5848ba3b5d404a28b33c84b1df2c2504af73618a';
 
 /// See also [IsaJoinStatusViewModel].
 @ProviderFor(IsaJoinStatusViewModel)
@@ -28,7 +28,7 @@ final isaJoinStatusViewModelProvider =
 typedef _$IsaJoinStatusViewModel =
     AutoDisposeAsyncNotifier<(int, List<IsaJoinStatus>)>;
 String _$isaManagementStatusViewModelHash() =>
-    r'9a8b9d25db5360468372cf7136e596f994453982';
+    r'c69d361cf47afdfb22ce384a4c3275003b2b4713';
 
 /// See also [IsaManagementStatusViewModel].
 @ProviderFor(IsaManagementStatusViewModel)

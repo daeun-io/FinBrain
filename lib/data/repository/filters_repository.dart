@@ -32,7 +32,7 @@ class FiltersRepository {
         _ => [],
       };
       if (ctg == FilterTextCategory.isaMp) {
-        filters["MP 종류"] = [("저위험", true), ("중위험", true), ("고위험", true)];
+        filters["MP 종류"] = [("저위험", true), ("중위험", true), ("고위험", true), ("초고위험", true)];
       } else {
         filters["ISA 형태"] = [("신탁형", true), ("일임형", true), ("투자중개형", true)];
         if (ctg == FilterTextCategory.isaManagement) {

@@ -9,10 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductDialog extends ConsumerWidget {
   const ProductDialog({
     super.key,
-    // required this.productCategory,
-    required this.filterCategory
+    required this.productCategory,
+    required this.filterCategory,
   });
-  // final ProductCategory productCategory;
+  final ProductCategory productCategory;
   final FilterTextCategory filterCategory;
 
   @override
@@ -49,7 +49,11 @@ class ProductDialog extends ConsumerWidget {
                     TextButton(
                       onPressed: () {
                         ref
-                            .read(dialogFiltersViewModelProvider(filterCategory).notifier)
+                            .read(
+                              dialogFiltersViewModelProvider(
+                                filterCategory,
+                              ).notifier,
+                            )
                             .resetChanges();
                       },
                       style: TextButton.styleFrom(
@@ -96,10 +100,10 @@ class ProductDialog extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: TextButton(
-                        onPressed: () {
-                          ref.read(filtersViewmodelProvider(filterCategory).notifier).saveChanges(filters);
-                          //ref.read(productViewmodelProvider.notifier).fetchFinlifeProducts(productCategory, topFinGrpNo, "1");
-                          Navigator.pop(ctx);
+                        onPressed: () async {
+                          final notifier = ref.read(dialogFiltersViewModelProvider(filterCategory).notifier);
+                          await notifier.applyChanges(productCategory, "1");
+                          if(context.mounted) Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: primary100,

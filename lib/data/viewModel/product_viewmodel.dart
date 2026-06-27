@@ -1,3 +1,4 @@
+import 'package:finbrain/data/fin_group_code.dart';
 import 'package:finbrain/data/models/entities/annuity_savings.dart';
 import 'package:finbrain/data/models/entities/credit_loan.dart';
 import 'package:finbrain/data/models/entities/deposit_and_installment_savings.dart';
@@ -23,9 +24,9 @@ class ProductViewmodel extends _$ProductViewmodel {
 
   void fetchFinlifeProducts(
     ProductCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
-  ) async {
+    String pageNo, [
+    Map<String, List<(String, bool)>>? snapshot,
+  ]) async {
     if (ctg == ProductCategory.isa) {
       state = AsyncData((0, <FinancialProduct>[]));
     }
@@ -37,7 +38,7 @@ class ProductViewmodel extends _$ProductViewmodel {
       _ => FilterTextCategory.loan,
     };
 
-    final filters = await ref.read(filtersViewmodelProvider(filterCtg).future);
+    final filters = snapshot ?? (await ref.read(filtersViewmodelProvider(filterCtg).future) ?? {});
     Map<String, List<String>> selectedFilters = {};
     for (final entry in filters.entries) {
       selectedFilters[entry.key] = entry.value
@@ -45,6 +46,12 @@ class ProductViewmodel extends _$ProductViewmodel {
           .map((e) => e.$1)
           .toList();
     }
+
+    final topFinGrpNo =
+        getFinGroupCode[selectedFilters["금융회사"]?.first ??
+            ((ctg == ProductCategory.annuity) ? "050000" : "020000")] ??
+        ((ctg == ProductCategory.annuity) ? "050000" : "020000");
+
     if (selectedFilters["회사 선택"] != null && selectedFilters["회사 선택"]!.isEmpty) {
       final List<String> companies = [];
       for (final filter in filters["회사 선택"]!) {
@@ -77,8 +84,7 @@ class ProductViewmodel extends _$ProductViewmodel {
                     .contains(e),
           );
     }).toList();
-
-    sortByCriteria(criteria, ctg, maxPage, products);
+    sortByCriteria(criteria, ctg, maxPage, filtered);
   }
 
   // todo: implement sort logic

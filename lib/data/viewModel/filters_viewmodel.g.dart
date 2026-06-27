@@ -6,7 +6,7 @@ part of 'filters_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filtersViewmodelHash() => r'e024d94b1a58e1924e1aff707f10bef9cf223c2b';
+String _$filtersViewmodelHash() => r'1b07a3c4995fd6b80d4d9e79c1c3833a426e8b5c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -176,7 +176,7 @@ class _FiltersViewmodelProviderElement
 }
 
 String _$dialogFiltersViewModelHash() =>
-    r'9ceaf3007ce6a8015feaff76b564d89a0fb485d0';
+    r'da4299a0326ebbb716c11756be6009ee771ff6fb';
 
 abstract class _$DialogFiltersViewModel
     extends BuildlessAutoDisposeNotifier<Map<String, List<(String, bool)>>> {
@@ -323,5 +323,21 @@ class _DialogFiltersViewModelProviderElement
   FilterTextCategory get ctg => (origin as DialogFiltersViewModelProvider).ctg;
 }
 
+String _$savedFiltersHash() => r'de4a18f0c6fbb37b029864f91e25a73366f838d3';
+
+/// See also [SavedFilters].
+@ProviderFor(SavedFilters)
+final savedFiltersProvider =
+    NotifierProvider<SavedFilters, Map<String, List<(String, bool)>>>.internal(
+      SavedFilters.new,
+      name: r'savedFiltersProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$savedFiltersHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$SavedFilters = Notifier<Map<String, List<(String, bool)>>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
