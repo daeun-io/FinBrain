@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ai_screen_viewmodel.dart';
+part of 'ai_response_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$aiScreenViewmodelHash() => r'8dc1023de43281817082d82c36b367162b8ed664';
+String _$aiResponseViewmodelHash() =>
+    r'874f23ac95db27aae14bef4a3d1d7a48e80c6c7c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -28,6 +29,139 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+abstract class _$AiResponseViewmodel
+    extends BuildlessAutoDisposeAsyncNotifier<String?> {
+  late final String text;
+
+  FutureOr<String?> build(String text);
+}
+
+/// See also [AiResponseViewmodel].
+@ProviderFor(AiResponseViewmodel)
+const aiResponseViewmodelProvider = AiResponseViewmodelFamily();
+
+/// See also [AiResponseViewmodel].
+class AiResponseViewmodelFamily extends Family<AsyncValue<String?>> {
+  /// See also [AiResponseViewmodel].
+  const AiResponseViewmodelFamily();
+
+  /// See also [AiResponseViewmodel].
+  AiResponseViewmodelProvider call(String text) {
+    return AiResponseViewmodelProvider(text);
+  }
+
+  @override
+  AiResponseViewmodelProvider getProviderOverride(
+    covariant AiResponseViewmodelProvider provider,
+  ) {
+    return call(provider.text);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'aiResponseViewmodelProvider';
+}
+
+/// See also [AiResponseViewmodel].
+class AiResponseViewmodelProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<AiResponseViewmodel, String?> {
+  /// See also [AiResponseViewmodel].
+  AiResponseViewmodelProvider(String text)
+    : this._internal(
+        () => AiResponseViewmodel()..text = text,
+        from: aiResponseViewmodelProvider,
+        name: r'aiResponseViewmodelProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$aiResponseViewmodelHash,
+        dependencies: AiResponseViewmodelFamily._dependencies,
+        allTransitiveDependencies:
+            AiResponseViewmodelFamily._allTransitiveDependencies,
+        text: text,
+      );
+
+  AiResponseViewmodelProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.text,
+  }) : super.internal();
+
+  final String text;
+
+  @override
+  FutureOr<String?> runNotifierBuild(covariant AiResponseViewmodel notifier) {
+    return notifier.build(text);
+  }
+
+  @override
+  Override overrideWith(AiResponseViewmodel Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: AiResponseViewmodelProvider._internal(
+        () => create()..text = text,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        text: text,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<AiResponseViewmodel, String?>
+  createElement() {
+    return _AiResponseViewmodelProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is AiResponseViewmodelProvider && other.text == text;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, text.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin AiResponseViewmodelRef on AutoDisposeAsyncNotifierProviderRef<String?> {
+  /// The parameter `text` of this provider.
+  String get text;
+}
+
+class _AiResponseViewmodelProviderElement
+    extends
+        AutoDisposeAsyncNotifierProviderElement<AiResponseViewmodel, String?>
+    with AiResponseViewmodelRef {
+  _AiResponseViewmodelProviderElement(super.provider);
+
+  @override
+  String get text => (origin as AiResponseViewmodelProvider).text;
+}
+
+String _$aiScreenViewmodelHash() => r'5fbda7d774fe60e5bc30521bc23530345ad3d615';
 
 abstract class _$AiScreenViewmodel
     extends BuildlessAutoDisposeNotifier<Map<String, String>> {

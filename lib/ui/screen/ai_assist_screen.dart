@@ -1,4 +1,4 @@
-import 'package:finbrain/data/viewModel/ai_screen_viewmodel.dart';
+import 'package:finbrain/data/viewModel/ai_response_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/ai_request.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
@@ -75,10 +75,7 @@ class AiAssistScreen extends ConsumerWidget {
                           if (value.isNotEmpty) {
                             ref
                                 .read(aiScreenViewmodelProvider(tag).notifier)
-                                .addRequest(
-                                  value,
-                                  "MockResponseMockResponseMockResponseMockResponseMockResponseMockResponse",
-                                );
+                                .addRequest(value);
                             _messageController.clear();
                             mFocusNode.unfocus();
                           }
@@ -114,10 +111,7 @@ class AiAssistScreen extends ConsumerWidget {
                       if (_messageController.text.isNotEmpty) {
                         ref
                             .read(aiScreenViewmodelProvider(tag).notifier)
-                            .addRequest(
-                              _messageController.text,
-                              "MockResponseMockResponseMockResponseMockResponseMockResponseMockResponse",
-                            );
+                            .addRequest(_messageController.text);
                         _messageController.clear();
                         mFocusNode.unfocus();
                       }
