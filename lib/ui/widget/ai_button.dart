@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AiButton extends StatelessWidget {
-  const AiButton({super.key});
+  const AiButton({
+    super.key,
+    required this.tag,
+  });
+
+  final String tag;
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +17,11 @@ class AiButton extends StatelessWidget {
       height: 80,
       width: 80,
       child: FloatingActionButton(
+        heroTag: tag,
         onPressed: () {
           Navigator.of(
             context,
-          ).push(MaterialPageRoute(builder: (ctx) => AiAssistScreen()));
+          ).push(MaterialPageRoute(builder: (ctx) => AiAssistScreen(tag: tag)));
         },
         backgroundColor: primary900,
         splashColor: Colors.transparent,
