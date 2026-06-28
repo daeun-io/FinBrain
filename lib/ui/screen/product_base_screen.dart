@@ -29,7 +29,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   final GlobalKey _centerKey = GlobalKey();
   bool _isLoading = false;
   int _cPage = 1;
-  late int _maxPage;
+  int _maxPage = 1;
 
   @override
   void initState() {
@@ -81,25 +81,19 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   Future<void> _fetchData() async {
     ref
         .read(productViewmodelProvider.notifier)
-        .fetchFinlifeProducts(
-          widget.productCategory,
-          _cPage.toString(),
-        );
+        .fetchFinlifeProducts(widget.productCategory, _cPage.toString());
     await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
     final products = ref.watch(productViewmodelProvider);
-    final textSort = ref.watch(
-      sortOrFilterTextViewModelProvider(widget.filterCategory),
-    );
-    
+
     // Move to center after fetching data
-    ref.listen(productViewmodelProvider, (prev, next){
-      if(next.hasValue && prev?.value != next.value){
-        WidgetsBinding.instance.addPostFrameCallback((_){
-          if(_controller.hasClients){
+    ref.listen(productViewmodelProvider, (prev, next) {
+      if (next.hasValue && prev?.value != next.value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_controller.hasClients) {
             _controller.jumpTo(0);
           }
         });
@@ -107,9 +101,9 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
     });
 
     // products.when(
-      // data: (list) => print("🎉 진짜 성공해서 들어온 데이터 개수: ${list.$2.length}"),
-      // error: (err, stack) => print("❌ 프로바이더 내부 에러: $err"),
-      // loading: () => print("⏳ 아직 서버에서 데이터 받아오는 중..."),
+    // data: (list) => print("🎉 진짜 성공해서 들어온 데이터 개수: ${list.$2.length}"),
+    // error: (err, stack) => print("❌ 프로바이더 내부 에러: $err"),
+    // loading: () => print("⏳ 아직 서버에서 데이터 받아오는 중..."),
     // );
     return Padding(
       padding: const EdgeInsets.only(
@@ -120,7 +114,10 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       ),
       child: Column(
         children: [
-          ProductFilter(productCategory: widget.productCategory, filterTextCategory: widget.filterCategory,),
+          ProductFilter(
+            productCategory: widget.productCategory,
+            filterTextCategory: widget.filterCategory,
+          ),
           const SizedBox(height: 24.0),
           SortOrFilterText(
             category: widget.filterCategory,
@@ -195,5 +192,4 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       ),
     );
   }
-
 }
