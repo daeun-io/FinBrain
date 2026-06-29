@@ -1,5 +1,4 @@
 import 'package:finbrain/data/models/entities/annuity_savings.dart';
-import 'package:finbrain/data/models/entities/annuity_savings_option.dart';
 import 'package:finbrain/data/models/entities/credit_loan.dart';
 import 'package:finbrain/data/models/entities/credit_loan_option.dart';
 import 'package:finbrain/data/models/entities/deposit_and_installment_savings.dart';
@@ -75,9 +74,7 @@ class ProductDetailScreen extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () {
-              ref
-                  .read(productViewmodelProvider.notifier)
-                  .toggleLiked(product.commonInfo.productName!);
+              ref.read(productViewmodelProvider.notifier).toggleLiked(product);
             },
             icon: product.commonInfo.isLiked
                 ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
@@ -108,7 +105,11 @@ class ProductDetailScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            Positioned(right: 20, bottom: 100, child: const AiButton()),
+            Positioned(
+              right: 20,
+              bottom: 100,
+              child: AiButton(tag: product.commonInfo.productName!),
+            ),
             if (productCategory == ProductCategory.isa)
               Positioned(
                 left: 0,

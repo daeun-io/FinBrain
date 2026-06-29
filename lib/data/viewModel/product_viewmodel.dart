@@ -7,6 +7,7 @@ import 'package:finbrain/data/models/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/repository/product_repository.dart';
 import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/data/viewModel/liked_product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -133,20 +134,25 @@ class ProductViewmodel extends _$ProductViewmodel {
     sortByCriteria(criteria, ProductCategory.isa, totalCount, filtered);
   }
 
-  // todo: change later(insert a product in db)
-  void toggleLiked(String productName) {
-    final currentState = state.valueOrNull ?? (0, <FinancialProduct>[]);
-    final products = currentState.$2;
-    final updated = products.map((e) {
-      if (e.commonInfo.productName == productName) {
-        return e.copyWith(!e.commonInfo.isLiked);
+  void toggleLiked(FinancialProduct product) {
+    final currentState = state.value ?? (0, <FinancialProduct>[]);
+    final isLiked = product.commonInfo.isLiked;
+    final updated = currentState.$2.map((e) {
+      if (e.commonInfo.productName == product.commonInfo.productName) {
+        return e.copyWith(!isLiked);
       } else {
         return e;
       }
     }).toList();
-
     state = AsyncData((currentState.$1, updated));
-    // todo: later updated at server
+    
+    if (isLiked == true) {
+      ref
+          .read(likedProductViewmodelProvider.notifier)
+          .subtractLikedProduct(product);
+    } else {
+      ref.read(likedProductViewmodelProvider.notifier).addLikedProduct(product.copyWith(!isLiked));
+    }
   }
 
   void sortByCriteria(
@@ -270,76 +276,6 @@ class ProductViewmodel extends _$ProductViewmodel {
             .where((e) => e.commonInfo.productName!.contains(keyword))
             .toList(),
       ));
-    }
-  }
-}
-
-// todo: change later(load db)
-@riverpod
-class LikedProductViewmodel extends _$LikedProductViewmodel {
-  @override
-  Future<List<FinancialProduct>> build() async {
-    final products = List.generate(
-      3,
-      (index) => IsaMpBenefitRate(
-        category: ProductCategory.isa,
-        companyName: "cmpy_nm",
-        mpName: "mp_nm",
-        releaseDate: "20260622",
-        isLiked: false,
-        baseDate: "20260622",
-        businessDomain: "bzds",
-        mpType: "mp_type",
-        options: [],
-      ),
-    );
-    final filters = ref.watch(
-      sortOrFilterTextViewModelProvider(FilterTextCategory.liked),
-    );
-    final categories = ((filters.$1 as List<String>).first == "모든 상품")
-        ? [
-            ProductCategory.deposit,
-            ProductCategory.installment,
-            ProductCategory.isa,
-            ProductCategory.mortage,
-            ProductCategory.rent,
-            ProductCategory.credit,
-            ProductCategory.annuity,
-          ]
-        : [
-            for (final item in (filters.$1 as List<String>))
-              if (item == "정기예금")
-                ProductCategory.deposit
-              else if (item == "적금")
-                ProductCategory.installment
-              else if (item == "ISA")
-                ProductCategory.isa
-              else if (item == "주택담보대출")
-                ProductCategory.mortage
-              else if (item == "전세자금대출")
-                ProductCategory.rent
-              else if (item == "개인신용대출")
-                ProductCategory.credit
-              else
-                ProductCategory.annuity,
-          ];
-
-    return (products)
-        .where(
-          (e) =>
-              e.commonInfo.isLiked == true &&
-              categories.contains(e.commonInfo.category),
-        )
-        .toList();
-  }
-
-  void filterByKeyword(String keyword) {
-    if (keyword.isNotEmpty) {
-      state = AsyncData(
-        (state.value ?? [])
-            .where((e) => e.commonInfo.productName!.contains(keyword))
-            .toList(),
-      );
     }
   }
 }

@@ -25,7 +25,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   bool _isLoading = false;
   int _cPage = 1;
   late int totalCount;
-  
+
   @override
   void initState() {
     super.initState();
@@ -224,7 +224,15 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                       ),
                     ),
                   ),
-                  Positioned(right: 0, bottom: 0, child: AiButton()),
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: AiButton(
+                      tag: (widget.category == FilterTextCategory.isaJoin)
+                          ? "isaJoin"
+                          : "isaManagement",
+                    ),
+                  ),
                 ],
               ),
             );

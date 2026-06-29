@@ -1,30 +1,31 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'product_viewmodel.dart';
+part of 'liked_product_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productViewmodelHash() => r'73d5067aa6b8cffd5dca3ff4ca704c3fb227406e';
+String _$likedProductViewmodelHash() =>
+    r'5b4c5df7f578908921ff4edee645b871eaeeec44';
 
-/// See also [ProductViewmodel].
-@ProviderFor(ProductViewmodel)
-final productViewmodelProvider =
+/// See also [LikedProductViewmodel].
+@ProviderFor(LikedProductViewmodel)
+final likedProductViewmodelProvider =
     AutoDisposeAsyncNotifierProvider<
-      ProductViewmodel,
-      (int, List<FinancialProduct>)
+      LikedProductViewmodel,
+      List<FinancialProduct>
     >.internal(
-      ProductViewmodel.new,
-      name: r'productViewmodelProvider',
+      LikedProductViewmodel.new,
+      name: r'likedProductViewmodelProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$productViewmodelHash,
+          : _$likedProductViewmodelHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$ProductViewmodel =
-    AutoDisposeAsyncNotifier<(int, List<FinancialProduct>)>;
+typedef _$LikedProductViewmodel =
+    AutoDisposeAsyncNotifier<List<FinancialProduct>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -176,7 +176,7 @@ class _FiltersViewmodelProviderElement
 }
 
 String _$dialogFiltersViewModelHash() =>
-    r'c4361d837334a184f343a52ef3df8a3cb76424cd';
+    r'8f1cdcd387b70ee3507eac84d229ef0d10368d77';
 
 abstract class _$DialogFiltersViewModel
     extends BuildlessAutoDisposeNotifier<Map<String, List<(String, bool)>>> {

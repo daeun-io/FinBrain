@@ -4,7 +4,9 @@ import 'package:finbrain/data/models/entities/deposit_and_installment_savings.da
 import 'package:finbrain/data/models/entities/financial_product.dart';
 import 'package:finbrain/data/models/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
+import 'package:finbrain/data/viewModel/ai_response_viewmodel.dart';
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
+import 'package:finbrain/data/viewModel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
@@ -12,7 +14,7 @@ import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductItem extends ConsumerWidget {
+class ProductItem extends ConsumerStatefulWidget {
   const ProductItem({
     super.key,
     required this.product,
@@ -25,10 +27,19 @@ class ProductItem extends ConsumerWidget {
   final FilterTextCategory filterTextCategory;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final sortFilter = ref.watch(sortOrFilterTextViewModelProvider(filterTextCategory));
-    final sortCriteria = (filterTextCategory == FilterTextCategory.liked)
-        ? switch (product.commonInfo.category) {
+  ConsumerState<ProductItem> createState() => _ProductItemState();
+}
+
+class _ProductItemState extends ConsumerState<ProductItem> {
+  bool isSelected = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final sortFilter = ref.watch(
+      sortOrFilterTextViewModelProvider(widget.filterTextCategory),
+    );
+    final sortCriteria = (widget.filterTextCategory == FilterTextCategory.liked)
+        ? switch (widget.product.commonInfo.category) {
             ProductCategory.deposit => "최고 금리(높은순)",
             ProductCategory.installment => "최고 금리(높은순)",
             ProductCategory.annuity => "평균 수익률(높은 순)",
@@ -42,17 +53,29 @@ class ProductItem extends ConsumerWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (ctx) => ProductDetailScreen(
-              product: product,
-              productCategory: product.commonInfo.category,
-              filterCategory: filterTextCategory,
+              product: widget.product,
+              productCategory: widget.product.commonInfo.category,
+              filterCategory: widget.filterTextCategory,
             ),
           ),
         );
       },
+      onLongPress: () {
+        setState(() {
+          if(widget.product.commonInfo.isLiked){
+            isSelected = !isSelected;
+          }
+          if(isSelected){
+            ref.read(selectedProductsViewmodelProvider.notifier).addProduct(widget.product);
+          } else {
+            ref.read(selectedProductsViewmodelProvider.notifier).subtractProduct(widget.product);
+          }
+        });
+      },
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          color: primary100,
+          color: isSelected ? primary300 : primary100,
         ),
         child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -63,7 +86,10 @@ class ProductItem extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.commonInfo.productName!.replaceAll(r'\\n', " "),
+                      widget.product.commonInfo.productName!.replaceAll(
+                        r'\\n',
+                        " ",
+                      ),
                       style: const TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w600,
@@ -72,7 +98,7 @@ class ProductItem extends ConsumerWidget {
                     ),
                     const SizedBox(height: 6.0),
                     Text(
-                      product.commonInfo.companyName!,
+                      widget.product.commonInfo.companyName!,
                       style: const TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.w400,
@@ -96,84 +122,98 @@ class ProductItem extends ConsumerWidget {
                   ),
                   const SizedBox(height: 6.0),
                   Text(
-                    switch (product.commonInfo.category) {
+                    switch (widget.product.commonInfo.category) {
                       ProductCategory.deposit =>
                         (sortCriteria == "최고 금리(높은 순)")
-                            ? (product as DepositAndInstallmentSavings)
+                            ? (widget.product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$1
                                   .toString()
-                            : (product as DepositAndInstallmentSavings)
+                            : (widget.product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$2
                                   .toString(),
                       ProductCategory.installment =>
                         (sortCriteria == "최고 금리(높은 순)")
-                            ? (product as DepositAndInstallmentSavings)
+                            ? (widget.product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$1
                                   .toString()
-                            : (product as DepositAndInstallmentSavings)
+                            : (widget.product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$2
                                   .toString(),
                       ProductCategory.annuity => switch (sortCriteria) {
                         "평균 수익률(높은 순)" =>
-                          (product as AnnuitySavings)
+                          (widget.product as AnnuitySavings)
                               .returnProfits()[0]
                               .toString(),
                         "전년도 수익률(높은 순)" =>
-                          (product as AnnuitySavings)
+                          (widget.product as AnnuitySavings)
                               .returnProfits()[1]
                               .toString(),
                         "전전년도 수익률(높은 순)" =>
-                          (product as AnnuitySavings)
+                          (widget.product as AnnuitySavings)
                               .returnProfits()[2]
                               .toString(),
                         _ =>
-                          (product as AnnuitySavings)
+                          (widget.product as AnnuitySavings)
                               .returnProfits()[3]
                               .toString(),
                       },
                       ProductCategory.credit => switch (sortCriteria) {
                         "최저 금리(낮은 순)" =>
-                          (product as CreditLoan).returnRates()[0].toString(),
-                        "최고 금리(낮은 순)" =>
-                          (product as CreditLoan).returnRates()[2].toString(),
-                        _ =>
-                          (product as CreditLoan).returnRates()[1].toString(),
-                      },
-                      ProductCategory.mortage => switch (sortCriteria) {
-                        "최저 금리(낮은 순)" =>
-                          (product as MortageAndRentLoan)
+                          (widget.product as CreditLoan)
                               .returnRates()[0]
                               .toString(),
                         "최고 금리(낮은 순)" =>
-                          (product as MortageAndRentLoan)
+                          (widget.product as CreditLoan)
                               .returnRates()[2]
                               .toString(),
                         _ =>
-                          (product as MortageAndRentLoan)
+                          (widget.product as CreditLoan)
+                              .returnRates()[1]
+                              .toString(),
+                      },
+                      ProductCategory.mortage => switch (sortCriteria) {
+                        "최저 금리(낮은 순)" =>
+                          (widget.product as MortageAndRentLoan)
+                              .returnRates()[0]
+                              .toString(),
+                        "최고 금리(낮은 순)" =>
+                          (widget.product as MortageAndRentLoan)
+                              .returnRates()[2]
+                              .toString(),
+                        _ =>
+                          (widget.product as MortageAndRentLoan)
                               .returnRates()[1]
                               .toString(),
                       },
                       ProductCategory.rent => switch (sortCriteria) {
                         "최저 금리(낮은 순)" =>
-                          (product as MortageAndRentLoan)
+                          (widget.product as MortageAndRentLoan)
                               .returnRates()[0]
                               .toString(),
                         "최고 금리(낮은 순)" =>
-                          (product as MortageAndRentLoan)
+                          (widget.product as MortageAndRentLoan)
                               .returnRates()[2]
                               .toString(),
                         _ =>
-                          (product as MortageAndRentLoan)
+                          (widget.product as MortageAndRentLoan)
                               .returnRates()[1]
                               .toString(),
                       },
-                      _ => switch(sortCriteria){
-                        "평균 수익률(높은 순)" => (product as IsaMpBenefitRate).returnAvgMedProfits().$1.toString(),
-                        _ => (product as IsaMpBenefitRate).returnAvgMedProfits().$2.toString()
+                      _ => switch (sortCriteria) {
+                        "평균 수익률(높은 순)" =>
+                          (widget.product as IsaMpBenefitRate)
+                              .returnAvgMedProfits()
+                              .$1
+                              .toString(),
+                        _ =>
+                          (widget.product as IsaMpBenefitRate)
+                              .returnAvgMedProfits()
+                              .$2
+                              .toString(),
                       },
                     },
                     style: const TextStyle(
@@ -189,9 +229,15 @@ class ProductItem extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(productViewmodelProvider.notifier)
-                      .toggleLiked(product.commonInfo.productName!);
+                      .toggleLiked(widget.product);
                 },
-                icon: product.commonInfo.isLiked
+                icon: isSelected
+                    ? const Icon(
+                        Icons.check_circle,
+                        color: primary700,
+                        size: 32.0,
+                      )
+                    : widget.product.commonInfo.isLiked
                     ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
                     : const Icon(
                         Icons.favorite,

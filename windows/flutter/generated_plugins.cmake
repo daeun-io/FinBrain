@@ -4,6 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   charset_converter
+  firebase_app_check
+  firebase_auth
   firebase_core
   url_launcher_windows
 )

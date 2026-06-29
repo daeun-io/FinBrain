@@ -20,7 +20,7 @@ class AiSummary extends StatelessWidget{
         child: Column(
           children: [
             const Text(
-              "제목",
+              "지난 대화 요약",
               style: TextStyle(
                 color: textPrimary,
                 fontSize: 14.0,
@@ -36,7 +36,7 @@ class AiSummary extends StatelessWidget{
               ),
             ),
             const Text(
-              "내용",
+              "요약요약요약요약요약요약요약요약요약요약요약요약",
               style: TextStyle(
                 color: black,
                 fontSize: 12.0,
