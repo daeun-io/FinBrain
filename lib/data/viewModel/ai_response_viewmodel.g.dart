@@ -161,7 +161,7 @@ class _AiResponseViewmodelProviderElement
   String get text => (origin as AiResponseViewmodelProvider).text;
 }
 
-String _$aiScreenViewmodelHash() => r'5fbda7d774fe60e5bc30521bc23530345ad3d615';
+String _$aiScreenViewmodelHash() => r'7dcfb40d172b54eba297ef4ff1a06aee2bcd9536';
 
 abstract class _$AiScreenViewmodel
     extends BuildlessAutoDisposeNotifier<Map<String, String>> {
@@ -300,6 +300,143 @@ class _AiScreenViewmodelProviderElement
 
   @override
   String get tag => (origin as AiScreenViewmodelProvider).tag;
+}
+
+String _$aiComparisonScreenViewmodelHash() =>
+    r'c1b62599f59a1c8ea131c456a8b4c6b8f77fffd0';
+
+abstract class _$AiComparisonScreenViewmodel
+    extends BuildlessAutoDisposeNotifier<String> {
+  late final String products;
+
+  String build(String products);
+}
+
+/// See also [AiComparisonScreenViewmodel].
+@ProviderFor(AiComparisonScreenViewmodel)
+const aiComparisonScreenViewmodelProvider = AiComparisonScreenViewmodelFamily();
+
+/// See also [AiComparisonScreenViewmodel].
+class AiComparisonScreenViewmodelFamily extends Family<String> {
+  /// See also [AiComparisonScreenViewmodel].
+  const AiComparisonScreenViewmodelFamily();
+
+  /// See also [AiComparisonScreenViewmodel].
+  AiComparisonScreenViewmodelProvider call(String products) {
+    return AiComparisonScreenViewmodelProvider(products);
+  }
+
+  @override
+  AiComparisonScreenViewmodelProvider getProviderOverride(
+    covariant AiComparisonScreenViewmodelProvider provider,
+  ) {
+    return call(provider.products);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'aiComparisonScreenViewmodelProvider';
+}
+
+/// See also [AiComparisonScreenViewmodel].
+class AiComparisonScreenViewmodelProvider
+    extends
+        AutoDisposeNotifierProviderImpl<AiComparisonScreenViewmodel, String> {
+  /// See also [AiComparisonScreenViewmodel].
+  AiComparisonScreenViewmodelProvider(String products)
+    : this._internal(
+        () => AiComparisonScreenViewmodel()..products = products,
+        from: aiComparisonScreenViewmodelProvider,
+        name: r'aiComparisonScreenViewmodelProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$aiComparisonScreenViewmodelHash,
+        dependencies: AiComparisonScreenViewmodelFamily._dependencies,
+        allTransitiveDependencies:
+            AiComparisonScreenViewmodelFamily._allTransitiveDependencies,
+        products: products,
+      );
+
+  AiComparisonScreenViewmodelProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.products,
+  }) : super.internal();
+
+  final String products;
+
+  @override
+  String runNotifierBuild(covariant AiComparisonScreenViewmodel notifier) {
+    return notifier.build(products);
+  }
+
+  @override
+  Override overrideWith(AiComparisonScreenViewmodel Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: AiComparisonScreenViewmodelProvider._internal(
+        () => create()..products = products,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        products: products,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<AiComparisonScreenViewmodel, String>
+  createElement() {
+    return _AiComparisonScreenViewmodelProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is AiComparisonScreenViewmodelProvider &&
+        other.products == products;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, products.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin AiComparisonScreenViewmodelRef on AutoDisposeNotifierProviderRef<String> {
+  /// The parameter `products` of this provider.
+  String get products;
+}
+
+class _AiComparisonScreenViewmodelProviderElement
+    extends
+        AutoDisposeNotifierProviderElement<AiComparisonScreenViewmodel, String>
+    with AiComparisonScreenViewmodelRef {
+  _AiComparisonScreenViewmodelProviderElement(super.provider);
+
+  @override
+  String get products =>
+      (origin as AiComparisonScreenViewmodelProvider).products;
 }
 
 // ignore_for_file: type=lint

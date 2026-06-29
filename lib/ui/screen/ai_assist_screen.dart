@@ -23,6 +23,7 @@ class AiAssistScreen extends ConsumerWidget {
       backgroundColor: white,
       appBar: AppBar(
         backgroundColor: primary100,
+        scrolledUnderElevation: 0.0,
         title: const Text(
           "AI 어시스트",
           style: TextStyle(
@@ -47,7 +48,9 @@ class AiAssistScreen extends ConsumerWidget {
                   child: Column(
                     children: [
                       MessageBubble(isUser: true, text: entry.key),
-                      MessageBubble(isUser: false, text: entry.value),
+                      (entry.value.isEmpty)
+                          ? const CircularProgressIndicator(color: primary400)
+                          : MessageBubble(isUser: false, text: entry.value),
                     ],
                   ),
                 );
