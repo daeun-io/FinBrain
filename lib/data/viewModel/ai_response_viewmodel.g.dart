@@ -7,7 +7,7 @@ part of 'ai_response_viewmodel.dart';
 // **************************************************************************
 
 String _$aiResponseViewmodelHash() =>
-    r'874f23ac95db27aae14bef4a3d1d7a48e80c6c7c';
+    r'53784a4a676098f5551c4ec985c1602d96f08fd5';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,8 +33,9 @@ class _SystemHash {
 abstract class _$AiResponseViewmodel
     extends BuildlessAutoDisposeAsyncNotifier<String?> {
   late final String text;
+  late final FinancialProduct? product;
 
-  FutureOr<String?> build(String text);
+  FutureOr<String?> build(String text, [FinancialProduct? product]);
 }
 
 /// See also [AiResponseViewmodel].
@@ -47,15 +48,15 @@ class AiResponseViewmodelFamily extends Family<AsyncValue<String?>> {
   const AiResponseViewmodelFamily();
 
   /// See also [AiResponseViewmodel].
-  AiResponseViewmodelProvider call(String text) {
-    return AiResponseViewmodelProvider(text);
+  AiResponseViewmodelProvider call(String text, [FinancialProduct? product]) {
+    return AiResponseViewmodelProvider(text, product);
   }
 
   @override
   AiResponseViewmodelProvider getProviderOverride(
     covariant AiResponseViewmodelProvider provider,
   ) {
-    return call(provider.text);
+    return call(provider.text, provider.product);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -77,9 +78,11 @@ class AiResponseViewmodelFamily extends Family<AsyncValue<String?>> {
 class AiResponseViewmodelProvider
     extends AutoDisposeAsyncNotifierProviderImpl<AiResponseViewmodel, String?> {
   /// See also [AiResponseViewmodel].
-  AiResponseViewmodelProvider(String text)
+  AiResponseViewmodelProvider(String text, [FinancialProduct? product])
     : this._internal(
-        () => AiResponseViewmodel()..text = text,
+        () => AiResponseViewmodel()
+          ..text = text
+          ..product = product,
         from: aiResponseViewmodelProvider,
         name: r'aiResponseViewmodelProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -89,6 +92,7 @@ class AiResponseViewmodelProvider
         allTransitiveDependencies:
             AiResponseViewmodelFamily._allTransitiveDependencies,
         text: text,
+        product: product,
       );
 
   AiResponseViewmodelProvider._internal(
@@ -99,13 +103,15 @@ class AiResponseViewmodelProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.text,
+    required this.product,
   }) : super.internal();
 
   final String text;
+  final FinancialProduct? product;
 
   @override
   FutureOr<String?> runNotifierBuild(covariant AiResponseViewmodel notifier) {
-    return notifier.build(text);
+    return notifier.build(text, product);
   }
 
   @override
@@ -113,13 +119,16 @@ class AiResponseViewmodelProvider
     return ProviderOverride(
       origin: this,
       override: AiResponseViewmodelProvider._internal(
-        () => create()..text = text,
+        () => create()
+          ..text = text
+          ..product = product,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         text: text,
+        product: product,
       ),
     );
   }
@@ -132,13 +141,16 @@ class AiResponseViewmodelProvider
 
   @override
   bool operator ==(Object other) {
-    return other is AiResponseViewmodelProvider && other.text == text;
+    return other is AiResponseViewmodelProvider &&
+        other.text == text &&
+        other.product == product;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, text.hashCode);
+    hash = _SystemHash.combine(hash, product.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -149,6 +161,9 @@ class AiResponseViewmodelProvider
 mixin AiResponseViewmodelRef on AutoDisposeAsyncNotifierProviderRef<String?> {
   /// The parameter `text` of this provider.
   String get text;
+
+  /// The parameter `product` of this provider.
+  FinancialProduct? get product;
 }
 
 class _AiResponseViewmodelProviderElement
@@ -159,9 +174,12 @@ class _AiResponseViewmodelProviderElement
 
   @override
   String get text => (origin as AiResponseViewmodelProvider).text;
+  @override
+  FinancialProduct? get product =>
+      (origin as AiResponseViewmodelProvider).product;
 }
 
-String _$aiScreenViewmodelHash() => r'7dcfb40d172b54eba297ef4ff1a06aee2bcd9536';
+String _$aiScreenViewmodelHash() => r'5e5d81c44812a8721cee6e429563ae897932c40c';
 
 abstract class _$AiScreenViewmodel
     extends BuildlessAutoDisposeNotifier<Map<String, String>> {
@@ -303,7 +321,7 @@ class _AiScreenViewmodelProviderElement
 }
 
 String _$aiComparisonScreenViewmodelHash() =>
-    r'3e96a3cd282ed8295c07560d178f7326be205fdc';
+    r'c6b5375fb784e85355530752804d80ccd975e34c';
 
 abstract class _$AiComparisonScreenViewmodel
     extends BuildlessAutoDisposeNotifier<String> {

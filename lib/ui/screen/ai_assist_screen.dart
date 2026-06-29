@@ -78,7 +78,7 @@ class AiAssistScreen extends ConsumerWidget {
                           if (value.isNotEmpty) {
                             ref
                                 .read(aiScreenViewmodelProvider(tag).notifier)
-                                .addRequest(value);
+                                .addRequest(value, tag);
                             _messageController.clear();
                             mFocusNode.unfocus();
                           }
@@ -114,7 +114,7 @@ class AiAssistScreen extends ConsumerWidget {
                       if (_messageController.text.isNotEmpty) {
                         ref
                             .read(aiScreenViewmodelProvider(tag).notifier)
-                            .addRequest(_messageController.text);
+                            .addRequest(_messageController.text, tag);
                         _messageController.clear();
                         mFocusNode.unfocus();
                       }

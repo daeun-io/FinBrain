@@ -108,7 +108,7 @@ class ProductDetailScreen extends ConsumerWidget {
             Positioned(
               right: 20,
               bottom: 100,
-              child: AiButton(tag: product.commonInfo.companyName ?? ""),
+              child: AiButton(tag: product.commonInfo.productName!),
             ),
             if (productCategory == ProductCategory.isa)
               Positioned(

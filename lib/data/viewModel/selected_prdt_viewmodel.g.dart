@@ -7,7 +7,7 @@ part of 'selected_prdt_viewmodel.dart';
 // **************************************************************************
 
 String _$selectedProductsViewmodelHash() =>
-    r'04ae19fe9ed6903a80e2d07bfb078e30d809b860';
+    r'aaaf25ea7fb7a8b892460d61abaa1f156d0014a3';
 
 /// See also [SelectedProductsViewmodel].
 @ProviderFor(SelectedProductsViewmodel)
