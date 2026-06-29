@@ -7,19 +7,22 @@ class SelectedProductsViewmodel extends _$SelectedProductsViewmodel{
   @override
   List<FinancialProduct> build() => [];
 
-
   void addProduct(FinancialProduct product){
     state = [...state, product];
   }
-
 
   void subtractProduct(FinancialProduct product){
     state = state.where((e) => e != product).toList();
   }
 
+  void resetSelectedList() => state = [];
 
-  void resetSelectedList(){
-    state = [];
-    print("reset state: $state");
+  bool allCategoriesSame(){
+    for(int i = 0; i < state.length - 1; i++){
+      if(state[i].commonInfo.category != state[i+1].commonInfo.category){
+        return false;
+      }
+    }
+    return true;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:finbrain/data/viewModel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/screen/ai_comparison_screen.dart';
@@ -19,9 +20,24 @@ class AiButton extends ConsumerWidget {
         heroTag: tag,
         onPressed: () {
           if (tag.contains("compare")) {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (ctx) => AiComparisonScreen(tag: tag)),
-            );
+            if (!ref
+                .read(selectedProductsViewmodelProvider.notifier)
+                .allCategoriesSame()) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 3),
+                  content: const Text(
+                    "선택하신 상품들의 카테고리가 다릅니다!\n동일 카테고리의 상품을 비교해주세요",
+                  ),
+                ),
+              );
+            } else {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (ctx) => AiComparisonScreen(tag: tag),
+                ),
+              );
+            }
           } else {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (ctx) => AiAssistScreen(tag: tag)),
