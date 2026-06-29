@@ -7,7 +7,7 @@ part of 'liked_product_viewmodel.dart';
 // **************************************************************************
 
 String _$likedProductViewmodelHash() =>
-    r'b1a3092a9a08f39903569eafb7874bd9a6fd1ae8';
+    r'5b4c5df7f578908921ff4edee645b871eaeeec44';
 
 /// See also [LikedProductViewmodel].
 @ProviderFor(LikedProductViewmodel)

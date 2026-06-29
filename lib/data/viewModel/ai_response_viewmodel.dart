@@ -1,3 +1,4 @@
+import 'package:finbrain/data/models/entities/financial_product.dart';
 import 'package:finbrain/data/repository/ai_response_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,8 +24,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
       aiResponseViewmodelProvider(newRequest).future,
     );
     if (newResponse == null || newResponse.isEmpty) {
-      final errorResponse = "오류가 발생했습니다. 다시 시도해주세요";
-      state = {...state, newRequest: errorResponse};
+      state = {...state, newRequest: "오류가 발생했습니다. 다시 시도해주세요"};
     } else {
       state = {...state, newRequest: newResponse};
     }
@@ -38,24 +38,16 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
 
   void askComparsion(String products) async {
     try {
-      print("====================");
-      print("Comparison: 비동기 데이터 요청 시작... (인자: $products)");
       final newResponse = await ref.read(
         aiResponseViewmodelProvider(products).future,
       );
-      print("Comparison: newResponse - $newResponse");
       if (newResponse == null || newResponse.isEmpty) {
-        final errorResponse = "오류가 발생했습니다. 다시 시도해주세요";
-        print("Comparison: error - $newResponse");
-        state = errorResponse;
+        state = "오류가 발생했습니다. 다시 시도해주세요";
       } else {
         state = newResponse;
       }
-      print("Comparison: current state - $state");
     } catch (error) {
-      print("Comparsion: error - $error");
-    } finally{
-      print("====================");
+      print("Ai Comparsion: error - $error");
     }
   }
 }

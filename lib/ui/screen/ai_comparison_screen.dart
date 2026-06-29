@@ -1,4 +1,5 @@
 import 'package:finbrain/data/viewModel/ai_response_viewmodel.dart';
+import 'package:finbrain/data/viewModel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,12 +11,15 @@ class AiComparisonScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final items = tag.split('-');
+    items.remove("compare");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
-          .read(aiComparisonScreenViewmodelProvider("test").notifier)
-          .askComparsion("재밌는 얘기 해줘");
+          .read(aiComparisonScreenViewmodelProvider(tag).notifier)
+          .askComparsion("$items를 비교 분석하고 내용을 표로 정리해줘");
     });
-    final text = ref.watch(aiComparisonScreenViewmodelProvider("test"));
+
+    final text = ref.watch(aiComparisonScreenViewmodelProvider(tag));
 
     return Scaffold(
       backgroundColor: white,
@@ -63,10 +67,10 @@ class AiComparisonScreen extends ConsumerWidget {
                             ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
-                                    "test",
+                                    tag,
                                   ).notifier,
                                 )
-                                .askComparsion("재밌는 얘기 해줘");
+                                .askComparsion("$items를 비교 분석하고 내용을 표로 정리해줘");
                           },
                           style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(
@@ -87,7 +91,15 @@ class AiComparisonScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 16.0),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // todo: save in db
+                            ref
+                                .read(
+                                  selectedProductsViewmodelProvider.notifier,
+                                )
+                                .resetSelectedList();
+                            Navigator.of(context).pop();
+                          },
                           style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(primary400),
                           ),

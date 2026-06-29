@@ -1,6 +1,6 @@
 import 'package:finbrain/data/viewModel/liked_product_viewmodel.dart';
-import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/searched_viewmodel.dart';
+import 'package:finbrain/data/viewModel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
@@ -15,9 +15,13 @@ class LikedScreen extends ConsumerWidget {
   // todo: change later
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final likedDummies = ref.watch(likedProductViewmodelProvider);
+    final liked = ref.watch(likedProductViewmodelProvider);
     final searchedList = ref.watch(searchedViewmodelProvider);
-
+    final selectedProducts = ref.watch(selectedProductsViewmodelProvider);
+    final sProductsNm = selectedProducts
+        .map((e) => e.commonInfo.productName)
+        .whereType<String>().join('-');
+    
     return Padding(
       padding: const EdgeInsets.only(
         top: 24.0,
@@ -45,24 +49,28 @@ class LikedScreen extends ConsumerWidget {
           Expanded(
             child: Stack(
               children: [
-                if (likedDummies.valueOrNull != null)
+                if (liked.valueOrNull != null)
                   Expanded(
                     child: ListView.builder(
-                      itemCount: likedDummies.value!.length,
+                      itemCount: liked.value!.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
-                            product: likedDummies.value![index],
+                            product: liked.value![index],
                             productCategory:
-                                likedDummies.value![index].commonInfo.category,
+                                liked.value![index].commonInfo.category,
                             filterTextCategory: FilterTextCategory.liked,
                           ),
                         );
                       },
                     ),
                   ),
-                Positioned(right: 5, bottom: 5, child: AiButton(tag: "compare")),
+                Positioned(
+                  right: 5,
+                  bottom: 5,
+                  child: AiButton(tag: "compare-$sProductsNm"),
+                ),
               ],
             ),
           ),
