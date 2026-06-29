@@ -83,9 +83,6 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   Widget build(BuildContext context) {
     final searchedList = ref.watch(searchedViewmodelProvider);
     final products = ref.watch(productViewmodelProvider);
-    final textSort = ref.watch(
-      sortOrFilterTextViewModelProvider(FilterTextCategory.isaMp),
-    );
 
     // Move to center after fetching data
     ref.listen(productViewmodelProvider, (prev, next) {

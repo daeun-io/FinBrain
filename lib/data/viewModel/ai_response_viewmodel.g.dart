@@ -303,7 +303,7 @@ class _AiScreenViewmodelProviderElement
 }
 
 String _$aiComparisonScreenViewmodelHash() =>
-    r'c1b62599f59a1c8ea131c456a8b4c6b8f77fffd0';
+    r'3e96a3cd282ed8295c07560d178f7326be205fdc';
 
 abstract class _$AiComparisonScreenViewmodel
     extends BuildlessAutoDisposeNotifier<String> {

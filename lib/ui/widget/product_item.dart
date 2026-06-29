@@ -189,7 +189,7 @@ class ProductItem extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(productViewmodelProvider.notifier)
-                      .toggleLiked(product.commonInfo.productName!);
+                      .toggleLiked(product);
                 },
                 icon: product.commonInfo.isLiked
                     ? const Icon(Icons.favorite, color: likedColor, size: 32.0)

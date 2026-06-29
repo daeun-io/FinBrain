@@ -1,3 +1,4 @@
+import 'package:finbrain/data/viewModel/liked_product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/product_viewmodel.dart';
 import 'package:finbrain/data/viewModel/searched_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
