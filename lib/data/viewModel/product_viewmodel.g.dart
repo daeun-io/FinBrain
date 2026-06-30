@@ -6,25 +6,62 @@ part of 'product_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(ProductViewmodel)
+final productViewmodelProvider = ProductViewmodelProvider._();
+
+final class ProductViewmodelProvider
+    extends
+        $AsyncNotifierProvider<
+          ProductViewmodel,
+          (int, List<FinancialProduct>)
+        > {
+  ProductViewmodelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'productViewmodelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$productViewmodelHash();
+
+  @$internal
+  @override
+  ProductViewmodel create() => ProductViewmodel();
+}
+
 String _$productViewmodelHash() => r'73d5067aa6b8cffd5dca3ff4ca704c3fb227406e';
 
-/// See also [ProductViewmodel].
-@ProviderFor(ProductViewmodel)
-final productViewmodelProvider =
-    AutoDisposeAsyncNotifierProvider<
-      ProductViewmodel,
-      (int, List<FinancialProduct>)
-    >.internal(
-      ProductViewmodel.new,
-      name: r'productViewmodelProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$productViewmodelHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$ProductViewmodel =
-    AutoDisposeAsyncNotifier<(int, List<FinancialProduct>)>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$ProductViewmodel
+    extends $AsyncNotifier<(int, List<FinancialProduct>)> {
+  FutureOr<(int, List<FinancialProduct>)> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<(int, List<FinancialProduct>)>,
+              (int, List<FinancialProduct>)
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<(int, List<FinancialProduct>)>,
+                (int, List<FinancialProduct>)
+              >,
+              AsyncValue<(int, List<FinancialProduct>)>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}

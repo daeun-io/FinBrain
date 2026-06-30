@@ -6,459 +6,329 @@ part of 'filters_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filtersViewmodelHash() => r'1b07a3c4995fd6b80d4d9e79c1c3833a426e8b5c';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$FiltersViewmodel
-    extends
-        BuildlessAutoDisposeAsyncNotifier<Map<String, List<(String, bool)>>> {
-  late final FilterTextCategory ctg;
-
-  FutureOr<Map<String, List<(String, bool)>>> build(FilterTextCategory ctg);
-}
-
-/// See also [FiltersViewmodel].
 @ProviderFor(FiltersViewmodel)
-const filtersViewmodelProvider = FiltersViewmodelFamily();
+final filtersViewmodelProvider = FiltersViewmodelFamily._();
 
-/// See also [FiltersViewmodel].
-class FiltersViewmodelFamily
-    extends Family<AsyncValue<Map<String, List<(String, bool)>>>> {
-  /// See also [FiltersViewmodel].
-  const FiltersViewmodelFamily();
-
-  /// See also [FiltersViewmodel].
-  FiltersViewmodelProvider call(FilterTextCategory ctg) {
-    return FiltersViewmodelProvider(ctg);
-  }
-
-  @override
-  FiltersViewmodelProvider getProviderOverride(
-    covariant FiltersViewmodelProvider provider,
-  ) {
-    return call(provider.ctg);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'filtersViewmodelProvider';
-}
-
-/// See also [FiltersViewmodel].
-class FiltersViewmodelProvider
+final class FiltersViewmodelProvider
     extends
-        AutoDisposeAsyncNotifierProviderImpl<
+        $AsyncNotifierProvider<
           FiltersViewmodel,
           Map<String, List<(String, bool)>>
         > {
-  /// See also [FiltersViewmodel].
-  FiltersViewmodelProvider(FilterTextCategory ctg)
-    : this._internal(
-        () => FiltersViewmodel()..ctg = ctg,
-        from: filtersViewmodelProvider,
-        name: r'filtersViewmodelProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$filtersViewmodelHash,
-        dependencies: FiltersViewmodelFamily._dependencies,
-        allTransitiveDependencies:
-            FiltersViewmodelFamily._allTransitiveDependencies,
-        ctg: ctg,
-      );
-
-  FiltersViewmodelProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.ctg,
-  }) : super.internal();
-
-  final FilterTextCategory ctg;
+  FiltersViewmodelProvider._({
+    required FiltersViewmodelFamily super.from,
+    required FilterTextCategory super.argument,
+  }) : super(
+         retry: null,
+         name: r'filtersViewmodelProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
-  FutureOr<Map<String, List<(String, bool)>>> runNotifierBuild(
-    covariant FiltersViewmodel notifier,
-  ) {
-    return notifier.build(ctg);
+  String debugGetCreateSourceHash() => _$filtersViewmodelHash();
+
+  @override
+  String toString() {
+    return r'filtersViewmodelProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  FiltersViewmodel create() => FiltersViewmodel();
+
+  @override
+  bool operator ==(Object other) {
+    return other is FiltersViewmodelProvider && other.argument == argument;
   }
 
   @override
-  Override overrideWith(FiltersViewmodel Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: FiltersViewmodelProvider._internal(
-        () => create()..ctg = ctg,
-        from: from,
-        name: null,
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$filtersViewmodelHash() => r'1b07a3c4995fd6b80d4d9e79c1c3833a426e8b5c';
+
+final class FiltersViewmodelFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          FiltersViewmodel,
+          AsyncValue<Map<String, List<(String, bool)>>>,
+          Map<String, List<(String, bool)>>,
+          FutureOr<Map<String, List<(String, bool)>>>,
+          FilterTextCategory
+        > {
+  FiltersViewmodelFamily._()
+    : super(
+        retry: null,
+        name: r'filtersViewmodelProvider',
         dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        ctg: ctg,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  FiltersViewmodelProvider call(FilterTextCategory ctg) =>
+      FiltersViewmodelProvider._(argument: ctg, from: this);
+
+  @override
+  String toString() => r'filtersViewmodelProvider';
+}
+
+abstract class _$FiltersViewmodel
+    extends $AsyncNotifier<Map<String, List<(String, bool)>>> {
+  late final _$args = ref.$arg as FilterTextCategory;
+  FilterTextCategory get ctg => _$args;
+
+  FutureOr<Map<String, List<(String, bool)>>> build(FilterTextCategory ctg);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<Map<String, List<(String, bool)>>>,
+              Map<String, List<(String, bool)>>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<Map<String, List<(String, bool)>>>,
+                Map<String, List<(String, bool)>>
+              >,
+              AsyncValue<Map<String, List<(String, bool)>>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
+}
+
+@ProviderFor(DialogFiltersViewModel)
+final dialogFiltersViewModelProvider = DialogFiltersViewModelFamily._();
+
+final class DialogFiltersViewModelProvider
+    extends
+        $NotifierProvider<
+          DialogFiltersViewModel,
+          Map<String, List<(String, bool)>>
+        > {
+  DialogFiltersViewModelProvider._({
+    required DialogFiltersViewModelFamily super.from,
+    required FilterTextCategory super.argument,
+  }) : super(
+         retry: null,
+         name: r'dialogFiltersViewModelProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$dialogFiltersViewModelHash();
+
+  @override
+  String toString() {
+    return r'dialogFiltersViewModelProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  DialogFiltersViewModel create() => DialogFiltersViewModel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Map<String, List<(String, bool)>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Map<String, List<(String, bool)>>>(
+        value,
       ),
     );
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<
-    FiltersViewmodel,
-    Map<String, List<(String, bool)>>
-  >
-  createElement() {
-    return _FiltersViewmodelProviderElement(this);
-  }
-
-  @override
   bool operator ==(Object other) {
-    return other is FiltersViewmodelProvider && other.ctg == ctg;
+    return other is DialogFiltersViewModelProvider &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, ctg.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin FiltersViewmodelRef
-    on AutoDisposeAsyncNotifierProviderRef<Map<String, List<(String, bool)>>> {
-  /// The parameter `ctg` of this provider.
-  FilterTextCategory get ctg;
-}
-
-class _FiltersViewmodelProviderElement
-    extends
-        AutoDisposeAsyncNotifierProviderElement<
-          FiltersViewmodel,
-          Map<String, List<(String, bool)>>
-        >
-    with FiltersViewmodelRef {
-  _FiltersViewmodelProviderElement(super.provider);
-
-  @override
-  FilterTextCategory get ctg => (origin as FiltersViewmodelProvider).ctg;
 }
 
 String _$dialogFiltersViewModelHash() =>
     r'8f1cdcd387b70ee3507eac84d229ef0d10368d77';
 
-abstract class _$DialogFiltersViewModel
-    extends BuildlessAutoDisposeNotifier<Map<String, List<(String, bool)>>> {
-  late final FilterTextCategory ctg;
-
-  Map<String, List<(String, bool)>> build(FilterTextCategory ctg);
-}
-
-/// See also [DialogFiltersViewModel].
-@ProviderFor(DialogFiltersViewModel)
-const dialogFiltersViewModelProvider = DialogFiltersViewModelFamily();
-
-/// See also [DialogFiltersViewModel].
-class DialogFiltersViewModelFamily
-    extends Family<Map<String, List<(String, bool)>>> {
-  /// See also [DialogFiltersViewModel].
-  const DialogFiltersViewModelFamily();
-
-  /// See also [DialogFiltersViewModel].
-  DialogFiltersViewModelProvider call(FilterTextCategory ctg) {
-    return DialogFiltersViewModelProvider(ctg);
-  }
-
-  @override
-  DialogFiltersViewModelProvider getProviderOverride(
-    covariant DialogFiltersViewModelProvider provider,
-  ) {
-    return call(provider.ctg);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'dialogFiltersViewModelProvider';
-}
-
-/// See also [DialogFiltersViewModel].
-class DialogFiltersViewModelProvider
-    extends
-        AutoDisposeNotifierProviderImpl<
+final class DialogFiltersViewModelFamily extends $Family
+    with
+        $ClassFamilyOverride<
           DialogFiltersViewModel,
-          Map<String, List<(String, bool)>>
+          Map<String, List<(String, bool)>>,
+          Map<String, List<(String, bool)>>,
+          Map<String, List<(String, bool)>>,
+          FilterTextCategory
         > {
-  /// See also [DialogFiltersViewModel].
-  DialogFiltersViewModelProvider(FilterTextCategory ctg)
-    : this._internal(
-        () => DialogFiltersViewModel()..ctg = ctg,
-        from: dialogFiltersViewModelProvider,
+  DialogFiltersViewModelFamily._()
+    : super(
+        retry: null,
         name: r'dialogFiltersViewModelProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$dialogFiltersViewModelHash,
-        dependencies: DialogFiltersViewModelFamily._dependencies,
-        allTransitiveDependencies:
-            DialogFiltersViewModelFamily._allTransitiveDependencies,
-        ctg: ctg,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
       );
 
-  DialogFiltersViewModelProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.ctg,
-  }) : super.internal();
-
-  final FilterTextCategory ctg;
+  DialogFiltersViewModelProvider call(FilterTextCategory ctg) =>
+      DialogFiltersViewModelProvider._(argument: ctg, from: this);
 
   @override
-  Map<String, List<(String, bool)>> runNotifierBuild(
-    covariant DialogFiltersViewModel notifier,
-  ) {
-    return notifier.build(ctg);
+  String toString() => r'dialogFiltersViewModelProvider';
+}
+
+abstract class _$DialogFiltersViewModel
+    extends $Notifier<Map<String, List<(String, bool)>>> {
+  late final _$args = ref.$arg as FilterTextCategory;
+  FilterTextCategory get ctg => _$args;
+
+  Map<String, List<(String, bool)>> build(FilterTextCategory ctg);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              Map<String, List<(String, bool)>>,
+              Map<String, List<(String, bool)>>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                Map<String, List<(String, bool)>>,
+                Map<String, List<(String, bool)>>
+              >,
+              Map<String, List<(String, bool)>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
+}
+
+@ProviderFor(SavedFilters)
+final savedFiltersProvider = SavedFiltersFamily._();
+
+final class SavedFiltersProvider
+    extends $NotifierProvider<SavedFilters, Map<String, List<(String, bool)>>> {
+  SavedFiltersProvider._({
+    required SavedFiltersFamily super.from,
+    required FilterTextCategory super.argument,
+  }) : super(
+         retry: null,
+         name: r'savedFiltersProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$savedFiltersHash();
+
+  @override
+  String toString() {
+    return r'savedFiltersProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(DialogFiltersViewModel Function() create) {
-    return ProviderOverride(
+  SavedFilters create() => SavedFilters();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Map<String, List<(String, bool)>> value) {
+    return $ProviderOverride(
       origin: this,
-      override: DialogFiltersViewModelProvider._internal(
-        () => create()..ctg = ctg,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        ctg: ctg,
+      providerOverride: $SyncValueProvider<Map<String, List<(String, bool)>>>(
+        value,
       ),
     );
   }
 
   @override
-  AutoDisposeNotifierProviderElement<
-    DialogFiltersViewModel,
-    Map<String, List<(String, bool)>>
-  >
-  createElement() {
-    return _DialogFiltersViewModelProviderElement(this);
-  }
-
-  @override
   bool operator ==(Object other) {
-    return other is DialogFiltersViewModelProvider && other.ctg == ctg;
+    return other is SavedFiltersProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, ctg.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin DialogFiltersViewModelRef
-    on AutoDisposeNotifierProviderRef<Map<String, List<(String, bool)>>> {
-  /// The parameter `ctg` of this provider.
-  FilterTextCategory get ctg;
-}
-
-class _DialogFiltersViewModelProviderElement
-    extends
-        AutoDisposeNotifierProviderElement<
-          DialogFiltersViewModel,
-          Map<String, List<(String, bool)>>
-        >
-    with DialogFiltersViewModelRef {
-  _DialogFiltersViewModelProviderElement(super.provider);
-
-  @override
-  FilterTextCategory get ctg => (origin as DialogFiltersViewModelProvider).ctg;
 }
 
 String _$savedFiltersHash() => r'bfff14d099fdab0e13647c3fbf19b4c92d0a1cd1';
 
-abstract class _$SavedFilters
-    extends BuildlessNotifier<Map<String, List<(String, bool)>>> {
-  late final FilterTextCategory ctg;
-
-  Map<String, List<(String, bool)>> build(FilterTextCategory ctg);
-}
-
-/// See also [SavedFilters].
-@ProviderFor(SavedFilters)
-const savedFiltersProvider = SavedFiltersFamily();
-
-/// See also [SavedFilters].
-class SavedFiltersFamily extends Family<Map<String, List<(String, bool)>>> {
-  /// See also [SavedFilters].
-  const SavedFiltersFamily();
-
-  /// See also [SavedFilters].
-  SavedFiltersProvider call(FilterTextCategory ctg) {
-    return SavedFiltersProvider(ctg);
-  }
-
-  @override
-  SavedFiltersProvider getProviderOverride(
-    covariant SavedFiltersProvider provider,
-  ) {
-    return call(provider.ctg);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'savedFiltersProvider';
-}
-
-/// See also [SavedFilters].
-class SavedFiltersProvider
-    extends
-        NotifierProviderImpl<SavedFilters, Map<String, List<(String, bool)>>> {
-  /// See also [SavedFilters].
-  SavedFiltersProvider(FilterTextCategory ctg)
-    : this._internal(
-        () => SavedFilters()..ctg = ctg,
-        from: savedFiltersProvider,
+final class SavedFiltersFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          SavedFilters,
+          Map<String, List<(String, bool)>>,
+          Map<String, List<(String, bool)>>,
+          Map<String, List<(String, bool)>>,
+          FilterTextCategory
+        > {
+  SavedFiltersFamily._()
+    : super(
+        retry: null,
         name: r'savedFiltersProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$savedFiltersHash,
-        dependencies: SavedFiltersFamily._dependencies,
-        allTransitiveDependencies:
-            SavedFiltersFamily._allTransitiveDependencies,
-        ctg: ctg,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
       );
 
-  SavedFiltersProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.ctg,
-  }) : super.internal();
-
-  final FilterTextCategory ctg;
+  SavedFiltersProvider call(FilterTextCategory ctg) =>
+      SavedFiltersProvider._(argument: ctg, from: this);
 
   @override
-  Map<String, List<(String, bool)>> runNotifierBuild(
-    covariant SavedFilters notifier,
-  ) {
-    return notifier.build(ctg);
-  }
-
-  @override
-  Override overrideWith(SavedFilters Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: SavedFiltersProvider._internal(
-        () => create()..ctg = ctg,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        ctg: ctg,
-      ),
-    );
-  }
-
-  @override
-  NotifierProviderElement<SavedFilters, Map<String, List<(String, bool)>>>
-  createElement() {
-    return _SavedFiltersProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is SavedFiltersProvider && other.ctg == ctg;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, ctg.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  String toString() => r'savedFiltersProvider';
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin SavedFiltersRef
-    on NotifierProviderRef<Map<String, List<(String, bool)>>> {
-  /// The parameter `ctg` of this provider.
-  FilterTextCategory get ctg;
-}
+abstract class _$SavedFilters
+    extends $Notifier<Map<String, List<(String, bool)>>> {
+  late final _$args = ref.$arg as FilterTextCategory;
+  FilterTextCategory get ctg => _$args;
 
-class _SavedFiltersProviderElement
-    extends
-        NotifierProviderElement<SavedFilters, Map<String, List<(String, bool)>>>
-    with SavedFiltersRef {
-  _SavedFiltersProviderElement(super.provider);
-
+  Map<String, List<(String, bool)>> build(FilterTextCategory ctg);
+  @$mustCallSuper
   @override
-  FilterTextCategory get ctg => (origin as SavedFiltersProvider).ctg;
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              Map<String, List<(String, bool)>>,
+              Map<String, List<(String, bool)>>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                Map<String, List<(String, bool)>>,
+                Map<String, List<(String, bool)>>
+              >,
+              Map<String, List<(String, bool)>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

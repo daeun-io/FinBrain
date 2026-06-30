@@ -1,4 +1,4 @@
-import 'package:finbrain/ui/screen/main_screen.dart';
+import 'package:finbrain/ui/screen/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,7 +21,7 @@ Future main() async{
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent
         ),
-        home: const MainScreen()
+        home: OnboardingScreen(),
       ),
     )
   );

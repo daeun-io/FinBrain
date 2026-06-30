@@ -1,7 +1,5 @@
 import 'package:finbrain/data/viewModel/ai_response_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/widget/ai_request.dart';
-import 'package:finbrain/ui/widget/ai_summary.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

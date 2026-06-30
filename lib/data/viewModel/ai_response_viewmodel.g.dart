@@ -6,456 +6,293 @@ part of 'ai_response_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(AiResponseViewmodel)
+final aiResponseViewmodelProvider = AiResponseViewmodelFamily._();
+
+final class AiResponseViewmodelProvider
+    extends $AsyncNotifierProvider<AiResponseViewmodel, String?> {
+  AiResponseViewmodelProvider._({
+    required AiResponseViewmodelFamily super.from,
+    required (String, FinancialProduct?) super.argument,
+  }) : super(
+         retry: null,
+         name: r'aiResponseViewmodelProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$aiResponseViewmodelHash();
+
+  @override
+  String toString() {
+    return r'aiResponseViewmodelProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  AiResponseViewmodel create() => AiResponseViewmodel();
+
+  @override
+  bool operator ==(Object other) {
+    return other is AiResponseViewmodelProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
 String _$aiResponseViewmodelHash() =>
     r'53784a4a676098f5551c4ec985c1602d96f08fd5';
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+final class AiResponseViewmodelFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          AiResponseViewmodel,
+          AsyncValue<String?>,
+          String?,
+          FutureOr<String?>,
+          (String, FinancialProduct?)
+        > {
+  AiResponseViewmodelFamily._()
+    : super(
+        retry: null,
+        name: r'aiResponseViewmodelProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
+  AiResponseViewmodelProvider call(String text, [FinancialProduct? product]) =>
+      AiResponseViewmodelProvider._(argument: (text, product), from: this);
 
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
+  @override
+  String toString() => r'aiResponseViewmodelProvider';
 }
 
-abstract class _$AiResponseViewmodel
-    extends BuildlessAutoDisposeAsyncNotifier<String?> {
-  late final String text;
-  late final FinancialProduct? product;
+abstract class _$AiResponseViewmodel extends $AsyncNotifier<String?> {
+  late final _$args = ref.$arg as (String, FinancialProduct?);
+  String get text => _$args.$1;
+  FinancialProduct? get product => _$args.$2;
 
   FutureOr<String?> build(String text, [FinancialProduct? product]);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<String?>, String?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<String?>, String?>,
+              AsyncValue<String?>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
+  }
 }
 
-/// See also [AiResponseViewmodel].
-@ProviderFor(AiResponseViewmodel)
-const aiResponseViewmodelProvider = AiResponseViewmodelFamily();
+@ProviderFor(AiScreenViewmodel)
+final aiScreenViewmodelProvider = AiScreenViewmodelFamily._();
 
-/// See also [AiResponseViewmodel].
-class AiResponseViewmodelFamily extends Family<AsyncValue<String?>> {
-  /// See also [AiResponseViewmodel].
-  const AiResponseViewmodelFamily();
+final class AiScreenViewmodelProvider
+    extends $NotifierProvider<AiScreenViewmodel, Map<String, String>> {
+  AiScreenViewmodelProvider._({
+    required AiScreenViewmodelFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'aiScreenViewmodelProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
-  /// See also [AiResponseViewmodel].
-  AiResponseViewmodelProvider call(String text, [FinancialProduct? product]) {
-    return AiResponseViewmodelProvider(text, product);
+  @override
+  String debugGetCreateSourceHash() => _$aiScreenViewmodelHash();
+
+  @override
+  String toString() {
+    return r'aiScreenViewmodelProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  AiResponseViewmodelProvider getProviderOverride(
-    covariant AiResponseViewmodelProvider provider,
-  ) {
-    return call(provider.text, provider.product);
-  }
+  AiScreenViewmodel create() => AiScreenViewmodel();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'aiResponseViewmodelProvider';
-}
-
-/// See also [AiResponseViewmodel].
-class AiResponseViewmodelProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<AiResponseViewmodel, String?> {
-  /// See also [AiResponseViewmodel].
-  AiResponseViewmodelProvider(String text, [FinancialProduct? product])
-    : this._internal(
-        () => AiResponseViewmodel()
-          ..text = text
-          ..product = product,
-        from: aiResponseViewmodelProvider,
-        name: r'aiResponseViewmodelProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$aiResponseViewmodelHash,
-        dependencies: AiResponseViewmodelFamily._dependencies,
-        allTransitiveDependencies:
-            AiResponseViewmodelFamily._allTransitiveDependencies,
-        text: text,
-        product: product,
-      );
-
-  AiResponseViewmodelProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.text,
-    required this.product,
-  }) : super.internal();
-
-  final String text;
-  final FinancialProduct? product;
-
-  @override
-  FutureOr<String?> runNotifierBuild(covariant AiResponseViewmodel notifier) {
-    return notifier.build(text, product);
-  }
-
-  @override
-  Override overrideWith(AiResponseViewmodel Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Map<String, String> value) {
+    return $ProviderOverride(
       origin: this,
-      override: AiResponseViewmodelProvider._internal(
-        () => create()
-          ..text = text
-          ..product = product,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        text: text,
-        product: product,
-      ),
+      providerOverride: $SyncValueProvider<Map<String, String>>(value),
     );
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<AiResponseViewmodel, String?>
-  createElement() {
-    return _AiResponseViewmodelProviderElement(this);
-  }
-
-  @override
   bool operator ==(Object other) {
-    return other is AiResponseViewmodelProvider &&
-        other.text == text &&
-        other.product == product;
+    return other is AiScreenViewmodelProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, text.hashCode);
-    hash = _SystemHash.combine(hash, product.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin AiResponseViewmodelRef on AutoDisposeAsyncNotifierProviderRef<String?> {
-  /// The parameter `text` of this provider.
-  String get text;
+String _$aiScreenViewmodelHash() => r'ad07321e9a396b8f9ca0216956f988ea5628c115';
 
-  /// The parameter `product` of this provider.
-  FinancialProduct? get product;
-}
+final class AiScreenViewmodelFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          AiScreenViewmodel,
+          Map<String, String>,
+          Map<String, String>,
+          Map<String, String>,
+          String
+        > {
+  AiScreenViewmodelFamily._()
+    : super(
+        retry: null,
+        name: r'aiScreenViewmodelProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-class _AiResponseViewmodelProviderElement
-    extends
-        AutoDisposeAsyncNotifierProviderElement<AiResponseViewmodel, String?>
-    with AiResponseViewmodelRef {
-  _AiResponseViewmodelProviderElement(super.provider);
+  AiScreenViewmodelProvider call(String tag) =>
+      AiScreenViewmodelProvider._(argument: tag, from: this);
 
   @override
-  String get text => (origin as AiResponseViewmodelProvider).text;
-  @override
-  FinancialProduct? get product =>
-      (origin as AiResponseViewmodelProvider).product;
+  String toString() => r'aiScreenViewmodelProvider';
 }
 
-String _$aiScreenViewmodelHash() => r'5e5d81c44812a8721cee6e429563ae897932c40c';
-
-abstract class _$AiScreenViewmodel
-    extends BuildlessAutoDisposeNotifier<Map<String, String>> {
-  late final String tag;
+abstract class _$AiScreenViewmodel extends $Notifier<Map<String, String>> {
+  late final _$args = ref.$arg as String;
+  String get tag => _$args;
 
   Map<String, String> build(String tag);
-}
-
-/// See also [AiScreenViewmodel].
-@ProviderFor(AiScreenViewmodel)
-const aiScreenViewmodelProvider = AiScreenViewmodelFamily();
-
-/// See also [AiScreenViewmodel].
-class AiScreenViewmodelFamily extends Family<Map<String, String>> {
-  /// See also [AiScreenViewmodel].
-  const AiScreenViewmodelFamily();
-
-  /// See also [AiScreenViewmodel].
-  AiScreenViewmodelProvider call(String tag) {
-    return AiScreenViewmodelProvider(tag);
-  }
-
+  @$mustCallSuper
   @override
-  AiScreenViewmodelProvider getProviderOverride(
-    covariant AiScreenViewmodelProvider provider,
-  ) {
-    return call(provider.tag);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'aiScreenViewmodelProvider';
-}
-
-/// See also [AiScreenViewmodel].
-class AiScreenViewmodelProvider
-    extends
-        AutoDisposeNotifierProviderImpl<
-          AiScreenViewmodel,
-          Map<String, String>
-        > {
-  /// See also [AiScreenViewmodel].
-  AiScreenViewmodelProvider(String tag)
-    : this._internal(
-        () => AiScreenViewmodel()..tag = tag,
-        from: aiScreenViewmodelProvider,
-        name: r'aiScreenViewmodelProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$aiScreenViewmodelHash,
-        dependencies: AiScreenViewmodelFamily._dependencies,
-        allTransitiveDependencies:
-            AiScreenViewmodelFamily._allTransitiveDependencies,
-        tag: tag,
-      );
-
-  AiScreenViewmodelProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.tag,
-  }) : super.internal();
-
-  final String tag;
-
-  @override
-  Map<String, String> runNotifierBuild(covariant AiScreenViewmodel notifier) {
-    return notifier.build(tag);
-  }
-
-  @override
-  Override overrideWith(AiScreenViewmodel Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: AiScreenViewmodelProvider._internal(
-        () => create()..tag = tag,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        tag: tag,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<AiScreenViewmodel, Map<String, String>>
-  createElement() {
-    return _AiScreenViewmodelProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is AiScreenViewmodelProvider && other.tag == tag;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, tag.hashCode);
-
-    return _SystemHash.finish(hash);
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<Map<String, String>, Map<String, String>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Map<String, String>, Map<String, String>>,
+              Map<String, String>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin AiScreenViewmodelRef
-    on AutoDisposeNotifierProviderRef<Map<String, String>> {
-  /// The parameter `tag` of this provider.
-  String get tag;
-}
-
-class _AiScreenViewmodelProviderElement
-    extends
-        AutoDisposeNotifierProviderElement<
-          AiScreenViewmodel,
-          Map<String, String>
-        >
-    with AiScreenViewmodelRef {
-  _AiScreenViewmodelProviderElement(super.provider);
-
-  @override
-  String get tag => (origin as AiScreenViewmodelProvider).tag;
-}
-
-String _$aiComparisonScreenViewmodelHash() =>
-    r'c6b5375fb784e85355530752804d80ccd975e34c';
-
-abstract class _$AiComparisonScreenViewmodel
-    extends BuildlessAutoDisposeNotifier<String> {
-  late final String products;
-
-  String build(String products);
-}
-
-/// See also [AiComparisonScreenViewmodel].
 @ProviderFor(AiComparisonScreenViewmodel)
-const aiComparisonScreenViewmodelProvider = AiComparisonScreenViewmodelFamily();
+final aiComparisonScreenViewmodelProvider =
+    AiComparisonScreenViewmodelFamily._();
 
-/// See also [AiComparisonScreenViewmodel].
-class AiComparisonScreenViewmodelFamily extends Family<String> {
-  /// See also [AiComparisonScreenViewmodel].
-  const AiComparisonScreenViewmodelFamily();
+final class AiComparisonScreenViewmodelProvider
+    extends $NotifierProvider<AiComparisonScreenViewmodel, String> {
+  AiComparisonScreenViewmodelProvider._({
+    required AiComparisonScreenViewmodelFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'aiComparisonScreenViewmodelProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
-  /// See also [AiComparisonScreenViewmodel].
-  AiComparisonScreenViewmodelProvider call(String products) {
-    return AiComparisonScreenViewmodelProvider(products);
+  @override
+  String debugGetCreateSourceHash() => _$aiComparisonScreenViewmodelHash();
+
+  @override
+  String toString() {
+    return r'aiComparisonScreenViewmodelProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  AiComparisonScreenViewmodelProvider getProviderOverride(
-    covariant AiComparisonScreenViewmodelProvider provider,
-  ) {
-    return call(provider.products);
-  }
+  AiComparisonScreenViewmodel create() => AiComparisonScreenViewmodel();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'aiComparisonScreenViewmodelProvider';
-}
-
-/// See also [AiComparisonScreenViewmodel].
-class AiComparisonScreenViewmodelProvider
-    extends
-        AutoDisposeNotifierProviderImpl<AiComparisonScreenViewmodel, String> {
-  /// See also [AiComparisonScreenViewmodel].
-  AiComparisonScreenViewmodelProvider(String products)
-    : this._internal(
-        () => AiComparisonScreenViewmodel()..products = products,
-        from: aiComparisonScreenViewmodelProvider,
-        name: r'aiComparisonScreenViewmodelProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$aiComparisonScreenViewmodelHash,
-        dependencies: AiComparisonScreenViewmodelFamily._dependencies,
-        allTransitiveDependencies:
-            AiComparisonScreenViewmodelFamily._allTransitiveDependencies,
-        products: products,
-      );
-
-  AiComparisonScreenViewmodelProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.products,
-  }) : super.internal();
-
-  final String products;
-
-  @override
-  String runNotifierBuild(covariant AiComparisonScreenViewmodel notifier) {
-    return notifier.build(products);
-  }
-
-  @override
-  Override overrideWith(AiComparisonScreenViewmodel Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
       origin: this,
-      override: AiComparisonScreenViewmodelProvider._internal(
-        () => create()..products = products,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        products: products,
-      ),
+      providerOverride: $SyncValueProvider<String>(value),
     );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<AiComparisonScreenViewmodel, String>
-  createElement() {
-    return _AiComparisonScreenViewmodelProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
     return other is AiComparisonScreenViewmodelProvider &&
-        other.products == products;
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, products.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin AiComparisonScreenViewmodelRef on AutoDisposeNotifierProviderRef<String> {
-  /// The parameter `products` of this provider.
-  String get products;
-}
+String _$aiComparisonScreenViewmodelHash() =>
+    r'c6b5375fb784e85355530752804d80ccd975e34c';
 
-class _AiComparisonScreenViewmodelProviderElement
-    extends
-        AutoDisposeNotifierProviderElement<AiComparisonScreenViewmodel, String>
-    with AiComparisonScreenViewmodelRef {
-  _AiComparisonScreenViewmodelProviderElement(super.provider);
+final class AiComparisonScreenViewmodelFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          AiComparisonScreenViewmodel,
+          String,
+          String,
+          String,
+          String
+        > {
+  AiComparisonScreenViewmodelFamily._()
+    : super(
+        retry: null,
+        name: r'aiComparisonScreenViewmodelProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  AiComparisonScreenViewmodelProvider call(String products) =>
+      AiComparisonScreenViewmodelProvider._(argument: products, from: this);
 
   @override
-  String get products =>
-      (origin as AiComparisonScreenViewmodelProvider).products;
+  String toString() => r'aiComparisonScreenViewmodelProvider';
 }
 
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$AiComparisonScreenViewmodel extends $Notifier<String> {
+  late final _$args = ref.$arg as String;
+  String get products => _$args;
+
+  String build(String products);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<String, String>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
+}

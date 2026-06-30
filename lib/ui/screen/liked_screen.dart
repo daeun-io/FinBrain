@@ -49,7 +49,7 @@ class LikedScreen extends ConsumerWidget {
           Expanded(
             child: Stack(
               children: [
-                if (liked.valueOrNull != null)
+                if (liked.value != null)
                   Expanded(
                     child: ListView.builder(
                       itemCount: liked.value!.length,

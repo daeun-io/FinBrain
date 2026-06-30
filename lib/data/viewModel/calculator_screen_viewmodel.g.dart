@@ -6,25 +6,58 @@ part of 'calculator_screen_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(CalculatorScreenViewmodel)
+final calculatorScreenViewmodelProvider = CalculatorScreenViewmodelProvider._();
+
+final class CalculatorScreenViewmodelProvider
+    extends $NotifierProvider<CalculatorScreenViewmodel, List<double>> {
+  CalculatorScreenViewmodelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'calculatorScreenViewmodelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$calculatorScreenViewmodelHash();
+
+  @$internal
+  @override
+  CalculatorScreenViewmodel create() => CalculatorScreenViewmodel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<double> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<double>>(value),
+    );
+  }
+}
+
 String _$calculatorScreenViewmodelHash() =>
     r'b6f03cf9e78efd9a6078f5de13d1e5ee0494b21c';
 
-/// See also [CalculatorScreenViewmodel].
-@ProviderFor(CalculatorScreenViewmodel)
-final calculatorScreenViewmodelProvider =
-    AutoDisposeNotifierProvider<
-      CalculatorScreenViewmodel,
-      List<double>
-    >.internal(
-      CalculatorScreenViewmodel.new,
-      name: r'calculatorScreenViewmodelProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$calculatorScreenViewmodelHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$CalculatorScreenViewmodel = AutoDisposeNotifier<List<double>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$CalculatorScreenViewmodel extends $Notifier<List<double>> {
+  List<double> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<List<double>, List<double>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<List<double>, List<double>>,
+              List<double>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
