@@ -1,8 +1,8 @@
 import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
+import 'package:finbrain/data/google_auth_repository.dart';
 
 class OnboardingScreen extends StatelessWidget {
   OnboardingScreen({super.key});
@@ -24,7 +24,7 @@ class OnboardingScreen extends StatelessWidget {
                   color: Colors.blue,
                   child: const Center(
                     child: Text(
-                      'Welcome to the App!',
+                      'Welcome to the FinBrain!',
                       style: TextStyle(fontSize: 24, color: Colors.white),
                     ),
                   ),
@@ -77,8 +77,16 @@ class OnboardingScreen extends StatelessWidget {
   }
 
   void _signInWithGoogle(BuildContext context) async {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (ctx) => MainScreen()));
+    final userCredential = await GoogleAuthService().signInWithGoogle();
+
+    if (userCredential == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요')));
+    } else {
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()));
+    }
   }
 }
