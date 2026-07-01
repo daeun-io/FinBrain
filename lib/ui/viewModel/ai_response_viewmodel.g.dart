@@ -51,7 +51,7 @@ final class AiResponseViewmodelProvider
 }
 
 String _$aiResponseViewmodelHash() =>
-    r'53784a4a676098f5551c4ec985c1602d96f08fd5';
+    r'0e861bd9813d4fd84a2abdf4e677aa2e438925d7';
 
 final class AiResponseViewmodelFamily extends $Family
     with
@@ -149,7 +149,7 @@ final class AiScreenViewmodelProvider
   }
 }
 
-String _$aiScreenViewmodelHash() => r'ad07321e9a396b8f9ca0216956f988ea5628c115';
+String _$aiScreenViewmodelHash() => r'cf89a4c39805efd56f961c20fc64917916a8de5a';
 
 final class AiScreenViewmodelFamily extends $Family
     with

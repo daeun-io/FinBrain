@@ -2,7 +2,6 @@ import 'package:finbrain/ui/viewModel/ai_response_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -16,28 +15,31 @@ class AiAssistScreen extends ConsumerStatefulWidget {
 }
 
 class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
-  late final AiScreenViewmodel _viewModel;
   final _messageController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _viewModel = ref.read(aiScreenViewmodelProvider(widget.tag).notifier);
     _initializeMessages();
   }
 
   @override
   void dispose() {
     _messageController.dispose();
-    _viewModel.saveMessagesInFirestore(widget.tag);
     super.dispose();
   }
 
   Future<void> _initializeMessages() async {
     try {
-      await ref
+      final exists = await ref
           .read(aiScreenViewmodelProvider(widget.tag).notifier)
           .checkCollectionExistsAndCreate(widget.tag);
+      print('Collection exists: $exists');
+      if (exists) {
+        ref
+            .read(aiScreenViewmodelProvider(widget.tag).notifier)
+            .getConversationWithPrdtNm(widget.tag);
+      }
     } catch (error) {
       print('Error initializing messages: $error');
     }
@@ -45,10 +47,10 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
 
   @override
   Widget build(BuildContext context) {
-    FocusNode mFocusNode = FocusNode();
     Map<String, String> aiMessages = ref.watch(
       aiScreenViewmodelProvider(widget.tag),
     );
+    String response = "";
 
     return Scaffold(
       backgroundColor: white,
@@ -79,9 +81,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                   child: Column(
                     children: [
                       MessageBubble(isUser: true, text: entry.key),
-                      (entry.value.isEmpty)
-                          ? const CircularProgressIndicator(color: primary400)
-                          : MessageBubble(isUser: false, text: entry.value),
+                      MessageBubble(isUser: false, text: entry.value),
                     ],
                   ),
                 );
@@ -105,7 +105,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextField(
                         controller: _messageController,
-                        onSubmitted: (value) {
+                        onSubmitted: (value) async {
                           if (value.isNotEmpty) {
                             ref
                                 .read(
@@ -113,18 +113,10 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                     widget.tag,
                                   ).notifier,
                                 )
-                                .addRequest(value, widget.tag);
+                                .fetchRequestAndSaveConv(_messageController.text, widget.tag);
                             _messageController.clear();
-                            mFocusNode.unfocus();
                           }
                         },
-                        onTap: () {
-                          mFocusNode.requestFocus();
-                          SystemChannels.textInput.invokeMethod(
-                            'TextInput.show',
-                          );
-                        },
-                        focusNode: mFocusNode,
                         maxLines: null,
                         decoration: const InputDecoration(
                           hintText: "AI한테 질문하기",
@@ -145,15 +137,14 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_messageController.text.isNotEmpty) {
                         ref
                             .read(
                               aiScreenViewmodelProvider(widget.tag).notifier,
                             )
-                            .addRequest(_messageController.text, widget.tag);
+                            .fetchRequestAndSaveConv(_messageController.text, widget.tag);
                         _messageController.clear();
-                        mFocusNode.unfocus();
                       }
                     },
                     icon: SvgPicture.asset(

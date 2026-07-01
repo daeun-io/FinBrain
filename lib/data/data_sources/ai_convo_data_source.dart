@@ -7,12 +7,12 @@ class AiConversationDataSource {
     try {
       await firestore
           .collection(uid)
-          .doc("ai_messages")
+          .doc("ai_conversation")
           .collection("products")
           .doc(productName)
-          .set({});
+          .collection("chat_history");
     } catch (e) {
-      print("Error creating messages collection: $e");
+      print("Error creating conversation collection: $e");
     }
   }
 
@@ -23,31 +23,66 @@ class AiConversationDataSource {
     try {
       final docSnapshot = await firestore
           .collection(uid)
-          .doc("ai_messages")
+          .doc("ai_conversation")
           .collection("products")
           .doc(productName)
+          .collection("chat_history")
+          .limit(1)
           .get();
-      return docSnapshot.exists;
+      return docSnapshot.docs.isNotEmpty;
     } catch (e) {
-      print("Error checking messages collection existence: $e");
+      print("Error checking conversation collection existence: $e");
       return false;
     }
   }
 
-  Future<void> updateRequestAndResponse(
+  Future<void> saveRequestAndResponse(
     String uid,
     String productName,
-    Map<String, String> messages,
+    String request,
+    String response,
   ) async {
     try {
       await firestore
           .collection(uid)
-          .doc("ai_messages")
+          .doc("ai_conversation")
           .collection("products")
           .doc(productName)
-          .update(messages);
+          .collection("chat_history")
+          .add({
+            "request": request,
+            "response": response,
+            "created_at": DateTime.now().toIso8601String(),
+          });
     } catch (e) {
-      print("Error updating request and response: $e");
+      print("Error saving request and response: $e");
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getConversationWithPrdtNm(
+    String uid,
+    String productName,
+  ) async {
+    try {
+      final docSnapshot = await firestore
+          .collection(uid)
+          .doc("ai_conversation")
+          .collection("products")
+          .doc(productName)
+          .collection("chat_history")
+          .orderBy("created_at", descending: false)
+          .get();
+
+      if (docSnapshot.docs.isNotEmpty) {
+        return docSnapshot.docs
+            .map((doc) => doc.data())
+            .toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error fetching messages: $e");
+      return [];
     }
   }
 }

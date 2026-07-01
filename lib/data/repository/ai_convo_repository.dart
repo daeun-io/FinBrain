@@ -1,41 +1,64 @@
 import 'package:finbrain/data/data_sources/ai_convo_data_source.dart';
-import 'package:finbrain/data/google_auth_service.dart';
 
 class AiConversationRepository {
   final dataSource = AiConversationDataSource();
 
-  Future<void> checkCollectionExistsAndCreate(String productName) async {
+  Future<bool> checkCollectionExistsAndCreate(
+    String uid,
+    String productName,
+  ) async {
     try {
-      final user = GoogleAuthService.getCurrentUser();
-      if (user == null) {
-        print("No user is currently signed in.");
-        return;
-      }
       final exists = await dataSource.isMessagesCollectionExists(
-        user.uid,
+        uid,
         productName,
       );
       if (!exists) {
-        await dataSource.createMessagesCollection(user.uid, productName);
+        await dataSource.createMessagesCollection(uid, productName);
       }
+      return exists;
     } catch (e) {
       print("Error checking and creating messages collection: $e");
+      return false;
     }
   }
 
-  Future<void> updateRequestAndResponse(
+  Future<void> saveRequestAndResponse(
+    String uid,
     String productName,
-    Map<String, String> messages,
+    String request,
+    String response,
   ) async {
     try {
-      final user = GoogleAuthService.getCurrentUser();
-      if (user == null) {
-        print("No user is currently signed in.");
-        return;
-      }
-      await dataSource.updateRequestAndResponse(user.uid, productName, messages);
+      await dataSource.saveRequestAndResponse(
+        uid,
+        productName,
+        request,
+        response,
+      );
     } catch (e) {
-      print("Error updating request and response: $e");
+      print("Error saving request and response: $e");
+    }
+  }
+
+  Future<List<Map<String, String>>> getConversationWithPrdtNm(
+    String uid,
+    String productName,
+  ) async {
+    try {
+      final conversation = await dataSource.getConversationWithPrdtNm(
+        uid,
+        productName,
+      );
+
+      final casted = conversation
+          .map(
+            (doc) => doc.map((key, value) => MapEntry(key, value.toString())),
+          )
+          .toList();
+      return casted;
+    } catch (e) {
+      print("Error getting conversation: $e");
+      return [];
     }
   }
 }
