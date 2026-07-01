@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:finbrain/data/fin_group_code.dart';
 import 'package:finbrain/data/repository/filters_repository.dart';
-import 'package:finbrain/data/viewModel/isa_viewmodel.dart';
-import 'package:finbrain/data/viewModel/product_viewmodel.dart';
-import 'package:finbrain/data/viewModel/selected_topFinGrpNo_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/isa_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/selected_topFinGrpNo_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/ui/widget/product_dialog.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'filters_viewmodel.g.dart';
 

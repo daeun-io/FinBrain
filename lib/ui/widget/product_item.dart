@@ -4,10 +4,10 @@ import 'package:finbrain/data/models/entities/deposit_and_installment_savings.da
 import 'package:finbrain/data/models/entities/financial_product.dart';
 import 'package:finbrain/data/models/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/models/entities/mortage_and_rent_loan.dart';
-import 'package:finbrain/data/viewModel/ai_response_viewmodel.dart';
-import 'package:finbrain/data/viewModel/product_viewmodel.dart';
-import 'package:finbrain/data/viewModel/selected_prdt_viewmodel.dart';
-import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/ai_response_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/selected_prdt_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';

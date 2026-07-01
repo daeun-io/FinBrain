@@ -1,6 +1,6 @@
-import 'package:finbrain/data/viewModel/liked_product_viewmodel.dart';
-import 'package:finbrain/data/viewModel/searched_viewmodel.dart';
-import 'package:finbrain/data/viewModel/selected_prdt_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/liked_product_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/searched_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';

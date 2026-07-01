@@ -1,8 +1,8 @@
 import 'package:finbrain/data/models/entities/isa_join_status.dart';
 import 'package:finbrain/data/models/entities/isa_management_status.dart';
 import 'package:finbrain/data/repository/isa_repository.dart';
-import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
-import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'isa_viewmodel.g.dart';

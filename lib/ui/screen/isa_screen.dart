@@ -1,5 +1,5 @@
-import 'package:finbrain/data/viewModel/isa_viewmodel.dart';
-import 'package:finbrain/data/viewModel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/isa_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';

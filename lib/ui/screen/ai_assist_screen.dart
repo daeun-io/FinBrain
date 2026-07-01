@@ -1,4 +1,4 @@
-import 'package:finbrain/data/viewModel/ai_response_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/ai_response_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
@@ -6,16 +6,49 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class AiAssistScreen extends ConsumerWidget {
-  AiAssistScreen({super.key, required this.tag});
+class AiAssistScreen extends ConsumerStatefulWidget {
+  const AiAssistScreen({super.key, required this.tag});
 
   final String tag;
+
+  @override
+  ConsumerState<AiAssistScreen> createState() => _AiAssistScreenState();
+}
+
+class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
+  late final AiScreenViewmodel _viewModel;
   final _messageController = TextEditingController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    _viewModel = ref.read(aiScreenViewmodelProvider(widget.tag).notifier);
+    _initializeMessages();
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _viewModel.saveMessagesInFirestore(widget.tag);
+    super.dispose();
+  }
+
+  Future<void> _initializeMessages() async {
+    try {
+      await ref
+          .read(aiScreenViewmodelProvider(widget.tag).notifier)
+          .checkCollectionExistsAndCreate(widget.tag);
+    } catch (error) {
+      print('Error initializing messages: $error');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     FocusNode mFocusNode = FocusNode();
-    Map<String, String> aiMessages = ref.watch(aiScreenViewmodelProvider(tag));
+    Map<String, String> aiMessages = ref.watch(
+      aiScreenViewmodelProvider(widget.tag),
+    );
 
     return Scaffold(
       backgroundColor: white,
@@ -75,8 +108,12 @@ class AiAssistScreen extends ConsumerWidget {
                         onSubmitted: (value) {
                           if (value.isNotEmpty) {
                             ref
-                                .read(aiScreenViewmodelProvider(tag).notifier)
-                                .addRequest(value, tag);
+                                .read(
+                                  aiScreenViewmodelProvider(
+                                    widget.tag,
+                                  ).notifier,
+                                )
+                                .addRequest(value, widget.tag);
                             _messageController.clear();
                             mFocusNode.unfocus();
                           }
@@ -111,8 +148,10 @@ class AiAssistScreen extends ConsumerWidget {
                     onPressed: () {
                       if (_messageController.text.isNotEmpty) {
                         ref
-                            .read(aiScreenViewmodelProvider(tag).notifier)
-                            .addRequest(_messageController.text, tag);
+                            .read(
+                              aiScreenViewmodelProvider(widget.tag).notifier,
+                            )
+                            .addRequest(_messageController.text, widget.tag);
                         _messageController.clear();
                         mFocusNode.unfocus();
                       }

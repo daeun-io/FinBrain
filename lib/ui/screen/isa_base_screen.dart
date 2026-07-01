@@ -1,7 +1,7 @@
 import 'package:finbrain/data/models/entities/isa_join_status.dart';
 import 'package:finbrain/data/models/entities/isa_management_status.dart';
-import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
-import 'package:finbrain/data/viewModel/isa_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/isa_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';

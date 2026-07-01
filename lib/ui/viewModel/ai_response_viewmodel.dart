@@ -1,17 +1,18 @@
 import 'package:finbrain/data/models/entities/financial_product.dart';
 import 'package:finbrain/data/repository/ai_response_repository.dart';
-import 'package:finbrain/data/viewModel/product_viewmodel.dart';
-import 'package:flutter/foundation.dart';
+import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
+import 'package:finbrain/data/repository/ai_convo_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'ai_response_viewmodel.g.dart';
 
-final repository = AiResponseRepository();
+final responseRepository = AiResponseRepository();
+final messageRepository = AiConversationRepository();
 
 @riverpod
 class AiResponseViewmodel extends _$AiResponseViewmodel {
   @override
   Future<String?> build(String text, [FinancialProduct? product]) async {
-    return await repository.fetchAIResponse(text, product);
+    return await  responseRepository.fetchAIResponse(text, product);
   }
 }
 
@@ -24,16 +25,15 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
     print("======================");
     print("tag: $tag");
     final productList = await ref.read(productViewmodelProvider.future);
-    final product =
-        productList.$2
-            .where((e) => (e.commonInfo.productName == tag))
-            .firstOrNull;
+    final product = productList.$2
+        .where((e) => (e.commonInfo.productName == tag))
+        .firstOrNull;
     print("product $product");
-    if(product == null){
+    if (product == null) {
       state = {...state, newRequest: "오류가 발생했습니다. 다시 시도해주세요"};
       return;
     }
-    
+
     final newResponse = await ref.read(
       aiResponseViewmodelProvider(newRequest, product).future,
     );
@@ -44,6 +44,22 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
       state = {...state, newRequest: newResponse};
     }
     print("====================");
+  }
+
+  Future<void> checkCollectionExistsAndCreate(String tag) async {
+    try {
+      await messageRepository.checkCollectionExistsAndCreate(tag);
+    } catch (error) {
+      print("Error checking collection existence: $error");
+    }
+  }
+  
+  Future<void> saveMessagesInFirestore(String tag) async {
+    try {
+      await messageRepository.updateRequestAndResponse(tag, state);
+    } catch (error) {
+      print("Error saving messages in Firestore: $error");
+    }
   }
 }
 

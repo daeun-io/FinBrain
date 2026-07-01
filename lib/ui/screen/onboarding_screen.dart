@@ -2,10 +2,10 @@ import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
-import 'package:finbrain/data/google_auth_repository.dart';
+import 'package:finbrain/data/google_auth_service.dart';
 
-class OnboardingScreen extends StatelessWidget {
-  OnboardingScreen({super.key});
+class OnBoardingScreen extends StatelessWidget {
+  OnBoardingScreen({super.key});
 
   final PageController _pageController = PageController();
   @override

@@ -26,7 +26,7 @@ class FinBrain extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
         ),
-        home: OnboardingScreen(),
+        home: OnBoardingScreen(),
       ),
     );
   }
