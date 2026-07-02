@@ -22,14 +22,14 @@ class MortageAndRentLoanOption {
   final double? lendRateAvg;
 
   const MortageAndRentLoanOption({
-    this.loanType,
-    this.loanTypeName,
-    this.repayType,
-    this.repayTypeName,
-    this.lendRateType,
-    this.lendRateTypeName,
-    this.lendRateMin,
-    this.lendRateMax,
-    this.lendRateAvg,
+    required this.loanType,
+    required this.loanTypeName,
+    required this.repayType,
+    required this.repayTypeName,
+    required this.lendRateType,
+    required this.lendRateTypeName,
+    required this.lendRateMin,
+    required this.lendRateMax,
+    required this.lendRateAvg,
   });
 }

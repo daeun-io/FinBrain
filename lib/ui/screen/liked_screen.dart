@@ -1,3 +1,4 @@
+import 'package:finbrain/ui/viewModel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/searched_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
@@ -43,7 +44,10 @@ class LikedScreen extends ConsumerWidget {
           const SizedBox(height: 24.0),
           SortOrFilterText(
             category: FilterTextCategory.liked,
-            onSortCriteriaChanged: (criteria) {},
+            onSortCriteriaChanged: (criteria) {
+              print("criteria: $criteria");
+              ref.read(likedProductViewmodelProvider.notifier).filterByCategory(criteria);
+            },
           ),
           const SizedBox(height: 20.0),
           Expanded(

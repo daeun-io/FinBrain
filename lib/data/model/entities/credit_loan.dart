@@ -72,6 +72,43 @@ class CreditLoan extends FinancialProduct {
     );
   }
 
+  @override
+  Map<String, Object> toMap() {
+    return {
+      "isLiked": true,
+      "category": "${commonInfo.category}",
+      "submittedMonth": "${commonInfo.submittedMonth}",
+      "companyCode": "${commonInfo.companyCode}",
+      "companyName": "${commonInfo.companyName}",
+      "productCode": "${commonInfo.productCode}",
+      "productName": "${commonInfo.productName}",
+      "startDay": "${commonInfo.startDay}",
+      "endDay": "${commonInfo.endDay}",
+      "submittedDay": "${commonInfo.submittedDay}",
+      "joinWay": commonInfo.joinWay ?? [],
+      "productType": "$productType",
+      "productTypeName": "$productTypeName",
+      "cbName": "$cbName",
+      "options": options
+          .map(
+            (e) => {
+              "creditLendRateType": e.creditLendRateType,
+              "creditLendRateTypeName": e.creditLendRateTypeName,
+              "gradeOver900": e.gradeOver900,
+              "grade801900": e.grade801900,
+              "grade701800": e.grade701800,
+              "grade601700": e.grade601700,
+              "grade501600": e.grade501600,
+              "grade401500": e.grade401500,
+              "grade301400": e.grade301400,
+              "gradeUnder300": e.gradeUnder300,
+              "averageGrade": e.averageGrade,
+            },
+          )
+          .toList(),
+    };
+  }
+
   List<double> returnRates() {
     final foundOption = options
         .where((e) => e.creditLendRateTypeName == "대출금리")

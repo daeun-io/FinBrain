@@ -57,8 +57,6 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
               builder: (BuildContext context) {
                 return StatefulBuilder(
                   builder: (BuildContext context, StateSetter setModalState) {
-                    final pageController = PageController();
-
                     Widget optionView = ListView.builder(
                       itemCount: filter.$2.length,
                       itemBuilder: (context, index) {

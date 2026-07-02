@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:finbrain/data/fin_group_code.dart';
+import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/repository/filters_repository.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';

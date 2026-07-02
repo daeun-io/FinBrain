@@ -62,7 +62,7 @@ class DepositAndInstallmentSavings extends FinancialProduct {
   @override
   FinancialProduct copyWith(bool isLiked) {
     return DepositAndInstallmentSavings(
-      isLiked : isLiked,
+      isLiked: isLiked,
       category: commonInfo.category,
       submittedMonth: commonInfo.submittedMonth,
       companyCode: commonInfo.companyCode,
@@ -81,6 +81,42 @@ class DepositAndInstallmentSavings extends FinancialProduct {
       maxLimit: maxLimit,
       options: options,
     );
+  }
+
+  @override
+  Map<String, Object> toMap() {
+    return {
+      "isLiked": true,
+      "category": "${commonInfo.category}",
+      "submittedMonth": "${commonInfo.submittedMonth}",
+      "companyCode": "${commonInfo.companyCode}",
+      "companyName": "${commonInfo.companyName}",
+      "productCode": "${commonInfo.productCode}",
+      "productName": "${commonInfo.productName}",
+      "startDay": "${commonInfo.startDay}",
+      "endDay": "${commonInfo.endDay}",
+      "submittedDay": "${commonInfo.submittedDay}",
+      "joinWay": commonInfo.joinWay ?? [],
+      "interestAfterExpiration": "$interestAfterExpiration",
+      "specialCondition": "$specialCondition",
+      "joinDeny": "$joinDeny",
+      "joinMember": "$joinMember",
+      "etc": "$etc",
+      "maxLimit": "$maxLimit",
+      "options": options
+          .map(
+            (e) => {
+              "intRateType": e.intRateType,
+              "intRateTypeName": e.intRateTypeName,
+              "saveTerm": e.saveTerm,
+              "intRate": e.intRate,
+              "maxIntRate": e.maxIntRate,
+              "reserveType": e.reserveType,
+              "reserveTypeName": e.reserveTypeName,
+            },
+          )
+          .toList(),
+    };
   }
 
   (double, double) returnHighestRateValue() {

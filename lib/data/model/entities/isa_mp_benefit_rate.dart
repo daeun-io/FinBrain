@@ -55,6 +55,23 @@ class IsaMpBenefitRate extends FinancialProduct {
     );
   }
 
+  @override
+  Map<String, Object> toMap() {
+    return {
+      "isLiked": true,
+      "category": "${commonInfo.category}",
+      "companyName": "${commonInfo.companyName}",
+      "mpName": "${commonInfo.productName}",
+      "releaseDate": "${commonInfo.submittedDay}",
+      "baseDate": "$baseDate",
+      "businessDomain": "$businessDomain",
+      "mpType": "$mpType",
+      "options": options
+          .map((e) => {"term": e.term, "benefitRate": e.benefitRate})
+          .toList(),
+    };
+  }
+
   (double, double) returnAvgMedProfits() {
     final profits =
         options.map((e) => e.benefitRate).whereType<double>().toList()

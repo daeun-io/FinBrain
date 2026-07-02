@@ -1,4 +1,4 @@
-import 'package:finbrain/data/fin_group_code.dart';
+import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/model/entities/annuity_savings.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
@@ -149,9 +149,9 @@ class ProductViewmodel extends _$ProductViewmodel {
     if (isLiked == true) {
       ref
           .read(likedProductViewmodelProvider.notifier)
-          .subtractLikedProduct(product);
+          .deleteInLikedList(product);
     } else {
-      ref.read(likedProductViewmodelProvider.notifier).addLikedProduct(product.copyWith(!isLiked));
+      ref.read(likedProductViewmodelProvider.notifier).addInLikedList(product.copyWith(!isLiked));
     }
   }
 

@@ -51,7 +51,7 @@ class AnnuitySavings extends FinancialProduct {
     required String? submittedDay,
     required List<String>? joinWay,
     required bool isLiked,
-    
+
     required this.pensionKind,
     required this.pensionKindName,
     required this.saleStartDay,
@@ -86,7 +86,7 @@ class AnnuitySavings extends FinancialProduct {
   @override
   FinancialProduct copyWith(bool isLiked) {
     return AnnuitySavings(
-      isLiked : isLiked,
+      isLiked: isLiked,
       category: commonInfo.category,
       submittedMonth: commonInfo.submittedMonth,
       companyCode: commonInfo.companyCode,
@@ -113,6 +113,54 @@ class AnnuitySavings extends FinancialProduct {
       saleCompany: saleCompany,
       options: options,
     );
+  }
+
+  @override
+  Map<String, Object> toMap() {
+    return {
+      "isLiked": true,
+      "category": "${commonInfo.category}",
+      "submittedMonth": "${commonInfo.submittedMonth}",
+      "companyCode": "${commonInfo.companyCode}",
+      "companyName": "${commonInfo.companyName}",
+      "productCode": "${commonInfo.productCode}",
+      "productName": "${commonInfo.productName}",
+      "startDay": "${commonInfo.startDay}",
+      "endDay": "${commonInfo.endDay}",
+      "submittedDay": "${commonInfo.submittedDay}",
+      "joinWay": commonInfo.joinWay ?? [],
+      "pensionKind": "$pensionKind",
+      "pensionKindName": "$pensionKindName",
+      "saleStartDay": "$saleStartDay",
+      "maintenanceCount": "$maintenanceCount",
+      "productType": "$productType",
+      "productTypeName": "$productTypeName",
+      "averageProfit": "$averageProfit",
+      "declaredRate": "$declaredRate",
+      "guaranteedRate": "$guaranteedRate",
+      "pyProfitRate": "$pyProfitRate",
+      "ppyProfitRate": "$ppyProfitRate",
+      "pppyProfitRate": "$pppyProfitRate",
+      "etc": "$etc",
+      "saleCompany": "$saleCompany",
+      "options": options
+          .map(
+            (e) => {
+              "receiptTerm": e.receiptTerm,
+              "receiptTermName": e.receiptTermName,
+              "entryAge": e.entryAge,
+              "entryAgeName": e.entryAgeName,
+              "monthlyPayment": e.monthlyPayment,
+              "monthlyPaymentName": e.monthlyPaymentName,
+              "paymentPeriod": e.paymentPeriod,
+              "paymentPeriodName": e.paymentPeriodName,
+              "startAge": e.startAge,
+              "startAgeName": e.startAgeName,
+              "monthlyReceiptAmount": e.monthlyReceiptAmount,
+            },
+          )
+          .toList(),
+    };
   }
 
   List<double> returnProfits() {

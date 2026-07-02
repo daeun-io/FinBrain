@@ -53,7 +53,7 @@ class MortageAndRentLoan extends FinancialProduct {
            isLiked: isLiked,
          ),
        );
-  
+
   @override
   FinancialProduct copyWith(bool isLiked) {
     return MortageAndRentLoan(
@@ -76,10 +76,52 @@ class MortageAndRentLoan extends FinancialProduct {
     );
   }
 
+  @override
+  Map<String, Object> toMap() {
+    return {
+      "isLiked": true,
+      "category": "${commonInfo.category}",
+      "submittedMonth": "${commonInfo.submittedMonth}",
+      "companyCode": "${commonInfo.companyCode}",
+      "companyName": "${commonInfo.companyName}",
+      "productCode": "${commonInfo.productCode}",
+      "productName": "${commonInfo.productName}",
+      "startDay": "${commonInfo.startDay}",
+      "endDay": "${commonInfo.endDay}",
+      "submittedDay": "${commonInfo.submittedDay}",
+      "joinWay": commonInfo.joinWay ?? [],
+      "extraExpense": "$extraExpense",
+      "earlyRepayFee": "$earlyRepayFee",
+      "delayRate": "$delayRate",
+      "loanLimit": "$loanLimit",
+      "options": options
+          .map(
+            (e) => {
+              "loanType": e.loanType,
+              "loanTypeName": e.loanTypeName,
+              "repayType": e.repayType,
+              "repayTypeName": e.repayTypeName,
+              "lendRateType": e.lendRateType,
+              "lendRateTypeName": e.lendRateTypeName,
+              "lendRateMin": e.lendRateMin,
+              "lendRateMax": e.lendRateMax,
+              "lendRateAvg": e.lendRateAvg,
+            },
+          )
+          .toList(),
+    };
+  }
+
   List<double> returnRates() {
-    final min = options.map((e) => (e).lendRateMin).whereType<double>().minOrNull ?? double.infinity;
-    final max = options.map((e) => (e).lendRateMax).whereType<double>().minOrNull ?? double.infinity;
-    final avg = options.map((e) => (e).lendRateAvg).whereType<double>().minOrNull ?? double.infinity;
+    final min =
+        options.map((e) => (e).lendRateMin).whereType<double>().minOrNull ??
+        double.infinity;
+    final max =
+        options.map((e) => (e).lendRateMax).whereType<double>().minOrNull ??
+        double.infinity;
+    final avg =
+        options.map((e) => (e).lendRateAvg).whereType<double>().minOrNull ??
+        double.infinity;
     return [min, avg, max];
   }
 }

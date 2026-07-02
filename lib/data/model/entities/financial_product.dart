@@ -47,4 +47,5 @@ abstract class FinancialProduct {
   FinancialProduct(this.commonInfo);
 
   FinancialProduct copyWith(bool isLiked);
+  Map<String, Object> toMap();
 }
