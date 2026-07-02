@@ -1,5 +1,5 @@
-import 'package:finbrain/ui/viewModel/current_ctg_viewmodel.dart';
-import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/screen/product_base_screen.dart';

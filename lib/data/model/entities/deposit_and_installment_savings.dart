@@ -1,23 +1,28 @@
 import 'package:collection/collection.dart';
-import 'package:finbrain/data/models/entities/credit_loan_option.dart';
-import 'package:finbrain/data/models/entities/financial_product.dart';
+import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/product_categories.dart';
 
-// 개인신용대출
-class CreditLoan extends FinancialProduct {
+// 정기예금, 적금
+class DepositAndInstallmentSavings extends FinancialProduct {
   // 프로퍼티명(필드명): 의미
-  // commonInfo: 기본 정보
-  // productType(crdt_prdt_type): 대출 정보 코드
-  // productTypeName(crdt_prdt_type_nm): 대출 정보명
-  // cbName(cb_name): CB 회사명
+  // commonInfo: 공통 정보
+  // interestAfterExpiration(mrnt_int): 만기 후 이자율
+  // specialCondition(spcl_cnd): 우대조건
+  // joinDeny(join_deny): 가입 제한 - 추후 수정
+  // joinMember(join_member): 가입 대상
+  // etc(etc_note): 기타 주의사항
   // options: 옵션 목록
 
-  final String? productType;
-  final String? productTypeName;
-  final String? cbName;
-  final List<CreditLoanOption> options;
+  final String? interestAfterExpiration;
+  final String? specialCondition;
+  final String? joinDeny;
+  final String? joinMember;
+  final String? etc;
+  final String? maxLimit;
+  final List<DepositAndInstallmentSavingsOption> options;
 
-  CreditLoan({
+  DepositAndInstallmentSavings({
     // commonInfo
     required ProductCategory category,
     required String? submittedMonth,
@@ -31,9 +36,12 @@ class CreditLoan extends FinancialProduct {
     required List<String>? joinWay,
     required bool isLiked,
 
-    required this.productType,
-    required this.productTypeName,
-    required this.cbName,
+    required this.interestAfterExpiration,
+    required this.specialCondition,
+    required this.joinDeny,
+    required this.joinMember,
+    required this.etc,
+    required this.maxLimit,
     required this.options,
   }) : super(
          CommonInfo(
@@ -53,8 +61,8 @@ class CreditLoan extends FinancialProduct {
 
   @override
   FinancialProduct copyWith(bool isLiked) {
-    return CreditLoan(
-      isLiked: isLiked,
+    return DepositAndInstallmentSavings(
+      isLiked : isLiked,
       category: commonInfo.category,
       submittedMonth: commonInfo.submittedMonth,
       companyCode: commonInfo.companyCode,
@@ -65,34 +73,19 @@ class CreditLoan extends FinancialProduct {
       endDay: commonInfo.endDay,
       submittedDay: commonInfo.submittedDay,
       joinWay: commonInfo.joinWay,
-      productType: productType,
-      productTypeName: productTypeName,
-      cbName: cbName,
+      interestAfterExpiration: interestAfterExpiration,
+      specialCondition: specialCondition,
+      joinDeny: joinDeny,
+      joinMember: joinMember,
+      etc: etc,
+      maxLimit: maxLimit,
       options: options,
     );
   }
 
-  List<double> returnRates() {
-    final foundOption = options
-        .where((e) => e.creditLendRateTypeName == "대출금리")
-        .firstOrNull;
-
-    if (foundOption == null) return [];
-    final rates = [
-      foundOption.gradeOver900,
-      foundOption.grade801900,
-      foundOption.grade701800,
-      foundOption.grade601700,
-      foundOption.grade501600,
-      foundOption.grade401500,
-      foundOption.grade301400,
-      foundOption.gradeUnder300,
-    ].whereType<double>();
-
-    final avgRates = foundOption.averageGrade;
-    final min = rates.minOrNull ?? double.infinity;
-    final max = rates.minOrNull ?? double.infinity;
-    final avg = (avgRates != null) ? avgRates : rates.average;
-    return [min, avg, max];
+  (double, double) returnHighestRateValue() {
+    final maxRate = options.map((e) => e.maxIntRate).whereType<double>().max;
+    final baseRate = options.map((e) => e.intRate).whereType<double>().max;
+    return (maxRate, baseRate);
   }
 }

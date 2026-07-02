@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:finbrain/data/api_constants.dart';
-import 'package:finbrain/data/models/request/isa_search_options.dart';
+import 'package:finbrain/data/model/request/isa_search_options.dart';
 import 'package:http/http.dart' as http;
 
 class IsaRemoteDataSource {

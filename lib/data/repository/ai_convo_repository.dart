@@ -1,4 +1,4 @@
-import 'package:finbrain/data/data_sources/ai_convo_data_source.dart';
+import 'package:finbrain/data/data_source/ai_convo_data_source.dart';
 
 class AiConversationRepository {
   final dataSource = AiConversationDataSource();

@@ -1,5 +1,5 @@
-import 'package:finbrain/ui/viewModel/ai_response_viewmodel.dart';
-import 'package:finbrain/ui/viewModel/selected_prdt_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

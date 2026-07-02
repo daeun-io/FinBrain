@@ -1,25 +1,23 @@
 import 'package:collection/collection.dart';
-import 'package:finbrain/data/models/entities/financial_product.dart';
+import 'package:finbrain/data/model/entities/credit_loan_option.dart';
+import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
-import 'mortage_and_rent_loan_option.dart';
 
-// 주택담보대출 & 전세자금대출
-class MortageAndRentLoan extends FinancialProduct {
+// 개인신용대출
+class CreditLoan extends FinancialProduct {
   // 프로퍼티명(필드명): 의미
   // commonInfo: 기본 정보
-  // extraExpense(loan_inci_expn): 대출 부대비용
-  // earlyReplayFee(erly_rpay_fee): 중도상환 수수료
-  // delayRate(dly_rate): 연체 이자율
-  // loanLimit(loan_lmt): 대출한도
+  // productType(crdt_prdt_type): 대출 정보 코드
+  // productTypeName(crdt_prdt_type_nm): 대출 정보명
+  // cbName(cb_name): CB 회사명
   // options: 옵션 목록
 
-  final String? extraExpense;
-  final String? earlyRepayFee;
-  final String? delayRate;
-  final String? loanLimit;
-  final List<MortageAndRentLoanOption> options;
+  final String? productType;
+  final String? productTypeName;
+  final String? cbName;
+  final List<CreditLoanOption> options;
 
-  MortageAndRentLoan({
+  CreditLoan({
     // commonInfo
     required ProductCategory category,
     required String? submittedMonth,
@@ -33,10 +31,9 @@ class MortageAndRentLoan extends FinancialProduct {
     required List<String>? joinWay,
     required bool isLiked,
 
-    required this.extraExpense,
-    required this.earlyRepayFee,
-    required this.delayRate,
-    required this.loanLimit,
+    required this.productType,
+    required this.productTypeName,
+    required this.cbName,
     required this.options,
   }) : super(
          CommonInfo(
@@ -53,10 +50,10 @@ class MortageAndRentLoan extends FinancialProduct {
            isLiked: isLiked,
          ),
        );
-  
+
   @override
   FinancialProduct copyWith(bool isLiked) {
-    return MortageAndRentLoan(
+    return CreditLoan(
       isLiked: isLiked,
       category: commonInfo.category,
       submittedMonth: commonInfo.submittedMonth,
@@ -68,18 +65,34 @@ class MortageAndRentLoan extends FinancialProduct {
       endDay: commonInfo.endDay,
       submittedDay: commonInfo.submittedDay,
       joinWay: commonInfo.joinWay,
-      extraExpense: extraExpense,
-      earlyRepayFee: earlyRepayFee,
-      delayRate: delayRate,
-      loanLimit: loanLimit,
+      productType: productType,
+      productTypeName: productTypeName,
+      cbName: cbName,
       options: options,
     );
   }
 
   List<double> returnRates() {
-    final min = options.map((e) => (e).lendRateMin).whereType<double>().minOrNull ?? double.infinity;
-    final max = options.map((e) => (e).lendRateMax).whereType<double>().minOrNull ?? double.infinity;
-    final avg = options.map((e) => (e).lendRateAvg).whereType<double>().minOrNull ?? double.infinity;
+    final foundOption = options
+        .where((e) => e.creditLendRateTypeName == "대출금리")
+        .firstOrNull;
+
+    if (foundOption == null) return [];
+    final rates = [
+      foundOption.gradeOver900,
+      foundOption.grade801900,
+      foundOption.grade701800,
+      foundOption.grade601700,
+      foundOption.grade501600,
+      foundOption.grade401500,
+      foundOption.grade301400,
+      foundOption.gradeUnder300,
+    ].whereType<double>();
+
+    final avgRates = foundOption.averageGrade;
+    final min = rates.minOrNull ?? double.infinity;
+    final max = rates.minOrNull ?? double.infinity;
+    final avg = (avgRates != null) ? avgRates : rates.average;
     return [min, avg, max];
   }
 }

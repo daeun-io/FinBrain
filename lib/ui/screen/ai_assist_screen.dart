@@ -1,4 +1,4 @@
-import 'package:finbrain/ui/viewModel/ai_response_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';

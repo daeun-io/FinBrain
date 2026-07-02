@@ -1,5 +1,5 @@
-import 'package:finbrain/data/models/entities/financial_product.dart';
-import 'package:finbrain/ui/viewModel/sort_or_filter_viewmodel.dart';
+import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'liked_product_viewmodel.g.dart';

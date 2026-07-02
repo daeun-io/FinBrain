@@ -1,4 +1,4 @@
-import 'package:finbrain/data/models/entities/financial_product.dart';
+import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
 import 'annuity_savings_option.dart';
 

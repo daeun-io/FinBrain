@@ -1,4 +1,4 @@
-import 'package:finbrain/ui/viewModel/calculator_screen_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/calculator_screen_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,6 @@
-import 'package:finbrain/data/models/entities/financial_product.dart';
-import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
-import 'package:finbrain/ui/viewModel/sort_or_filter_viewmodel.dart';
+import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';

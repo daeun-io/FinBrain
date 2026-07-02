@@ -1,28 +1,25 @@
 import 'package:collection/collection.dart';
-import 'package:finbrain/data/models/entities/financial_product.dart';
-import 'package:finbrain/data/models/entities/deposit_and_installment_savings_option.dart';
+import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
+import 'mortage_and_rent_loan_option.dart';
 
-// 정기예금, 적금
-class DepositAndInstallmentSavings extends FinancialProduct {
+// 주택담보대출 & 전세자금대출
+class MortageAndRentLoan extends FinancialProduct {
   // 프로퍼티명(필드명): 의미
-  // commonInfo: 공통 정보
-  // interestAfterExpiration(mrnt_int): 만기 후 이자율
-  // specialCondition(spcl_cnd): 우대조건
-  // joinDeny(join_deny): 가입 제한 - 추후 수정
-  // joinMember(join_member): 가입 대상
-  // etc(etc_note): 기타 주의사항
+  // commonInfo: 기본 정보
+  // extraExpense(loan_inci_expn): 대출 부대비용
+  // earlyReplayFee(erly_rpay_fee): 중도상환 수수료
+  // delayRate(dly_rate): 연체 이자율
+  // loanLimit(loan_lmt): 대출한도
   // options: 옵션 목록
 
-  final String? interestAfterExpiration;
-  final String? specialCondition;
-  final String? joinDeny;
-  final String? joinMember;
-  final String? etc;
-  final String? maxLimit;
-  final List<DepositAndInstallmentSavingsOption> options;
+  final String? extraExpense;
+  final String? earlyRepayFee;
+  final String? delayRate;
+  final String? loanLimit;
+  final List<MortageAndRentLoanOption> options;
 
-  DepositAndInstallmentSavings({
+  MortageAndRentLoan({
     // commonInfo
     required ProductCategory category,
     required String? submittedMonth,
@@ -36,12 +33,10 @@ class DepositAndInstallmentSavings extends FinancialProduct {
     required List<String>? joinWay,
     required bool isLiked,
 
-    required this.interestAfterExpiration,
-    required this.specialCondition,
-    required this.joinDeny,
-    required this.joinMember,
-    required this.etc,
-    required this.maxLimit,
+    required this.extraExpense,
+    required this.earlyRepayFee,
+    required this.delayRate,
+    required this.loanLimit,
     required this.options,
   }) : super(
          CommonInfo(
@@ -58,11 +53,11 @@ class DepositAndInstallmentSavings extends FinancialProduct {
            isLiked: isLiked,
          ),
        );
-
+  
   @override
   FinancialProduct copyWith(bool isLiked) {
-    return DepositAndInstallmentSavings(
-      isLiked : isLiked,
+    return MortageAndRentLoan(
+      isLiked: isLiked,
       category: commonInfo.category,
       submittedMonth: commonInfo.submittedMonth,
       companyCode: commonInfo.companyCode,
@@ -73,19 +68,18 @@ class DepositAndInstallmentSavings extends FinancialProduct {
       endDay: commonInfo.endDay,
       submittedDay: commonInfo.submittedDay,
       joinWay: commonInfo.joinWay,
-      interestAfterExpiration: interestAfterExpiration,
-      specialCondition: specialCondition,
-      joinDeny: joinDeny,
-      joinMember: joinMember,
-      etc: etc,
-      maxLimit: maxLimit,
+      extraExpense: extraExpense,
+      earlyRepayFee: earlyRepayFee,
+      delayRate: delayRate,
+      loanLimit: loanLimit,
       options: options,
     );
   }
 
-  (double, double) returnHighestRateValue() {
-    final maxRate = options.map((e) => e.maxIntRate).whereType<double>().max;
-    final baseRate = options.map((e) => e.intRate).whereType<double>().max;
-    return (maxRate, baseRate);
+  List<double> returnRates() {
+    final min = options.map((e) => (e).lendRateMin).whereType<double>().minOrNull ?? double.infinity;
+    final max = options.map((e) => (e).lendRateMax).whereType<double>().minOrNull ?? double.infinity;
+    final avg = options.map((e) => (e).lendRateAvg).whereType<double>().minOrNull ?? double.infinity;
+    return [min, avg, max];
   }
 }
