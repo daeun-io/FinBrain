@@ -4,22 +4,34 @@ import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AiComparisonScreen extends ConsumerWidget {
+class AiComparisonScreen extends ConsumerStatefulWidget {
   const AiComparisonScreen({super.key, required this.tag});
 
   final String tag;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final items = tag.split('-');
+  ConsumerState<AiComparisonScreen> createState() => _AiComparisonScreenState();
+}
+
+class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
+  late List<String> items;
+
+  @override
+  void initState() {
+    super.initState();
+    items = widget.tag.split("-");
     items.remove("compare");
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
-          .read(aiComparisonScreenViewmodelProvider(tag).notifier)
+          .read(aiComparisonScreenViewmodelProvider(widget.tag).notifier)
           .askComparsion("$items를 비교 분석하고 내용을 표로 정리해줘");
     });
+  }
 
-    final text = ref.watch(aiComparisonScreenViewmodelProvider(tag));
+  @override
+  Widget build(BuildContext context) {
+    final text = ref.watch(aiComparisonScreenViewmodelProvider(widget.tag));
 
     return Scaffold(
       backgroundColor: white,
@@ -67,7 +79,7 @@ class AiComparisonScreen extends ConsumerWidget {
                             ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
-                                    tag,
+                                    widget.tag,
                                   ).notifier,
                                 )
                                 .askComparsion("$items를 비교 분석하고 내용을 표로 정리해줘");
