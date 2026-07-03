@@ -113,9 +113,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => ArchiveScreen()));
                 },
-                icon: Icon(Icons.archive, color: textPrimary, size: 28),
+                icon: Icon(Icons.archive_outlined, color: textPrimary, size: 30),
               ),
-              const SizedBox(width: 20, height: 60),
             ],
           ),
         ),

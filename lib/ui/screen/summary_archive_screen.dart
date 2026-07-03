@@ -1,5 +1,6 @@
-import 'package:finbrain/data/model/entities/ai_summary.dart';
-import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/data/model/entities/ai_record.dart';
+import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/widget/archive_list.dart';
 import 'package:flutter/material.dart';
 
 class SummaryArchiveScreen extends StatefulWidget {
@@ -13,11 +14,12 @@ class _SummaryArchiveScreenState extends State<SummaryArchiveScreen> {
   @override
   Widget build(BuildContext context) {
     final dummies = [
-      AiSummary(
-        productName: "im함께예금",
+      AiRecord(
+        key: "im함께예금",
         isExpanded: false,
-        chatSummaries: [
-          ChatSummary(
+        isPinned: false,
+        text: [
+          AiText(
             createdAt: DateTime(2026, 7, 3),
             summary: """### 1. 중도 해지 시 수령 금액 관련
 *   **사용자 질문:** "만기 전에 해지하면 돈을 얼마나 돌려받나요?" (What much money will i get if i cancel before contract?)
@@ -44,7 +46,7 @@ class _SummaryArchiveScreenState extends State<SummaryArchiveScreen> {
         2.  **신한카드 사용 우대 (연 0.1%p):** 신한카드 결제 계좌를 신한은행으로 지정하고 사용 실적이 있을 시
     *   **안전성 (예금자보호):** 원금과 이자를 합해 **1인당 최고 5,000만 원까지** 법적으로 안전하게 보호됩니다.""",
           ),
-          ChatSummary(
+          AiText(
             createdAt: DateTime(2026, 7, 3),
             summary: """### 1. 상품 소개 및 특징
 **Q. iM뱅크의 'iM함께예금'은 어떤 상품인가요?**
@@ -73,11 +75,12 @@ class _SummaryArchiveScreenState extends State<SummaryArchiveScreen> {
           ),
         ],
       ),
-      AiSummary(
-        productName: "신한My플러스 정기예금",
+      AiRecord(
+        key: "신한My플러스 정기예금",
         isExpanded: false,
-        chatSummaries: [
-          ChatSummary(
+        isPinned: false,
+        text: [
+          AiText(
             createdAt: DateTime(2026, 7, 3),
             summary: """### 1. 중도 해지 시 수령 금액 관련
 *   **사용자 질문:** "만기 전에 해지하면 돈을 얼마나 돌려받나요?" (What much money will i get if i cancel before contract?)
@@ -108,75 +111,9 @@ class _SummaryArchiveScreenState extends State<SummaryArchiveScreen> {
 
     return Container(
       color: Color(0xFFF4F4F4),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 24.0),
-            ...dummies.map((item) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: ExpansionTile(
-                    onExpansionChanged: (expanded) {
-                      item.isExpanded = expanded;
-                    },
-                    initiallyExpanded: item.isExpanded,
-                    backgroundColor: white,
-                    collapsedBackgroundColor: white,
-                    iconColor: textPrimary,
-                    collapsedIconColor: textPrimary,
-                    shape: const Border(),
-                    title: Text(
-                      item.productName,
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        color: black,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    children: [
-                      ...item.chatSummaries.map((chat) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  chat.createdAt.toIso8601String().split("T").first,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14.0,
-                                    color: textSecondary,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8.0,),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  chat.summary,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14.0,
-                                    color: black,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 12.0),
-                            ],
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              );
-            }),
-          ],
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: ArchiveList(ctg: ArchiveCategory.summary, records: dummies),
       ),
     );
   }
