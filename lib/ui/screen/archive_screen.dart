@@ -1,0 +1,72 @@
+import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/screen/comparison_archive_screen.dart';
+import 'package:finbrain/ui/screen/summary_archive_screen.dart';
+import 'package:flutter/material.dart';
+
+class ArchiveScreen extends StatelessWidget {
+  const ArchiveScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final tabList = ["AI 대화 요약", "AI 비교 분석"];
+    final tabView = TabBarView(
+      children: const [SummaryArchiveScreen(), ComparisonArchiveScreen()],
+    );
+
+    return Scaffold(
+      backgroundColor: white,
+      appBar: AppBar(
+        backgroundColor: white,
+        scrolledUnderElevation: 0.0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+        ),
+        title: Text(
+          "아카이브",
+          style: TextStyle(
+            color: textPrimary,
+            fontSize: 20.0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        titleSpacing: -6.0,
+      ),
+      body: DefaultTabController(
+          length: 3,
+          child: Column(
+            children: [
+              TabBar(
+                labelColor: textPrimary,
+                labelStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+                indicator: const UnderlineTabIndicator(
+                  borderSide: BorderSide(width: 2),
+                ),
+                indicatorColor: textPrimary,
+                indicatorSize: TabBarIndicatorSize.tab,
+                splashFactory: NoSplash.splashFactory,
+                tabs: [
+                  for (final item in tabList)
+                    Container(
+                      alignment: Alignment.center,
+                      height: 60,
+                      child: Text(item),
+                    ),
+                ],
+              ),
+              Expanded(child: tabView),
+            ],
+          ),
+        ),
+      );
+  }
+}
