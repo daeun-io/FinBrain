@@ -1,6 +1,6 @@
 class AiRecord {
   final String key;
-  final List<AiText> text;
+  final List<AiText> value;
   bool isExpanded;
   bool isPinned;
 
@@ -8,17 +8,17 @@ class AiRecord {
     required this.key,
     required this.isExpanded,
     required this.isPinned,
-    required this.text,
+    required this.value,
   });
 
 }
 
 class AiText {
   final DateTime createdAt;
-  final String summary;
+  final String text;
 
   const AiText({
     required this.createdAt,
-    required this.summary,
+    required this.text,
   });
 }

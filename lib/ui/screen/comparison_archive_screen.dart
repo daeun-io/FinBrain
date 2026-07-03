@@ -18,10 +18,10 @@ class _ComparisonArchiveScreenState extends State<StatefulWidget> {
       isPinned: false,
       isExpanded: false,
       key: "신한My플러스 정기예금 vs. KDB정기예금",
-      text: [
+      value: [
         AiText(
           createdAt: DateTime(2026, 7, 3),
-          summary: """신한은행 대표 예금 vs KDB 정기예금 비교
+          text: """신한은행 대표 예금 vs KDB 정기예금 비교
 신한은행의 대표적인 고금리 예금 상품인 신한My플러스 정기예금과 산업은행의 대표 상품인 **KDB 정기예금(KDB Hi 정기예금 기준)을 비교 분석해 드리겠습니다.
 두 상품은 각각 일반 시중은행의 우대금리형 상품과 국책은행의 조건 없는 고금리 상품이라는 뚜렷한 차이점을 가지고 있습니다.
 
@@ -80,10 +80,10 @@ KDB 정기예금 추천 대상
       isPinned: false,
       isExpanded: false,
       key: "신한My플러스 정기예금 vs. KDB정기예금",
-      text: [
+      value: [
         AiText(
           createdAt: DateTime(2026, 7, 3),
-          summary: """신한은행 대표 예금 vs KDB 정기예금 비교
+          text: """신한은행 대표 예금 vs KDB 정기예금 비교
 신한은행의 대표적인 고금리 예금 상품인 신한My플러스 정기예금과 산업은행의 대표 상품인 **KDB 정기예금(KDB Hi 
 두 상품은 각각 일반 시중은행의 우대금리형 상품과 국책은행의 조건 없는 고금리 상품이라는 뚜렷한 차이점을 가지
 

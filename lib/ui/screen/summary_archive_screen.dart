@@ -18,10 +18,10 @@ class _SummaryArchiveScreenState extends State<SummaryArchiveScreen> {
         key: "im함께예금",
         isExpanded: false,
         isPinned: false,
-        text: [
+        value: [
           AiText(
             createdAt: DateTime(2026, 7, 3),
-            summary: """### 1. 중도 해지 시 수령 금액 관련
+            text: """### 1. 중도 해지 시 수령 금액 관련
 *   **사용자 질문:** "만기 전에 해지하면 돈을 얼마나 돌려받나요?" (What much money will i get if i cancel before contract?)
 *   **AI 핵심 답변:**
     *   **원금:** **100% 안전하게 돌려받습니다.** (원금 손실 전혀 없음)
@@ -48,7 +48,7 @@ class _SummaryArchiveScreenState extends State<SummaryArchiveScreen> {
           ),
           AiText(
             createdAt: DateTime(2026, 7, 3),
-            summary: """### 1. 상품 소개 및 특징
+            text: """### 1. 상품 소개 및 특징
 **Q. iM뱅크의 'iM함께예금'은 어떤 상품인가요?**
 > **A.** 주변 사람과 함께 가입할수록 더 많은 이자를 받을 수 있는 **참여형 정기예금** 상품입니다.
 
@@ -79,10 +79,10 @@ class _SummaryArchiveScreenState extends State<SummaryArchiveScreen> {
         key: "신한My플러스 정기예금",
         isExpanded: false,
         isPinned: false,
-        text: [
+        value: [
           AiText(
             createdAt: DateTime(2026, 7, 3),
-            summary: """### 1. 중도 해지 시 수령 금액 관련
+            text: """### 1. 중도 해지 시 수령 금액 관련
 *   **사용자 질문:** "만기 전에 해지하면 돈을 얼마나 돌려받나요?" (What much money will i get if i cancel before contract?)
 *   **AI 핵심 답변:**
     *   **원금:** **100% 안전하게 돌려받습니다.** (원금 손실 전혀 없음)

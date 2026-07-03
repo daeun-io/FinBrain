@@ -1,5 +1,7 @@
+import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/repository/ai_response_repository.dart';
+import 'package:finbrain/data/repository/ai_summary_repository.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/data/repository/ai_convo_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -8,6 +10,7 @@ part 'ai_response_viewmodel.g.dart';
 
 final responseRepository = AiResponseRepository();
 final messageRepository = AiConversationRepository();
+final summaryRepository = AiSummaryRepository();
 
 @riverpod
 class AiResponseViewmodel extends _$AiResponseViewmodel {
@@ -113,6 +116,21 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
       state = conversation;
     } catch (error) {
       print("Error getting conversation: $error");
+    }
+  }
+
+  Future<AiRecord> getSummariesWithPrdtNm(String tag) async {
+    try {
+      final user = GoogleAuthService.getCurrentUser();
+      if(user == null){
+        print("No user is currently signed in.");
+        return AiRecord(key: "", isExpanded: false, isPinned: false, value: []);
+      }
+
+      return await summaryRepository.getSummariesWithPrdtNm(user.uid, tag);
+    } catch (e) {
+      print("Error getting summaries: $e");
+      return AiRecord(key: "", isExpanded: false, isPinned: false, value: []);
     }
   }
 }

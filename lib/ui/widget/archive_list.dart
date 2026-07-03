@@ -54,7 +54,7 @@ class _ArchiveListState extends State<ArchiveList> {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                children: item.text.map((chat) {
+                children: item.value.map((chat) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -74,7 +74,7 @@ class _ArchiveListState extends State<ArchiveList> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            chat.summary,
+                            chat.text,
                             style: const TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 14.0,
