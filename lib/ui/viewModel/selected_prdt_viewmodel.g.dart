@@ -43,7 +43,7 @@ final class SelectedProductsViewmodelProvider
 }
 
 String _$selectedProductsViewmodelHash() =>
-    r'aaaf25ea7fb7a8b892460d61abaa1f156d0014a3';
+    r'449bfabe9a8e487cbdb49eaa98a6088136863e24';
 
 abstract class _$SelectedProductsViewmodel
     extends $Notifier<List<FinancialProduct>> {

@@ -27,6 +27,7 @@ class AiSummaryRepository {
               ),
             )
             .toList(),
+        category: null
       );
       return record;
     } catch (e) {
@@ -36,6 +37,7 @@ class AiSummaryRepository {
         isExpanded: false,
         isPinned: false,
         value: [],
+        category: null
       );
     }
   }
@@ -65,6 +67,7 @@ class AiSummaryRepository {
                     ),
                   )
                   .toList(),
+              category: null
             ),
           );
         } catch (e) {

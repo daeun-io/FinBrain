@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:convert/convert.dart';
+import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/data_source/ai_comp_data_source.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
@@ -30,7 +30,6 @@ class AiCompRepository {
       }
       for (final text in texts) {
         try {
-
           record.add(
             AiRecord(
               key: text.$1,
@@ -42,6 +41,7 @@ class AiCompRepository {
                   text: text.$2["comp_text"],
                 ),
               ],
+              category: getCategoryEnum[text.$2["category"] as String]
             ),
           );
         } catch (e) {

@@ -1,26 +1,16 @@
-import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/archive_viewmodel.dart';
 import 'package:finbrain/ui/widget/archive_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ComparisonArchiveScreen extends ConsumerStatefulWidget {
+class ComparisonArchiveScreen extends ConsumerWidget {
   const ComparisonArchiveScreen({super.key});
 
   @override
-  ConsumerState<ComparisonArchiveScreen> createState() =>
-      _ComparisonArchiveScreenState();
-}
-
-class _ComparisonArchiveScreenState
-    extends ConsumerState<ComparisonArchiveScreen> {
-  Set<ProductCategory> filters = {};
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final filters = ref.watch(selectedCtgForArchiveViewmodelProvider);
     final compTexts = ref.watch(archiveComparisonViewmodelProvider);
 
     return compTexts.when(
@@ -41,13 +31,11 @@ class _ComparisonArchiveScreenState
                 children: ProductCategory.values.map((e) {
                   return FilterChip(
                     onSelected: (selected) {
-                      setState(() {
-                        if (selected) {
-                          filters.add(e);
-                        } else {
-                          filters.remove(e);
-                        }
-                      });
+                      if (selected) {
+                        ref.read(selectedCtgForArchiveViewmodelProvider.notifier).addCtg(e);
+                      } else {
+                        ref.read(selectedCtgForArchiveViewmodelProvider.notifier).deleteCtg(e);
+                      }
                     },
                     selected: filters.contains(e),
                     selectedColor: primary700,

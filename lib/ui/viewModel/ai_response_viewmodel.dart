@@ -136,13 +136,13 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
         print("No user is currently signed in.");
-        return AiRecord(key: "", isExpanded: false, isPinned: false, value: []);
+        return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: null);
       }
 
       return await summaryRepository.getSummariesWithPrdtNm(user.uid, tag);
     } catch (e) {
       print("Error getting summaries: $e");
-      return AiRecord(key: "", isExpanded: false, isPinned: false, value: []);
+      return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: null);
     }
   }
 }

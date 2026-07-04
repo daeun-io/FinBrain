@@ -1,7 +1,9 @@
 import 'package:finbrain/data/google_auth_service.dart';
+import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/data/repository/ai_comp_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'archive_viewmodel.g.dart';
 
@@ -52,9 +54,23 @@ class ArchiveSummaryViewmodel extends _$ArchiveSummaryViewmodel {
 }
 
 @riverpod
-class ArchiveComparisonViewmodel extends _$ArchiveComparisonViewmodel {
+class SelectedCtgForArchiveViewmodel extends _$SelectedCtgForArchiveViewmodel {
+  @override
+  List<ProductCategory> build() => ProductCategory.values;
+
+  void addCtg(ProductCategory ctg) {
+    state = [...state, ctg];
+  }
+
+  void deleteCtg(ProductCategory ctg) {
+    state = state.where((e) => e != ctg).toList();
+  }
+}
+
+@riverpod
+class AiCompViewmodel extends _$AiCompViewmodel {
   final repository = AiCompRepository();
-  
+
   @override
   Future<List<AiRecord>> build() async {
     try {
@@ -70,6 +86,19 @@ class ArchiveComparisonViewmodel extends _$ArchiveComparisonViewmodel {
       print("Error occured in building vm, $e");
       return <AiRecord>[];
     }
+  }
+}
+
+@riverpod
+class ArchiveComparisonViewmodel extends _$ArchiveComparisonViewmodel {
+  final repository = AiCompRepository();
+
+  @override
+  AsyncValue<List<AiRecord>> build(){
+    final filter = ref.watch(selectedCtgForArchiveViewmodelProvider);
+    final records = ref.watch(aiCompViewmodelProvider);
+
+    return records.whenData((data) => data.where((e) => filter.contains(e.category)).toList());
   }
 
   void pinRecord(AiRecord record) {

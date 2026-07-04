@@ -5,13 +5,14 @@ class AiRecord {
   final List<AiText> value;
   bool isExpanded;
   bool isPinned;
+  ProductCategory? category;
 
   AiRecord({
     required this.key,
     required this.isExpanded,
     required this.isPinned,
     required this.value,
-    ProductCategory? category,
+    required this.category,
   });
 
   AiRecord copyWith([bool? expanded, bool? pinned]) {
@@ -20,6 +21,7 @@ class AiRecord {
       isExpanded: expanded ?? isExpanded,
       isPinned: pinned ?? isPinned,
       value: value,
+      category: category,
     );
   }
 }
