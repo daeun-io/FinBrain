@@ -8,8 +8,7 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-// import * as admin from "firebase-admin";
-// admin.initializeApp();
+
 setGlobalOptions({
   maxInstances: 10,
   region: "asia-northeast3",
@@ -18,7 +17,7 @@ setGlobalOptions({
 
 import { fetchAndGroupProducts } from "./isa_api";
 import { fetchCmpyNameList } from "./cmpy_api";
-import { searchProductUrl } from "./url_crawler";
+import { summarizeAndArchiveChat } from "./summarize_chat";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -37,7 +36,7 @@ import { searchProductUrl } from "./url_crawler";
 
 exports.fetchAndGroupProducts = fetchAndGroupProducts;
 exports.fetchCmpyNameList = fetchCmpyNameList;
-exports.searchProductUrl = searchProductUrl;
+exports.summarizeAndArchiveChat = summarizeAndArchiveChat;
 
 // export const helloWorld = onRequest((request, response) => {
 //   logger.info("Hello logs!", {structuredData: true});

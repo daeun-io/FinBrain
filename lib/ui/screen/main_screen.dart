@@ -1,5 +1,6 @@
-import 'package:finbrain/data/viewModel/current_ctg_viewmodel.dart';
-import 'package:finbrain/data/viewModel/product_viewmodel.dart';
+import 'package:finbrain/ui/screen/archive_screen.dart';
+import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/screen/product_base_screen.dart';
@@ -107,7 +108,13 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   style: TextStyle(color: textPrimary, fontSize: 14.0),
                 ),
               ),
-              const SizedBox(width: 20, height: 60),
+              const SizedBox(width: 8),
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => ArchiveScreen()));
+                },
+                icon: Icon(Icons.archive_sharp, color: primary900, size: 32),
+              ),
             ],
           ),
         ),

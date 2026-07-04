@@ -1,9 +1,9 @@
-import 'package:finbrain/data/data_sources/isa_data_source.dart';
-import 'package:finbrain/data/models/request/isa_search_options.dart';
+import 'package:finbrain/data/data_source/isa_data_source.dart';
+import 'package:finbrain/data/model/request/isa_search_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:finbrain/data/models/entities/isa_join_status.dart';
-import 'package:finbrain/data/models/entities/isa_management_status.dart';
+import 'package:finbrain/data/model/entities/isa_join_status.dart';
+import 'package:finbrain/data/model/entities/isa_management_status.dart';
 
 class IsaRepository {
   Future<(int, List<IsaJoinStatus>)> fetchJoinStatus(

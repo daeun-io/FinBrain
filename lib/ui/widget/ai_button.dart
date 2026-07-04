@@ -1,4 +1,5 @@
-import 'package:finbrain/data/viewModel/selected_prdt_viewmodel.dart';
+import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/screen/ai_comparison_screen.dart';
@@ -34,7 +35,22 @@ class AiButton extends ConsumerWidget {
             } else {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (ctx) => AiComparisonScreen(tag: tag),
+                  builder: (ctx) {
+                    final ctg = ref
+                        .read(selectedProductsViewmodelProvider.notifier)
+                        .getCategory();
+                    if (ctg == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: Duration(seconds: 3),
+                          content: const Text(
+                            "선택하신 상품의 카테고리가 존재하지 않습니다.\n다시 시도해주세요",
+                          ),
+                        ),
+                      );
+                    }
+                    return AiComparisonScreen(tag: tag, ctg: ctg!);
+                  },
                 ),
               );
             }

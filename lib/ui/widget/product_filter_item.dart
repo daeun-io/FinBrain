@@ -1,4 +1,4 @@
-import 'package:finbrain/data/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';

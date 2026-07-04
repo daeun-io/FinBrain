@@ -27,3 +27,8 @@ enum FilterTextCategory{
   annuity,
   liked
 }
+
+enum ArchiveCategory {
+  summary,
+  comparison
+}

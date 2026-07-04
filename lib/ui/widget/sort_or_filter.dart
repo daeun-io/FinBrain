@@ -1,4 +1,4 @@
-import 'package:finbrain/data/viewModel/sort_or_filter_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +57,6 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
               builder: (BuildContext context) {
                 return StatefulBuilder(
                   builder: (BuildContext context, StateSetter setModalState) {
-                    final pageController = PageController();
-
                     Widget optionView = ListView.builder(
                       itemCount: filter.$2.length,
                       itemBuilder: (context, index) {

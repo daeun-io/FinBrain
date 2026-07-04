@@ -1,25 +1,39 @@
-import 'package:finbrain/data/viewModel/ai_response_viewmodel.dart';
-import 'package:finbrain/data/viewModel/selected_prdt_viewmodel.dart';
+import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AiComparisonScreen extends ConsumerWidget {
-  const AiComparisonScreen({super.key, required this.tag});
+class AiComparisonScreen extends ConsumerStatefulWidget {
+  const AiComparisonScreen({super.key, required this.tag, required this.ctg});
 
   final String tag;
+  final ProductCategory ctg;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final items = tag.split('-');
+  ConsumerState<AiComparisonScreen> createState() => _AiComparisonScreenState();
+}
+
+class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
+  late List<String> items;
+
+  @override
+  void initState() {
+    super.initState();
+    items = widget.tag.split("-");
     items.remove("compare");
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
-          .read(aiComparisonScreenViewmodelProvider(tag).notifier)
+          .read(aiComparisonScreenViewmodelProvider(widget.tag).notifier)
           .askComparsion("$items를 비교 분석하고 내용을 표로 정리해줘");
     });
+  }
 
-    final text = ref.watch(aiComparisonScreenViewmodelProvider(tag));
+  @override
+  Widget build(BuildContext context) {
+    final text = ref.watch(aiComparisonScreenViewmodelProvider(widget.tag));
 
     return Scaffold(
       backgroundColor: white,
@@ -67,7 +81,7 @@ class AiComparisonScreen extends ConsumerWidget {
                             ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
-                                    tag,
+                                    widget.tag,
                                   ).notifier,
                                 )
                                 .askComparsion("$items를 비교 분석하고 내용을 표로 정리해줘");
@@ -92,12 +106,18 @@ class AiComparisonScreen extends ConsumerWidget {
                         const SizedBox(width: 16.0),
                         TextButton(
                           onPressed: () {
-                            // todo: save in db
                             ref
                                 .read(
                                   selectedProductsViewmodelProvider.notifier,
                                 )
                                 .resetSelectedList();
+                            ref
+                                .read(
+                                  aiComparisonScreenViewmodelProvider(
+                                    widget.tag,
+                                  ).notifier,
+                                )
+                                .saveComparisonText(widget.ctg);
                             Navigator.of(context).pop();
                           },
                           style: ButtonStyle(

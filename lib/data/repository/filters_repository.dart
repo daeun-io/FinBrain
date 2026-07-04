@@ -1,6 +1,6 @@
-import 'package:finbrain/data/data_sources/cmpy_data_source.dart';
-import 'package:finbrain/data/fin_group_code.dart';
-import 'package:finbrain/data/models/request/finlife_search_options.dart';
+import 'package:finbrain/data/data_source/cmpy_data_source.dart';
+import 'package:finbrain/data/converter.dart';
+import 'package:finbrain/data/model/request/finlife_search_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:finbrain/product_categories.dart';
