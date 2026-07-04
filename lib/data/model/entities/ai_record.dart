@@ -1,3 +1,5 @@
+import 'package:finbrain/product_categories.dart';
+
 class AiRecord {
   final String key;
   final List<AiText> value;
@@ -9,6 +11,7 @@ class AiRecord {
     required this.isExpanded,
     required this.isPinned,
     required this.value,
+    ProductCategory? category,
   });
 
   AiRecord copyWith([bool? expanded, bool? pinned]) {

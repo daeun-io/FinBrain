@@ -1,4 +1,5 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'selected_prdt_viewmodel.g.dart';
 
@@ -24,5 +25,14 @@ class SelectedProductsViewmodel extends _$SelectedProductsViewmodel{
       }
     }
     return true;
+  }
+
+  ProductCategory? getCategory(){
+    final isCtgSame = allCategoriesSame();
+    if(isCtgSame){
+      return state.first.commonInfo.category;
+    } else{
+      return null;
+    }
   }
 }

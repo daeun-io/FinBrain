@@ -34,9 +34,56 @@ final class ArchiveSummaryViewmodelProvider
 }
 
 String _$archiveSummaryViewmodelHash() =>
-    r'a4a33d423d0858a21c3078588be2ea022acb6291';
+    r'6b6caa0992b6ff495ca8ddccc26a3dc241c07b90';
 
 abstract class _$ArchiveSummaryViewmodel
+    extends $AsyncNotifier<List<AiRecord>> {
+  FutureOr<List<AiRecord>> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<AiRecord>>, List<AiRecord>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<AiRecord>>, List<AiRecord>>,
+              AsyncValue<List<AiRecord>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(ArchiveComparisonViewmodel)
+final archiveComparisonViewmodelProvider =
+    ArchiveComparisonViewmodelProvider._();
+
+final class ArchiveComparisonViewmodelProvider
+    extends $AsyncNotifierProvider<ArchiveComparisonViewmodel, List<AiRecord>> {
+  ArchiveComparisonViewmodelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'archiveComparisonViewmodelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$archiveComparisonViewmodelHash();
+
+  @$internal
+  @override
+  ArchiveComparisonViewmodel create() => ArchiveComparisonViewmodel();
+}
+
+String _$archiveComparisonViewmodelHash() =>
+    r'248fdb530848ff80c0908e9828a9cd08bb3051f7';
+
+abstract class _$ArchiveComparisonViewmodel
     extends $AsyncNotifier<List<AiRecord>> {
   FutureOr<List<AiRecord>> build();
   @$mustCallSuper

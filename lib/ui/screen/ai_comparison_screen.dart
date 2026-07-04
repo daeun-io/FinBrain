@@ -1,3 +1,4 @@
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
@@ -5,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AiComparisonScreen extends ConsumerStatefulWidget {
-  const AiComparisonScreen({super.key, required this.tag});
+  const AiComparisonScreen({super.key, required this.tag, required this.ctg});
 
   final String tag;
+  final ProductCategory ctg;
 
   @override
   ConsumerState<AiComparisonScreen> createState() => _AiComparisonScreenState();
@@ -104,12 +106,18 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                         const SizedBox(width: 16.0),
                         TextButton(
                           onPressed: () {
-                            // todo: save in db
                             ref
                                 .read(
                                   selectedProductsViewmodelProvider.notifier,
                                 )
                                 .resetSelectedList();
+                            ref
+                                .read(
+                                  aiComparisonScreenViewmodelProvider(
+                                    widget.tag,
+                                  ).notifier,
+                                )
+                                .saveComparisonText(widget.ctg);
                             Navigator.of(context).pop();
                           },
                           style: ButtonStyle(

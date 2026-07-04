@@ -30,15 +30,11 @@ class AiSummaryDataSource {
   
   Future<List<(String, List<Map<String, dynamic>>)>> getAllSummaries(String uid) async {
     try {
-      final step1 = await firestore.collection(uid).doc("ai_summary").get();
-      print("1단계 (ai_summary) 존재 여부: ${step1.exists}");
-
       final docSnapshot = await firestore
           .collection(uid)
           .doc("ai_summary")
           .collection("products")
           .get();
-      print("2단계 (products) 존재 여부: ${docSnapshot.docs.length}");
 
       if (docSnapshot.docs.isNotEmpty) {
         final List<(String, List<Map<String, dynamic>>)> document = [];

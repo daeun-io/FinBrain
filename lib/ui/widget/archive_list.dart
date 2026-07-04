@@ -24,20 +24,18 @@ class ArchiveList extends ConsumerWidget {
               child: ExpansionTile(
                 leading: IconButton(
                   onPressed: () {
-                    ref.watch(archiveSummaryViewmodelProvider.notifier).pinRecord(item);
-                    // setState(() {
-                      // widget.records.remove(item);
-                      // widget.records.insert(0, item);
-                      // item.isPinned = !item.isPinned;
-                    // });
+                    ref
+                        .watch(archiveComparisonViewmodelProvider.notifier)
+                        .pinRecord(item);
                   },
                   icon: item.isPinned
                       ? Icon(Icons.star, color: robotBulb, size: 24)
                       : Icon(Icons.star_border, color: textSecondary, size: 24),
                 ),
                 onExpansionChanged: (expanded) {
-                  // item.isExpanded = expanded;
-                  ref.watch(archiveSummaryViewmodelProvider.notifier).expandRecord(item);
+                  ref
+                      .watch(archiveComparisonViewmodelProvider.notifier)
+                      .expandRecord(item);
                 },
                 initiallyExpanded: item.isExpanded,
                 backgroundColor: white,
@@ -46,7 +44,9 @@ class ArchiveList extends ConsumerWidget {
                 collapsedIconColor: textPrimary,
                 shape: const Border(),
                 title: Text(
-                  item.key,
+                  (ctg == ArchiveCategory.summary)
+                      ? item.key
+                      : item.key.substring(8).replaceAll("-", " vs "),
                   style: const TextStyle(
                     fontSize: 14.0,
                     color: black,

@@ -1,7 +1,9 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/data/repository/ai_comp_repository.dart';
 import 'package:finbrain/data/repository/ai_response_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/data/repository/ai_convo_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,6 +13,7 @@ part 'ai_response_viewmodel.g.dart';
 final responseRepository = AiResponseRepository();
 final messageRepository = AiConversationRepository();
 final summaryRepository = AiSummaryRepository();
+final compRepository = AiCompRepository();
 
 @riverpod
 class AiResponseViewmodel extends _$AiResponseViewmodel {
@@ -83,14 +86,23 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
     }
   }
 
-  Future<void> saveConversationInFirestore(String tag, String request, String response) async {
+  Future<void> saveConversationInFirestore(
+    String tag,
+    String request,
+    String response,
+  ) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
         print("No user is currently signed in.");
         return;
       }
-      await messageRepository.saveRequestAndResponse(user.uid, tag, request, response);
+      await messageRepository.saveRequestAndResponse(
+        user.uid,
+        tag,
+        request,
+        response,
+      );
     } catch (error) {
       print("Error saving conversation in Firestore: $error");
     }
@@ -122,7 +134,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
   Future<AiRecord> getSummariesWithPrdtNm(String tag) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
-      if(user == null){
+      if (user == null) {
         print("No user is currently signed in.");
         return AiRecord(key: "", isExpanded: false, isPinned: false, value: []);
       }
@@ -152,6 +164,19 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
       }
     } catch (error) {
       print("Ai Comparsion: error - $error");
+    }
+  }
+
+  Future<void> saveComparisonText(ProductCategory ctg) async {
+    try {
+      final user = GoogleAuthService.getCurrentUser();
+      if (user == null) {
+        print("No current user found");
+        return;
+      }
+      await compRepository.saveComparisonText(user.uid, products, state, ctg);
+    } catch (e) {
+      print("Error saving comparison text");
     }
   }
 }
