@@ -149,7 +149,7 @@ final class AiScreenViewmodelProvider
   }
 }
 
-String _$aiScreenViewmodelHash() => r'cf89a4c39805efd56f961c20fc64917916a8de5a';
+String _$aiScreenViewmodelHash() => r'd84697328e335fa031db2f464785a9ad2540ea8a';
 
 final class AiScreenViewmodelFamily extends $Family
     with

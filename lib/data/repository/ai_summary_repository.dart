@@ -1,9 +1,9 @@
-import 'package:finbrain/data/data_source/ai_convo_data_source.dart';
+import 'package:finbrain/data/data_source/ai_summary_data_source.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AiSummaryRepository {
-  final dataSource = AiConversationDataSource();
+  final dataSource = AiSummaryDataSource();
 
   Future<AiRecord> getSummariesWithPrdtNm(
     String uid,
@@ -14,7 +14,7 @@ class AiSummaryRepository {
         uid,
         productName,
       );
-      
+
       final record = AiRecord(
         key: productName,
         isExpanded: false,
@@ -39,5 +39,43 @@ class AiSummaryRepository {
       );
     }
   }
-}
 
+  Future<List<AiRecord>> getAllSummaries(String uid) async {
+    try {
+      final summaries = await dataSource.getAllSummaries(uid);
+      final record = <AiRecord>[];
+
+      if(summaries.isEmpty){
+        print("summaries are empty");
+        return [];
+      }
+
+      for (final summary in summaries) {
+        try {
+          record.add(
+            AiRecord(
+              key: summary.$1,
+              isExpanded: false,
+              isPinned: false,
+              value: summary.$2
+                  .map(
+                    (e) => AiText(
+                      createdAt: (e["createdAt"] as Timestamp).toDate(),
+                      text: e["summary"],
+                    ),
+                  )
+                  .toList(),
+            ),
+          );
+        } catch (e) {
+          print("Error mapping summaries: $e");
+          return [];
+        }
+      }
+      return record;
+    } catch (error) {
+      print("Error mapping summaries: $error");
+      return [];
+    }
+  }
+}

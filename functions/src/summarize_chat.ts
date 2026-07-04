@@ -11,8 +11,8 @@ const db = admin.firestore();
 export const summarizeAndArchiveChat = onSchedule(
   {
     schedule: "0 3 * * *",
-    timeZone: "Asia/Seoul", 
-    secrets: ["GEMINI_API_KEY"], 
+    timeZone: "Asia/Seoul",
+    secrets: ["GEMINI_API_KEY"],
   },
   async () => {
     // 🚨 [필수 수정] Secret 값을 안전하게 읽기 위해 인스턴스 생성을 함수 내부로 이동합니다.
@@ -33,13 +33,13 @@ export const summarizeAndArchiveChat = onSchedule(
       productName: string;
       docs: admin.firestore.QueryDocumentSnapshot[];
     }
-    
+
     // new Map()은 절대 null이 될 수 없으므로 기존의 null 체크 조건문은 제거했습니다.
     const groupedChats = new Map<string, ChatGroup>();
 
     chatHistorySnapshot.docs.forEach((doc) => {
       const pathSegments = doc.ref.path.split("/");
-      
+
       if (
         pathSegments.length >= 6 &&
         pathSegments[1] === "ai_conversation" &&
@@ -52,7 +52,7 @@ export const summarizeAndArchiveChat = onSchedule(
         if (!groupedChats.has(key)) {
           groupedChats.set(key, { uid, productName, docs: [] });
         }
-        if(groupedChats.get(key) == null) {
+        if (groupedChats.get(key) == null) {
           console.error("groupedChats.get(key) is null");
           return;
         }
@@ -84,16 +84,17 @@ export const summarizeAndArchiveChat = onSchedule(
         // 4. Gemini Developer API 호출
         const response = await ai.models.generateContent({
           model: "gemini-3.5-flash",
-          contents: `다음은 사용자와 AI가 나눈 대화 내역입니다. 이 내용을 분석하여 사용자의 질문과 AI의 핵심 답변 위주로 가독성 좋게 요약해 주세요.\n\n[대화 내역]\n${chatTexts}`,
+          contents: `다음은 사용자와 AI가 나눈 대화 내역을 이 분석하여 사용자의 질문과 AI의 핵심 답변 위주로 가독성 좋게 요약해 주세요. 사족은 제외하고 내용만 작성해주세요\n\n[대화 내역]\n${chatTexts}`,
         });
-        
+
         summaryText = response.text || "요약 본문이 비어 있습니다.";
       } catch (error) {
         console.error(`❌ ${uid} 사용자의 ${productName} 요약 중 API 오류 발생:`, error);
         summaryText = "대화 요약 생성에 실패했습니다. (Gemini API 오류)";
       }
-      
+
       // 새 요약 문서 참조 생성
+      const productRef = db.collection(uid).doc("ai_summary").collection("products").doc(productName);
       const summaryRef = db
         .collection(uid)
         .doc("ai_summary")
@@ -101,8 +102,10 @@ export const summarizeAndArchiveChat = onSchedule(
         .doc(productName)
         .collection("chat_summary")
         .doc();
-
-      // 요약 저장 (1 operation)
+      
+      // 상품 문서 접근을 위해 빈 객체 생성
+      batch.set(productRef, {});
+      // 요약 저장
       batch.set(summaryRef, {
         summary: summaryText,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -115,7 +118,7 @@ export const summarizeAndArchiveChat = onSchedule(
         operationCount++;
 
         // Batch 제한(500개) 안전 방어
-        if (operationCount >= 490) { 
+        if (operationCount >= 490) {
           await batch.commit();
           commitCount++;
           batch = db.batch();

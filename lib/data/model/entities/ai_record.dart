@@ -11,14 +11,19 @@ class AiRecord {
     required this.value,
   });
 
+  AiRecord copyWith([bool? expanded, bool? pinned]) {
+    return AiRecord(
+      key: key,
+      isExpanded: expanded ?? isExpanded,
+      isPinned: pinned ?? isPinned,
+      value: value,
+    );
+  }
 }
 
 class AiText {
   final DateTime createdAt;
   final String text;
 
-  const AiText({
-    required this.createdAt,
-    required this.text,
-  });
+  const AiText({required this.createdAt, required this.text});
 }

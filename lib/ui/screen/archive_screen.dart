@@ -35,7 +35,7 @@ class ArchiveScreen extends StatelessWidget {
         titleSpacing: -6.0,
       ),
       body: DefaultTabController(
-          length: 3,
+          length: 2,
           child: Column(
             children: [
               TabBar(
