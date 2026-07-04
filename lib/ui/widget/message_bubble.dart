@@ -12,7 +12,7 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Align(
         alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
         child: isUser

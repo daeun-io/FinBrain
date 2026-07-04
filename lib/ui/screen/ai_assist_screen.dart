@@ -24,7 +24,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   void initState() {
     super.initState();
     _getSummaries();
-    //_initializeMessages();
+    _initializeMessages();
   }
 
   @override
@@ -89,12 +89,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 24.0,
-                      left: 20.0,
-                      right: 20.0,
-                      bottom: 20.0,
-                    ),
+                    padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
                     child: CustomScrollView(
                       slivers: [
                         if (record!.key.isNotEmpty)

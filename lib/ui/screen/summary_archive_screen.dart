@@ -23,7 +23,7 @@ class SummaryArchiveScreen extends ConsumerWidget {
         print("stack trace: $stackTrace");
         return Center(child: Text("오류가 발생했습니다!\n다시 시도해주세요"));
       },
-      loading: () => const CircularProgressIndicator(color: primary400),
+      loading: () => const Center(child: CircularProgressIndicator(color: primary400, backgroundColor: Color(0xFFF4F4F4),)),
     );
   }
 }
