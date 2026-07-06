@@ -126,15 +126,15 @@ class ProductViewmodel extends _$ProductViewmodel {
           .toList();
     }
 
-    final baseYear = (selectedFilters["기준년도"] == null)
-        ? DateTime.now().year.toString()
-        : selectedFilters["기준년도"]!.first;
+    final baseYear = (selectedFilters["기준년도"]?.isNotEmpty ?? false)
+        ? selectedFilters["기준년도"]!.first
+        : DateTime.now().year.toString();
 
     final result = await repository.fetchIsaMpProductsAndCount(
       user.uid,
       pageNo,
       "1000",
-      baseYear
+      baseYear,
     );
 
     final totalCount = result.$1;

@@ -46,7 +46,7 @@ class ProductRepository {
         return (0, <FinancialProduct>[]);
       }
 
-      final maxPage = int.tryParse(result["result"]["max_page_no"]) ?? 0;
+      final maxPage = int.tryParse((result["result"]["max_page_no"]).toString()) ?? 0;
       if (maxPage == 0) {
         return (0, <FinancialProduct>[]);
       }
@@ -54,7 +54,7 @@ class ProductRepository {
       if (result["result"]["products"] == null ||
           result["result"]["products"]["product"] == null) {
         debugPrint("error: No products found");
-        return (0, [] as List<FinancialProduct>);
+        return (0, <FinancialProduct>[]);
       }
 
       final likedProducts = await likedRepository.getLikedProducts(uid);

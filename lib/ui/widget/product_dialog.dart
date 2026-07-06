@@ -83,59 +83,66 @@ class ProductDialog extends ConsumerWidget {
                     ),
                   ],
                 ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (filterCategory == FilterTextCategory.isaJoin ||
-                            filterCategory ==
-                                FilterTextCategory.isaManagement ||
-                            filterCategory == FilterTextCategory.isaMp)
-                          Column(
-                            children: [
-                              const SizedBox(height: 8.0),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: const Text(
-                                  "기준년도",
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: textSecondary,
+                if (filters.isEmpty)
+                  const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(color: primary400),
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (filterCategory == FilterTextCategory.isaJoin ||
+                              filterCategory ==
+                                  FilterTextCategory.isaManagement ||
+                              filterCategory == FilterTextCategory.isaMp)
+                            Column(
+                              children: [
+                                const SizedBox(height: 8.0),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: const Text(
+                                    "기준년도",
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w400,
+                                      color: textSecondary,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              CustomYearPicker(
-                                selectedYear:
-                                    int.tryParse(filters["기준년도"]!.first.$1) ??
-                                    DateTime.now().year,
-                                onYearChanged: (value) => ref
-                                    .read(
-                                      dialogFiltersViewModelProvider(
-                                        filterCategory,
-                                      ).notifier,
-                                    )
-                                    .selectBaseYear(value.toString()),
-                              ),
-                              const SizedBox(height: 8.0),
-                            ],
-                          ),
-                        ...filters.entries.map((e) {
-                          if (e.key == "기준년도") {
-                            return SizedBox(height: 8.0);
-                          }
-                          return ProductFilterCondition(
-                            category: filterCategory,
-                            filter: e.key,
-                            filterList: e.value,
-                          );
-                        }),
-                      ],
+                                CustomYearPicker(
+                                  selectedYear:
+                                      int.tryParse(filters["기준년도"]!.first.$1) ??
+                                      DateTime.now().year,
+                                  onYearChanged: (value) => ref
+                                      .read(
+                                        dialogFiltersViewModelProvider(
+                                          filterCategory,
+                                        ).notifier,
+                                      )
+                                      .selectBaseYear(value.toString()),
+                                ),
+                                const SizedBox(height: 8.0),
+                              ],
+                            ),
+                          ...filters.entries.map((e) {
+                            if (e.key == "기준년도") {
+                              return SizedBox(height: 8.0);
+                            }
+                            return ProductFilterCondition(
+                              category: filterCategory,
+                              filter: e.key,
+                              filterList: e.value,
+                            );
+                          }),
+                        ],
+                      ),
                     ),
                   ),
-                ),
                 Row(
                   children: [
                     Expanded(
