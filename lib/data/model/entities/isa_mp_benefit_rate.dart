@@ -22,7 +22,7 @@ class IsaMpBenefitRate extends FinancialProduct {
     // CommonInfo
     required ProductCategory category,
     required String? companyName,
-    required String? mpName,
+    required String? productName,
     required String? releaseDate,
     required bool isLiked,
 
@@ -34,7 +34,7 @@ class IsaMpBenefitRate extends FinancialProduct {
          CommonInfo(
            category: category,
            companyName: companyName,
-           productName: mpName,
+           productName: productName,
            submittedDay: releaseDate,
            isLiked: isLiked,
          ),
@@ -46,7 +46,7 @@ class IsaMpBenefitRate extends FinancialProduct {
       isLiked: isLiked,
       category: commonInfo.category,
       companyName: commonInfo.companyName,
-      mpName: commonInfo.productName,
+      productName: commonInfo.productName,
       releaseDate: commonInfo.submittedDay,
       baseDate: baseDate,
       businessDomain: businessDomain,

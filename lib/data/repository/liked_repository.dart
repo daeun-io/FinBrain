@@ -218,7 +218,7 @@ class LikedRepository {
                 IsaMpBenefitRate(
                   category: ProductCategory.isa,
                   companyName: map["companyName"],
-                  mpName: map["mpName"],
+                  productName: map["productName"],
                   releaseDate: map["releaseDate"],
                   isLiked: map["isLiked"],
                   baseDate: map["baseDate"],

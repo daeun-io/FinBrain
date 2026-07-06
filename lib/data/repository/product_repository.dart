@@ -1,3 +1,4 @@
+import 'package:finbrain/data/data_source/liked_data_source.dart';
 import 'package:finbrain/data/model/entities/annuity_savings.dart';
 import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
@@ -9,6 +10,8 @@ import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
 import 'package:finbrain/data/model/request/isa_search_options.dart';
+import 'package:finbrain/data/repository/liked_repository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finbrain/data/data_source/product_data_source.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
@@ -16,13 +19,15 @@ import 'package:finbrain/data/model/request/finlife_search_options.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:http/http.dart' as http;
 
+final likedRepository = LikedRepository();
+
 class ProductRepository {
   Future<(int, List<FinancialProduct>)> fetchFinlifeProductsAndPageNo(
+    String uid,
     ProductCategory ctg,
     String topFinGrpNo,
     String pageNo,
   ) async {
-    print("ctg, $ctg");
     final client = http.Client();
     final dataStore = ProductRemoteDataSource(client);
     final options = FinlifeSearchOptions(
@@ -37,21 +42,25 @@ class ProductRepository {
       );
 
       if (result["result"] == null) {
-        print("error: result is null");
+        debugPrint("error: result is null");
         return (0, <FinancialProduct>[]);
       }
 
       final maxPage = int.tryParse(result["result"]["max_page_no"]) ?? 0;
       if (maxPage == 0) {
         return (0, <FinancialProduct>[]);
-        ;
       }
 
       if (result["result"]["products"] == null ||
           result["result"]["products"]["product"] == null) {
-        print("error: No products found");
+        debugPrint("error: No products found");
         return (0, [] as List<FinancialProduct>);
       }
+
+      final likedProducts = await likedRepository.getLikedProducts(uid);
+      final likedProductNames = likedProducts
+          .map((e) => e.commonInfo.productName)
+          .toList();
 
       final rawProducts =
           result["result"]["products"]["product"] as Iterable<dynamic>;
@@ -66,7 +75,7 @@ class ProductRepository {
                     e["baseinfo"]["fin_prdt_nm"] == null ||
                     e["options"] == null ||
                     e["options"]["option"] == null) {
-                  print("error: product is null");
+                  debugPrint("error: product is null");
                   return null;
                 }
                 final productOptions = (e["options"]["option"] is List)
@@ -111,12 +120,14 @@ class ProductRepository {
                           ),
                         )
                         .toList(),
-                    isLiked: false,
+                    isLiked: likedProductNames.contains(
+                      e["baseinfo"]["fin_prdt_nm"],
+                    ),
                   );
                 } catch (error, stackTrace) {
-                  print("error: a mapping error: $error");
-                  print("error: trace the mapping error: $stackTrace");
-                  print("error: failed element: $e");
+                  debugPrint("error: a mapping error: $error");
+                  debugPrint("error: trace the mapping error: $stackTrace");
+                  debugPrint("error: failed element: $e");
                   return null;
                 }
               })
@@ -132,7 +143,7 @@ class ProductRepository {
                     e["baseinfo"]["fin_prdt_nm"] == null ||
                     e["options"] == null ||
                     e["options"]["option"] == null) {
-                  print("error: product is null");
+                  debugPrint("error: product is null");
                   return null;
                 }
                 final productOptions = (e["options"]["option"] is List)
@@ -177,12 +188,14 @@ class ProductRepository {
                           ),
                         )
                         .toList(),
-                    isLiked: false,
+                    isLiked: likedProductNames.contains(
+                      e["baseinfo"]["fin_prdt_nm"],
+                    ),
                   );
                 } catch (error, stackTrace) {
-                  print("error: a mapping error: $error");
-                  print("error: trace the mapping error: $stackTrace");
-                  print("error: failed element: $e");
+                  debugPrint("error: a mapping error: $error");
+                  debugPrint("error: trace the mapping error: $stackTrace");
+                  debugPrint("error: failed element: $e");
                   return null;
                 }
               })
@@ -198,7 +211,7 @@ class ProductRepository {
                     e["baseinfo"]["fin_prdt_nm"] == null ||
                     e["options"] == null ||
                     e["options"]["option"] == null) {
-                  print("error: product is null");
+                  debugPrint("error: product is null");
                   return null;
                 }
                 final productOptions = (e["options"]["option"] is List)
@@ -216,7 +229,9 @@ class ProductRepository {
                     endDay: e["baseinfo"]["dcls_end_day"],
                     submittedDay: e["baseinfo"]["fin_co_subm_day"],
                     joinWay: (e["baseinfo"]["join_way"] as String).split(","),
-                    isLiked: false,
+                    isLiked: likedProductNames.contains(
+                      e["baseinfo"]["fin_prdt_nm"],
+                    ),
                     extraExpense: e["baseinfo"]["loan_inci_expn"],
                     earlyRepayFee: e["baseinfo"]["erly_rpay_fee"],
                     delayRate: e["baseinfo"]["dly_rate"],
@@ -244,9 +259,9 @@ class ProductRepository {
                         .toList(),
                   );
                 } catch (error, stackTrace) {
-                  print("error: a mapping error: $error");
-                  print("error: trace the mapping error: $stackTrace");
-                  print("error: failed element: $e");
+                  debugPrint("error: a mapping error: $error");
+                  debugPrint("error: trace the mapping error: $stackTrace");
+                  debugPrint("error: failed element: $e");
                   return null;
                 }
               })
@@ -262,7 +277,7 @@ class ProductRepository {
                     e["baseinfo"]["fin_prdt_nm"] == null ||
                     e["options"] == null ||
                     e["options"]["option"] == null) {
-                  print("error: product is null");
+                  debugPrint("error: product is null");
                   return null;
                 }
                 final productOptions = (e["options"]["option"] is List)
@@ -280,7 +295,9 @@ class ProductRepository {
                     endDay: e["baseinfo"]["dcls_end_day"],
                     submittedDay: e["baseinfo"]["fin_co_subm_day"],
                     joinWay: (e["baseinfo"]["join_way"] as String).split(","),
-                    isLiked: false,
+                    isLiked: likedProductNames.contains(
+                      e["baseinfo"]["fin_prdt_nm"],
+                    ),
                     extraExpense: e["baseinfo"]["loan_inci_expn"],
                     earlyRepayFee: e["baseinfo"]["erly_rpay_fee"],
                     delayRate: e["baseinfo"]["dly_rate"],
@@ -308,9 +325,9 @@ class ProductRepository {
                         .toList(),
                   );
                 } catch (error, stackTrace) {
-                  print("error: a mapping error: $error");
-                  print("error: trace the mapping error: $stackTrace");
-                  print("error: failed element: $e");
+                  debugPrint("error: a mapping error: $error");
+                  debugPrint("error: trace the mapping error: $stackTrace");
+                  debugPrint("error: failed element: $e");
                   return null;
                 }
               })
@@ -326,7 +343,7 @@ class ProductRepository {
                     e["baseinfo"]["fin_prdt_nm"] == null ||
                     e["options"] == null ||
                     e["options"]["option"] == null) {
-                  print("error: product is null");
+                  debugPrint("error: product is null");
                   return null;
                 }
                 final productOptions = (e["options"]["option"] is List)
@@ -344,7 +361,9 @@ class ProductRepository {
                     endDay: e["baseinfo"]["dcls_end_day"],
                     submittedDay: e["baseinfo"]["fin_co_subm_day"],
                     joinWay: (e["baseinfo"]["join_way"] as String).split(","),
-                    isLiked: false,
+                    isLiked: likedProductNames.contains(
+                      e["baseinfo"]["fin_prdt_nm"],
+                    ),
                     productType: e["baseinfo"]["crdt_prdt_type"],
                     productTypeName: e["baseinfo"]["crdt_prdt_type_nm"],
                     cbName: e["baseinfo"]["cb_name"],
@@ -385,9 +404,9 @@ class ProductRepository {
                         .toList(),
                   );
                 } catch (error, stackTrace) {
-                  print("error: a mapping error: $error");
-                  print("error: trace the mapping error: $stackTrace");
-                  print("error: failed element: $e");
+                  debugPrint("error: a mapping error: $error");
+                  debugPrint("error: trace the mapping error: $stackTrace");
+                  debugPrint("error: failed element: $e");
                   return null;
                 }
               })
@@ -403,7 +422,7 @@ class ProductRepository {
                     e["baseinfo"]["fin_prdt_nm"] == null ||
                     e["options"] == null ||
                     e["options"]["option"] == null) {
-                  print("error: product is null");
+                  debugPrint("error: product is null");
                   return null;
                 }
                 final productOptions = (e["options"]["option"] is List)
@@ -421,7 +440,9 @@ class ProductRepository {
                     endDay: e["baseinfo"]["dcls_end_day"],
                     submittedDay: e["baseinfo"]["fin_co_subm_day"],
                     joinWay: (e["baseinfo"]["join_way"] as String).split(","),
-                    isLiked: false,
+                    isLiked: likedProductNames.contains(
+                      e["baseinfo"]["fin_prdt_nm"],
+                    ),
                     pensionKind: e["baseinfo"]["pnsn_kind"],
                     pensionKindName: e["baseinfo"]["pnsn_kind_nm"],
                     saleStartDay: e["baseinfo"]["sale_strt_day"],
@@ -463,9 +484,9 @@ class ProductRepository {
                         .toList(),
                   );
                 } catch (error, stackTrace) {
-                  print("error: a mapping error: $error");
-                  print("error: trace the mapping error: $stackTrace");
-                  print("error: failed element: $e");
+                  debugPrint("error: a mapping error: $error");
+                  debugPrint("error: trace the mapping error: $stackTrace");
+                  debugPrint("error: failed element: $e");
                   return null;
                 }
               })
@@ -475,7 +496,7 @@ class ProductRepository {
       };
       return (maxPage, products);
     } catch (error) {
-      print("error: Failed to load data $error");
+      debugPrint("error: Failed to load data $error");
       return (0, <FinancialProduct>[]);
     } finally {
       client.close();
@@ -483,6 +504,7 @@ class ProductRepository {
   }
 
   Future<(int, List<FinancialProduct>)> fetchIsaMpProductsAndCount(
+    String uid,
     String pageNo,
     String numOfRows,
     String baseYearMonth,
@@ -501,10 +523,10 @@ class ProductRepository {
       final Map<String, dynamic> response = await dataStore.fetchIsaMpProducts(
         options,
       );
-      print("response: $response");
+      debugPrint("response: $response");
       if (response["response"] == null ||
           response["response"]["body"] == null) {
-        print("error: response is null");
+        debugPrint("error: response is null");
         return (0, <FinancialProduct>[]);
       }
       final totalCount =
@@ -516,9 +538,16 @@ class ProductRepository {
 
       final body = response["response"]["body"];
       if (body["items"] == null || body["items"]["item"] == null) {
-        print("error: item is null");
+        debugPrint("error: item is null");
         return (0, <FinancialProduct>[]);
       }
+
+      final likedProducts = await likedRepository.getLikedProducts(uid);
+      final likedProductNames = likedProducts
+          .map((e) => e.commonInfo.productName)
+          .toList();
+      debugPrint("liked products: $likedProductNames");
+      
       final rawItems = body["items"]["item"] as Iterable<dynamic>;
 
       final items = rawItems
@@ -534,9 +563,9 @@ class ProductRepository {
               return IsaMpBenefitRate(
                 category: ProductCategory.isa,
                 companyName: e["cmpyNm"],
-                mpName: e["mpNm"],
+                productName: e["mpNm"],
                 releaseDate: e["rlsDt"],
-                isLiked: false,
+                isLiked: likedProductNames.contains(e["mpNm"]),
                 baseDate: e["basDt"],
                 businessDomain: e["bzds"],
                 mpType: e["mpTp"],
@@ -552,9 +581,9 @@ class ProductRepository {
                     .toList(),
               );
             } catch (error, stackTrace) {
-              print("error: a mapping error: $error");
-              print("error: trace the mapping error: $stackTrace");
-              print("error: failed element: $e");
+              debugPrint("error: a mapping error: $error");
+              debugPrint("error: trace the mapping error: $stackTrace");
+              debugPrint("error: failed element: $e");
               return null;
             }
           })
@@ -563,7 +592,7 @@ class ProductRepository {
           .cast<FinancialProduct>();
       return (totalCount, items);
     } catch (error) {
-      print("error: Failed to load data $error");
+      debugPrint("error: Failed to load data $error");
       return (0, <FinancialProduct>[]);
     } finally {
       client.close();

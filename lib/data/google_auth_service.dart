@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthService {
@@ -32,7 +33,7 @@ class GoogleAuthService {
         final authorization2 = await authorizationClient.authorizationForScopes(['email', 'profile']);
 
         if(authorization2?.accessToken == null){
-          print('Access token is null');
+          debugPrint('Access token is null');
           return null;
         }
         authorization = authorization2;
@@ -47,14 +48,14 @@ class GoogleAuthService {
       final User? user = userCredential.user;
       
       if (user != null) {
-        print('User signed in: ${user.displayName}, ${user.email}');
+        debugPrint('User signed in: ${user.displayName}, ${user.email}');
         return userCredential;
       } else {
-        print('User sign-in failed');
+        debugPrint('User sign-in failed');
         return null;
       }
     } catch (e) {
-      print('Error signing in with Google: $e');
+      debugPrint('Error signing in with Google: $e');
       return null;
     }
   }
@@ -63,9 +64,9 @@ class GoogleAuthService {
     try {
       await _googleSignIn.signOut();
       await _auth.signOut();
-      print('User signed out successfully');
+      debugPrint('User signed out successfully');
     } catch (e) {
-      print('Error signing out: $e');
+      debugPrint('Error signing out: $e');
     }
   }
 
