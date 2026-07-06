@@ -20,7 +20,7 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
         return [];
       }
       final products = await repository.getLikedProducts(user.uid);
-      debugPrint("liked_products $products");
+
       if (products.isEmpty) {
         return [];
       }
@@ -103,10 +103,7 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
 
       final allProducts = await ref.read(fetchLikedViewmodelProvider.future);
       debugPrint("liked all products: $allProducts");
-      state = AsyncData([
-        ...getProductsFilteredByCriteria(allProducts),
-        product,
-      ]);
+      state = AsyncData(getProductsFilteredByCriteria(allProducts));
     } catch (e) {
       print("Error checking collection existence: $e");
     }

@@ -77,6 +77,9 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                       filter.$2[index],
                                     )) {
                                       selectedOptions.remove(filter.$2[index]);
+                                      if(selectedOptions.isEmpty){
+                                        selectedOptions = [filter.$2[0]];
+                                      }
                                     } else {
                                       selectedOptions.add(filter.$2[index]);
                                       selectedOptions.remove(filter.$2[0]);
