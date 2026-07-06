@@ -61,7 +61,7 @@ class IsaMpBenefitRate extends FinancialProduct {
       "isLiked": true,
       "category": "${commonInfo.category}",
       "companyName": "${commonInfo.companyName}",
-      "mpName": "${commonInfo.productName}",
+      "productName": "${commonInfo.productName}",
       "releaseDate": "${commonInfo.submittedDay}",
       "baseDate": "$baseDate",
       "businessDomain": "$businessDomain",

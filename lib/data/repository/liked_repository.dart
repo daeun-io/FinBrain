@@ -74,7 +74,8 @@ class LikedRepository {
                           reserveTypeName: e["reserveTypeName"],
                         ),
                       )
-                      .toList().cast<DepositAndInstallmentSavingsOption>(),
+                      .toList()
+                      .cast<DepositAndInstallmentSavingsOption>(),
                 ),
               );
               break;
@@ -114,7 +115,8 @@ class LikedRepository {
                         lendRateAvg: e["lendRateAvg"],
                       ),
                     )
-                    .toList().cast<MortageAndRentLoanOption>(),
+                    .toList()
+                    .cast<MortageAndRentLoanOption>(),
               ),
             );
             break;
@@ -151,80 +153,91 @@ class LikedRepository {
                         averageGrade: e["averageGrade"],
                       ),
                     )
-                    .toList().cast<CreditLoanOption>(),
+                    .toList()
+                    .cast<CreditLoanOption>(),
               ),
             );
             break;
           case ProductCategory.annuity:
-            products.add(
-              AnnuitySavings(
-                category: ProductCategory.annuity,
-                submittedMonth: map["submittedMonth"],
-                companyCode: map["companyCode"],
-                companyName: map["companyName"],
-                productCode: map["productCode"],
-                productName: map["productName"],
-                startDay: map["startDay"],
-                endDay: map["endDay"],
-                submittedDay: map["submittedDay"],
-                joinWay: (map["joinWay"] as List<dynamic>).cast<String>(),
-                isLiked: map["isLiked"],
-                pensionKind: map["pensionKind"],
-                pensionKindName: map["pensionKindName"],
-                saleStartDay: map["saleStartDay"],
-                maintenanceCount: map["maintenanceCount"],
-                productType: map["productType"],
-                productTypeName: map["productTypeName"],
-                averageProfit: map["averageProfit"],
-                declaredRate: map["declaredRate"],
-                guaranteedRate: map["guaranteedRate"],
-                pyProfitRate: map["pyProfitRate"],
-                ppyProfitRate: map["ppyProfitRate"],
-                pppyProfitRate: map["pppyProfitRate"],
-                etc: map["etc"],
-                saleCompany: map["saleCompany"],
-                // 맵의 리스트
-                options: map["options"]
-                    .map(
-                      (e) => AnnuitySavingsOption(
-                        receiptTerm: e["receiptTerm"],
-                        receiptTermName: e["receiptTermName"],
-                        entryAge: e["entryAge"],
-                        entryAgeName: e["entryAgeName"],
-                        monthlyPayment: e["monthlyPayment"],
-                        monthlyPaymentName: e["monthlyPaymentName"],
-                        paymentPeriod: e["paymentPeriod"],
-                        paymentPeriodName: e["paymentPeriodName"],
-                        startAge: e["startAge"],
-                        startAgeName: e["startAgeName"],
-                        monthlyReceiptAmount: e["monthlyReceiptAmount"],
-                      ),
-                    )
-                    .toList().cast<AnnuitySavingsOption>(),
-              ),
-            );
+            try {
+              products.add(
+                AnnuitySavings(
+                  category: ProductCategory.annuity,
+                  submittedMonth: map["submittedMonth"],
+                  companyCode: map["companyCode"],
+                  companyName: map["companyName"],
+                  productCode: map["productCode"],
+                  productName: map["productName"],
+                  startDay: map["startDay"],
+                  endDay: map["endDay"],
+                  submittedDay: map["submittedDay"],
+                  joinWay: (map["joinWay"] as List<dynamic>).cast<String>(),
+                  isLiked: map["isLiked"],
+                  pensionKind: map["pensionKind"],
+                  pensionKindName: map["pensionKindName"],
+                  saleStartDay: map["saleStartDay"],
+                  maintenanceCount: map["maintenanceCount"],
+                  productType: map["productType"],
+                  productTypeName: map["productTypeName"],
+                  averageProfit: double.tryParse(map["averageProfit"]),
+                  declaredRate: map["declaredRate"],
+                  guaranteedRate: map["guaranteedRate"],
+                  pyProfitRate: double.tryParse(map["pyProfitRate"]),
+                  ppyProfitRate: double.tryParse(map["ppyProfitRate"]),
+                  pppyProfitRate: double.tryParse(map["pppyProfitRate"]),
+                  etc: map["etc"],
+                  saleCompany: map["saleCompany"],
+                  // 맵의 리스트
+                  options: map["options"]
+                      .map(
+                        (e) => AnnuitySavingsOption(
+                          receiptTerm: e["receiptTerm"],
+                          receiptTermName: e["receiptTermName"],
+                          entryAge: e["entryAge"],
+                          entryAgeName: e["entryAgeName"],
+                          monthlyPayment: e["monthlyPayment"],
+                          monthlyPaymentName: e["monthlyPaymentName"],
+                          paymentPeriod: e["paymentPeriod"],
+                          paymentPeriodName: e["paymentPeriodName"],
+                          startAge: e["startAge"],
+                          startAgeName: e["startAgeName"],
+                          monthlyReceiptAmount: e["monthlyReceiptAmount"],
+                        ),
+                      )
+                      .toList()
+                      .cast<AnnuitySavingsOption>(),
+                ),
+              );
+            } catch (e) {
+              print("error occured while mapping annuity data $e");
+            }
             break;
           default:
-            products.add(
-              IsaMpBenefitRate(
-                category: ProductCategory.isa,
-                companyName: map["companyName"],
-                mpName: map["mpName"],
-                releaseDate: map["releaseDate"],
-                isLiked: map["isLiked"],
-                baseDate: map["baseDate"],
-                businessDomain: map["businessDomain"],
-                mpType: map["mpType"],
-                options: map["options"]
-                    .map(
-                      (e) => IsaMpBenefitRateOption(
-                        term: e["term"],
-                        benefitRate: e["benefitRate"],
-                      ),
-                    )
-                    .toList().cast<IsaMpBenefitRateOption>(),
-              ),
-            );
+            try {
+              products.add(
+                IsaMpBenefitRate(
+                  category: ProductCategory.isa,
+                  companyName: map["companyName"],
+                  mpName: map["mpName"],
+                  releaseDate: map["releaseDate"],
+                  isLiked: map["isLiked"],
+                  baseDate: map["baseDate"],
+                  businessDomain: map["businessDomain"],
+                  mpType: map["mpType"],
+                  options: map["options"]
+                      .map(
+                        (e) => IsaMpBenefitRateOption(
+                          term: e["term"],
+                          benefitRate: e["benefitRate"],
+                        ),
+                      )
+                      .toList()
+                      .cast<IsaMpBenefitRateOption>(),
+                ),
+              );
+            } catch (e) {
+              print("error occured while mapping isa data $e");
+            }
         }
       }
       return products.cast<FinancialProduct>();
