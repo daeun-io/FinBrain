@@ -93,7 +93,7 @@ final class SelectedCtgForArchiveViewmodelProvider
 }
 
 String _$selectedCtgForArchiveViewmodelHash() =>
-    r'9dd1efae1e904773138a12118f57a6264a2f4c8c';
+    r'2666740efbb6089b24b344587bf465b6cb20325e';
 
 abstract class _$SelectedCtgForArchiveViewmodel
     extends $Notifier<List<ProductCategory>> {

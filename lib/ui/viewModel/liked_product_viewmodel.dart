@@ -1,15 +1,15 @@
 import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/repository/liked_repository.dart';
-import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter/rendering.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'liked_product_viewmodel.g.dart';
 
-@riverpod
-class LikedProductViewmodel extends _$LikedProductViewmodel {
-  final repository = LikedRepository();
+final repository = LikedRepository();
 
+@riverpod
+class FetchLikedViewmodel extends _$FetchLikedViewmodel {
   @override
   Future<List<FinancialProduct>> build() async {
     try {
@@ -20,7 +20,6 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
       }
       final products = await repository.getLikedProducts(user.uid);
       print("liked_products $products");
-
       if (products.isEmpty) {
         return [];
       }
@@ -30,42 +29,56 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
       return [];
     }
   }
+}
 
-  void filterByCategory(String criteria) {
+@riverpod
+class LikedProductViewmodel extends _$LikedProductViewmodel {
+  @override
+  Future<List<FinancialProduct>> build() async {
+    final likedProducts = ref.watch(fetchLikedViewmodelProvider);
+    debugPrint("liked products: $likedProducts");
+    final filtered = filterByCategory("모든 상품", likedProducts.value);
+    debugPrint("liked filtered products: $filtered");
+    return filtered;
+  }
+
+  List<FinancialProduct> filterByCategory(
+    String criteria, [
+    List<FinancialProduct>? products,
+  ]) {
     final criteriaList = criteria.split(",").map((e) => e.trim()).toList();
-    print("criteriaList : $criteriaList");
-    final categories = (criteriaList.first == "모든 상품")
-        ? [
-            ProductCategory.deposit,
-            ProductCategory.installment,
-            ProductCategory.isa,
-            ProductCategory.mortage,
-            ProductCategory.rent,
-            ProductCategory.credit,
-            ProductCategory.annuity,
-          ]
-        : [
-            for (final item in criteriaList)
-              if (item == "정기예금")
-                ProductCategory.deposit
-              else if (item == "적금")
-                ProductCategory.installment
-              else if (item == "ISA")
-                ProductCategory.isa
-              else if (item == "주택담보대출")
-                ProductCategory.mortage
-              else if (item == "전세자금대출")
-                ProductCategory.rent
-              else if (item == "개인신용대출")
-                ProductCategory.credit
-              else
-                ProductCategory.annuity,
-          ];
-    state = AsyncData(
-      (state.value ?? [])
-          .where((e) => categories.contains(e.commonInfo.category))
-          .toList(),
-    );
+    print("liked criteriaList : $criteriaList");
+    final categories = [];
+    if (criteriaList.contains("모든 상품")) {
+      categories.addAll(ProductCategory.values);
+    } else {
+      if (criteriaList.contains("정기예금"))
+        categories.add(ProductCategory.deposit);
+      if (criteriaList.contains("적금"))
+        categories.add(ProductCategory.installment);
+      if (criteriaList.contains("ISA")) categories.add(ProductCategory.isa);
+      if (criteriaList.contains("주택담보대출"))
+        categories.add(ProductCategory.mortage);
+      if (criteriaList.contains("전세자금대출")) categories.add(ProductCategory.rent);
+      if (criteriaList.contains("개인신용대출"))
+        categories.add(ProductCategory.credit);
+      if (criteriaList.contains("연금저축"))
+        categories.add(ProductCategory.annuity);
+    }
+
+    debugPrint("liked categories: $categories");
+    debugPrint("liked state: ${state.value}");
+
+    final fetchedProducts = ref.read(fetchLikedViewmodelProvider);
+    final baseProducts = products ?? fetchedProducts.value ?? [];
+    
+    final filtered = baseProducts
+        .where((e) => categories.contains(e.commonInfo.category))
+        .toList();
+
+    debugPrint("liked filtered in func: $filtered");
+    state = AsyncData(filtered);
+    return filtered;
   }
 
   Future<void> addInLikedList(FinancialProduct product) async {
