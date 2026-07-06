@@ -8,12 +8,13 @@ import 'package:finbrain/product_categories.dart';
 class FiltersRepository {
   Future<Map<String, List<(String, bool)>>> fetchFilters(
     FilterTextCategory ctg,
-    String topFinGrpNo
+    String topFinGrpNo,
   ) async {
     final Map<String, List<(String, bool)>> filters = {};
     if (ctg == FilterTextCategory.isaJoin ||
         ctg == FilterTextCategory.isaManagement ||
         ctg == FilterTextCategory.isaMp) {
+      filters["기준년도"] = [(DateTime.now().year.toString(), true)];
       filters["업권"] = switch (ctg) {
         FilterTextCategory.isaJoin => [
           ("총합", true),
@@ -30,16 +31,26 @@ class FiltersRepository {
         _ => [],
       };
       if (ctg == FilterTextCategory.isaMp) {
-        filters["MP 종류"] = [("초저위험", true), ("저위험", true), ("중위험", true), ("고위험", true), ("초고위험", true)];
+        filters["MP 종류"] = [
+          ("초저위험", true),
+          ("저위험", true),
+          ("중위험", true),
+          ("고위험", true),
+          ("초고위험", true),
+        ];
       } else {
-        filters["ISA 형태"] = [("신탁형 ISA", true), ("일임형 ISA", true), ("투자중개형 ISA", true)];
+        filters["ISA 형태"] = [
+          ("신탁형 ISA", true),
+          ("일임형 ISA", true),
+          ("투자중개형 ISA", true),
+        ];
         if (ctg == FilterTextCategory.isaManagement) {
           filters["구분"] = [("비중", true), ("금액", false)];
         }
       }
     } else {
       final cmpyList = await fetchCmpyNames(topFinGrpNo);
-      
+
       final selectedFinGroup = getFinGroupName[topFinGrpNo] ?? "";
       final List<String> finGroups = switch (ctg) {
         FilterTextCategory.savings => ["은행", "저축은행"],
@@ -84,7 +95,7 @@ class FiltersRepository {
       print("error: product is null");
       return {};
     }
-    
+
     return result["result"]["products"] as Iterable<dynamic>;
   }
 }

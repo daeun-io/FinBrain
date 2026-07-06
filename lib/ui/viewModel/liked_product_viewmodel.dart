@@ -126,13 +126,7 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
 
       final allProducts = await ref.read(fetchLikedViewmodelProvider.future);
       debugPrint("liked all products: $allProducts");
-      state = AsyncData(
-        getProductsFilteredByCriteria(allProducts)
-            .where(
-              (e) => e.commonInfo.productName != product.commonInfo.productName,
-            )
-            .toList(),
-      );
+      state = AsyncData(getProductsFilteredByCriteria(allProducts));
     } catch (e) {
       debugPrint("Error deleting liked product: $e");
     }

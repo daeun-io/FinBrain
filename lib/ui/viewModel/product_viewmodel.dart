@@ -1,4 +1,5 @@
 import 'package:finbrain/data/converter.dart';
+import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/data/model/entities/annuity_savings.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
@@ -10,6 +11,7 @@ import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_viewmodel.g.dart';
@@ -28,6 +30,13 @@ class ProductViewmodel extends _$ProductViewmodel {
     String pageNo, [
     Map<String, List<(String, bool)>>? snapshot,
   ]) async {
+    final user = GoogleAuthService.getCurrentUser();
+    if (user == null) {
+      debugPrint("No user is currently signed in.");
+      state = AsyncData((0, <FinancialProduct>[]));
+      return;
+    }
+
     if (ctg == ProductCategory.isa) {
       state = AsyncData((0, <FinancialProduct>[]));
     }
@@ -70,6 +79,7 @@ class ProductViewmodel extends _$ProductViewmodel {
         .toString();
 
     final result = await repository.fetchFinlifeProductsAndPageNo(
+      user.uid,
       ctg,
       topFinGrpNo,
       pageNo,
@@ -95,6 +105,13 @@ class ProductViewmodel extends _$ProductViewmodel {
     String pageNo, [
     Map<String, List<(String, bool)>>? snapshot,
   ]) async {
+    final user = GoogleAuthService.getCurrentUser();
+    if (user == null) {
+      debugPrint("No user is currently signed in.");
+      state = AsyncData((0, <FinancialProduct>[]));
+      return;
+    }
+
     final filters =
         snapshot ??
         (await ref.read(
@@ -109,11 +126,15 @@ class ProductViewmodel extends _$ProductViewmodel {
           .toList();
     }
 
+    final baseYear = (selectedFilters["기준년도"]?.isNotEmpty ?? false)
+        ? selectedFilters["기준년도"]!.first
+        : DateTime.now().year.toString();
+
     final result = await repository.fetchIsaMpProductsAndCount(
+      user.uid,
       pageNo,
       "1000",
-      // todo: change later
-      DateTime.now().year.toString(),
+      baseYear,
     );
 
     final totalCount = result.$1;
@@ -145,13 +166,15 @@ class ProductViewmodel extends _$ProductViewmodel {
       }
     }).toList();
     state = AsyncData((currentState.$1, updated));
-    
+
     if (isLiked == true) {
       ref
           .read(likedProductViewmodelProvider.notifier)
           .deleteInLikedList(product);
     } else {
-      ref.read(likedProductViewmodelProvider.notifier).addInLikedList(product.copyWith(!isLiked));
+      ref
+          .read(likedProductViewmodelProvider.notifier)
+          .addInLikedList(product.copyWith(!isLiked));
     }
   }
 
