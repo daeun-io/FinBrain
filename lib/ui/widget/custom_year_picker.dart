@@ -43,8 +43,13 @@ class _YearPickerPageState extends State<CustomYearPicker> {
       child: ListWheelScrollView.useDelegate(
         key: ValueKey(widget.selectedYear),
         controller: _scrollController,
-        itemExtent: 30.0,
-        physics: const FixedExtentScrollPhysics(),
+        itemExtent: 42.0,
+        physics: const BouncingScrollPhysics(
+          parent: FixedExtentScrollPhysics()
+        ),
+        clipBehavior: Clip.none,
+        diameterRatio: 1.5,
+        perspective: 0.003,
         onSelectedItemChanged: (value) {
           setState(() {
             _localSelected = yearList[value];

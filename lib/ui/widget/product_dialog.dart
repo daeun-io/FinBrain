@@ -83,51 +83,57 @@ class ProductDialog extends ConsumerWidget {
                     ),
                   ],
                 ),
-                Flexible(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      ...filters.entries.map((e) {
-                        if (e.key == "기준 연도") {
-                          final filters = ref.read(
-                            dialogFiltersViewModelProvider(filterCategory),
-                          );
-                          final year = (filters["기준 연도"] ?? []).first.$1;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (filterCategory == FilterTextCategory.isaJoin ||
+                            filterCategory ==
+                                FilterTextCategory.isaManagement ||
+                            filterCategory == FilterTextCategory.isaMp)
+                          Column(
                             children: [
-                              const SizedBox(height: 8.0,),
-                              const Text(
-                                "기준 연도",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.w400,
-                                  color: textSecondary,
+                              const SizedBox(height: 8.0),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: const Text(
+                                  "기준년도",
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: textSecondary,
+                                  ),
                                 ),
                               ),
                               CustomYearPicker(
                                 selectedYear:
-                                    int.tryParse(year) ?? DateTime.now().year,
+                                    int.tryParse(filters["기준년도"]!.first.$1) ??
+                                    DateTime.now().year,
                                 onYearChanged: (value) => ref
                                     .read(
                                       dialogFiltersViewModelProvider(
                                         filterCategory,
                                       ).notifier,
                                     )
-                                    .toggleSelected(value.toString(), true),
+                                    .selectBaseYear(value.toString()),
                               ),
-                              const SizedBox(height: 20.0,),
+                              const SizedBox(height: 8.0),
                             ],
-                          );
-                        } else {
+                          ),
+                        ...filters.entries.map((e) {
+                          if (e.key == "기준년도") {
+                            return SizedBox(height: 8.0);
+                          }
                           return ProductFilterCondition(
                             category: filterCategory,
                             filter: e.key,
                             filterList: e.value,
                           );
-                        }
-                      }),
-                    ],
+                        }),
+                      ],
+                    ),
                   ),
                 ),
                 Row(
@@ -140,7 +146,11 @@ class ProductDialog extends ConsumerWidget {
                               filterCategory,
                             ).notifier,
                           );
-                          await notifier.applyChanges(productCategory, "1", filterCategory);
+                          await notifier.applyChanges(
+                            productCategory,
+                            "1",
+                            filterCategory,
+                          );
                           if (context.mounted) Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

@@ -6,6 +6,7 @@ import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_topFinGrpNo_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'filters_viewmodel.g.dart';
 
@@ -35,7 +36,6 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
   @override
   Map<String, List<(String, bool)>> build(FilterTextCategory ctg) {
     final currentSaved = ref.read(savedFiltersProvider(ctg));
-    print("currentSaved: $currentSaved");
     if (currentSaved.isEmpty) {
       fetchInitialFilters(ctg);
       return {};
@@ -50,7 +50,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
         state = Map<String, List<(String, bool)>>.from(data);
       }
     } catch (error) {
-      print("error: Failed to fetch filters, $error");
+      debugPrint("error: Failed to fetch filters, $error");
     }
   }
 
@@ -67,7 +67,6 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
         else
           entry.key: entry.value,
     };
-    print("updated filters: $updated");
 
     final selectedFinGrp = updated["금융회사"];
     if (selectedFinGrp == null || selectedFinGrp == state["금융회사"]) {
@@ -90,30 +89,55 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
           else
             entry.key: entry.value,
       };
-      print("filter: toggle state, $state");
+      debugPrint("filter: toggle state, $state");
     } catch (error) {
-      print("Failed to fetch company list, $error");
+      debugPrint("Failed to fetch company list, $error");
       state = updated;
+    }
+  }
+
+  void selectBaseYear(String year) {
+    try {
+      final updated = {
+        for (final entry in state.entries)
+          if (entry.key == "기준년도")
+            entry.key: [(year, true)]
+          else
+            entry.key: entry.value,
+      };
+      state = updated;
+
+    } catch (e) {
+      debugPrint("Failed to change the base year, $e");
+      state = {};
     }
   }
 
   Future<void> applyChanges(
     ProductCategory productCategory,
-    String pageNo,[
-      FilterTextCategory? filterCategory,
-    ]
-  ) async {
+    String pageNo, [
+    FilterTextCategory? filterCategory,
+  ]) async {
     final snapshot = Map<String, List<(String, bool)>>.from(state);
     ref.read(savedFiltersProvider(ctg).notifier).save(snapshot);
     if (productCategory != ProductCategory.isa) {
       ref
           .read(productViewmodelProvider.notifier)
           .fetchFinlifeProducts(productCategory, "1", snapshot);
-    }else{
-      switch(filterCategory){
-        case FilterTextCategory.isaJoin: ref.read(isaJoinStatusViewModelProvider.notifier).fetchIsaJoinStatus(pageNo, snapshot);
-        case FilterTextCategory.isaManagement: ref.read(isaManagementStatusViewModelProvider.notifier).fetchIsaManagementStatus(pageNo, snapshot);
-        default: ref.read(productViewmodelProvider.notifier).fetchIsaMpProducts(pageNo, snapshot);
+    } else {
+      switch (filterCategory) {
+        case FilterTextCategory.isaJoin:
+          ref
+              .read(isaJoinStatusViewModelProvider.notifier)
+              .fetchIsaJoinStatus(pageNo, snapshot);
+        case FilterTextCategory.isaManagement:
+          ref
+              .read(isaManagementStatusViewModelProvider.notifier)
+              .fetchIsaManagementStatus(pageNo, snapshot);
+        default:
+          ref
+              .read(productViewmodelProvider.notifier)
+              .fetchIsaMpProducts(pageNo, snapshot);
       }
     }
   }
