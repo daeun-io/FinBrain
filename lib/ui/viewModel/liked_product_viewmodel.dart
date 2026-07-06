@@ -2,6 +2,7 @@ import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/repository/liked_repository.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:flutter/rendering.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'liked_product_viewmodel.g.dart';
@@ -15,17 +16,17 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No user is currently signed in.");
+        debugPrint("No user is currently signed in.");
         return [];
       }
       final products = await repository.getLikedProducts(user.uid);
-      print("liked_products $products");
+      debugPrint("liked_products $products");
       if (products.isEmpty) {
         return [];
       }
       return products;
     } catch (e) {
-      print("Error fetching data in liked_products $e");
+      debugPrint("Error fetching data in liked_products $e");
       return [];
     }
   }
@@ -36,10 +37,7 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
   @override
   Future<List<FinancialProduct>> build() async {
     final likedProducts = ref.watch(fetchLikedViewmodelProvider);
-    debugPrint("liked products: $likedProducts");
-    final filtered = filterByCategory("모든 상품", likedProducts.value);
-    debugPrint("liked filtered products: $filtered");
-    return filtered;
+    return getProductsFilteredByCriteria(likedProducts.value);
   }
 
   List<FinancialProduct> filterByCategory(
@@ -47,7 +45,7 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     List<FinancialProduct>? products,
   ]) {
     final criteriaList = criteria.split(",").map((e) => e.trim()).toList();
-    print("liked criteriaList : $criteriaList");
+
     final categories = [];
     if (criteriaList.contains("모든 상품")) {
       categories.addAll(ProductCategory.values);
@@ -66,30 +64,49 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
         categories.add(ProductCategory.annuity);
     }
 
-    debugPrint("liked categories: $categories");
-    debugPrint("liked state: ${state.value}");
-
     final fetchedProducts = ref.read(fetchLikedViewmodelProvider);
     final baseProducts = products ?? fetchedProducts.value ?? [];
-    
+
     final filtered = baseProducts
         .where((e) => categories.contains(e.commonInfo.category))
         .toList();
-
-    debugPrint("liked filtered in func: $filtered");
     state = AsyncData(filtered);
     return filtered;
+  }
+
+  List<FinancialProduct> getProductsFilteredByCriteria([
+    List<FinancialProduct>? allProducts,
+  ]) {
+    final criteria = ref.read(
+      sortOrFilterTextViewModelProvider(FilterTextCategory.liked),
+    );
+    return filterByCategory(
+      (criteria.$1 as List<String>)
+          .toString()
+          .replaceAll("[", "")
+          .replaceAll("]", ""),
+      allProducts,
+    );
   }
 
   Future<void> addInLikedList(FinancialProduct product) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No user is currently signed in.");
+        debugPrint("No user is currently signed in.");
         return;
       }
-      state = AsyncData([...state.value ?? [], product]);
+
       await repository.saveProductAsLiked(user.uid, product);
+
+      ref.invalidate(fetchLikedViewmodelProvider);
+
+      final allProducts = await ref.read(fetchLikedViewmodelProvider.future);
+      debugPrint("liked all products: $allProducts");
+      state = AsyncData([
+        ...getProductsFilteredByCriteria(allProducts),
+        product,
+      ]);
     } catch (e) {
       print("Error checking collection existence: $e");
     }
@@ -99,22 +116,28 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No user is currently signed in.");
+        debugPrint("No user is currently signed in.");
         return;
       }
+
+      await repository.deleteProductInFirestore(
+        user.uid,
+        product.commonInfo.productName!,
+      );
+
+      ref.invalidate(fetchLikedViewmodelProvider);
+
+      final allProducts = await ref.read(fetchLikedViewmodelProvider.future);
+      debugPrint("liked all products: $allProducts");
       state = AsyncData(
-        (state.value ?? [])
+        getProductsFilteredByCriteria(allProducts)
             .where(
               (e) => e.commonInfo.productName != product.commonInfo.productName,
             )
             .toList(),
       );
-      await repository.deleteProductInFirestore(
-        user.uid,
-        product.commonInfo.productName!,
-      );
     } catch (e) {
-      print("Error deleting liked product: $e");
+      debugPrint("Error deleting liked product: $e");
     }
   }
 
@@ -125,6 +148,8 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
             .where((e) => e.commonInfo.productName!.contains(keyword))
             .toList(),
       );
+    } else {
+      state = AsyncData(getProductsFilteredByCriteria());
     }
   }
 }
