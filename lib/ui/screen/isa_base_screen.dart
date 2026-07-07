@@ -154,95 +154,79 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
               final prevItems = items.sublist(0, index);
               final nextItems = items.sublist(index);
               return Expanded(
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: primary300),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // header
-                            Container(
-                              height: 40.0,
-                              color: primary100,
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  for (final label in column)
-                                    Flexible(
-                                      flex:
-                                          (label == "ISA 종류" ||
-                                              label == "편입자산 구분")
-                                          ? 3
-                                          : 2,
-                                      child: Center(
-                                        child: Text(
-                                          label,
-                                          style: const TextStyle(
-                                            color: textPrimary,
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: primary300),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // header
+                        Container(
+                          height: 40.0,
+                          color: primary100,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              for (final label in column)
+                                Flexible(
+                                  flex:
+                                      (label == "ISA 종류" || label == "편입자산 구분")
+                                      ? 3
+                                      : 2,
+                                  child: Center(
+                                    child: Text(
+                                      label,
+                                      style: const TextStyle(
+                                        color: textPrimary,
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                ],
-                              ),
-                            ),
-                            // rows
-                            Expanded(
-                              child: CustomScrollView(
-                                controller: _controller,
-                                center: _centerKey,
-                                physics: const BouncingScrollPhysics(),
-                                slivers: [
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate((
-                                      context,
-                                      index,
-                                    ) {
-                                      final item =
-                                          prevItems[prevItems.length -
-                                              1 -
-                                              index];
-                                      return _buildTableRow(item);
-                                    }, childCount: prevItems.length),
                                   ),
-                                  SliverPadding(
-                                    key: _centerKey,
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate((
-                                      context,
-                                      index,
-                                    ) {
-                                      final item = nextItems[index];
-                                      return _buildTableRow(item);
-                                    }, childCount: nextItems.length),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
+                        // rows
+                        Expanded(
+                          child: CustomScrollView(
+                            controller: _controller,
+                            center: _centerKey,
+                            physics: const BouncingScrollPhysics(),
+                            slivers: [
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate((
+                                  context,
+                                  index,
+                                ) {
+                                  final item =
+                                      prevItems[prevItems.length - 1 - index];
+                                  return _buildTableRow(item);
+                                }, childCount: prevItems.length),
+                              ),
+                              SliverPadding(
+                                key: _centerKey,
+                                padding: EdgeInsets.zero,
+                              ),
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate((
+                                  context,
+                                  index,
+                                ) {
+                                  final item = nextItems[index];
+                                  return _buildTableRow(item);
+                                }, childCount: nextItems.length),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: AiButton(
-                        tag: (widget.category == FilterTextCategory.isaJoin)
-                            ? "isaJoin"
-                            : "isaManagement",
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               );
             },
@@ -278,7 +262,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
           });
         }
       });
-      
+
       return Column(
         children: [
           const SizedBox(height: 16.0),

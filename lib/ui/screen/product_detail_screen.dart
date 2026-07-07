@@ -99,7 +99,7 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       ..._displayDefaultWidgetList(product),
                       ..._displayDynamicWidgetList(productCategory, product),
-                      SizedBox(height: 80.0),
+                      SizedBox(height: 160.0),
                     ],
                   ),
                 ),

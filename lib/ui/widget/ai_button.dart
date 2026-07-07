@@ -60,7 +60,7 @@ class AiButton extends ConsumerWidget {
             );
           }
         },
-        backgroundColor: primary900,
+        backgroundColor: aiButtonBg,
         splashColor: Colors.transparent,
         shape: const CircleBorder(),
         elevation: 0.0,
