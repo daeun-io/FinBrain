@@ -19,6 +19,7 @@ class FiltersViewmodel extends _$FiltersViewmodel {
     FilterTextCategory ctg,
   ) async {
     final topFinGrpMap = ref.watch(selectedTopfingrpnoViewmodelProvider);
+    print("topFinGrp by selected topFingrp viewmodel: $topFinGrpMap");
     final topFinGrpNo =
         topFinGrpMap[switch (ctg) {
           FilterTextCategory.savings => "예적금",
@@ -54,7 +55,11 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
     }
   }
 
-  Future<void> toggleSelected(String text, bool selected) async {
+  Future<void> toggleSelected(
+    FilterTextCategory ctg,
+    String text,
+    bool selected,
+  ) async {
     final updated = {
       for (final entry in state.entries)
         if (entry.value.contains((text, selected)))
@@ -73,11 +78,9 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
       state = updated;
       return;
     }
-
     final sFinGrpName =
         selectedFinGrp.where((e) => e.$2).map((e) => e.$1).firstOrNull ?? "";
     final topFinGrpNo = getFinGroupCode[sFinGrpName] ?? "020000";
-
     try {
       final cmpyList = await repository.fetchCmpyNames(topFinGrpNo);
       state = {
@@ -106,7 +109,6 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
             entry.key: entry.value,
       };
       state = updated;
-
     } catch (e) {
       debugPrint("Failed to change the base year, $e");
       state = {};
@@ -120,6 +122,21 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
   ]) async {
     final snapshot = Map<String, List<(String, bool)>>.from(state);
     ref.read(savedFiltersProvider(ctg).notifier).save(snapshot);
+    if (snapshot["금융회사"] != null) {
+      final topFinGrpName = snapshot["금융회사"]!
+          .firstWhere((e) => e.$2 == true).$1;
+      final topFinGrpNo = getFinGroupCode[topFinGrpName] ?? ((filterCategory == FilterTextCategory.annuity) ? "050000": "020000");
+      ref.read(selectedTopfingrpnoViewmodelProvider.notifier).changeTopFinGrp(
+        switch (ctg) {
+          FilterTextCategory.savings => "예적금",
+          FilterTextCategory.loan => "대출",
+          FilterTextCategory.annuity => "연금저축",
+          _ => "",
+        },
+        topFinGrpNo,
+      );
+    }
+
     if (productCategory != ProductCategory.isa) {
       ref
           .read(productViewmodelProvider.notifier)

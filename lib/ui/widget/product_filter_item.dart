@@ -19,12 +19,12 @@ class ProductFilterItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var localIsSelected = isSelected;
-    
+
     return GestureDetector(
       onTap: () {
         ref
             .read(dialogFiltersViewModelProvider(category).notifier)
-            .toggleSelected(text, localIsSelected);
+            .toggleSelected(category, text, localIsSelected);
       },
       child: Card(
         color: localIsSelected ? primary700 : white,

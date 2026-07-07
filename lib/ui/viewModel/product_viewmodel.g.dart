@@ -37,7 +37,7 @@ final class ProductViewmodelProvider
   ProductViewmodel create() => ProductViewmodel();
 }
 
-String _$productViewmodelHash() => r'7cfa7e60135789c703c337fcd6adfcddeee78eed';
+String _$productViewmodelHash() => r'9e9271033512e70fac22081a072ee7d634345949';
 
 abstract class _$ProductViewmodel
     extends $AsyncNotifier<(int, List<FinancialProduct>)> {

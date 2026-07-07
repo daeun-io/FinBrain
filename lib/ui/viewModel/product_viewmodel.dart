@@ -7,6 +7,8 @@ import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/repository/product_repository.dart';
+import 'package:finbrain/ui/viewModel/archive_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/selected_topFinGrpNo_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
@@ -59,12 +61,11 @@ class ProductViewmodel extends _$ProductViewmodel {
           .map((e) => e.$1)
           .toList();
     }
-
     final topFinGrpNo =
         getFinGroupCode[selectedFilters["금융회사"]?.first ??
             ((ctg == ProductCategory.annuity) ? "050000" : "020000")] ??
         ((ctg == ProductCategory.annuity) ? "050000" : "020000");
-
+    print("topFinGrpNo: $topFinGrpNo");
     if (selectedFilters["회사 선택"] != null && selectedFilters["회사 선택"]!.isEmpty) {
       final List<String> companies = [];
       for (final filter in filters["회사 선택"]!) {
@@ -81,7 +82,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     final result = await repository.fetchFinlifeProductsAndPageNo(
       user.uid,
       ctg,
-      topFinGrpNo,
+      topFinGrpNo!,
       pageNo,
     );
     final maxPage = result.$1;

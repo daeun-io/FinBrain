@@ -1,12 +1,9 @@
-import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,7 +23,7 @@ class ProductBaseScreen extends ConsumerStatefulWidget {
 
 class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   final ScrollController _controller = ScrollController();
-  final GlobalKey _centerKey = GlobalKey();
+  final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
   int _cPage = 1;
   int _maxPage = 1;
@@ -46,7 +43,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   void _onScroll() async {
     if (_isLoading) return;
     final position = _controller.position;
-    if (position.pixels >= position.maxScrollExtent - 100) {
+    if (position.pixels > position.maxScrollExtent) {
       final data = ref.read(productViewmodelProvider);
       if (data.hasValue && data.value != null) {
         _maxPage = data.value!.$1;
@@ -56,15 +53,13 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           _isLoading = true;
           _cPage++;
         });
-        print("_cPage: $_cPage");
         await _fetchData();
         setState(() {
           _isLoading = false;
         });
       }
     }
-    if (position.pixels <= position.minScrollExtent + 100) {
-      print("_cPage: $_cPage");
+    if (position.pixels < position.minScrollExtent) {
       if (_cPage > 1) {
         setState(() {
           _isLoading = true;
@@ -100,11 +95,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       }
     });
 
-    // products.when(
-    // data: (list) => print("🎉 진짜 성공해서 들어온 데이터 개수: ${list.$2.length}"),
-    // error: (err, stack) => print("❌ 프로바이더 내부 에러: $err"),
-    // loading: () => print("⏳ 아직 서버에서 데이터 받아오는 중..."),
-    // );
     return Padding(
       padding: const EdgeInsets.only(
         top: 24.0,
@@ -131,42 +121,25 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           products.when(
             data: (data) {
               final (maxPage, items) = data;
-              final index = items.length ~/ 2;
-              final prevItems = items.sublist(0, index);
-              final nextItems = items.sublist(index);
-
               return Expanded(
                 child: CustomScrollView(
                   controller: _controller,
-                  center: _centerKey,
+                  center: _key,
                   physics: const BouncingScrollPhysics(),
                   slivers: [
+                    SliverPadding(padding: EdgeInsets.only(top: 20.0)),
+                    SliverPadding(key: _key, padding: EdgeInsets.zero),
                     SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
-                        final item = prevItems[prevItems.length - 1 - index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
-                            product: item,
+                            product: items[index],
                             productCategory: widget.productCategory,
                             filterTextCategory: widget.filterCategory,
                           ),
                         );
-                      }, childCount: prevItems.length),
-                    ),
-                    SliverPadding(key: _centerKey, padding: EdgeInsets.zero),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final item = nextItems[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: ProductItem(
-                            product: item,
-                            productCategory: widget.productCategory,
-                            filterTextCategory: widget.filterCategory,
-                          ),
-                        );
-                      }, childCount: nextItems.length),
+                      }, childCount: items.length),
                     ),
                   ],
                 ),
