@@ -7,30 +7,30 @@ import 'package:finbrain/product_categories.dart';
 
 class FiltersRepository {
   Future<Map<String, List<(String, bool)>>> fetchFilters(
-    FilterTextCategory ctg,
+    ProductCategory ctg,
     String topFinGrpNo,
   ) async {
     final Map<String, List<(String, bool)>> filters = {};
-    if (ctg == FilterTextCategory.isaJoin ||
-        ctg == FilterTextCategory.isaManagement ||
-        ctg == FilterTextCategory.isaMp) {
+    if (ctg == ProductCategory.isaJoin ||
+        ctg == ProductCategory.isaManagement ||
+        ctg == ProductCategory.isaMp) {
       filters["기준년도"] = [(DateTime.now().year.toString(), true)];
       filters["업권"] = switch (ctg) {
-        FilterTextCategory.isaJoin => [
+        ProductCategory.isaJoin => [
           ("총합", true),
           ("보험", true),
           ("은행", true),
           ("증권", true),
         ],
-        FilterTextCategory.isaManagement => [
+        ProductCategory.isaManagement => [
           ("총합", true),
           ("은행", true),
           ("증권", true),
         ],
-        FilterTextCategory.isaMp => [("은행", true), ("증권", true)],
+        ProductCategory.isaMp => [("은행", true), ("증권", true)],
         _ => [],
       };
-      if (ctg == FilterTextCategory.isaMp) {
+      if (ctg == ProductCategory.isaMp) {
         filters["MP 종류"] = [
           ("초저위험", true),
           ("저위험", true),
@@ -44,7 +44,7 @@ class FiltersRepository {
           ("일임형 ISA", true),
           ("투자중개형 ISA", true),
         ];
-        if (ctg == FilterTextCategory.isaManagement) {
+        if (ctg == ProductCategory.isaManagement) {
           filters["구분"] = [("비중", true), ("금액", false)];
         }
       }
@@ -53,9 +53,9 @@ class FiltersRepository {
 
       final selectedFinGroup = getFinGroupName[topFinGrpNo] ?? "";
       final List<String> finGroups = switch (ctg) {
-        FilterTextCategory.savings => ["은행", "저축은행"],
-        FilterTextCategory.loan => ["은행", "저축은행", "여신전문", "보험"],
-        FilterTextCategory.annuity => ["보험", "금융투자"],
+        ProductCategory.deposit || ProductCategory.installment => ["은행", "저축은행"],
+        ProductCategory.mortgage || ProductCategory.rent || ProductCategory.credit =>  ["은행", "저축은행", "여신전문", "보험"],
+        ProductCategory.annuity => ["보험", "금융투자"],
         _ => [],
       };
 

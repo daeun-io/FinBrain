@@ -673,7 +673,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         ),
       );
     }
-    return (category == ProductCategory.mortage ||
+    return (category == ProductCategory.mortgage ||
             category == ProductCategory.rent ||
             category == ProductCategory.credit)
         ? SingleChildScrollView(

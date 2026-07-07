@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class IsaBaseScreen extends ConsumerStatefulWidget {
   const IsaBaseScreen({super.key, required this.category});
 
-  final FilterTextCategory category;
+  final ProductCategory category;
 
   @override
   ConsumerState<IsaBaseScreen> createState() => _IsaBaseScreenState();
@@ -40,7 +40,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     if (_isLoading) return;
     final position = _controller.position;
 
-    if (widget.category == FilterTextCategory.isaJoin) {
+    if (widget.category == ProductCategory.isaJoin) {
       final data = ref.read(isaJoinStatusViewModelProvider);
       if (position.pixels > position.maxScrollExtent) {
         if (data.hasValue && data.value != null) {
@@ -93,7 +93,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   }
 
   Future<void> _fetchData() async {
-    if (widget.category == FilterTextCategory.isaJoin) {
+    if (widget.category == ProductCategory.isaJoin) {
       ref
           .read(isaJoinStatusViewModelProvider.notifier)
           .fetchIsaJoinStatus(_cPage.toString());
@@ -132,20 +132,19 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       }
     });
 
-    final items = (widget.category == FilterTextCategory.isaJoin) ? joinItems : mngmItems;
-    final column = (widget.category == FilterTextCategory.isaJoin) ? joinColumn : mngmColumn;
+    final items = (widget.category == ProductCategory.isaJoin) ? joinItems : mngmItems;
+    final column = (widget.category == ProductCategory.isaJoin) ? joinColumn : mngmColumn;
     return Column(
       children: [
         const SizedBox(height: 16.0),
         ProductFilter(
-          productCategory: ProductCategory.isa,
-          filterTextCategory: widget.category,
+          category: widget.category,
         ),
         const SizedBox(height: 24.0),
         SortOrFilterText(
           category: widget.category,
           onSortCriteriaChanged: (criteria) {
-            (widget.category == FilterTextCategory.isaJoin)
+            (widget.category == ProductCategory.isaJoin)
                 ? ref
                       .read(isaJoinStatusViewModelProvider.notifier)
                       .sortByCriteria(criteria, totalCount)
@@ -264,7 +263,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: [
-          if (widget.category == FilterTextCategory.isaJoin) ...[
+          if (widget.category == ProductCategory.isaJoin) ...[
             rowCell((item as IsaJoinStatus).isaForm!, "isaForm"),
             rowCell(item.companyCount.toString(), "cmpyCnt"),
             rowCell(item.joinMemberCount.toString(), "jnMbCnt"),

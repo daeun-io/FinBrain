@@ -45,7 +45,7 @@ class ComparisonArchiveScreen extends ConsumerWidget {
                       switch (e) {
                         ProductCategory.deposit => "정기예금",
                         ProductCategory.installment => "적금",
-                        ProductCategory.mortage => "주택담보대출",
+                        ProductCategory.mortgage => "주택담보대출",
                         ProductCategory.rent => "전세자금대출",
                         ProductCategory.credit => "개인신용대출",
                         ProductCategory.annuity => "연금저축",

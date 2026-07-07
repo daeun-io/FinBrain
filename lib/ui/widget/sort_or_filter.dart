@@ -11,7 +11,7 @@ class SortOrFilterText extends ConsumerStatefulWidget {
     required this.onSortCriteriaChanged,
   });
 
-  final FilterTextCategory category;
+  final ProductCategory category;
   final Function(String) onSortCriteriaChanged;
   @override
   ConsumerState<SortOrFilterText> createState() => _FilterTextState();
@@ -24,10 +24,10 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
       sortOrFilterTextViewModelProvider(widget.category),
     );
     String selectedOption = switch (widget.category) {
-      FilterTextCategory.liked => (filter.$1 as List<String>).join(", "),
+      ProductCategory.liked => (filter.$1 as List<String>).join(", "),
       _ => filter.$1.toString(),
     };
-    List<String> selectedOptions = (widget.category == FilterTextCategory.liked)
+    List<String> selectedOptions = (widget.category == ProductCategory.liked)
         ? filter.$1 as List<String>
         : [];
     String text = selectedOption;
@@ -67,7 +67,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                               style: const TextStyle(fontSize: 16.0),
                             ),
                             const Spacer(),
-                            if (widget.category == FilterTextCategory.liked)
+                            if (widget.category == ProductCategory.liked)
                               IconButton(
                                 onPressed: () {
                                   setModalState(() {
@@ -164,7 +164,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            (widget.category == FilterTextCategory.liked)
+                            (widget.category == ProductCategory.liked)
                                 ? "선택 상품"
                                 : "정렬 기준",
                             style: const TextStyle(

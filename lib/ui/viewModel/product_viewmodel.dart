@@ -37,20 +37,16 @@ class ProductViewmodel extends _$ProductViewmodel {
       return;
     }
 
-    if (ctg == ProductCategory.isa) {
+    if (ctg == ProductCategory.isaMp &&
+        ctg == ProductCategory.isaJoin &&
+        ctg == ProductCategory.isaManagement &&
+        ctg == ProductCategory.liked) {
       state = AsyncData((0, <FinancialProduct>[]));
     }
 
-    final filterCtg = switch (ctg) {
-      ProductCategory.annuity => FilterTextCategory.annuity,
-      ProductCategory.deposit => FilterTextCategory.savings,
-      ProductCategory.installment => FilterTextCategory.savings,
-      _ => FilterTextCategory.loan,
-    };
-
     final filters =
         snapshot ??
-        (await ref.read(filtersViewmodelProvider(filterCtg).future) ?? {});
+        (await ref.read(filtersViewmodelProvider(ctg).future) ?? {});
 
     Map<String, List<String>> selectedFilters = {};
     for (final entry in filters.entries) {
@@ -73,7 +69,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     }
 
     final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(filterCtg))
+        .read(sortOrFilterTextViewModelProvider(ctg))
         .$1
         .toString();
 
@@ -114,7 +110,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     final filters =
         snapshot ??
         (await ref.read(
-              filtersViewmodelProvider(FilterTextCategory.isaMp).future,
+              filtersViewmodelProvider(ProductCategory.isaMp).future,
             ) ??
             {});
     Map<String, List<String>> selectedFilters = {};
@@ -147,11 +143,11 @@ class ProductViewmodel extends _$ProductViewmodel {
     }).toList();
 
     final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaMp))
+        .read(sortOrFilterTextViewModelProvider(ProductCategory.isaMp))
         .$1
         .toString();
 
-    sortByCriteria(criteria, ProductCategory.isa, totalCount, filtered);
+    sortByCriteria(criteria, ProductCategory.isaMp, totalCount, filtered);
   }
 
   void toggleLiked(FinancialProduct product) {
@@ -183,7 +179,8 @@ class ProductViewmodel extends _$ProductViewmodel {
     int maxPage, [
     List<FinancialProduct>? prdt,
   ]) {
-    final products = prdt ?? ((state.value == null) ? [] : [...state.value!.$2]);
+    final products =
+        prdt ?? ((state.value == null) ? [] : [...state.value!.$2]);
 
     switch (category) {
       case ProductCategory.deposit:
@@ -235,7 +232,7 @@ class ProductViewmodel extends _$ProductViewmodel {
           }),
         ));
         break;
-      case ProductCategory.mortage:
+      case ProductCategory.mortgage:
       case ProductCategory.rent:
         state = AsyncData((
           maxPage,

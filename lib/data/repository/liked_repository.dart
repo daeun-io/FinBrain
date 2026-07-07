@@ -82,7 +82,7 @@ class LikedRepository {
             } catch (e) {
               print("error occured while mapping map to data $e");
             }
-          case ProductCategory.mortage:
+          case ProductCategory.mortgage:
           case ProductCategory.rent:
             products.add(
               MortageAndRentLoan(
@@ -216,7 +216,7 @@ class LikedRepository {
             try {
               products.add(
                 IsaMpBenefitRate(
-                  category: ProductCategory.isa,
+                  category: ProductCategory.isaMp,
                   companyName: map["companyName"],
                   productName: map["productName"],
                   releaseDate: map["releaseDate"],

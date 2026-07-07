@@ -15,16 +15,16 @@ final repository = FiltersRepository();
 @riverpod
 class FiltersViewmodel extends _$FiltersViewmodel {
   @override
-  Future<Map<String, List<(String, bool)>>> build(
-    FilterTextCategory ctg,
-  ) async {
+  Future<Map<String, List<(String, bool)>>> build(ProductCategory ctg) async {
     final topFinGrpMap = ref.watch(selectedTopfingrpnoViewmodelProvider);
     print("topFinGrp by selected topFingrp viewmodel: $topFinGrpMap");
     final topFinGrpNo =
         topFinGrpMap[switch (ctg) {
-          FilterTextCategory.savings => "예적금",
-          FilterTextCategory.loan => "대출",
-          FilterTextCategory.annuity => "연금저축",
+          ProductCategory.deposit || ProductCategory.installment => "예적금",
+          ProductCategory.mortgage ||
+          ProductCategory.rent ||
+          ProductCategory.credit => "대출",
+          ProductCategory.annuity => "연금저축",
           _ => "",
         }] ??
         "020000";
@@ -35,7 +35,7 @@ class FiltersViewmodel extends _$FiltersViewmodel {
 @riverpod
 class DialogFiltersViewModel extends _$DialogFiltersViewModel {
   @override
-  Map<String, List<(String, bool)>> build(FilterTextCategory ctg) {
+  Map<String, List<(String, bool)>> build(ProductCategory ctg) {
     final currentSaved = ref.read(savedFiltersProvider(ctg));
     if (currentSaved.isEmpty) {
       fetchInitialFilters(ctg);
@@ -44,7 +44,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
     return Map<String, List<(String, bool)>>.from(currentSaved);
   }
 
-  Future<void> fetchInitialFilters(FilterTextCategory ctg) async {
+  Future<void> fetchInitialFilters(ProductCategory ctg) async {
     try {
       final data = await ref.read(filtersViewmodelProvider(ctg).future);
       if (data.isNotEmpty) {
@@ -56,7 +56,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
   }
 
   Future<void> toggleSelected(
-    FilterTextCategory ctg,
+    ProductCategory ctg,
     String text,
     bool selected,
   ) async {
@@ -115,47 +115,46 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
     }
   }
 
-  Future<void> applyChanges(
-    ProductCategory productCategory,
-    String pageNo, [
-    FilterTextCategory? filterCategory,
-  ]) async {
+  Future<void> applyChanges(String pageNo) async {
     final snapshot = Map<String, List<(String, bool)>>.from(state);
     ref.read(savedFiltersProvider(ctg).notifier).save(snapshot);
     if (snapshot["금융회사"] != null) {
       final topFinGrpName = snapshot["금융회사"]!
-          .firstWhere((e) => e.$2 == true).$1;
-      final topFinGrpNo = getFinGroupCode[topFinGrpName] ?? ((filterCategory == FilterTextCategory.annuity) ? "050000": "020000");
+          .firstWhere((e) => e.$2 == true)
+          .$1;
+      final topFinGrpNo =
+          getFinGroupCode[topFinGrpName] ??
+          ((ctg == ProductCategory.annuity) ? "050000" : "020000");
       ref.read(selectedTopfingrpnoViewmodelProvider.notifier).changeTopFinGrp(
         switch (ctg) {
-          FilterTextCategory.savings => "예적금",
-          FilterTextCategory.loan => "대출",
-          FilterTextCategory.annuity => "연금저축",
+          ProductCategory.deposit || ProductCategory.installment => "예적금",
+          ProductCategory.mortgage ||
+          ProductCategory.rent ||
+          ProductCategory.credit => "대출",
+          ProductCategory.annuity => "연금저축",
           _ => "",
         },
         topFinGrpNo,
       );
     }
 
-    if (productCategory != ProductCategory.isa) {
-      ref
-          .read(productViewmodelProvider.notifier)
-          .fetchFinlifeProducts(productCategory, "1", snapshot);
-    } else {
-      switch (filterCategory) {
-        case FilterTextCategory.isaJoin:
-          ref
-              .read(isaJoinStatusViewModelProvider.notifier)
-              .fetchIsaJoinStatus(pageNo, snapshot);
-        case FilterTextCategory.isaManagement:
-          ref
-              .read(isaManagementStatusViewModelProvider.notifier)
-              .fetchIsaManagementStatus(pageNo, snapshot);
-        default:
-          ref
-              .read(productViewmodelProvider.notifier)
-              .fetchIsaMpProducts(pageNo, snapshot);
-      }
+    switch (ctg) {
+      case ProductCategory.isaJoin:
+        ref
+            .read(isaJoinStatusViewModelProvider.notifier)
+            .fetchIsaJoinStatus(pageNo, snapshot);
+      case ProductCategory.isaManagement:
+        ref
+            .read(isaManagementStatusViewModelProvider.notifier)
+            .fetchIsaManagementStatus(pageNo, snapshot);
+      case ProductCategory.isaMp:
+        ref
+            .read(productViewmodelProvider.notifier)
+            .fetchIsaMpProducts(pageNo, snapshot);
+      default:
+        ref
+            .read(productViewmodelProvider.notifier)
+            .fetchFinlifeProducts(ctg, "1", snapshot);
     }
   }
 
@@ -169,7 +168,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
 @riverpod
 class SavedFilters extends _$SavedFilters {
   @override
-  Map<String, List<(String, bool)>> build(FilterTextCategory ctg) => {};
+  Map<String, List<(String, bool)>> build(ProductCategory ctg) => {};
 
   void save(Map<String, List<(String, bool)>> filters) => state = filters;
 }

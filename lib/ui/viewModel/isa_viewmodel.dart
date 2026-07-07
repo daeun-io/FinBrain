@@ -23,7 +23,7 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
     final filters =
         snapshot ??
         (await ref.read(
-              filtersViewmodelProvider(FilterTextCategory.isaJoin).future,
+              filtersViewmodelProvider(ProductCategory.isaJoin).future,
             ) ??
             {});
 
@@ -58,7 +58,7 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
     // print("=====================");
 
     final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaJoin))
+        .read(sortOrFilterTextViewModelProvider(ProductCategory.isaJoin))
         .$1
         .toString();
     
@@ -101,7 +101,7 @@ class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
     final filters =
         snapshot ??
         (await ref.read(
-              filtersViewmodelProvider(FilterTextCategory.isaManagement).future,
+              filtersViewmodelProvider(ProductCategory.isaManagement).future,
             ) ??
             {});
 
@@ -132,7 +132,7 @@ class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
     }).toList();
 
     final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaManagement))
+        .read(sortOrFilterTextViewModelProvider(ProductCategory.isaManagement))
         .$1
         .toString();
     sortByCriteria(criteria, totalCount, filtered);

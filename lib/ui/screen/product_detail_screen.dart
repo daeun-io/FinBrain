@@ -21,13 +21,11 @@ class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen({
     super.key,
     required this.product,
-    required this.productCategory,
-    required this.filterCategory,
+    required this.category,
   });
 
   final FinancialProduct product;
-  final ProductCategory productCategory;
-  final FilterTextCategory filterCategory;
+  final ProductCategory category;
 
   void launchPrdtUrl(WidgetRef ref, BuildContext context) {
     ref
@@ -98,7 +96,7 @@ class ProductDetailScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ..._displayDefaultWidgetList(product),
-                      ..._displayDynamicWidgetList(productCategory, product),
+                      ..._displayDynamicWidgetList(category, product),
                       SizedBox(height: 160.0),
                     ],
                   ),
@@ -110,7 +108,7 @@ class ProductDetailScreen extends ConsumerWidget {
               bottom: 100,
               child: AiButton(tag: product.commonInfo.productName!),
             ),
-            if (productCategory == ProductCategory.isa)
+            if (category == ProductCategory.isaMp)
               Positioned(
                 left: 0,
                 right: 0,
@@ -146,7 +144,7 @@ class ProductDetailScreen extends ConsumerWidget {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (ctx) {
-                                final options = switch (productCategory) {
+                                final options = switch (category) {
                                   ProductCategory.deposit =>
                                     (product as DepositAndInstallmentSavings)
                                         .options,
@@ -160,14 +158,14 @@ class ProductDetailScreen extends ConsumerWidget {
                                   _ => (product as MortageAndRentLoan).options,
                                 };
                                 return CalculatorScreen(
-                                  category: productCategory,
+                                  category: category,
                                   mapOptions: ref
                                       .read(
                                         productDetailScreenViewmodelProvider
                                             .notifier,
                                       )
                                       .mapProductOptions(
-                                        productCategory,
+                                        category,
                                         options,
                                       ),
                                   options: options,
@@ -413,7 +411,7 @@ class ProductDetailScreen extends ConsumerWidget {
                   DataCell(dataTableCellText(option.maxIntRate.toString())),
                 ],
               ),
-          if (category == ProductCategory.mortage)
+          if (category == ProductCategory.mortgage)
             for (final option in options as List<MortageAndRentLoanOption>)
               DataRow(
                 cells: [
@@ -462,7 +460,7 @@ class ProductDetailScreen extends ConsumerWidget {
     FinancialProduct product,
   ) {
     return [
-      if (category != ProductCategory.isa)
+      if (category != ProductCategory.isaMp)
         textFrame(
           "가입 방법: ${(product.commonInfo.joinWay == null) ? "미제공" : product.commonInfo.joinWay!.join(",")}",
         ),
@@ -491,7 +489,7 @@ class ProductDetailScreen extends ConsumerWidget {
         textFrame(
           "판매사: ${(product.saleCompany == null) ? "미제공" : product.saleCompany}",
         ),
-      ] else if (category == ProductCategory.isa) ...[
+      ] else if (category == ProductCategory.isaMp) ...[
         textFrame(
           "업권: ${((product as IsaMpBenefitRate).businessDomain == null) ? "미제공" : product.businessDomain}",
         ),
@@ -504,7 +502,7 @@ class ProductDetailScreen extends ConsumerWidget {
         switch (category) {
           ProductCategory.credit => "대출 금리 안내",
           ProductCategory.annuity => "상품 공시 현황",
-          ProductCategory.isa => "수익률",
+          ProductCategory.isaMp => "수익률",
           _ => "상품 세부사항",
         },
         style: TextStyle(
@@ -535,13 +533,13 @@ class ProductDetailScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 14.0),
         textFrame("기타 유의 사항:\n${(product.etc == null) ? "미제공" : product.etc}"),
-      ] else if (category == ProductCategory.mortage ||
+      ] else if (category == ProductCategory.mortgage ||
           category == ProductCategory.rent) ...[
         textFrame("금리"),
         const SizedBox(height: 14.0),
         dataTableFrame(
           category,
-          (category == ProductCategory.mortage)
+          (category == ProductCategory.mortgage)
               ? const [
                   "담보 유형",
                   "대출 상환 유형",

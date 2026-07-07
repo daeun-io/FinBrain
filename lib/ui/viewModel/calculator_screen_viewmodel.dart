@@ -84,7 +84,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
         final avg = (avgRates != null) ? avgRates : rates.average;
         return [min, avg, max];
       default:
-        if (category == ProductCategory.mortage ||
+        if (category == ProductCategory.mortgage ||
             category == ProductCategory.rent) {
           // todo: change later
           final min = options

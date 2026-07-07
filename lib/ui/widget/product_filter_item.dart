@@ -12,7 +12,7 @@ class ProductFilterItem extends ConsumerWidget {
     required this.text,
   });
 
-  final FilterTextCategory category;
+  final ProductCategory category;
   final bool isSelected;
   final String text;
 

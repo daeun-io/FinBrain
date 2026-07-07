@@ -21,8 +21,9 @@ class LikedScreen extends ConsumerWidget {
     final selectedProducts = ref.watch(selectedProductsViewmodelProvider);
     final sProductsNm = selectedProducts
         .map((e) => e.commonInfo.productName)
-        .whereType<String>().join('-');
-    
+        .whereType<String>()
+        .join('-');
+
     return Padding(
       padding: const EdgeInsets.only(
         top: 24.0,
@@ -43,10 +44,12 @@ class LikedScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 24.0),
           SortOrFilterText(
-            category: FilterTextCategory.liked,
+            category: ProductCategory.liked,
             onSortCriteriaChanged: (criteria) {
               print("criteria: $criteria");
-              ref.read(likedProductViewmodelProvider.notifier).filterByCategory(criteria);
+              ref
+                  .read(likedProductViewmodelProvider.notifier)
+                  .filterByCategory(criteria);
             },
           ),
           const SizedBox(height: 20.0),
@@ -60,12 +63,7 @@ class LikedScreen extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
-                          child: ProductItem(
-                            product: liked.value![index],
-                            productCategory:
-                                liked.value![index].commonInfo.category,
-                            filterTextCategory: FilterTextCategory.liked,
-                          ),
+                          child: ProductItem(product: liked.value![index]),
                         );
                       },
                     ),

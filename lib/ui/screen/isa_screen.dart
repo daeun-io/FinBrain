@@ -98,9 +98,9 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
               child: TabBarView(
                 controller: _controller,
                 children: [
-                  const IsaBaseScreen(category: FilterTextCategory.isaJoin),
+                  const IsaBaseScreen(category: ProductCategory.isaJoin),
                   const IsaBaseScreen(
-                    category: FilterTextCategory.isaManagement,
+                    category: ProductCategory.isaManagement,
                   ),
                   const IsaMpScreen(),
                 ],

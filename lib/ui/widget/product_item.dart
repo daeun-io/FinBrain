@@ -4,7 +4,6 @@ import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dar
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
-import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
@@ -18,13 +17,9 @@ class ProductItem extends ConsumerStatefulWidget {
   const ProductItem({
     super.key,
     required this.product,
-    required this.productCategory,
-    required this.filterTextCategory,
   });
 
   final FinancialProduct product;
-  final ProductCategory productCategory;
-  final FilterTextCategory filterTextCategory;
 
   @override
   ConsumerState<ProductItem> createState() => _ProductItemState();
@@ -36,14 +31,14 @@ class _ProductItemState extends ConsumerState<ProductItem> {
   @override
   Widget build(BuildContext context) {
     final sortFilter = ref.watch(
-      sortOrFilterTextViewModelProvider(widget.filterTextCategory),
+      sortOrFilterTextViewModelProvider(widget.product.commonInfo.category),
     );
-    final sortCriteria = (widget.filterTextCategory == FilterTextCategory.liked)
+    final sortCriteria = (widget.product.commonInfo.category == ProductCategory.liked)
         ? switch (widget.product.commonInfo.category) {
             ProductCategory.deposit => "최고 금리(높은순)",
             ProductCategory.installment => "최고 금리(높은순)",
             ProductCategory.annuity => "평균 수익률(높은 순)",
-            ProductCategory.isa => "평균 수익률(높은 순)",
+            ProductCategory.isaMp => "평균 수익률(높은 순)",
             _ => "최저 금리(낮은 순)",
           }
         : sortFilter.$1.toString();
@@ -54,8 +49,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
           MaterialPageRoute(
             builder: (ctx) => ProductDetailScreen(
               product: widget.product,
-              productCategory: widget.product.commonInfo.category,
-              filterCategory: widget.filterTextCategory,
+              category: widget.product.commonInfo.category,
             ),
           ),
         );
@@ -175,7 +169,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                               .returnRates()[1]
                               .toString(),
                       },
-                      ProductCategory.mortage => switch (sortCriteria) {
+                      ProductCategory.mortgage => switch (sortCriteria) {
                         "최저 금리(낮은 순)" =>
                           (widget.product as MortageAndRentLoan)
                               .returnRates()[0]

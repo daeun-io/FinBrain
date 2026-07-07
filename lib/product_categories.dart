@@ -1,31 +1,19 @@
 enum ProductCategory{
   deposit,
   installment,
-  isa,
-  mortage,
+  isaJoin,
+  isaManagement,
+  isaMp,
+  mortgage,
   rent,
   credit,
-  annuity
+  annuity,
+  liked
 }
 
 enum ProductScreenCategory{
   savings,
   loan
-}
-
-enum IsaScreenCategory{
-  join,
-  management,
-}
-
-enum FilterTextCategory{
-  savings,
-  isaJoin,
-  isaManagement,
-  isaMp,
-  loan,
-  annuity,
-  liked
 }
 
 enum ArchiveCategory {

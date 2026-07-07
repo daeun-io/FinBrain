@@ -103,16 +103,16 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
           searchedList: searchedList,
         ),
         const SizedBox(height: 16.0),
-        ProductFilter(productCategory: ProductCategory.isa, filterTextCategory: FilterTextCategory.isaMp),
+        ProductFilter(category: ProductCategory.isaMp),
         const SizedBox(height: 24.0),
         SortOrFilterText(
-          category: FilterTextCategory.isaMp,
+          category: ProductCategory.isaMp,
           onSortCriteriaChanged: (criteria) {
             ref
                 .read(productViewmodelProvider.notifier)
                 .sortByCriteria(
                   criteria,
-                  ProductCategory.isa,
+                  ProductCategory.isaMp,
                   products.value!.$1,
                 );
           },
@@ -133,11 +133,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                     delegate: SliverChildBuilderDelegate((context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: ProductItem(
-                          product: items[index],
-                          productCategory: ProductCategory.isa,
-                          filterTextCategory: FilterTextCategory.isaMp,
-                        ),
+                        child: ProductItem(product: items[index]),
                       );
                     }, childCount: items.length),
                   ),

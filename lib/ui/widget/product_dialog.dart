@@ -1,5 +1,4 @@
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_year_picker.dart';
@@ -8,17 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductDialog extends ConsumerWidget {
-  const ProductDialog({
-    super.key,
-    required this.productCategory,
-    required this.filterCategory,
-  });
-  final ProductCategory productCategory;
-  final FilterTextCategory filterCategory;
+  const ProductDialog({super.key, required this.category});
+  final ProductCategory category;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filters = ref.watch(dialogFiltersViewModelProvider(filterCategory));
+    final filters = ref.watch(dialogFiltersViewModelProvider(category));
 
     return Consumer(
       builder: (ctx, ref, child) {
@@ -51,9 +45,7 @@ class ProductDialog extends ConsumerWidget {
                       onPressed: () {
                         ref
                             .read(
-                              dialogFiltersViewModelProvider(
-                                filterCategory,
-                              ).notifier,
+                              dialogFiltersViewModelProvider(category).notifier,
                             )
                             .resetChanges();
                       },
@@ -96,10 +88,9 @@ class ProductDialog extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (filterCategory == FilterTextCategory.isaJoin ||
-                              filterCategory ==
-                                  FilterTextCategory.isaManagement ||
-                              filterCategory == FilterTextCategory.isaMp)
+                          if (category == ProductCategory.isaJoin ||
+                              category == ProductCategory.isaManagement ||
+                              category == ProductCategory.isaMp)
                             Column(
                               children: [
                                 const SizedBox(height: 8.0),
@@ -121,7 +112,7 @@ class ProductDialog extends ConsumerWidget {
                                   onYearChanged: (value) => ref
                                       .read(
                                         dialogFiltersViewModelProvider(
-                                          filterCategory,
+                                          category,
                                         ).notifier,
                                       )
                                       .selectBaseYear(value.toString()),
@@ -134,7 +125,7 @@ class ProductDialog extends ConsumerWidget {
                               return SizedBox(height: 8.0);
                             }
                             return ProductFilterCondition(
-                              category: filterCategory,
+                              category: category,
                               filter: e.key,
                               filterList: e.value,
                             );
@@ -149,15 +140,9 @@ class ProductDialog extends ConsumerWidget {
                       child: TextButton(
                         onPressed: () async {
                           final notifier = ref.read(
-                            dialogFiltersViewModelProvider(
-                              filterCategory,
-                            ).notifier,
+                            dialogFiltersViewModelProvider(category).notifier,
                           );
-                          await notifier.applyChanges(
-                            productCategory,
-                            "1",
-                            filterCategory,
-                          );
+                          await notifier.applyChanges("1");
                           if (context.mounted) Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

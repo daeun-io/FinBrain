@@ -8,14 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductBaseScreen extends ConsumerStatefulWidget {
-  const ProductBaseScreen({
-    super.key,
-    required this.productCategory,
-    required this.filterCategory,
-  });
+  const ProductBaseScreen({super.key, required this.category});
 
-  final ProductCategory productCategory;
-  final FilterTextCategory filterCategory;
+  final ProductCategory category;
 
   @override
   ConsumerState<ProductBaseScreen> createState() => _ProductBaseScreenState();
@@ -76,7 +71,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   Future<void> _fetchData() async {
     ref
         .read(productViewmodelProvider.notifier)
-        .fetchFinlifeProducts(widget.productCategory, _cPage.toString());
+        .fetchFinlifeProducts(widget.category, _cPage.toString());
     await Future.delayed(const Duration(seconds: 1));
   }
 
@@ -104,17 +99,14 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       ),
       child: Column(
         children: [
-          ProductFilter(
-            productCategory: widget.productCategory,
-            filterTextCategory: widget.filterCategory,
-          ),
+          ProductFilter(category: widget.category),
           const SizedBox(height: 24.0),
           SortOrFilterText(
-            category: widget.filterCategory,
+            category: widget.category,
             onSortCriteriaChanged: (criteria) {
               ref
                   .read(productViewmodelProvider.notifier)
-                  .sortByCriteria(criteria, widget.productCategory, _maxPage);
+                  .sortByCriteria(criteria, widget.category, _maxPage);
             },
           ),
           const SizedBox(height: 12.0),
@@ -133,11 +125,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                       delegate: SliverChildBuilderDelegate((context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
-                          child: ProductItem(
-                            product: items[index],
-                            productCategory: widget.productCategory,
-                            filterTextCategory: widget.filterCategory,
-                          ),
+                          child: ProductItem(product: items[index]),
                         );
                       }, childCount: items.length),
                     ),

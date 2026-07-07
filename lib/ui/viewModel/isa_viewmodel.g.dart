@@ -38,7 +38,7 @@ final class IsaJoinStatusViewModelProvider
 }
 
 String _$isaJoinStatusViewModelHash() =>
-    r'b70547728bce3beb1c9f9dbbaff2f1778b2e35bc';
+    r'3ff474be1656e38160cb71d34246dbb8fe2ceea2';
 
 abstract class _$IsaJoinStatusViewModel
     extends $AsyncNotifier<(int, List<IsaJoinStatus>)> {
@@ -97,7 +97,7 @@ final class IsaManagementStatusViewModelProvider
 }
 
 String _$isaManagementStatusViewModelHash() =>
-    r'6684db96d5cbafdc9603e38bf5b85c750882ea1d';
+    r'a57e8c120896668dcfa709c289bc4f16280863c6';
 
 abstract class _$IsaManagementStatusViewModel
     extends $AsyncNotifier<(int, List<IsaManagementStatus>)> {
