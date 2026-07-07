@@ -31,7 +31,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
         ? filter.$1 as List<String>
         : [];
     String text = selectedOption;
-
+    print("filter ctg: ${widget.category}");
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -77,7 +77,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                       filter.$2[index],
                                     )) {
                                       selectedOptions.remove(filter.$2[index]);
-                                      if(selectedOptions.isEmpty){
+                                      if (selectedOptions.isEmpty) {
                                         selectedOptions = [filter.$2[0]];
                                       }
                                     } else {
@@ -120,14 +120,15 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                 onPressed: () {
                                   setModalState(() {
                                     selectedOption = filter.$2[index];
+                                    print("selected option: $selectedOption");
+                                  });
+                                  setState(() {
+                                    text = filter.$2[index];
                                     if (selectedOption.isNotEmpty) {
                                       widget.onSortCriteriaChanged(
                                         selectedOption,
                                       );
                                     }
-                                  });
-                                  setState(() {
-                                    text = filter.$2[index];
                                   });
                                   ref
                                       .read(
@@ -137,7 +138,6 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                       )
                                       .changeCriteria(selectedOption);
                                 },
-
                                 icon: (selectedOption == filter.$2[index])
                                     ? const Icon(
                                         Icons.radio_button_checked,
@@ -154,7 +154,6 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                         );
                       },
                     );
-
                     return Container(
                       height: 300,
                       padding: const EdgeInsets.symmetric(

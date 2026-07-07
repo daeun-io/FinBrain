@@ -7,8 +7,6 @@ import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/repository/product_repository.dart';
-import 'package:finbrain/ui/viewModel/archive_viewmodel.dart';
-import 'package:finbrain/ui/viewModel/selected_topFinGrpNo_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
@@ -185,7 +183,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     int maxPage, [
     List<FinancialProduct>? prdt,
   ]) {
-    final products = prdt ?? ((state.value == null) ? [] : state.value!.$2);
+    final products = prdt ?? ((state.value == null) ? [] : [...state.value!.$2]);
 
     switch (category) {
       case ProductCategory.deposit:

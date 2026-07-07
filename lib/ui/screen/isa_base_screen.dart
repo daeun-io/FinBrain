@@ -22,7 +22,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
   int _cPage = 1;
-  late int totalCount;
+  int totalCount = 100;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
 
     if (widget.category == FilterTextCategory.isaJoin) {
       final data = ref.read(isaJoinStatusViewModelProvider);
-      if (position.pixels >= position.maxScrollExtent - 100) {
+      if (position.pixels > position.maxScrollExtent) {
         if (data.hasValue && data.value != null) {
           totalCount = data.value!.$1;
         }
@@ -60,7 +60,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       }
     } else {
       final data = ref.read(isaManagementStatusViewModelProvider);
-      if (position.pixels >= position.maxScrollExtent - 100) {
+      if (position.pixels > position.maxScrollExtent) {
         if (data.hasValue && data.value != null) {
           totalCount = data.value!.$1;
         }
@@ -78,7 +78,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       }
     }
 
-    if (position.pixels <= position.minScrollExtent + 100) {
+    if (position.pixels < position.minScrollExtent) {
       if (_cPage > 1) {
         setState(() {
           _isLoading = true;

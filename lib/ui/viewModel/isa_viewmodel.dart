@@ -34,12 +34,14 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
           .map((e) => e.$1)
           .toList();
     }
+    final baseYear = (selectedFilters["기준년도"]?.isNotEmpty ?? false)
+        ? selectedFilters["기준년도"]!.first
+        : DateTime.now().year.toString();
 
     final joinStatus = await repository.fetchJoinStatus(
       pageNo,
       "100",
-      // todo: change later
-      DateTime.now().year.toString(),
+      baseYear,
     );
 
     final totalCount = joinStatus.$1;
@@ -49,17 +51,17 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
           (selectedFilters["ISA 형태"] ?? []).contains(element.isaForm);
     }).toList();
 
-    print("=====================");
-    print("joinStatus count, ${joinStatus.$1}");
-    print("selected filters, $selectedFilters");
-    print("filtered data, $filtered");
-    print("=====================");
+    // print("=====================");
+    // print("joinStatus count, ${joinStatus.$1}");
+    // print("selected filters, $selectedFilters");
+    // print("filtered data, $filtered");
+    // print("=====================");
 
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaJoin))
         .$1
         .toString();
-
+    
     sortByCriteria(criteria, totalCount, filtered);
   }
 
@@ -69,17 +71,17 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
     List<IsaJoinStatus>? status,
   ]) {
     final isaJoinData =
-        status ?? ((state.value == null) ? [] : state.value!.$2);
-
+        status ?? ((state.value == null) ? [] : [...state.value!.$2]);
+    
     state = AsyncData((
       totalCount,
       isaJoinData..sort(switch (criteria) {
         "회사 수(오름차순)" => (a, b) => a.companyCount!.compareTo(b.companyCount!),
-        "회사 수(내림차순)" => (b, a) => b.companyCount!.compareTo(a.companyCount!),
+        "회사 수(내림차순)" => (a, b) => b.companyCount!.compareTo(a.companyCount!),
         "가입자 수(오름차순)" => (a, b) => a.joinMemberCount!.compareTo(
           b.joinMemberCount!,
         ),
-        _ => (a, b) => b.joinMemberCount!.compareTo(a.joinMemberCount!),
+        _ => (a, b) => b.joinMemberCount!.compareTo(a.joinMemberCount!)
       }),
     ));
   }
@@ -111,11 +113,14 @@ class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
           .toList();
     }
 
+    final baseYear = (selectedFilters["기준년도"]?.isNotEmpty ?? false)
+        ? selectedFilters["기준년도"]!.first
+        : DateTime.now().year.toString();
+
     final mngmStatus = await repository.fetchManagementStatus(
       pageNo,
       "100",
-      // todo: change later
-      DateTime.now().year.toString(),
+      baseYear,
       (selectedFilters["구분"]?.first ?? "비중"),
     );
 
@@ -127,10 +132,9 @@ class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
     }).toList();
 
     final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaJoin))
+        .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaManagement))
         .$1
         .toString();
-
     sortByCriteria(criteria, totalCount, filtered);
   }
 
@@ -139,9 +143,8 @@ class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
     int totalCount, [
     List<IsaManagementStatus>? status,
   ]) {
-    final isaMnData =
-        status ?? ((state.value == null) ? [] : state.value!.$2);
-
+    final isaMnData = status ?? ((state.value == null) ? [] : [...state.value!.$2]); 
+    
     state = AsyncData((
       totalCount,
       isaMnData..sort(
