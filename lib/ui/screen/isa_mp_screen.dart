@@ -1,5 +1,4 @@
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/searched_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
@@ -78,7 +77,6 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final searchedList = ref.watch(searchedViewmodelProvider);
     final products = ref.watch(productViewmodelProvider);
 
     // Move to center after fetching data
@@ -98,9 +96,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         SearchBox(
           searchItem: (value) {
             ref.read(productViewmodelProvider.notifier).filterByKeyword(value);
-            ref.read(searchedViewmodelProvider.notifier).addItem(value);
           },
-          searchedList: searchedList,
         ),
         const SizedBox(height: 16.0),
         ProductFilter(category: ProductCategory.isaMp),
