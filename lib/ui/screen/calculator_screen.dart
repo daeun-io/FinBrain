@@ -23,6 +23,8 @@ class CalculatorScreen extends ConsumerStatefulWidget {
 class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   final _moneyController = TextEditingController();
   final _periodController = TextEditingController();
+  final _moneyFocusNode = FocusNode();
+  final _periodFocusNode = FocusNode();
 
   bool _isSubmitted = false;
   late String _money;
@@ -51,6 +53,43 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             widget.category == ProductCategory.installment)
         ? "0"
         : "";
+
+    _moneyFocusNode.addListener(() {
+      if (!_moneyFocusNode.hasFocus) {
+        String text = _moneyController.text.trim();
+
+        if (text.isNotEmpty) {
+          if (!text.endsWith("원")) {
+            String digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+            if (digits.isNotEmpty) {
+              _moneyController.text = "$digits원";
+            }
+          }
+        }
+      } else {
+        String text = _moneyController.text.trim();
+        String digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+        _moneyController.text = digits;
+      }
+    });
+
+    _periodFocusNode.addListener(() {
+      if (!_periodFocusNode.hasFocus) {
+        String text = _periodController.text.trim();
+        if (text.isNotEmpty) {
+          if (!text.endsWith("개월")) {
+            String digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+            if (digits.isNotEmpty) {
+              _periodController.text = "$digits개월";
+            }
+          }
+        }
+      } else {
+        String text = _moneyController.text.trim();
+        String digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+        _moneyController.text = digits;
+      }
+    });
   }
 
   @override
@@ -74,8 +113,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               titleText(switch (widget.category) {
-                ProductCategory.deposit => "예치금",
-                ProductCategory.installment => "예치금",
+                (ProductCategory.deposit || ProductCategory.installment) =>
+                  "예치금",
                 ProductCategory.annuity => "월 납입 금액",
                 _ => "대출 원금",
               }),
@@ -147,30 +186,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                           );
                           return;
                         }
-                        final term = int.parse(
-                          (widget.category == ProductCategory.installment)
-                              ? _selectedValues[widget.mapOptions.keys
-                                        .toList()[1]]!
-                                    .substring(
-                                      0,
-                                      _selectedValues[widget.mapOptions.keys
-                                                  .toList()[1]]!
-                                              .length -
-                                          2,
-                                    )
-                              : _period,
-                        );
-                        // if (int.parse(_period) > term) {
-                        // ScaffoldMessenger.of(context).showSnackBar(
-                        // SnackBar(
-                        // duration: Duration(seconds: 3),
-                        // content: const Text(
-                        // "예치 기간은 계약 기간보다 \n길 수 없습니다!\n다시 입력해주세요",
-                        // ),
-                        // ),
-                        // );
-                        // return;
-                        // }
                         _isSubmitted = true;
                       });
                     },
@@ -391,6 +406,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       else
         TextField(
           controller: _moneyController,
+          focusNode: _moneyFocusNode,
           onSubmitted: (value) => setState(() {
             _money = value;
           }),
@@ -411,18 +427,20 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             counterText: "",
             helperText: "숫자만 입력",
           ),
+          textAlign: TextAlign.right,
           keyboardType: TextInputType.number,
         ),
       const SizedBox(height: 28.0),
       titleText(switch (category) {
-        ProductCategory.deposit => "예치 기간",
-        ProductCategory.installment => "예치 종류 및 기간(개월)",
+        (ProductCategory.deposit || ProductCategory.installment) => "예치 기간(개월)",
         ProductCategory.annuity => "연금수령 기간 및 납입 기간",
         _ => "상환 방법 및 대출 기간",
       }),
       const SizedBox(height: 2.0),
       if (category == ProductCategory.deposit)
         dropdownCard(keys[0], mapOptions[keys[0]] ?? [])
+      else if (category == ProductCategory.installment)
+        dropdownCard(keys[1], mapOptions[keys[1]] ?? [])
       else
         Row(
           children: [
@@ -435,20 +453,13 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               ),
             ),
             const SizedBox(width: 8.0),
-            if (category == ProductCategory.annuity ||
-                (category == ProductCategory.installment))
-              Expanded(
-                child: dropdownCard(
-                  category == ProductCategory.annuity ? keys[2] : keys[1],
-                  category == ProductCategory.annuity
-                      ? mapOptions[keys[2]] ?? []
-                      : mapOptions[keys[1]] ?? [],
-                ),
-              )
+            if (category == ProductCategory.annuity)
+              Expanded(child: dropdownCard(keys[2], mapOptions[keys[2]] ?? []))
             else
               Expanded(
                 child: TextField(
                   controller: _periodController,
+                  focusNode: _periodFocusNode,
                   onSubmitted: (value) => setState(() {
                     _period = value;
                   }),
@@ -469,19 +480,13 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     helperText: "숫자만 입력",
                     counterText: "",
                   ),
+                  textAlign: TextAlign.right,
                   keyboardType: TextInputType.number,
                 ),
               ),
           ],
         ),
       const SizedBox(height: 32.0),
-      // if (category == ProductCategory.installment &&
-      // _selectedValues[keys[0]] == "자유적립식") ...[
-      // titleText("계약 기간"),
-      // const SizedBox(height: 2.0),
-      // dropdownCard(keys[1], mapOptions[keys[1]] ?? []),
-      // const SizedBox(height: 32.0),
-      // ],
       titleText(switch (category) {
         ProductCategory.deposit => "예치 금리",
         ProductCategory.installment => "예치 기간 및 종류",
