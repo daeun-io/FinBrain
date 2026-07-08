@@ -63,7 +63,10 @@ class ProductDetailScreen extends ConsumerWidget {
               Navigator.of(context).pop();
             }
           });
-          return const Scaffold(backgroundColor: white, body: SizedBox.shrink());
+          return const Scaffold(
+            backgroundColor: white,
+            body: SizedBox.shrink(),
+          );
         }
 
         return Scaffold(
@@ -287,10 +290,10 @@ class ProductDetailScreen extends ConsumerWidget {
   }
 
   Widget tableCellFrame(String text) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: TableCell(
-        verticalAlignment: TableCellVerticalAlignment.middle,
+    return TableCell(
+      verticalAlignment: TableCellVerticalAlignment.middle,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
         child: Center(child: textFrame(text)),
       ),
     );
