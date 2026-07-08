@@ -1,4 +1,5 @@
 import 'package:finbrain/data/data_source/ai_convo_data_source.dart';
+import 'package:finbrain/product_categories.dart';
 
 class AiConversationRepository {
   final dataSource = AiConversationDataSource();
@@ -25,6 +26,7 @@ class AiConversationRepository {
   Future<void> saveRequestAndResponse(
     String uid,
     String productName,
+    String ctg,
     String request,
     String response,
   ) async {
@@ -32,6 +34,7 @@ class AiConversationRepository {
       await dataSource.saveRequestAndResponse(
         uid,
         productName,
+        ctg,
         request,
         response,
       );

@@ -34,26 +34,3 @@ export const fetchAndGroupProducts = onRequest(async (request, response) => {
     response.status(500).send("Internal servere error");
   }
 });
-
-// export async function fetchAndGroupProducts(
-  // apiUrl: string,
-  // apiKey: string,
-  // options: FetchOptions = {}
-// ): Promise<IsaMpGroupedApiResponse> {
-  // const { pageNo = 1, numOfRows = 10 } = options;
-// 
-  // const url = new URL(apiUrl);
-  // url.searchParams.set("serviceKey", apiKey);
-  // url.searchParams.set("pageNo", String(pageNo));
-  // url.searchParams.set("numOfRows", String(numOfRows));
-  // url.searchParams.set("resultType", "json");
-// 
-  // const res = await fetch(url.toString());
-// 
-  // if (!res.ok) {
-    // throw new Error(`API 호출 실패: ${res.status} ${res.statusText}`);
-  // }
-// 
-  // const raw = await res.json();
-  // return transformApiResponse(raw);
-// }

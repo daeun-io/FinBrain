@@ -8,9 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AiButton extends ConsumerWidget {
-  const AiButton({super.key, required this.tag});
+  const AiButton({super.key, required this.tag, required this.category});
 
   final String tag;
+  final ProductCategory category;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,7 +57,7 @@ class AiButton extends ConsumerWidget {
             }
           } else {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (ctx) => AiAssistScreen(tag: tag)),
+              MaterialPageRoute(builder: (ctx) => AiAssistScreen(tag: tag, category: category,)),
             );
           }
         },

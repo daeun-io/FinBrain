@@ -41,7 +41,7 @@ class AiCompRepository {
                   text: text.$2["comp_text"],
                 ),
               ],
-              category: getCategoryEnum[text.$2["category"] as String]
+              category: getCategoryEnum[text.$2["category"] as String] ?? ProductCategory.liked
             ),
           );
         } catch (e) {

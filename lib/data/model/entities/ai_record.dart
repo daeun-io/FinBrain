@@ -3,10 +3,10 @@ import 'package:finbrain/product_categories.dart';
 class AiRecord {
   final String key;
   final List<AiText> value;
+  final ProductCategory category;
   bool isExpanded;
   bool isPinned;
-  ProductCategory? category;
-
+  
   AiRecord({
     required this.key,
     required this.isExpanded,

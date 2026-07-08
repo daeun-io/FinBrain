@@ -39,21 +39,22 @@ class AiConversationDataSource {
   Future<void> saveRequestAndResponse(
     String uid,
     String productName,
+    String ctg,
     String request,
     String response,
   ) async {
     try {
-      await firestore
+      final docRef = firestore
           .collection(uid)
           .doc("ai_conversation")
           .collection("products")
-          .doc(productName)
-          .collection("chat_history")
-          .add({
-            "request": request,
-            "response": response,
-            "created_at": DateTime.now().toIso8601String(),
-          });
+          .doc(productName);
+      await docRef.set({"category": ctg});
+      await docRef.collection("chat_history").add({
+        "request": request,
+        "response": response,
+        "created_at": DateTime.now().toIso8601String(),
+      });
     } catch (e) {
       print("Error saving request and response: $e");
     }

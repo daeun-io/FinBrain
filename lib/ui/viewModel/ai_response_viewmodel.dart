@@ -37,7 +37,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
     return product;
   }
 
-  Future<void> fetchRequestAndSaveConv(String newRequest, String tag) async {
+  Future<void> fetchRequestAndSaveConv(String newRequest, String tag, ProductCategory ctg) async {
     try {
       print("======================");
       print("tag: $tag");
@@ -58,7 +58,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
         return;
       } else {
         state = {...state, newRequest: newResponse};
-        await saveConversationInFirestore(tag, newRequest, newResponse);
+        await saveConversationInFirestore(tag, ctg, newRequest, newResponse);
         print("====================");
         return;
       }
@@ -88,6 +88,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
 
   Future<void> saveConversationInFirestore(
     String tag,
+    ProductCategory ctg,
     String request,
     String response,
   ) async {
@@ -100,6 +101,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
       await messageRepository.saveRequestAndResponse(
         user.uid,
         tag,
+        ctg.toString(),
         request,
         response,
       );
@@ -136,13 +138,13 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
         print("No user is currently signed in.");
-        return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: null);
+        return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: ProductCategory.liked);
       }
 
       return await summaryRepository.getSummariesWithPrdtNm(user.uid, tag);
     } catch (e) {
       print("Error getting summaries: $e");
-      return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: null);
+      return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: ProductCategory.liked);
     }
   }
 }

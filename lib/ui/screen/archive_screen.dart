@@ -1,6 +1,6 @@
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
-import 'package:finbrain/ui/screen/comparison_archive_screen.dart';
-import 'package:finbrain/ui/screen/summary_archive_screen.dart';
+import 'package:finbrain/ui/screen/archive_tabview_screen.dart';
 import 'package:flutter/material.dart';
 
 class ArchiveScreen extends StatelessWidget {
@@ -10,7 +10,7 @@ class ArchiveScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabList = ["AI 대화 요약", "AI 비교 분석"];
     final tabView = TabBarView(
-      children: const [SummaryArchiveScreen(), ComparisonArchiveScreen()],
+      children: const [ ArchiveTabViewScreen(category: ArchiveCategory.summary,), ArchiveTabViewScreen(category: ArchiveCategory.comparison,)],
     );
 
     return Scaffold(

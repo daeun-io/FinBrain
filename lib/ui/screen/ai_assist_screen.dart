@@ -1,4 +1,5 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
@@ -8,9 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AiAssistScreen extends ConsumerStatefulWidget {
-  const AiAssistScreen({super.key, required this.tag});
+  const AiAssistScreen({super.key, required this.tag, required this.category});
 
   final String tag;
+  final ProductCategory category;
 
   @override
   ConsumerState<AiAssistScreen> createState() => _AiAssistScreenState();
@@ -151,6 +153,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                       .fetchRequestAndSaveConv(
                                         _messageController.text,
                                         widget.tag,
+                                        widget.category,
                                       );
                                   _messageController.clear();
                                 }
@@ -186,6 +189,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                   .fetchRequestAndSaveConv(
                                     _messageController.text,
                                     widget.tag,
+                                    widget.category,
                                   );
                               _messageController.clear();
                             }
