@@ -75,6 +75,12 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       appBar: AppBar(
         backgroundColor: primary100,
         scrolledUnderElevation: 0.0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+        ),
         title: const Text(
           "AI 어시스트",
           style: TextStyle(
@@ -91,7 +97,12 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
+                    padding: const EdgeInsets.only(
+                      top: 24.0,
+                      left: 20.0,
+                      right: 20.0,
+                      bottom: 20.0,
+                    ),
                     child: CustomScrollView(
                       slivers: [
                         if (record!.key.isNotEmpty)
