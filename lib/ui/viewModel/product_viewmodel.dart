@@ -76,7 +76,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     final result = await repository.fetchFinlifeProductsAndPageNo(
       user.uid,
       ctg,
-      topFinGrpNo!,
+      topFinGrpNo,
       pageNo,
     );
     final maxPage = result.$1;

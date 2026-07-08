@@ -9,7 +9,7 @@ const primary600 = Color(0xff3DB8E8);
 const primary700 = Color(0xff0E9FD5);
 const primary800 = Color(0xff0880A8);
 const primary900 = Color(0xff06607F);
-const aiButtonBg = Color(0xe606607F);
+const aiButtonBg = Color(0xD906607F);
 
 const textPrimary = Color(0xff02303F);
 const textSecondary = Color(0xff838FA1);

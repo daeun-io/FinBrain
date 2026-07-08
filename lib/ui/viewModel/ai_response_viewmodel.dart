@@ -4,6 +4,7 @@ import 'package:finbrain/data/repository/ai_comp_repository.dart';
 import 'package:finbrain/data/repository/ai_response_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewModel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/data/repository/ai_convo_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -30,10 +31,11 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
 
   Future<FinancialProduct?> getProduct(String tag) async {
     final productList = await ref.read(productViewmodelProvider.future);
+    final likedList = await ref.read(fetchLikedViewmodelProvider.future);
     final product = productList.$2
         .where((e) => (e.commonInfo.productName == tag))
-        .firstOrNull;
-    print("product $product");
+        .firstOrNull ?? likedList.where((e) => e.commonInfo.productName == tag).firstOrNull;
+    if(product == null) print("product $product");
     return product;
   }
 
