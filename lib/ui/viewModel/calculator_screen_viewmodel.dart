@@ -61,7 +61,6 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
           return [];
         }
       case ProductCategory.credit:
-        // todo: change later
         final foundOption = options
             .where(
               (e) => (e as CreditLoanOption).creditLendRateTypeName == "대출금리",
@@ -78,31 +77,32 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
           foundOption.grade301400,
           foundOption.gradeUnder300,
         ].whereType<double>();
-        final avgRates = foundOption.averageGrade;
-        final min = rates.min;
-        final max = rates.max;
-        final avg = (avgRates != null) ? avgRates : rates.average;
-        return [min, avg, max];
-      default:
-        if (category == ProductCategory.mortgage ||
-            category == ProductCategory.rent) {
-          // todo: change later
-          final min = options
-              .map((e) => (e as MortageAndRentLoanOption).lendRateMin)
-              .whereType<double>()
-              .min;
-          final max = options
-              .map((e) => (e as MortageAndRentLoanOption).lendRateMax)
-              .whereType<double>()
-              .max;
-          final avg = options
-              .map((e) => (e as MortageAndRentLoanOption).lendRateAvg)
-              .whereType<double>()
-              .average;
+        if (rates.isNotEmpty) {
+          final avgRates = foundOption.averageGrade;
+          final min = rates.min;
+          final max = rates.max;
+          final avg = (avgRates != null) ? avgRates : rates.average;
           return [min, avg, max];
         } else {
           return [];
         }
+      case ProductCategory.mortgage:
+      case ProductCategory.rent:
+        final min = options
+            .map((e) => (e as MortageAndRentLoanOption).lendRateMin)
+            .whereType<double>()
+            .min;
+        final max = options
+            .map((e) => (e as MortageAndRentLoanOption).lendRateMax)
+            .whereType<double>()
+            .max;
+        final avg = options
+            .map((e) => (e as MortageAndRentLoanOption).lendRateAvg)
+            .whereType<double>()
+            .average;
+        return [min, avg, max];
+      default:
+        return [];
     }
   }
 
@@ -130,42 +130,31 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
         final interestAfterTax = interest - tax;
         return {
           "예치금": principal,
-          "이자": interest.floorToDouble(),
-          "세후 이자(15.4%)": interestAfterTax.floorToDouble(),
-          "만기수령액": principal + interestAfterTax.floorToDouble(),
+          "이자": interest.toInt(),
+          "세후 이자(15.4%)": interestAfterTax.toInt(),
+          "만기수령액": principal + interestAfterTax.toInt(),
         };
       case ProductCategory.installment:
         double interest = 0.0;
         final monthlyDeposit = principal;
         final totalPrincipal = monthlyDeposit * term;
-        if (type == "단리 정액적립식") {
+        if (type.contains("단리")) {
           interest = monthlyDeposit * monthlyRate * (term * (term + 1) / 2);
-        } else if (type == "복리 정액적립식") {
+        } else {
           final totalAmount =
               monthlyDeposit *
               (1 + monthlyRate) *
               (pow(1 + monthlyRate, term) - 1) /
               monthlyRate;
           interest = totalAmount - totalPrincipal;
-        } else if (type == "단리 자유적립식") {
-          final remainingTerm = term - savedTerm!;
-          interest = monthlyDeposit * monthlyRate * remainingTerm;
-        } else {
-          final remainingTerm = term - savedTerm!;
-          final totalAmount =
-              monthlyDeposit * pow(1 + monthlyRate, remainingTerm);
-          interest = totalAmount - monthlyDeposit.toDouble();
         }
         final tax = interest * 0.154;
         final interestAfterTax = interest - tax;
         return {
-          "총 납입원금": type.contains("자유적립식") ? principal : totalPrincipal,
-          "총 이자": interest.floorToDouble(),
-          "세후 이자(15.4%)": interestAfterTax.floorToDouble(),
-          "만기수령액":
-              ((type.contains("자유적립식") ? principal : totalPrincipal) +
-                      interestAfterTax)
-                  .floorToDouble(),
+          "총 납입원금": totalPrincipal,
+          "총 이자": interest.toInt(),
+          "세후 이자(15.4%)": interestAfterTax.toInt(),
+          "만기수령액": (totalPrincipal + interestAfterTax).toInt(),
         };
       case ProductCategory.annuity:
         final option = options
@@ -193,10 +182,10 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
         }
       default:
         final num = List.generate(term, (index) => index + 1);
-        List<double> monthlyPaymentList = []; // 월 납입금(원금 + 이자)
-        List<double> repaidPrincipalList = []; // 상환한 원금
-        List<double> interestList = []; // 매달 이자
-        List<double> remainingBalanceList = []; // 대출 잔액
+        List<int> monthlyPaymentList = []; // 월 납입금(원금 + 이자)
+        List<int> repaidPrincipalList = []; // 상환한 원금
+        List<int> interestList = []; // 매달 이자
+        List<int> remainingBalanceList = []; // 대출 잔액
         switch (type) {
           case "원리금균등상환방식":
             for (final currentMonth in num) {
@@ -213,10 +202,10 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
               double interest = previousBalance * monthlyRate;
               double repaidPrincipal = monthlyPayment - interest;
               double remainingBalance = previousBalance - repaidPrincipal;
-              monthlyPaymentList.add(monthlyPayment.floorToDouble());
-              interestList.add(interest.floorToDouble());
-              repaidPrincipalList.add(repaidPrincipal.floorToDouble());
-              remainingBalanceList.add(remainingBalance.floorToDouble());
+              monthlyPaymentList.add(monthlyPayment.toInt());
+              interestList.add(interest.toInt());
+              repaidPrincipalList.add(repaidPrincipal.toInt());
+              remainingBalanceList.add(remainingBalance.toInt());
             }
             break;
           case "원금균등상환방식":
@@ -227,31 +216,28 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
               double interest = previousBalance * monthlyRate;
               double monthlyPayment = repaidPrincipal + interest;
               double remainingBalance = previousBalance - repaidPrincipal;
-              repaidPrincipalList.add(repaidPrincipal.floorToDouble());
-              interestList.add(interest.floorToDouble());
-              monthlyPaymentList.add(monthlyPayment.floorToDouble());
-              remainingBalanceList.add(remainingBalance.floorToDouble());
+              repaidPrincipalList.add(repaidPrincipal.toInt());
+              interestList.add(interest.toInt());
+              monthlyPaymentList.add(monthlyPayment.toInt());
+              remainingBalanceList.add(remainingBalance.toInt());
             }
             break;
           // 만기일시상환방식
           default:
             final interest = principal * monthlyRate;
-            interestList = List.generate(
-              term,
-              (index) => interest.floorToDouble(),
-            );
-            repaidPrincipalList = List.generate(term - 1, (index) => 0.0);
-            repaidPrincipalList.add(principal.floorToDouble());
+            interestList = List.generate(term, (index) => interest.toInt());
+            repaidPrincipalList = List.generate(term - 1, (index) => 0);
+            repaidPrincipalList.add(principal.toInt());
             monthlyPaymentList = List.generate(
               term - 1,
-              (index) => interest.floorToDouble(),
+              (index) => interest.toInt(),
             );
-            monthlyPaymentList.add((interest + principal).floorToDouble());
+            monthlyPaymentList.add((interest + principal).toInt());
             remainingBalanceList = List.generate(
               term - 1,
-              (index) => principal.floorToDouble(),
+              (index) => principal.toInt(),
             );
-            remainingBalanceList.add(0.0);
+            remainingBalanceList.add(0);
         }
         return {
           "회차": num,
