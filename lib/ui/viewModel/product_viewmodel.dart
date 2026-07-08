@@ -33,7 +33,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     final user = GoogleAuthService.getCurrentUser();
     if (user == null) {
       debugPrint("No user is currently signed in.");
-      state = AsyncData((0, <FinancialProduct>[]));
+      state = AsyncValue.error("No user found", StackTrace.current);
       return;
     }
 
@@ -59,7 +59,7 @@ class ProductViewmodel extends _$ProductViewmodel {
         getFinGroupCode[selectedFilters["금융회사"]?.first ??
             ((ctg == ProductCategory.annuity) ? "050000" : "020000")] ??
         ((ctg == ProductCategory.annuity) ? "050000" : "020000");
-    print("topFinGrpNo: $topFinGrpNo");
+
     if (selectedFilters["회사 선택"] != null && selectedFilters["회사 선택"]!.isEmpty) {
       final List<String> companies = [];
       for (final filter in filters["회사 선택"]!) {
@@ -103,7 +103,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     final user = GoogleAuthService.getCurrentUser();
     if (user == null) {
       debugPrint("No user is currently signed in.");
-      state = AsyncData((0, <FinancialProduct>[]));
+      state = AsyncValue.error("No user found", StackTrace.current);
       return;
     }
 
@@ -150,7 +150,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     sortByCriteria(criteria, ProductCategory.isaMp, totalCount, filtered);
   }
 
-  void toggleLiked(FinancialProduct product) {
+  bool toggleLiked(FinancialProduct product) {
     final currentState = state.value ?? (0, <FinancialProduct>[]);
     final isLiked = product.commonInfo.isLiked;
     final updated = currentState.$2.map((e) {
@@ -160,7 +160,7 @@ class ProductViewmodel extends _$ProductViewmodel {
         return e;
       }
     }).toList();
-    state = AsyncData((currentState.$1, updated));
+    state = AsyncValue.data((currentState.$1, updated));
 
     if (isLiked == true) {
       ref
@@ -171,6 +171,7 @@ class ProductViewmodel extends _$ProductViewmodel {
           .read(likedProductViewmodelProvider.notifier)
           .addInLikedList(product.copyWith(!isLiked));
     }
+    return isLiked;
   }
 
   void sortByCriteria(
@@ -185,7 +186,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     switch (category) {
       case ProductCategory.deposit:
       case ProductCategory.installment:
-        state = AsyncData((
+        state = AsyncValue.data((
           maxPage,
           products..sort(
             (criteria == "최고 금리(높은 순)")
@@ -211,7 +212,7 @@ class ProductViewmodel extends _$ProductViewmodel {
         ));
         break;
       case ProductCategory.annuity:
-        state = AsyncData((
+        state = AsyncValue.data((
           maxPage,
           products..sort(switch (criteria) {
             "평균 수익률(높은 순)" =>
@@ -234,7 +235,7 @@ class ProductViewmodel extends _$ProductViewmodel {
         break;
       case ProductCategory.mortgage:
       case ProductCategory.rent:
-        state = AsyncData((
+        state = AsyncValue.data((
           maxPage,
           products..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>
@@ -251,7 +252,7 @@ class ProductViewmodel extends _$ProductViewmodel {
           }),
         ));
       case ProductCategory.credit:
-        state = AsyncData((
+        state = AsyncValue.data((
           maxPage,
           products..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>

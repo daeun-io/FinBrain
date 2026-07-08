@@ -14,10 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductItem extends ConsumerStatefulWidget {
-  const ProductItem({
-    super.key,
-    required this.product,
-  });
+  const ProductItem({super.key, required this.product});
 
   final FinancialProduct product;
 
@@ -33,7 +30,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     final sortFilter = ref.watch(
       sortOrFilterTextViewModelProvider(widget.product.commonInfo.category),
     );
-    final sortCriteria = (widget.product.commonInfo.category == ProductCategory.liked)
+    final sortCriteria =
+        (widget.product.commonInfo.category == ProductCategory.liked)
         ? switch (widget.product.commonInfo.category) {
             ProductCategory.deposit => "최고 금리(높은순)",
             ProductCategory.installment => "최고 금리(높은순)",
@@ -47,22 +45,23 @@ class _ProductItemState extends ConsumerState<ProductItem> {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (ctx) => ProductDetailScreen(
-              product: widget.product,
-              category: widget.product.commonInfo.category,
-            ),
+            builder: (ctx) => ProductDetailScreen(productName: widget.product.commonInfo.productName!,),
           ),
         );
       },
       onLongPress: () {
         setState(() {
-          if(widget.product.commonInfo.isLiked){
+          if (widget.product.commonInfo.isLiked) {
             isSelected = !isSelected;
           }
-          if(isSelected){
-            ref.read(selectedProductsViewmodelProvider.notifier).addProduct(widget.product);
+          if (isSelected) {
+            ref
+                .read(selectedProductsViewmodelProvider.notifier)
+                .addProduct(widget.product);
           } else {
-            ref.read(selectedProductsViewmodelProvider.notifier).subtractProduct(widget.product);
+            ref
+                .read(selectedProductsViewmodelProvider.notifier)
+                .subtractProduct(widget.product);
           }
         });
       },

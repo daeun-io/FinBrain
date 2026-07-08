@@ -112,6 +112,18 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           const SizedBox(height: 12.0),
           products.when(
             data: (data) {
+              if (data.$2.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "상품이 존재하지 않습니다",
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: black,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              }
               final (maxPage, items) = data;
               return Expanded(
                 child: CustomScrollView(

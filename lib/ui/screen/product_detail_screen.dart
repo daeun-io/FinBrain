@@ -18,22 +18,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductDetailScreen extends ConsumerWidget {
-  const ProductDetailScreen({
-    super.key,
-    required this.product,
-    required this.category,
-  });
+  const ProductDetailScreen({super.key, required this.productName});
+  final String productName;
 
-  final FinancialProduct product;
-  final ProductCategory category;
-
-  void launchPrdtUrl(WidgetRef ref, BuildContext context) {
+  void launchPrdtUrl(WidgetRef ref, BuildContext context, String companyName) {
     ref
         .read(productDetailScreenViewmodelProvider.notifier)
-        .fetchAndOpenProductUrl(
-          product.commonInfo.companyName!,
-          product.commonInfo.productName!,
-        )
+        .fetchAndOpenProductUrl(companyName, productName)
         .then((isSuccess) {
           if (!isSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -48,171 +39,219 @@ class ProductDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      backgroundColor: white,
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: primary100,
-        scrolledUnderElevation: 0.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
-        ),
-        title: Text(
-          product.commonInfo.productName!,
-          style: TextStyle(
-            color: textPrimary,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        titleSpacing: -6.0,
-        actions: [
-          IconButton(
-            onPressed: () {
-              ref.read(productViewmodelProvider.notifier).toggleLiked(product);
-            },
-            icon: product.commonInfo.isLiked
-                ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
-                : const Icon(Icons.favorite, color: unlikedColor, size: 32.0),
-          ),
-        ],
-      ),
-      body: SizedBox.expand(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 24.0,
-                    horizontal: 20.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ..._displayDefaultWidgetList(product),
-                      ..._displayDynamicWidgetList(category, product),
-                      SizedBox(height: 160.0),
-                    ],
-                  ),
-                ),
+    final productList = ref.watch(productViewmodelProvider);
+
+    return productList.when(
+      data: (data) {
+        final product = data.$2
+            .where((e) => e.commonInfo.productName == productName)
+            .first;
+        return Scaffold(
+          backgroundColor: white,
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            backgroundColor: primary100,
+            scrolledUnderElevation: 0.0,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+            ),
+            title: Text(
+              productName,
+              style: TextStyle(
+                color: textPrimary,
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            Positioned(
-              right: 20,
-              bottom: 100,
-              child: AiButton(tag: product.commonInfo.productName!, category: product.commonInfo.category,),
-            ),
-            if (category == ProductCategory.isaMp)
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: GestureDetector(
-                  onTap: () => launchPrdtUrl(ref, context),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                    color: primary100,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "공식 홈페이지로 이동",
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w400,
+            titleSpacing: -6.0,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  ref
+                      .read(productViewmodelProvider.notifier)
+                      .toggleLiked(product);
+                },
+                icon: product.commonInfo.isLiked
+                    ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
+                    : const Icon(
+                        Icons.favorite,
+                        color: unlikedColor,
+                        size: 32.0,
+                      ),
+              ),
+            ],
+          ),
+          body: SizedBox.expand(
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 24.0,
+                        horizontal: 20.0,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ..._displayDefaultWidgetList(product),
+                          ..._displayDynamicWidgetList(
+                            product.commonInfo.category,
+                            product,
+                          ),
+                          SizedBox(height: 160.0),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              )
-            else
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (ctx) {
-                                final options = switch (category) {
-                                  ProductCategory.deposit =>
-                                    (product as DepositAndInstallmentSavings)
-                                        .options,
-                                  ProductCategory.installment =>
-                                    (product as DepositAndInstallmentSavings)
-                                        .options,
-                                  ProductCategory.credit =>
-                                    (product as CreditLoan).options,
-                                  ProductCategory.annuity =>
-                                    (product as AnnuitySavings).options,
-                                  _ => (product as MortageAndRentLoan).options,
-                                };
-                                return CalculatorScreen(
-                                  category: category,
-                                  mapOptions: ref
-                                      .read(
-                                        productDetailScreenViewmodelProvider
-                                            .notifier,
-                                      )
-                                      .mapProductOptions(
-                                        category,
-                                        options,
-                                      ),
-                                  options: options,
-                                );
-                              },
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 20.0),
-                          color: primary300,
-                          alignment: Alignment.center,
-                          child: Text(
-                            "금융 계산기",
-                            style: TextStyle(
-                              color: textPrimary,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
-                            ),
+                Positioned(
+                  right: 20,
+                  bottom: 100,
+                  child: AiButton(
+                    tag: product.commonInfo.productName!,
+                    category: product.commonInfo.category,
+                  ),
+                ),
+                if (product.commonInfo.category == ProductCategory.isaMp)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: GestureDetector(
+                      onTap: () => launchPrdtUrl(
+                        ref,
+                        context,
+                        product.commonInfo.companyName ?? "",
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        color: primary100,
+                        alignment: Alignment.center,
+                        child: Text(
+                          "공식 홈페이지로 이동",
+                          style: TextStyle(
+                            color: textPrimary,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => launchPrdtUrl(ref, context),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 20.0),
-                          color: primary100,
-                          alignment: Alignment.center,
-                          child: Text(
-                            "공식 홈페이지로 이동",
-                            style: TextStyle(
-                              color: textPrimary,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
+                  )
+                else
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) {
+                                    final options = switch (product
+                                        .commonInfo
+                                        .category) {
+                                      ProductCategory.deposit =>
+                                        (product
+                                                as DepositAndInstallmentSavings)
+                                            .options,
+                                      ProductCategory.installment =>
+                                        (product
+                                                as DepositAndInstallmentSavings)
+                                            .options,
+                                      ProductCategory.credit =>
+                                        (product as CreditLoan).options,
+                                      ProductCategory.annuity =>
+                                        (product as AnnuitySavings).options,
+                                      _ =>
+                                        (product as MortageAndRentLoan).options,
+                                    };
+                                    return CalculatorScreen(
+                                      category: product.commonInfo.category,
+                                      mapOptions: ref
+                                          .read(
+                                            productDetailScreenViewmodelProvider
+                                                .notifier,
+                                          )
+                                          .mapProductOptions(
+                                            product.commonInfo.category,
+                                            options,
+                                          ),
+                                      options: options,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 20.0),
+                              color: primary300,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "금융 계산기",
+                                style: TextStyle(
+                                  color: textPrimary,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => launchPrdtUrl(
+                              ref,
+                              context,
+                              product.commonInfo.companyName ?? "",
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 20.0),
+                              color: primary100,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "공식 홈페이지로 이동",
+                                style: TextStyle(
+                                  color: textPrimary,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-          ],
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+      error: (err, stack) => Expanded(
+        child: Center(
+          child: Text(
+            "오류가 발생했습니다. 다시 시도해주세요",
+            style: TextStyle(
+              color: black,
+              fontSize: 12.0,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
         ),
       ),
+      loading: () =>
+          Center(child: const CircularProgressIndicator(color: primary500)),
     );
   }
 
