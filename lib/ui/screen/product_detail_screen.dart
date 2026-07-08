@@ -8,6 +8,7 @@ import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
+import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
@@ -18,8 +19,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductDetailScreen extends ConsumerWidget {
-  const ProductDetailScreen({super.key, required this.productName});
+  const ProductDetailScreen({
+    super.key,
+    required this.productName,
+    required this.fromLikedScreen,
+  });
   final String productName;
+  final bool fromLikedScreen;
 
   void launchPrdtUrl(WidgetRef ref, BuildContext context, String companyName) {
     ref
@@ -40,12 +46,26 @@ class ProductDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productList = ref.watch(productViewmodelProvider);
+    final likedList = ref.watch(likedProductViewmodelProvider);
 
-    return productList.when(
+    return ((fromLikedScreen) ? likedList : productList).when(
       data: (data) {
-        final product = data.$2
-            .where((e) => e.commonInfo.productName == productName)
-            .first;
+        final product =
+            ((fromLikedScreen)
+                    ? data as List<FinancialProduct>
+                    : (data as (int, List<FinancialProduct>)).$2)
+                .where((e) => e.commonInfo.productName == productName)
+                .firstOrNull;
+
+        if (product == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) {
+              Navigator.of(context).pop();
+            }
+          });
+          return const Scaffold(backgroundColor: white, body: SizedBox.shrink());
+        }
+
         return Scaffold(
           backgroundColor: white,
           resizeToAvoidBottomInset: false,
@@ -72,9 +92,9 @@ class ProductDetailScreen extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(productViewmodelProvider.notifier)
-                      .toggleLiked(product);
+                      .toggleLiked(product!);
                 },
-                icon: product.commonInfo.isLiked
+                icon: product!.commonInfo.isLiked
                     ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
                     : const Icon(
                         Icons.favorite,

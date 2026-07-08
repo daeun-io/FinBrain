@@ -14,9 +14,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductItem extends ConsumerStatefulWidget {
-  const ProductItem({super.key, required this.product});
+  const ProductItem({
+    super.key,
+    required this.product,
+    required this.fromLikedScreen,
+  });
 
   final FinancialProduct product;
+  final bool fromLikedScreen;
 
   @override
   ConsumerState<ProductItem> createState() => _ProductItemState();
@@ -45,7 +50,10 @@ class _ProductItemState extends ConsumerState<ProductItem> {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (ctx) => ProductDetailScreen(productName: widget.product.commonInfo.productName!,),
+            builder: (ctx) => ProductDetailScreen(
+              productName: widget.product.commonInfo.productName!,
+              fromLikedScreen: widget.fromLikedScreen,
+            ),
           ),
         );
       },

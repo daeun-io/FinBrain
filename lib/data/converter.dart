@@ -19,7 +19,7 @@ const getFinGroupName = {
 const getCategoryEnum = {
   "ProductCategory.deposit": ProductCategory.deposit,
   "ProductCategory.installment": ProductCategory.installment,
-  "ProductCategory.mortage": ProductCategory.mortgage,
+  "ProductCategory.mortgage": ProductCategory.mortgage,
   "ProductCategory.rent": ProductCategory.rent,
   "ProductCategory.credit": ProductCategory.credit,
   "ProductCategory.annuity": ProductCategory.annuity,

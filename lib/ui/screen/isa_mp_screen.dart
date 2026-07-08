@@ -129,7 +129,10 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                     delegate: SliverChildBuilderDelegate((context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: ProductItem(product: items[index]),
+                        child: ProductItem(
+                          product: items[index],
+                          fromLikedScreen: false,
+                        ),
                       );
                     }, childCount: items.length),
                   ),
