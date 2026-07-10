@@ -163,7 +163,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                         horizontal: 20.0,
                       ),
                       decoration: BoxDecoration(
-                        color: colorScheme.outline,
+                        color: colorScheme.secondary,
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
                       child: text("리셋", colorScheme.onPrimary),
@@ -210,10 +210,10 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                         horizontal: 20.0,
                       ),
                       decoration: BoxDecoration(
-                        color: colorScheme.secondary,
+                        color: colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
-                      child: text("계산", colorScheme.onPrimary),
+                      child: text("계산", colorScheme.onSurface)
                     ),
                   ),
                 ],
@@ -334,7 +334,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
 
   Widget dropdownCard(String key, List<dynamic> items, ColorScheme colorScheme) {
     return Card(
-      color: colorScheme.surface,
+      color: colorScheme.primary,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: colorScheme.surfaceContainerHighest, width: 1.0),
       ),
@@ -350,7 +350,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                 });
               }
             },
-            dropdownColor: colorScheme.surface,
+            dropdownColor: colorScheme.primary,
             value: _selectedValues[key],
             items: [
               for (final item in items)
@@ -522,11 +522,16 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     }
                   });
                 },
+                side: BorderSide(
+                  color: colorScheme.surfaceContainerHighest,
+                  width: 1.0,
+                ),
+                checkColor: colorScheme.onSurface,
                 activeColor: colorScheme.surfaceContainerHighest,
               ),
             ),
             const SizedBox(width: 4.0),
-            text("우대 금리 적용", colorScheme.onSecondary),
+            captionText("우대 금리 적용", colorScheme.onSecondary),
           ],
         ),
         const SizedBox(height: 1.0),
@@ -578,6 +583,9 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             Expanded(
               child: SliderTheme(
                 data: SliderTheme.of(context).copyWith(
+                  valueIndicatorTextStyle: TextStyle(
+                    color: colorScheme.onSecondaryContainer
+                  ),
                   showValueIndicator: ShowValueIndicator.alwaysVisible,
                 ),
                 child: Slider(
@@ -592,7 +600,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     });
                   },
                   activeColor: colorScheme.surfaceContainerHighest,
-                  inactiveColor: colorScheme.onSecondary,
+                  inactiveColor: colorScheme.surfaceBright,
                 ),
               ),
             ),

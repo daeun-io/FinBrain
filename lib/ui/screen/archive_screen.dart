@@ -16,7 +16,7 @@ class ArchiveScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: colorScheme.primary,
       appBar: AppBar(
-        backgroundColor: colorScheme.tertiary,
+        backgroundColor: colorScheme.primary,
         scrolledUnderElevation: 0.0,
         leading: IconButton(
           onPressed: () {
@@ -39,19 +39,20 @@ class ArchiveScreen extends StatelessWidget {
           child: Column(
             children: [
               TabBar(
+                indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(color: colorScheme.onPrimary, width: 2.0),
+                ),
                 labelColor: colorScheme.onPrimary,
-                labelStyle: const TextStyle(
+                unselectedLabelColor: colorScheme.onTertiary,
+                dividerColor: colorScheme.onTertiary,
+                labelStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
-                unselectedLabelStyle: const TextStyle(
+                unselectedLabelStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                 ),
-                indicator: const UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 2),
-                ),
-                indicatorColor: colorScheme.onPrimary,
                 indicatorSize: TabBarIndicatorSize.tab,
                 splashFactory: NoSplash.splashFactory,
                 tabs: [

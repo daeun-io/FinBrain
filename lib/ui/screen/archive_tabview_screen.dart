@@ -1,3 +1,4 @@
+import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/viewModel/archive_viewmodel.dart';
@@ -123,14 +124,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                 ),
                 Expanded(
                   child: (category == ArchiveCategory.comparison)
-                      ? ArchiveList(
-                          ctg: ArchiveCategory.comparison,
-                          records: data,
-                        )
-                      : ArchiveList(
-                          ctg: ArchiveCategory.summary,
-                          records: data,
-                        ),
+                      ? archiveList(data, colorScheme, ref)
+                      : archiveList(data, colorScheme, ref),
                 ),
               ],
             ),
@@ -140,7 +135,116 @@ class ArchiveTabViewScreen extends ConsumerWidget {
             print("stack trace: $stackTrace");
             return Center(child: Text("오류가 발생했습니다!\n다시 시도해주세요"));
           },
-          loading: () => const CustomProgressIndicator()
+          loading: () => const CustomProgressIndicator(),
         );
+  }
+
+  Widget archiveList(
+    List<AiRecord> records,
+    ColorScheme colorScheme,
+    WidgetRef ref,
+  ) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 24.0),
+          ...records.map((item) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: ExpansionTile(
+                  leading: IconButton(
+                    onPressed: () {
+                      if (category == ArchiveCategory.comparison) {
+                        ref
+                            .read(archiveComparisonViewmodelProvider.notifier)
+                            .pinRecord(item);
+                      } else {
+                        ref
+                            .read(archiveSummaryViewmodelProvider.notifier)
+                            .pinRecord(item);
+                      }
+                    },
+                    icon: item.isPinned
+                        ? Icon(
+                            Icons.star,
+                            color: colorScheme.onSecondaryFixed,
+                            size: 24,
+                          )
+                        : Icon(
+                            Icons.star_border,
+                            color: colorScheme.onSecondaryFixedVariant,
+                            size: 24,
+                          ),
+                  ),
+                  onExpansionChanged: (expanded) {
+                    if (category == ArchiveCategory.comparison) {
+                      ref
+                          .read(archiveComparisonViewmodelProvider.notifier)
+                          .expandRecord(item);
+                    } else {
+                      ref
+                          .read(archiveSummaryViewmodelProvider.notifier)
+                          .expandRecord(item);
+                    }
+                  },
+                  initiallyExpanded: item.isExpanded,
+                  backgroundColor: colorScheme.secondary,
+                  collapsedBackgroundColor: colorScheme.secondary,
+                  iconColor: colorScheme.onPrimary,
+                  collapsedIconColor: colorScheme.onPrimary,
+                  shape: const Border(),
+                  title: Text(
+                    (category == ArchiveCategory.summary)
+                        ? item.key
+                        : item.key.substring(8).replaceAll("-", " vs "),
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: colorScheme.onSecondary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  children: item.value.map((chat) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              chat.createdAt.toIso8601String().split("T").first,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14.0,
+                                color: colorScheme.onTertiary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              chat.text,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14.0,
+                                color: colorScheme.onSecondary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12.0),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
   }
 }

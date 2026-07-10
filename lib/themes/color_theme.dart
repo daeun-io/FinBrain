@@ -14,6 +14,7 @@ final ThemeData lightTheme = ThemeData(
     onSecondary: black,
     onTertiary: grayishBlue,
     onSurface: white,
+    onSecondaryContainer: white,
     // border
     outline: paleBlue,
     outlineVariant: skyBlue,
@@ -36,6 +37,8 @@ final ThemeData lightTheme = ThemeData(
     surfaceContainerLow: pastelSkyBlue85,
     // indicator
     shadow: gray,
+    // slider
+    surfaceBright: paleBlue,
   ),
 );
 
@@ -52,6 +55,7 @@ final ThemeData darkTheme = ThemeData(
     onSecondary: white,
     onTertiary: grayishBlue,
     onSurface: white,
+    onSecondaryContainer: black,
     // border
     outline: paleBlue,
     outlineVariant: skyBlue,
@@ -74,5 +78,7 @@ final ThemeData darkTheme = ThemeData(
     surfaceContainerLow: pastelSkyBlue55,
     // indicator
     shadow: ashGray,
+    // slider
+    surfaceBright: darkGrayishBlue
   ),
 );
