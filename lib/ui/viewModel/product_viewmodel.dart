@@ -33,24 +33,20 @@ class ProductViewmodel extends _$ProductViewmodel {
     final user = GoogleAuthService.getCurrentUser();
     if (user == null) {
       debugPrint("No user is currently signed in.");
-      state = AsyncData((0, <FinancialProduct>[]));
+      state = AsyncValue.error("No user found", StackTrace.current);
       return;
     }
 
-    if (ctg == ProductCategory.isa) {
-      state = AsyncData((0, <FinancialProduct>[]));
+    if (ctg == ProductCategory.isaMp ||
+        ctg == ProductCategory.isaJoin ||
+        ctg == ProductCategory.isaManagement ||
+        ctg == ProductCategory.liked) {
+      return;
     }
-
-    final filterCtg = switch (ctg) {
-      ProductCategory.annuity => FilterTextCategory.annuity,
-      ProductCategory.deposit => FilterTextCategory.savings,
-      ProductCategory.installment => FilterTextCategory.savings,
-      _ => FilterTextCategory.loan,
-    };
 
     final filters =
         snapshot ??
-        (await ref.read(filtersViewmodelProvider(filterCtg).future) ?? {});
+        (await ref.read(filtersViewmodelProvider(ctg).future) ?? {});
 
     Map<String, List<String>> selectedFilters = {};
     for (final entry in filters.entries) {
@@ -59,7 +55,6 @@ class ProductViewmodel extends _$ProductViewmodel {
           .map((e) => e.$1)
           .toList();
     }
-
     final topFinGrpNo =
         getFinGroupCode[selectedFilters["금융회사"]?.first ??
             ((ctg == ProductCategory.annuity) ? "050000" : "020000")] ??
@@ -74,7 +69,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     }
 
     final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(filterCtg))
+        .read(sortOrFilterTextViewModelProvider(ctg))
         .$1
         .toString();
 
@@ -108,14 +103,14 @@ class ProductViewmodel extends _$ProductViewmodel {
     final user = GoogleAuthService.getCurrentUser();
     if (user == null) {
       debugPrint("No user is currently signed in.");
-      state = AsyncData((0, <FinancialProduct>[]));
+      state = AsyncValue.error("No user found", StackTrace.current);
       return;
     }
 
     final filters =
         snapshot ??
         (await ref.read(
-              filtersViewmodelProvider(FilterTextCategory.isaMp).future,
+              filtersViewmodelProvider(ProductCategory.isaMp).future,
             ) ??
             {});
     Map<String, List<String>> selectedFilters = {};
@@ -148,14 +143,14 @@ class ProductViewmodel extends _$ProductViewmodel {
     }).toList();
 
     final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(FilterTextCategory.isaMp))
+        .read(sortOrFilterTextViewModelProvider(ProductCategory.isaMp))
         .$1
         .toString();
 
-    sortByCriteria(criteria, ProductCategory.isa, totalCount, filtered);
+    sortByCriteria(criteria, ProductCategory.isaMp, totalCount, filtered);
   }
 
-  void toggleLiked(FinancialProduct product) {
+  bool toggleLiked(FinancialProduct product) {
     final currentState = state.value ?? (0, <FinancialProduct>[]);
     final isLiked = product.commonInfo.isLiked;
     final updated = currentState.$2.map((e) {
@@ -165,7 +160,7 @@ class ProductViewmodel extends _$ProductViewmodel {
         return e;
       }
     }).toList();
-    state = AsyncData((currentState.$1, updated));
+    state = AsyncValue.data((currentState.$1, updated));
 
     if (isLiked == true) {
       ref
@@ -176,6 +171,7 @@ class ProductViewmodel extends _$ProductViewmodel {
           .read(likedProductViewmodelProvider.notifier)
           .addInLikedList(product.copyWith(!isLiked));
     }
+    return isLiked;
   }
 
   void sortByCriteria(
@@ -184,12 +180,13 @@ class ProductViewmodel extends _$ProductViewmodel {
     int maxPage, [
     List<FinancialProduct>? prdt,
   ]) {
-    final products = prdt ?? ((state.value == null) ? [] : state.value!.$2);
+    final products =
+        prdt ?? ((state.value == null) ? [] : [...state.value!.$2]);
 
     switch (category) {
       case ProductCategory.deposit:
       case ProductCategory.installment:
-        state = AsyncData((
+        state = AsyncValue.data((
           maxPage,
           products..sort(
             (criteria == "최고 금리(높은 순)")
@@ -215,7 +212,7 @@ class ProductViewmodel extends _$ProductViewmodel {
         ));
         break;
       case ProductCategory.annuity:
-        state = AsyncData((
+        state = AsyncValue.data((
           maxPage,
           products..sort(switch (criteria) {
             "평균 수익률(높은 순)" =>
@@ -236,9 +233,9 @@ class ProductViewmodel extends _$ProductViewmodel {
           }),
         ));
         break;
-      case ProductCategory.mortage:
+      case ProductCategory.mortgage:
       case ProductCategory.rent:
-        state = AsyncData((
+        state = AsyncValue.data((
           maxPage,
           products..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>
@@ -255,7 +252,7 @@ class ProductViewmodel extends _$ProductViewmodel {
           }),
         ));
       case ProductCategory.credit:
-        state = AsyncData((
+        state = AsyncValue.data((
           maxPage,
           products..sort(switch (criteria) {
             "최저 금리(낮은 순)" =>

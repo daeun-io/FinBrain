@@ -22,7 +22,7 @@ final class SelectedTopfingrpnoViewmodelProvider
         argument: null,
         retry: null,
         name: r'selectedTopfingrpnoViewmodelProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -44,7 +44,7 @@ final class SelectedTopfingrpnoViewmodelProvider
 }
 
 String _$selectedTopfingrpnoViewmodelHash() =>
-    r'96598c504a8f7547c0d4088c9f509ec7be131087';
+    r'ac0185785d64b85c8af411ce86ef74e23030b8db';
 
 abstract class _$SelectedTopfingrpnoViewmodel
     extends $Notifier<Map<String, String>> {

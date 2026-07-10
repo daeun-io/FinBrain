@@ -4,8 +4,6 @@ import { GoogleGenAI } from "@google/genai";
 
 admin.initializeApp();
 
-// 💡 만약 (default)가 아닌 별도 데이터베이스를 쓰신다면 아래처럼 ID를 넣어주세요.
-// const db = admin.firestore("your-database-id");
 const db = admin.firestore();
 
 export const summarizeAndArchiveChat = onSchedule(
@@ -15,13 +13,12 @@ export const summarizeAndArchiveChat = onSchedule(
     secrets: ["GEMINI_API_KEY"],
   },
   async () => {
-    // 🚨 [필수 수정] Secret 값을 안전하게 읽기 위해 인스턴스 생성을 함수 내부로 이동합니다.
+
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     // 1. 모든 chat_history 컬렉션 가져오기
     const chatHistorySnapshot = await db.collectionGroup("chat_history").get();
 
-    // 0개인 경우 에러 로그를 남기고 종료 (지울 대상이 없으므로 지울 수 없습니다)
     if (chatHistorySnapshot.empty) {
       console.log("⚠️ Firestore에서 chat_history 컬렉션을 찾지 못했거나 문서가 0개입니다. 데이터를 다시 확인해주세요.");
       return;
@@ -93,6 +90,7 @@ export const summarizeAndArchiveChat = onSchedule(
         summaryText = "대화 요약 생성에 실패했습니다. (Gemini API 오류)";
       }
 
+      const sourceProductRef = db.collection(uid).doc("ai_conversation").collection("products").doc(productName);
       // 새 요약 문서 참조 생성
       const productRef = db.collection(uid).doc("ai_summary").collection("products").doc(productName);
       const summaryRef = db
@@ -103,21 +101,29 @@ export const summarizeAndArchiveChat = onSchedule(
         .collection("chat_summary")
         .doc();
       
-      // 상품 문서 접근을 위해 빈 객체 생성
-      batch.set(productRef, {});
+      const sourceProductDoc = await sourceProductRef.get();
+      let category = "";
+      if (sourceProductDoc.exists && sourceProductDoc.data()?.category) {
+        category = sourceProductDoc.data()?.category;
+      } else {
+        category = docs[0].data().category || "";
+      }
+
+      // 상품 문서 접근을 위한 객체 생성
+      batch.set(productRef, {category: category}, {merge: true});
       // 요약 저장
       batch.set(summaryRef, {
         summary: summaryText,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
-      operationCount++;
+      
+      operationCount += 2;
 
       // 기존 채팅 히스토리 삭제 (N operations)
       for (const doc of docs) {
         batch.delete(doc.ref);
         operationCount++;
 
-        // Batch 제한(500개) 안전 방어
         if (operationCount >= 490) {
           await batch.commit();
           commitCount++;
@@ -125,6 +131,18 @@ export const summarizeAndArchiveChat = onSchedule(
           operationCount = 0;
         }
       }
+
+      // 원본 채팅에 대하 상품 문서 삭제
+      batch.delete(sourceProductRef);
+        operationCount++;
+      
+        // Batch 제한(500개) 안전 방어
+        if (operationCount >= 490) {
+          await batch.commit();
+          commitCount++;
+          batch = db.batch();
+          operationCount = 0;
+        }
     }
 
     // 남은 Batch 작업 커밋

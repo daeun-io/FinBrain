@@ -11,7 +11,7 @@ class ProductFilterCondition extends StatelessWidget {
     required this.filterList,
   });
 
-  final FilterTextCategory category;
+  final ProductCategory category;
   final String filter;
   final List<(String, bool)> filterList;
 

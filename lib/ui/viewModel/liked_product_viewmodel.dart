@@ -54,9 +54,9 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
         categories.add(ProductCategory.deposit);
       if (criteriaList.contains("적금"))
         categories.add(ProductCategory.installment);
-      if (criteriaList.contains("ISA")) categories.add(ProductCategory.isa);
+      if (criteriaList.contains("ISA")) categories.add(ProductCategory.isaMp);
       if (criteriaList.contains("주택담보대출"))
-        categories.add(ProductCategory.mortage);
+        categories.add(ProductCategory.mortgage);
       if (criteriaList.contains("전세자금대출")) categories.add(ProductCategory.rent);
       if (criteriaList.contains("개인신용대출"))
         categories.add(ProductCategory.credit);
@@ -78,7 +78,7 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     List<FinancialProduct>? allProducts,
   ]) {
     final criteria = ref.read(
-      sortOrFilterTextViewModelProvider(FilterTextCategory.liked),
+      sortOrFilterTextViewModelProvider(ProductCategory.liked),
     );
     return filterByCategory(
       (criteria.$1 as List<String>)

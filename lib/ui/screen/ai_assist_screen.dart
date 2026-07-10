@@ -1,4 +1,5 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
+import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
@@ -8,9 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AiAssistScreen extends ConsumerStatefulWidget {
-  const AiAssistScreen({super.key, required this.tag});
+  const AiAssistScreen({super.key, required this.tag, required this.category});
 
   final String tag;
+  final ProductCategory category;
 
   @override
   ConsumerState<AiAssistScreen> createState() => _AiAssistScreenState();
@@ -73,6 +75,12 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       appBar: AppBar(
         backgroundColor: primary100,
         scrolledUnderElevation: 0.0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+        ),
         title: const Text(
           "AI 어시스트",
           style: TextStyle(
@@ -89,7 +97,12 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0, bottom: 20.0),
+                    padding: const EdgeInsets.only(
+                      top: 24.0,
+                      left: 20.0,
+                      right: 20.0,
+                      bottom: 20.0,
+                    ),
                     child: CustomScrollView(
                       slivers: [
                         if (record!.key.isNotEmpty)
@@ -151,6 +164,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                       .fetchRequestAndSaveConv(
                                         _messageController.text,
                                         widget.tag,
+                                        widget.category,
                                       );
                                   _messageController.clear();
                                 }
@@ -186,6 +200,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                   .fetchRequestAndSaveConv(
                                     _messageController.text,
                                     widget.tag,
+                                    widget.category,
                                   );
                               _messageController.clear();
                             }

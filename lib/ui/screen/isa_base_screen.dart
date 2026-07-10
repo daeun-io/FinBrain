@@ -1,10 +1,8 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
-import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class IsaBaseScreen extends ConsumerStatefulWidget {
   const IsaBaseScreen({super.key, required this.category});
 
-  final FilterTextCategory category;
+  final ProductCategory category;
 
   @override
   ConsumerState<IsaBaseScreen> createState() => _IsaBaseScreenState();
@@ -21,10 +19,10 @@ class IsaBaseScreen extends ConsumerStatefulWidget {
 
 class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   final ScrollController _controller = ScrollController();
-  final GlobalKey _centerKey = GlobalKey();
+  final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
   int _cPage = 1;
-  late int totalCount;
+  int totalCount = 100;
 
   @override
   void initState() {
@@ -42,9 +40,9 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     if (_isLoading) return;
     final position = _controller.position;
 
-    if (widget.category == FilterTextCategory.isaJoin) {
+    if (widget.category == ProductCategory.isaJoin) {
       final data = ref.read(isaJoinStatusViewModelProvider);
-      if (position.pixels >= position.maxScrollExtent - 100) {
+      if (position.pixels > position.maxScrollExtent) {
         if (data.hasValue && data.value != null) {
           totalCount = data.value!.$1;
         }
@@ -54,7 +52,6 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
             _isLoading = true;
             _cPage++;
           });
-          print("_cPage: $_cPage");
           await _fetchData();
           setState(() {
             _isLoading = false;
@@ -63,7 +60,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       }
     } else {
       final data = ref.read(isaManagementStatusViewModelProvider);
-      if (position.pixels >= position.maxScrollExtent - 100) {
+      if (position.pixels > position.maxScrollExtent) {
         if (data.hasValue && data.value != null) {
           totalCount = data.value!.$1;
         }
@@ -73,7 +70,6 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
             _isLoading = true;
             _cPage++;
           });
-          print("_cPage: $_cPage");
           await _fetchData();
           setState(() {
             _isLoading = false;
@@ -82,8 +78,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       }
     }
 
-    if (position.pixels <= position.minScrollExtent + 100) {
-      print("_cPage: $_cPage");
+    if (position.pixels < position.minScrollExtent) {
       if (_cPage > 1) {
         setState(() {
           _isLoading = true;
@@ -98,7 +93,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   }
 
   Future<void> _fetchData() async {
-    if (widget.category == FilterTextCategory.isaJoin) {
+    if (widget.category == ProductCategory.isaJoin) {
       ref
           .read(isaJoinStatusViewModelProvider.notifier)
           .fetchIsaJoinStatus(_cPage.toString());
@@ -112,311 +107,137 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.category == FilterTextCategory.isaJoin) {
-      final items = ref.watch(isaJoinStatusViewModelProvider);
-      final column = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
+    final joinItems = ref.watch(isaJoinStatusViewModelProvider);
+    final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
+    final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
+    final mngmColumn = ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
-      // Move to center after fetching data
-      ref.listen(isaJoinStatusViewModelProvider, (prev, next) {
-        if (next.hasValue && prev?.value != next.value) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_controller.hasClients) {
-              _controller.jumpTo(0);
-            }
-          });
-        }
-      });
+    // Move to center after fetching data
+    ref.listen(isaJoinStatusViewModelProvider, (prev, next) {
+      if (next.hasValue && prev?.value != next.value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_controller.hasClients) {
+            _controller.jumpTo(0);
+          }
+        });
+      }
+    });
+    ref.listen(isaManagementStatusViewModelProvider, (prev, next) {
+      if (next.hasValue && prev?.value != next.value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_controller.hasClients) {
+            _controller.jumpTo(0);
+          }
+        });
+      }
+    });
 
-      return Column(
-        children: [
-          const SizedBox(height: 16.0),
-          ProductFilter(
-            productCategory: ProductCategory.isa,
-            filterTextCategory: widget.category,
-          ),
-          const SizedBox(height: 24.0),
-          SortOrFilterText(
-            category: widget.category,
-            onSortCriteriaChanged: (criteria) {
-              (widget.category == FilterTextCategory.isaJoin)
-                  ? ref
-                        .read(isaJoinStatusViewModelProvider.notifier)
-                        .sortByCriteria(criteria, totalCount)
-                  : ref
-                        .read(isaManagementStatusViewModelProvider.notifier)
-                        .sortByCriteria(criteria, totalCount);
-            },
-          ),
-          items.when(
-            data: (data) {
-              final (maxPage, items) = data;
-              final index = items.length ~/ 2;
-              final prevItems = items.sublist(0, index);
-              final nextItems = items.sublist(index);
-              return Expanded(
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: primary300),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+    final items = (widget.category == ProductCategory.isaJoin) ? joinItems : mngmItems;
+    final column = (widget.category == ProductCategory.isaJoin) ? joinColumn : mngmColumn;
+    return Column(
+      children: [
+        const SizedBox(height: 16.0),
+        ProductFilter(
+          category: widget.category,
+        ),
+        const SizedBox(height: 24.0),
+        SortOrFilterText(
+          category: widget.category,
+          onSortCriteriaChanged: (criteria) {
+            (widget.category == ProductCategory.isaJoin)
+                ? ref
+                      .read(isaJoinStatusViewModelProvider.notifier)
+                      .sortByCriteria(criteria, totalCount)
+                : ref
+                      .read(isaManagementStatusViewModelProvider.notifier)
+                      .sortByCriteria(criteria, totalCount);
+          },
+        ),
+        
+        items.when(
+          data: (data) {
+            final (maxPage, items) = data;
+            return Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: primary300),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // header
+                      Container(
+                        height: 40.0,
+                        color: primary100,
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
                           children: [
-                            // header
-                            Container(
-                              height: 40.0,
-                              color: primary100,
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  for (final label in column)
-                                    Flexible(
-                                      flex:
-                                          (label == "ISA 종류" ||
-                                              label == "편입자산 구분")
-                                          ? 3
-                                          : 2,
-                                      child: Center(
-                                        child: Text(
-                                          label,
-                                          style: const TextStyle(
-                                            color: textPrimary,
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
+                            for (final label in column)
+                              Flexible(
+                                flex: (label == "ISA 종류" || label == "편입자산 구분")
+                                    ? 3
+                                    : 2,
+                                child: Center(
+                                  child: Text(
+                                    label,
+                                    style: const TextStyle(
+                                      color: textPrimary,
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                ],
+                                  ),
+                                ),
                               ),
-                            ),
-                            // rows
-                            Expanded(
-                              child: CustomScrollView(
-                                controller: _controller,
-                                center: _centerKey,
-                                physics: const BouncingScrollPhysics(),
-                                slivers: [
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate((
-                                      context,
-                                      index,
-                                    ) {
-                                      final item =
-                                          prevItems[prevItems.length -
-                                              1 -
-                                              index];
-                                      return _buildTableRow(item);
-                                    }, childCount: prevItems.length),
-                                  ),
-                                  SliverPadding(
-                                    key: _centerKey,
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate((
-                                      context,
-                                      index,
-                                    ) {
-                                      final item = nextItems[index];
-                                      return _buildTableRow(item);
-                                    }, childCount: nextItems.length),
-                                  ),
-                                ],
-                              ),
+                          ],
+                        ),
+                      ),
+                      // rows
+                      Expanded(
+                        child: CustomScrollView(
+                          controller: _controller,
+                          center: _key,
+                          physics: const BouncingScrollPhysics(),
+                          slivers: [
+                            SliverPadding(padding: EdgeInsets.only(top: 20.0)),
+                            SliverPadding(key: _key, padding: EdgeInsets.zero),
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final item = items[index];
+                                return _buildTableRow(item);
+                              }, childCount: items.length),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: AiButton(
-                        tag: (widget.category == FilterTextCategory.isaJoin)
-                            ? "isaJoin"
-                            : "isaManagement",
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-            error: (err, stack) => Expanded(
-              child: Center(
-                child: Text(
-                  "오류가 발생했습니다. 다시 시도해주세요",
-                  style: TextStyle(
-                    color: black,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w400,
+                    ],
                   ),
                 ),
               ),
-            ),
-            loading: () => Center(
-              child: const CircularProgressIndicator(color: primary500),
-            ),
-          ),
-        ],
-      );
-    } else {
-      final items = ref.watch(isaManagementStatusViewModelProvider);
-      final column = ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
-
-      // Move to center after fetching data
-      ref.listen(isaJoinStatusViewModelProvider, (prev, next) {
-        if (next.hasValue && prev?.value != next.value) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_controller.hasClients) {
-              _controller.jumpTo(0);
-            }
-          });
-        }
-      });
-      
-      return Column(
-        children: [
-          const SizedBox(height: 16.0),
-          ProductFilter(
-            productCategory: ProductCategory.isa,
-            filterTextCategory: widget.category,
-          ),
-          const SizedBox(height: 24.0),
-          SortOrFilterText(
-            category: widget.category,
-            onSortCriteriaChanged: (criteria) {
-              (widget.category == FilterTextCategory.isaJoin)
-                  ? ref
-                        .read(isaJoinStatusViewModelProvider.notifier)
-                        .sortByCriteria(criteria, totalCount)
-                  : ref
-                        .read(isaManagementStatusViewModelProvider.notifier)
-                        .sortByCriteria(criteria, totalCount);
-            },
-          ),
-          items.when(
-            data: (data) {
-              final (maxPage, items) = data;
-              final index = items.length ~/ 2;
-              final prevItems = items.sublist(0, index);
-              final nextItems = items.sublist(index);
-              return Expanded(
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: primary300),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // header
-                            Container(
-                              height: 40.0,
-                              color: primary100,
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  for (final label in column)
-                                    Flexible(
-                                      flex:
-                                          (label == "ISA 종류" ||
-                                              label == "편입자산 구분")
-                                          ? 3
-                                          : 2,
-                                      child: Center(
-                                        child: Text(
-                                          label,
-                                          style: const TextStyle(
-                                            color: textPrimary,
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            // rows
-                            Expanded(
-                              child: CustomScrollView(
-                                controller: _controller,
-                                center: _centerKey,
-                                physics: const BouncingScrollPhysics(),
-                                slivers: [
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate((
-                                      context,
-                                      index,
-                                    ) {
-                                      final item =
-                                          prevItems[prevItems.length -
-                                              1 -
-                                              index];
-                                      return _buildTableRow(item);
-                                    }, childCount: prevItems.length),
-                                  ),
-                                  SliverPadding(
-                                    key: _centerKey,
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate((
-                                      context,
-                                      index,
-                                    ) {
-                                      final item = nextItems[index];
-                                      return _buildTableRow(item);
-                                    }, childCount: nextItems.length),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: AiButton(
-                        tag: (widget.category == FilterTextCategory.isaJoin)
-                            ? "isaJoin"
-                            : "isaManagement",
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-            error: (err, stack) => Expanded(
-              child: Center(
-                child: Text(
-                  "오류가 발생했습니다. 다시 시도해주세요",
-                  style: TextStyle(
-                    color: black,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w400,
-                  ),
+            );
+          },
+          error: (err, stack) => Expanded(
+            child: Center(
+              child: Text(
+                "오류가 발생했습니다. 다시 시도해주세요",
+                style: TextStyle(
+                  color: black,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),
-            loading: () => Center(
-              child: const CircularProgressIndicator(color: primary500),
-            ),
           ),
-        ],
-      );
-    }
+          loading: () =>
+              Center(child: const CircularProgressIndicator(color: primary500)),
+        ),
+      ],
+    );
   }
 
   Widget rowCell(String text, String type) {
@@ -442,7 +263,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: [
-          if (widget.category == FilterTextCategory.isaJoin) ...[
+          if (widget.category == ProductCategory.isaJoin) ...[
             rowCell((item as IsaJoinStatus).isaForm!, "isaForm"),
             rowCell(item.companyCount.toString(), "cmpyCnt"),
             rowCell(item.joinMemberCount.toString(), "jnMbCnt"),

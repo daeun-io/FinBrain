@@ -1,6 +1,4 @@
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/searched_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
@@ -19,7 +17,7 @@ class IsaMpScreen extends ConsumerStatefulWidget {
 
 class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   final ScrollController _controller = ScrollController();
-  final GlobalKey _centerKey = GlobalKey();
+  final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
   int _cPage = 1;
   late int totalCount;
@@ -39,7 +37,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   void _onScroll() async {
     if (_isLoading) return;
     final position = _controller.position;
-    if (position.pixels >= position.maxScrollExtent - 100) {
+    if (position.pixels > position.maxScrollExtent) {
       final data = ref.read(productViewmodelProvider);
       if (data.hasValue && data.value != null) {
         totalCount = data.value!.$1;
@@ -50,15 +48,13 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
           _isLoading = true;
           _cPage++;
         });
-        print("_cPage: $_cPage");
         await _fetchData();
         setState(() {
           _isLoading = false;
         });
       }
     }
-    if (position.pixels <= position.minScrollExtent + 100) {
-      print("_cPage: $_cPage");
+    if (position.pixels < position.minScrollExtent) {
       if (_cPage > 1) {
         setState(() {
           _isLoading = true;
@@ -81,7 +77,6 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final searchedList = ref.watch(searchedViewmodelProvider);
     final products = ref.watch(productViewmodelProvider);
 
     // Move to center after fetching data
@@ -101,21 +96,19 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         SearchBox(
           searchItem: (value) {
             ref.read(productViewmodelProvider.notifier).filterByKeyword(value);
-            ref.read(searchedViewmodelProvider.notifier).addItem(value);
           },
-          searchedList: searchedList,
         ),
         const SizedBox(height: 16.0),
-        ProductFilter(productCategory: ProductCategory.isa, filterTextCategory: FilterTextCategory.isaMp),
+        ProductFilter(category: ProductCategory.isaMp),
         const SizedBox(height: 24.0),
         SortOrFilterText(
-          category: FilterTextCategory.isaMp,
+          category: ProductCategory.isaMp,
           onSortCriteriaChanged: (criteria) {
             ref
                 .read(productViewmodelProvider.notifier)
                 .sortByCriteria(
                   criteria,
-                  ProductCategory.isa,
+                  ProductCategory.isaMp,
                   products.value!.$1,
                 );
           },
@@ -124,41 +117,24 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         products.when(
           data: (data) {
             final (maxPage, items) = data;
-            final index = items.length ~/ 2;
-            final prevItems = items.sublist(0, index);
-            final nextItems = items.sublist(index);
             return Expanded(
               child: CustomScrollView(
                 controller: _controller,
-                center: _centerKey,
+                center: _key,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
+                  SliverPadding(padding: EdgeInsets.only(top: 20.0)),
+                  SliverPadding(key: _key, padding: EdgeInsets.zero),
                   SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
-                      final item = prevItems[prevItems.length - 1 - index];
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: ProductItem(
-                          product: item,
-                          productCategory: ProductCategory.isa,
-                          filterTextCategory: FilterTextCategory.isaMp,
+                          product: items[index],
+                          fromLikedScreen: false,
                         ),
                       );
-                    }, childCount: prevItems.length),
-                  ),
-                  SliverPadding(key: _centerKey, padding: EdgeInsets.zero),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final item = nextItems[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: ProductItem(
-                          product: item,
-                          productCategory: ProductCategory.isa,
-                          filterTextCategory: FilterTextCategory.isaMp,
-                        ),
-                      );
-                    }, childCount: nextItems.length),
+                    }, childCount: items.length),
                   ),
                 ],
               ),

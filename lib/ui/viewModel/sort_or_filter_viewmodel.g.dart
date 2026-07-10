@@ -17,7 +17,7 @@ final class SortOrFilterTextViewModelProvider
         $NotifierProvider<SortOrFilterTextViewModel, (Object, List<String>)> {
   SortOrFilterTextViewModelProvider._({
     required SortOrFilterTextViewModelFamily super.from,
-    required FilterTextCategory super.argument,
+    required ProductCategory super.argument,
   }) : super(
          retry: null,
          name: r'sortOrFilterTextViewModelProvider',
@@ -61,7 +61,7 @@ final class SortOrFilterTextViewModelProvider
 }
 
 String _$sortOrFilterTextViewModelHash() =>
-    r'ffc8f592da57d6facbdcbf475df7a61603feec22';
+    r'2418860915a1b49ba3702b707c03603967fb5612';
 
 final class SortOrFilterTextViewModelFamily extends $Family
     with
@@ -70,7 +70,7 @@ final class SortOrFilterTextViewModelFamily extends $Family
           (Object, List<String>),
           (Object, List<String>),
           (Object, List<String>),
-          FilterTextCategory
+          ProductCategory
         > {
   SortOrFilterTextViewModelFamily._()
     : super(
@@ -81,7 +81,7 @@ final class SortOrFilterTextViewModelFamily extends $Family
         isAutoDispose: true,
       );
 
-  SortOrFilterTextViewModelProvider call(FilterTextCategory category) =>
+  SortOrFilterTextViewModelProvider call(ProductCategory category) =>
       SortOrFilterTextViewModelProvider._(argument: category, from: this);
 
   @override
@@ -90,10 +90,10 @@ final class SortOrFilterTextViewModelFamily extends $Family
 
 abstract class _$SortOrFilterTextViewModel
     extends $Notifier<(Object, List<String>)> {
-  late final _$args = ref.$arg as FilterTextCategory;
-  FilterTextCategory get category => _$args;
+  late final _$args = ref.$arg as ProductCategory;
+  ProductCategory get category => _$args;
 
-  (Object, List<String>) build(FilterTextCategory category);
+  (Object, List<String>) build(ProductCategory category);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {

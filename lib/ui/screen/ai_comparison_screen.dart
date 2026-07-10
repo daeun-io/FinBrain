@@ -40,6 +40,12 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
       appBar: AppBar(
         backgroundColor: primary100,
         scrolledUnderElevation: 0.0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+        ),
         title: const Text(
           "AI 비교 분석",
           style: TextStyle(

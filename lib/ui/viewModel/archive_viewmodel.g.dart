@@ -9,35 +9,94 @@ part of 'archive_viewmodel.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ArchiveSummaryViewmodel)
-final archiveSummaryViewmodelProvider = ArchiveSummaryViewmodelProvider._();
+@ProviderFor(SelectedCtgForSummariesViewmodel)
+final selectedCtgForSummariesViewmodelProvider =
+    SelectedCtgForSummariesViewmodelProvider._();
 
-final class ArchiveSummaryViewmodelProvider
-    extends $AsyncNotifierProvider<ArchiveSummaryViewmodel, List<AiRecord>> {
-  ArchiveSummaryViewmodelProvider._()
+final class SelectedCtgForSummariesViewmodelProvider
+    extends
+        $NotifierProvider<
+          SelectedCtgForSummariesViewmodel,
+          List<ProductCategory>
+        > {
+  SelectedCtgForSummariesViewmodelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'archiveSummaryViewmodelProvider',
+        name: r'selectedCtgForSummariesViewmodelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$archiveSummaryViewmodelHash();
+  String debugGetCreateSourceHash() => _$selectedCtgForSummariesViewmodelHash();
 
   @$internal
   @override
-  ArchiveSummaryViewmodel create() => ArchiveSummaryViewmodel();
+  SelectedCtgForSummariesViewmodel create() =>
+      SelectedCtgForSummariesViewmodel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<ProductCategory> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<ProductCategory>>(value),
+    );
+  }
 }
 
-String _$archiveSummaryViewmodelHash() =>
-    r'6b6caa0992b6ff495ca8ddccc26a3dc241c07b90';
+String _$selectedCtgForSummariesViewmodelHash() =>
+    r'1e47aa69f65d5dc5179595ae026d2c87541bff0b';
 
-abstract class _$ArchiveSummaryViewmodel
-    extends $AsyncNotifier<List<AiRecord>> {
+abstract class _$SelectedCtgForSummariesViewmodel
+    extends $Notifier<List<ProductCategory>> {
+  List<ProductCategory> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<List<ProductCategory>, List<ProductCategory>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<List<ProductCategory>, List<ProductCategory>>,
+              List<ProductCategory>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(AiSummariesViewmodel)
+final aiSummariesViewmodelProvider = AiSummariesViewmodelProvider._();
+
+final class AiSummariesViewmodelProvider
+    extends $AsyncNotifierProvider<AiSummariesViewmodel, List<AiRecord>> {
+  AiSummariesViewmodelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'aiSummariesViewmodelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$aiSummariesViewmodelHash();
+
+  @$internal
+  @override
+  AiSummariesViewmodel create() => AiSummariesViewmodel();
+}
+
+String _$aiSummariesViewmodelHash() =>
+    r'e6eb807f39da3a85d0d13066f81a80d152e1895c';
+
+abstract class _$AiSummariesViewmodel extends $AsyncNotifier<List<AiRecord>> {
   FutureOr<List<AiRecord>> build();
   @$mustCallSuper
   @override
@@ -55,33 +114,93 @@ abstract class _$ArchiveSummaryViewmodel
   }
 }
 
-@ProviderFor(SelectedCtgForArchiveViewmodel)
-final selectedCtgForArchiveViewmodelProvider =
-    SelectedCtgForArchiveViewmodelProvider._();
+@ProviderFor(ArchiveSummaryViewmodel)
+final archiveSummaryViewmodelProvider = ArchiveSummaryViewmodelProvider._();
 
-final class SelectedCtgForArchiveViewmodelProvider
+final class ArchiveSummaryViewmodelProvider
     extends
-        $NotifierProvider<
-          SelectedCtgForArchiveViewmodel,
-          List<ProductCategory>
-        > {
-  SelectedCtgForArchiveViewmodelProvider._()
+        $NotifierProvider<ArchiveSummaryViewmodel, AsyncValue<List<AiRecord>>> {
+  ArchiveSummaryViewmodelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'selectedCtgForArchiveViewmodelProvider',
+        name: r'archiveSummaryViewmodelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$selectedCtgForArchiveViewmodelHash();
+  String debugGetCreateSourceHash() => _$archiveSummaryViewmodelHash();
 
   @$internal
   @override
-  SelectedCtgForArchiveViewmodel create() => SelectedCtgForArchiveViewmodel();
+  ArchiveSummaryViewmodel create() => ArchiveSummaryViewmodel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<AiRecord>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<AiRecord>>>(value),
+    );
+  }
+}
+
+String _$archiveSummaryViewmodelHash() =>
+    r'ce23c0af69f9e372b7e2c7d1e5ae9d82a8f295a8';
+
+abstract class _$ArchiveSummaryViewmodel
+    extends $Notifier<AsyncValue<List<AiRecord>>> {
+  AsyncValue<List<AiRecord>> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<List<AiRecord>>, AsyncValue<List<AiRecord>>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<List<AiRecord>>,
+                AsyncValue<List<AiRecord>>
+              >,
+              AsyncValue<List<AiRecord>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(SelectedCtgForCompTextViewmodel)
+final selectedCtgForCompTextViewmodelProvider =
+    SelectedCtgForCompTextViewmodelProvider._();
+
+final class SelectedCtgForCompTextViewmodelProvider
+    extends
+        $NotifierProvider<
+          SelectedCtgForCompTextViewmodel,
+          List<ProductCategory>
+        > {
+  SelectedCtgForCompTextViewmodelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'selectedCtgForCompTextViewmodelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$selectedCtgForCompTextViewmodelHash();
+
+  @$internal
+  @override
+  SelectedCtgForCompTextViewmodel create() => SelectedCtgForCompTextViewmodel();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<ProductCategory> value) {
@@ -92,10 +211,10 @@ final class SelectedCtgForArchiveViewmodelProvider
   }
 }
 
-String _$selectedCtgForArchiveViewmodelHash() =>
-    r'2666740efbb6089b24b344587bf465b6cb20325e';
+String _$selectedCtgForCompTextViewmodelHash() =>
+    r'ffae3c52f64c64a81165248fbc64fc6cb79979a9';
 
-abstract class _$SelectedCtgForArchiveViewmodel
+abstract class _$SelectedCtgForCompTextViewmodel
     extends $Notifier<List<ProductCategory>> {
   List<ProductCategory> build();
   @$mustCallSuper
@@ -138,7 +257,7 @@ final class AiCompViewmodelProvider
   AiCompViewmodel create() => AiCompViewmodel();
 }
 
-String _$aiCompViewmodelHash() => r'6e885e2e69d44b1ba4c2b92e396dcac8b6cf70c4';
+String _$aiCompViewmodelHash() => r'a3ecbe0d1bb9445cfe373acd84e32c303c3bdc98';
 
 abstract class _$AiCompViewmodel extends $AsyncNotifier<List<AiRecord>> {
   FutureOr<List<AiRecord>> build();
@@ -196,7 +315,7 @@ final class ArchiveComparisonViewmodelProvider
 }
 
 String _$archiveComparisonViewmodelHash() =>
-    r'545807b84713d2eb0173ef8a69f048ec41c697be';
+    r'7ace299eba29402a9070c0f8791482bc06e5456b';
 
 abstract class _$ArchiveComparisonViewmodel
     extends $Notifier<AsyncValue<List<AiRecord>>> {

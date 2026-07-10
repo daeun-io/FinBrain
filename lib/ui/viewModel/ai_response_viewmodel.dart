@@ -4,6 +4,7 @@ import 'package:finbrain/data/repository/ai_comp_repository.dart';
 import 'package:finbrain/data/repository/ai_response_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewModel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/data/repository/ai_convo_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -30,14 +31,15 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
 
   Future<FinancialProduct?> getProduct(String tag) async {
     final productList = await ref.read(productViewmodelProvider.future);
+    final likedList = await ref.read(fetchLikedViewmodelProvider.future);
     final product = productList.$2
         .where((e) => (e.commonInfo.productName == tag))
-        .firstOrNull;
-    print("product $product");
+        .firstOrNull ?? likedList.where((e) => e.commonInfo.productName == tag).firstOrNull;
+    if(product == null) print("product $product");
     return product;
   }
 
-  Future<void> fetchRequestAndSaveConv(String newRequest, String tag) async {
+  Future<void> fetchRequestAndSaveConv(String newRequest, String tag, ProductCategory ctg) async {
     try {
       print("======================");
       print("tag: $tag");
@@ -58,7 +60,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
         return;
       } else {
         state = {...state, newRequest: newResponse};
-        await saveConversationInFirestore(tag, newRequest, newResponse);
+        await saveConversationInFirestore(tag, ctg, newRequest, newResponse);
         print("====================");
         return;
       }
@@ -88,6 +90,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
 
   Future<void> saveConversationInFirestore(
     String tag,
+    ProductCategory ctg,
     String request,
     String response,
   ) async {
@@ -100,6 +103,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
       await messageRepository.saveRequestAndResponse(
         user.uid,
         tag,
+        ctg.toString(),
         request,
         response,
       );
@@ -136,13 +140,13 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
         print("No user is currently signed in.");
-        return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: null);
+        return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: ProductCategory.liked);
       }
 
       return await summaryRepository.getSummariesWithPrdtNm(user.uid, tag);
     } catch (e) {
       print("Error getting summaries: $e");
-      return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: null);
+      return AiRecord(key: "", isExpanded: false, isPinned: false, value: [], category: ProductCategory.liked);
     }
   }
 }

@@ -23,6 +23,8 @@ class CalculatorScreen extends ConsumerStatefulWidget {
 class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   final _moneyController = TextEditingController();
   final _periodController = TextEditingController();
+  final _moneyFocusNode = FocusNode();
+  final _periodFocusNode = FocusNode();
 
   bool _isSubmitted = false;
   late String _money;
@@ -48,12 +50,55 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     _period =
         (widget.category == ProductCategory.deposit ||
             widget.category == ProductCategory.annuity ||
-            (widget.category == ProductCategory.installment &&
-                _selectedValues[widget.mapOptions.keys.first] == "정액적립식"))
+            widget.category == ProductCategory.installment)
         ? "0"
         : "";
-  }
 
+    _moneyFocusNode.addListener(() {
+      if (!_moneyFocusNode.hasFocus) {
+        String text = _moneyController.text.trim();
+
+        if (text.isNotEmpty) {
+          if (!text.endsWith("원")) {
+            String digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+            if (digits.isNotEmpty) {
+              _moneyController.text = "$digits원";
+            }
+          }
+        }
+      } else {
+        String text = _moneyController.text.trim();
+        String digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+        _moneyController.text = digits;
+      }
+    });
+
+    _periodFocusNode.addListener(() {
+      if (!_periodFocusNode.hasFocus) {
+        String text = _periodController.text.trim();
+        if (text.isNotEmpty) {
+          if (!text.endsWith("개월")) {
+            String digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+            if (digits.isNotEmpty) {
+              _periodController.text = "$digits개월";
+            }
+          }
+        }
+      } else {
+        String text = _periodController.text.trim();
+        String digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+        _periodController.text = digits;
+      }
+    });
+  }
+  @override
+  void dispose() {
+    _moneyController.dispose();
+    _moneyFocusNode.dispose();
+    _periodController.dispose();
+    _periodFocusNode.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,8 +120,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               titleText(switch (widget.category) {
-                ProductCategory.deposit => "예치금",
-                ProductCategory.installment => "예치금",
+                (ProductCategory.deposit || ProductCategory.installment) =>
+                  "예치금",
                 ProductCategory.annuity => "월 납입 금액",
                 _ => "대출 원금",
               }),
@@ -126,114 +171,24 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     onPressed: () {
                       setState(() {
                         if (_money.isEmpty || _period.isEmpty) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext ctx) => AlertDialog(
-                              backgroundColor: white,
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 24.0,
-                                horizontal: 16.0,
-                              ),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              duration: Duration(seconds: 3),
                               content: const Text(
                                 "항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요",
-                                style: TextStyle(color: black, fontSize: 16.0),
-                                textAlign: TextAlign.center,
                               ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, "ok"),
-                                  style: TextButton.styleFrom(
-                                    overlayColor: primary300,
-                                  ),
-                                  child: const Text(
-                                    "OK",
-                                    style: TextStyle(
-                                      color: primary900,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
-                              ],
                             ),
                           );
                           return;
                         }
                         if (int.tryParse(_money) == null ||
                             int.tryParse(_period) == null) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext ctx) => AlertDialog(
-                              backgroundColor: white,
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 24.0,
-                                horizontal: 16.0,
-                              ),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              duration: Duration(seconds: 3),
                               content: const Text(
                                 "입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요",
-                                style: TextStyle(color: black, fontSize: 16.0),
-                                textAlign: TextAlign.center,
                               ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, "ok"),
-                                  style: TextButton.styleFrom(
-                                    overlayColor: primary300,
-                                  ),
-                                  child: const Text(
-                                    "OK",
-                                    style: TextStyle(
-                                      color: primary900,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                          return;
-                        }
-                        final term = int.parse(
-                          (widget.category == ProductCategory.installment)
-                              ? _selectedValues[widget.mapOptions.keys
-                                        .toList()[1]]!
-                                    .substring(
-                                      0,
-                                      _selectedValues[widget.mapOptions.keys
-                                                  .toList()[1]]!
-                                              .length -
-                                          2,
-                                    )
-                              : _period,
-                        );
-                        if (int.parse(_period) > term) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext ctx) => AlertDialog(
-                              backgroundColor: white,
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 24.0,
-                                horizontal: 16.0,
-                              ),
-                              content: const Text(
-                                "예치 기간은 계약 기간보다 \n길 수 없습니다!\n다시 입력해주세요",
-                                style: TextStyle(color: black, fontSize: 16.0),
-                                textAlign: TextAlign.center,
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, "ok"),
-                                  style: TextButton.styleFrom(
-                                    overlayColor: primary300,
-                                  ),
-                                  child: const Text(
-                                    "OK",
-                                    style: TextStyle(
-                                      color: primary900,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
-                              ],
                             ),
                           );
                           return;
@@ -276,17 +231,29 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                             (widget.category == ProductCategory.deposit ||
                                     widget.category ==
                                         ProductCategory.installment)
-                                ? ref
-                                      .read(
-                                        calculatorScreenViewmodelProvider
-                                            .notifier,
-                                      )
-                                      .returnRate(
-                                        widget.category,
-                                        widget.options,
-                                        _selectedValues,
-                                      )
-                                      .firstOrNull
+                                ? ((_isPrefSelected)
+                                      ? ref
+                                            .read(
+                                              calculatorScreenViewmodelProvider
+                                                  .notifier,
+                                            )
+                                            .returnRate(
+                                              widget.category,
+                                              widget.options,
+                                              _selectedValues,
+                                            )
+                                            .lastOrNull
+                                      : ref
+                                            .read(
+                                              calculatorScreenViewmodelProvider
+                                                  .notifier,
+                                            )
+                                            .returnRate(
+                                              widget.category,
+                                              widget.options,
+                                              _selectedValues,
+                                            )
+                                            .firstOrNull)
                                 : _sliderValue,
                             switch (widget.category) {
                               ProductCategory.deposit => int.parse(
@@ -357,6 +324,17 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         fontSize: 18.0,
         fontWeight: FontWeight.w400,
         color: black,
+      ),
+    );
+  }
+
+  Widget captionText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 14.0,
+        fontWeight: FontWeight.w400,
+        color: textSecondary,
       ),
     );
   }
@@ -435,6 +413,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       else
         TextField(
           controller: _moneyController,
+          focusNode: _moneyFocusNode,
           onSubmitted: (value) => setState(() {
             _money = value;
           }),
@@ -455,18 +434,20 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             counterText: "",
             helperText: "숫자만 입력",
           ),
+          textAlign: TextAlign.right,
           keyboardType: TextInputType.number,
         ),
       const SizedBox(height: 28.0),
       titleText(switch (category) {
-        ProductCategory.deposit => "예치 기간",
-        ProductCategory.installment => "예치 종류 및 기간(개월)",
+        (ProductCategory.deposit || ProductCategory.installment) => "예치 기간(개월)",
         ProductCategory.annuity => "연금수령 기간 및 납입 기간",
         _ => "상환 방법 및 대출 기간",
       }),
       const SizedBox(height: 2.0),
       if (category == ProductCategory.deposit)
         dropdownCard(keys[0], mapOptions[keys[0]] ?? [])
+      else if (category == ProductCategory.installment)
+        dropdownCard(keys[1], mapOptions[keys[1]] ?? [])
       else
         Row(
           children: [
@@ -479,21 +460,13 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               ),
             ),
             const SizedBox(width: 8.0),
-            if (category == ProductCategory.annuity ||
-                (category == ProductCategory.installment &&
-                    _selectedValues[keys[0]] == "정액적립식"))
-              Expanded(
-                child: dropdownCard(
-                  category == ProductCategory.annuity ? keys[2] : keys[1],
-                  category == ProductCategory.annuity
-                      ? mapOptions[keys[2]] ?? []
-                      : mapOptions[keys[1]] ?? [],
-                ),
-              )
+            if (category == ProductCategory.annuity)
+              Expanded(child: dropdownCard(keys[2], mapOptions[keys[2]] ?? []))
             else
               Expanded(
                 child: TextField(
                   controller: _periodController,
+                  focusNode: _periodFocusNode,
                   onSubmitted: (value) => setState(() {
                     _period = value;
                   }),
@@ -514,19 +487,13 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     helperText: "숫자만 입력",
                     counterText: "",
                   ),
+                  textAlign: TextAlign.right,
                   keyboardType: TextInputType.number,
                 ),
               ),
           ],
         ),
       const SizedBox(height: 32.0),
-      if (category == ProductCategory.installment &&
-          _selectedValues[keys[0]] == "자유적립식") ...[
-        titleText("계약 기간"),
-        const SizedBox(height: 2.0),
-        dropdownCard(keys[1], mapOptions[keys[1]] ?? []),
-        const SizedBox(height: 32.0),
-      ],
       titleText(switch (category) {
         ProductCategory.deposit => "예치 금리",
         ProductCategory.installment => "예치 기간 및 종류",
@@ -673,86 +640,102 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         ),
       );
     }
-    return (category == ProductCategory.mortage ||
+    return (category == ProductCategory.mortgage ||
             category == ProductCategory.rent ||
             category == ProductCategory.credit)
-        ? SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              headingRowColor: const WidgetStatePropertyAll(primary100),
-              headingRowHeight: 40.0,
-              dataRowColor: const WidgetStatePropertyAll(white),
-              columnSpacing: 36.0,
-              columns: [
-                ...map.keys.map(
-                  (e) => DataColumn(
-                    label: Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [normalText(e)],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              rows: [
-                for (var i = 0; i < term!; i++)
-                  DataRow(
-                    cells: [
-                      ...map.values.map(
-                        (e) => DataCell(normalText(e[i].toString())),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-          )
-        : Table(
-            border: TableBorder.all(color: primary300, width: 1),
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        ? Column(
             children: [
-              ...map.entries.map((e) {
-                return TableRow(
-                  children: [
-                    TableCell(
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: primary100,
-                          border: BoxBorder.all(color: primary300),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Center(child: normalText(e.key)),
-                          ),
-                        ),
-                      ),
-                    ),
-                    TableCell(
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: white,
-                          border: BoxBorder.all(color: primary300),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Center(
-                              child: normalText(e.value.toString()),
-                            ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  headingRowColor: const WidgetStatePropertyAll(primary100),
+                  headingRowHeight: 40.0,
+                  dataRowColor: const WidgetStatePropertyAll(white),
+                  columnSpacing: 36.0,
+                  columns: [
+                    ...map.keys.map(
+                      (e) => DataColumn(
+                        label: Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [normalText(e)],
                           ),
                         ),
                       ),
                     ),
                   ],
-                );
-              }),
+                  rows: [
+                    for (var i = 0; i < term!; i++)
+                      DataRow(
+                        cells: [
+                          ...map.values.map(
+                            (e) => DataCell(normalText(e[i].toString())),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12.0),
+              captionText(
+                "*본 계산 결과는 매월 30일로 가정해 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
+              ),
+            ],
+          )
+        : Column(
+            children: [
+              Table(
+                border: TableBorder.all(color: primary300, width: 1),
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                children: [
+                  ...map.entries.map((e) {
+                    return TableRow(
+                      children: [
+                        TableCell(
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: primary100,
+                              border: BoxBorder.all(color: primary300),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: TableCell(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                child: Center(child: normalText(e.key)),
+                              ),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: white,
+                              border: BoxBorder.all(color: primary300),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: TableCell(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                child: Center(
+                                  child: normalText(e.value.toString()),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+                ],
+              ),
+              const SizedBox(height: 12.0),
+              captionText(
+                "*본 계산 결과는 월을 기준으로 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
+              ),
             ],
           );
   }

@@ -48,29 +48,3 @@ export const fetchCmpyNameList = onRequest(async (request, response) => {
     response.status(500).send("Internal servere error");
   }
 });
-
-// export async function fetchCmpyNameUrlList(
-  // apiUrl: string,
-  // apiKey: string,
-  // options: FetchOptions = {}
-// ): Promise<CmpyNameUrlApiResponse> {
-  // const { pageNo = 1, topFinGrpNo = "020000"} = options;
-// 
-  // const url = new URL(apiUrl);
-  // url.searchParams.set("auth", apiKey);
-  // url.searchParams.set("topFinGrpNo", topFinGrpNo);
-  // url.searchParams.set("pageNo", String(pageNo));
-  // 
-// 
-  // const res = await fetch(url.toString(), {
-    // headers: { Accept: "application/xml, text/xml" },
-  // });
-// 
-  // if (!res.ok) {
-    // throw new Error(`API 호출 실패: ${res.status} ${res.statusText}`);
-  // }
-// 
-  // const xml = await res.text();
-  // return parseXmlToCmpyNameUrl(xml);
-// }
-// 

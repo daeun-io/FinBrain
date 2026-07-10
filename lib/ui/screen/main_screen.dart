@@ -28,7 +28,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void loadData(ProductCategory ctg) {
-    if (ctg != ProductCategory.isa) {
+    if (ctg != ProductCategory.isaJoin ||
+        ctg != ProductCategory.isaManagement ||
+        ctg != ProductCategory.isaJoin) {
       ref
           .read(productViewmodelProvider.notifier)
           .fetchFinlifeProducts(ctg, "1");
@@ -40,17 +42,17 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       case 0:
         if (ctgInVM == ProductCategory.deposit ||
             ctgInVM == ProductCategory.installment ||
-            ctgInVM == ProductCategory.isa) {
+            ctgInVM == ProductCategory.isaJoin) {
           return ctgInVM;
         }
         return ProductCategory.deposit;
       case 1:
-        if (ctgInVM == ProductCategory.mortage ||
+        if (ctgInVM == ProductCategory.mortgage ||
             ctgInVM == ProductCategory.rent ||
             ctgInVM == ProductCategory.credit) {
           return ctgInVM;
         }
-        return ProductCategory.mortage;
+        return ProductCategory.mortgage;
       case 2:
         return ProductCategory.annuity;
       default:
@@ -69,10 +71,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final pages = [
       ProductScreen(category: ProductScreenCategory.savings),
       ProductScreen(category: ProductScreenCategory.loan),
-      ProductBaseScreen(
-        productCategory: ProductCategory.annuity,
-        filterCategory: FilterTextCategory.annuity,
-      ),
+      ProductBaseScreen(category: ProductCategory.annuity),
       const LikedScreen(),
     ];
 
@@ -111,7 +110,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               const SizedBox(width: 8),
               IconButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => ArchiveScreen()));
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (ctx) => ArchiveScreen()));
                 },
                 icon: Icon(Icons.archive_sharp, color: primary900, size: 32),
               ),

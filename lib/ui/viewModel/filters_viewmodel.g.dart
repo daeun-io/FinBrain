@@ -20,7 +20,7 @@ final class FiltersViewmodelProvider
         > {
   FiltersViewmodelProvider._({
     required FiltersViewmodelFamily super.from,
-    required FilterTextCategory super.argument,
+    required ProductCategory super.argument,
   }) : super(
          retry: null,
          name: r'filtersViewmodelProvider',
@@ -54,7 +54,7 @@ final class FiltersViewmodelProvider
   }
 }
 
-String _$filtersViewmodelHash() => r'1b07a3c4995fd6b80d4d9e79c1c3833a426e8b5c';
+String _$filtersViewmodelHash() => r'6fe63b7ba4f5f81dfb598f03b3c01a0ea0ca06d5';
 
 final class FiltersViewmodelFamily extends $Family
     with
@@ -63,7 +63,7 @@ final class FiltersViewmodelFamily extends $Family
           AsyncValue<Map<String, List<(String, bool)>>>,
           Map<String, List<(String, bool)>>,
           FutureOr<Map<String, List<(String, bool)>>>,
-          FilterTextCategory
+          ProductCategory
         > {
   FiltersViewmodelFamily._()
     : super(
@@ -74,7 +74,7 @@ final class FiltersViewmodelFamily extends $Family
         isAutoDispose: true,
       );
 
-  FiltersViewmodelProvider call(FilterTextCategory ctg) =>
+  FiltersViewmodelProvider call(ProductCategory ctg) =>
       FiltersViewmodelProvider._(argument: ctg, from: this);
 
   @override
@@ -83,10 +83,10 @@ final class FiltersViewmodelFamily extends $Family
 
 abstract class _$FiltersViewmodel
     extends $AsyncNotifier<Map<String, List<(String, bool)>>> {
-  late final _$args = ref.$arg as FilterTextCategory;
-  FilterTextCategory get ctg => _$args;
+  late final _$args = ref.$arg as ProductCategory;
+  ProductCategory get ctg => _$args;
 
-  FutureOr<Map<String, List<(String, bool)>>> build(FilterTextCategory ctg);
+  FutureOr<Map<String, List<(String, bool)>>> build(ProductCategory ctg);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
@@ -122,7 +122,7 @@ final class DialogFiltersViewModelProvider
         > {
   DialogFiltersViewModelProvider._({
     required DialogFiltersViewModelFamily super.from,
-    required FilterTextCategory super.argument,
+    required ProductCategory super.argument,
   }) : super(
          retry: null,
          name: r'dialogFiltersViewModelProvider',
@@ -168,7 +168,7 @@ final class DialogFiltersViewModelProvider
 }
 
 String _$dialogFiltersViewModelHash() =>
-    r'8f1cdcd387b70ee3507eac84d229ef0d10368d77';
+    r'd7cb93bb700b5794b724c9a34f606e071286f4b4';
 
 final class DialogFiltersViewModelFamily extends $Family
     with
@@ -177,7 +177,7 @@ final class DialogFiltersViewModelFamily extends $Family
           Map<String, List<(String, bool)>>,
           Map<String, List<(String, bool)>>,
           Map<String, List<(String, bool)>>,
-          FilterTextCategory
+          ProductCategory
         > {
   DialogFiltersViewModelFamily._()
     : super(
@@ -188,7 +188,7 @@ final class DialogFiltersViewModelFamily extends $Family
         isAutoDispose: true,
       );
 
-  DialogFiltersViewModelProvider call(FilterTextCategory ctg) =>
+  DialogFiltersViewModelProvider call(ProductCategory ctg) =>
       DialogFiltersViewModelProvider._(argument: ctg, from: this);
 
   @override
@@ -197,10 +197,10 @@ final class DialogFiltersViewModelFamily extends $Family
 
 abstract class _$DialogFiltersViewModel
     extends $Notifier<Map<String, List<(String, bool)>>> {
-  late final _$args = ref.$arg as FilterTextCategory;
-  FilterTextCategory get ctg => _$args;
+  late final _$args = ref.$arg as ProductCategory;
+  ProductCategory get ctg => _$args;
 
-  Map<String, List<(String, bool)>> build(FilterTextCategory ctg);
+  Map<String, List<(String, bool)>> build(ProductCategory ctg);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
@@ -232,7 +232,7 @@ final class SavedFiltersProvider
     extends $NotifierProvider<SavedFilters, Map<String, List<(String, bool)>>> {
   SavedFiltersProvider._({
     required SavedFiltersFamily super.from,
-    required FilterTextCategory super.argument,
+    required ProductCategory super.argument,
   }) : super(
          retry: null,
          name: r'savedFiltersProvider',
@@ -276,7 +276,7 @@ final class SavedFiltersProvider
   }
 }
 
-String _$savedFiltersHash() => r'bfff14d099fdab0e13647c3fbf19b4c92d0a1cd1';
+String _$savedFiltersHash() => r'd8f10d15a3ee584fbccd7932a80411540a7284e2';
 
 final class SavedFiltersFamily extends $Family
     with
@@ -285,7 +285,7 @@ final class SavedFiltersFamily extends $Family
           Map<String, List<(String, bool)>>,
           Map<String, List<(String, bool)>>,
           Map<String, List<(String, bool)>>,
-          FilterTextCategory
+          ProductCategory
         > {
   SavedFiltersFamily._()
     : super(
@@ -296,7 +296,7 @@ final class SavedFiltersFamily extends $Family
         isAutoDispose: false,
       );
 
-  SavedFiltersProvider call(FilterTextCategory ctg) =>
+  SavedFiltersProvider call(ProductCategory ctg) =>
       SavedFiltersProvider._(argument: ctg, from: this);
 
   @override
@@ -305,10 +305,10 @@ final class SavedFiltersFamily extends $Family
 
 abstract class _$SavedFilters
     extends $Notifier<Map<String, List<(String, bool)>>> {
-  late final _$args = ref.$arg as FilterTextCategory;
-  FilterTextCategory get ctg => _$args;
+  late final _$args = ref.$arg as ProductCategory;
+  ProductCategory get ctg => _$args;
 
-  Map<String, List<(String, bool)>> build(FilterTextCategory ctg);
+  Map<String, List<(String, bool)>> build(ProductCategory ctg);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {

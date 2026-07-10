@@ -23,20 +23,20 @@ class ProductScreen extends ConsumerWidget{
     };
 
     final categories = switch(category){
-      ProductScreenCategory.savings => [ProductCategory.deposit, ProductCategory.installment, ProductCategory.isa],
-      ProductScreenCategory.loan => [ProductCategory.mortage, ProductCategory.rent, ProductCategory.credit]
+      ProductScreenCategory.savings => [ProductCategory.deposit, ProductCategory.installment, ProductCategory.isaJoin],
+      ProductScreenCategory.loan => [ProductCategory.mortgage, ProductCategory.rent, ProductCategory.credit]
     };
 
     final tabView = switch(category){
       ProductScreenCategory.savings => TabBarView(children: [
-        const ProductBaseScreen(productCategory: ProductCategory.deposit, filterCategory: FilterTextCategory.savings,),
-        const ProductBaseScreen(productCategory: ProductCategory.installment, filterCategory: FilterTextCategory.savings),
+        const ProductBaseScreen(category: ProductCategory.deposit),
+        const ProductBaseScreen(category: ProductCategory.installment),
         const IsaScreen(),
       ]),
       ProductScreenCategory.loan => TabBarView(children: [
-        const ProductBaseScreen(productCategory: ProductCategory.mortage, filterCategory: FilterTextCategory.loan),
-        const ProductBaseScreen(productCategory: ProductCategory.rent, filterCategory: FilterTextCategory.loan,),
-        const ProductBaseScreen(productCategory: ProductCategory.credit, filterCategory: FilterTextCategory.loan),
+        const ProductBaseScreen(category: ProductCategory.mortgage,),
+        const ProductBaseScreen(category: ProductCategory.rent, ),
+        const ProductBaseScreen(category: ProductCategory.credit,)
       ]),
     };
 

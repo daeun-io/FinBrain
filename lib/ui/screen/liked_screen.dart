@@ -1,6 +1,4 @@
-import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/searched_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
@@ -13,16 +11,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class LikedScreen extends ConsumerWidget {
   const LikedScreen({super.key});
 
-  // todo: change later
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final liked = ref.watch(likedProductViewmodelProvider);
-    final searchedList = ref.watch(searchedViewmodelProvider);
     final selectedProducts = ref.watch(selectedProductsViewmodelProvider);
     final sProductsNm = selectedProducts
         .map((e) => e.commonInfo.productName)
-        .whereType<String>().join('-');
-    
+        .whereType<String>()
+        .join('-');
+
     return Padding(
       padding: const EdgeInsets.only(
         top: 24.0,
@@ -37,16 +34,16 @@ class LikedScreen extends ConsumerWidget {
               ref
                   .read(likedProductViewmodelProvider.notifier)
                   .filterByKeyword(value);
-              ref.read(searchedViewmodelProvider.notifier).addItem(value);
             },
-            searchedList: searchedList,
           ),
           const SizedBox(height: 24.0),
           SortOrFilterText(
-            category: FilterTextCategory.liked,
+            category: ProductCategory.liked,
             onSortCriteriaChanged: (criteria) {
               print("criteria: $criteria");
-              ref.read(likedProductViewmodelProvider.notifier).filterByCategory(criteria);
+              ref
+                  .read(likedProductViewmodelProvider.notifier)
+                  .filterByCategory(criteria);
             },
           ),
           const SizedBox(height: 20.0),
@@ -54,7 +51,7 @@ class LikedScreen extends ConsumerWidget {
             child: Stack(
               children: [
                 if (liked.value != null)
-                  Expanded(
+                  Positioned.fill(
                     child: ListView.builder(
                       itemCount: liked.value!.length,
                       itemBuilder: (context, index) {
@@ -62,9 +59,7 @@ class LikedScreen extends ConsumerWidget {
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
                             product: liked.value![index],
-                            productCategory:
-                                liked.value![index].commonInfo.category,
-                            filterTextCategory: FilterTextCategory.liked,
+                            fromLikedScreen: true,
                           ),
                         );
                       },
@@ -73,7 +68,10 @@ class LikedScreen extends ConsumerWidget {
                 Positioned(
                   right: 5,
                   bottom: 5,
-                  child: AiButton(tag: "compare-$sProductsNm"),
+                  child: AiButton(
+                    tag: "compare-$sProductsNm",
+                    category: ProductCategory.liked,
+                  ),
                 ),
               ],
             ),

@@ -40,10 +40,6 @@ class LikedDataSource {
           .collection("products")
           .get();
       if (docSnapshot.docs.isNotEmpty) {
-        print("===================");
-        print("firestore data: ${docSnapshot.docs}");
-        print("===================");
-
         return docSnapshot.docs.map((doc) => doc.data()).toList();
       } else {
         return [];

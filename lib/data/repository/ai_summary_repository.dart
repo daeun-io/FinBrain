@@ -1,6 +1,8 @@
+import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/data_source/ai_summary_data_source.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finbrain/product_categories.dart';
 
 class AiSummaryRepository {
   final dataSource = AiSummaryDataSource();
@@ -10,7 +12,7 @@ class AiSummaryRepository {
     String productName,
   ) async {
     try {
-      final summaries = await dataSource.getSummariesWithPrdtNm(
+      final summary = await dataSource.getSummariesWithPrdtNm(
         uid,
         productName,
       );
@@ -19,15 +21,15 @@ class AiSummaryRepository {
         key: productName,
         isExpanded: false,
         isPinned: false,
-        value: summaries
-            .map(
+        value: (summary["summaries"] as List)
+            .map<AiText>(
               (e) => AiText(
                 createdAt: (e["createdAt"] as Timestamp).toDate(),
                 text: e["summary"],
               ),
             )
             .toList(),
-        category: null
+        category: getCategoryEnum[summary["category"]] ?? ProductCategory.liked
       );
       return record;
     } catch (e) {
@@ -37,7 +39,7 @@ class AiSummaryRepository {
         isExpanded: false,
         isPinned: false,
         value: [],
-        category: null
+        category: ProductCategory.liked
       );
     }
   }
@@ -59,15 +61,15 @@ class AiSummaryRepository {
               key: summary.$1,
               isExpanded: false,
               isPinned: false,
-              value: summary.$2
-                  .map(
+              value: (summary.$2["summaries"] as List)
+                  .map<AiText>(
                     (e) => AiText(
                       createdAt: (e["createdAt"] as Timestamp).toDate(),
                       text: e["summary"],
                     ),
                   )
                   .toList(),
-              category: null
+              category: getCategoryEnum[summary.$2["category"]] ?? ProductCategory.liked
             ),
           );
         } catch (e) {
