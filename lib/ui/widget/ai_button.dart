@@ -15,6 +15,8 @@ class AiButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SizedBox(
       height: 80,
       width: 80,
@@ -61,7 +63,7 @@ class AiButton extends ConsumerWidget {
             );
           }
         },
-        backgroundColor: aiButtonBg,
+        backgroundColor: colorScheme.surfaceDim,
         splashColor: Colors.transparent,
         shape: const CircleBorder(),
         elevation: 0.0,
@@ -69,10 +71,10 @@ class AiButton extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset("assets/images/ai_assist.svg"),
-            const Text(
+            Text(
               "AI 도우미",
               style: TextStyle(
-                color: textTertiary,
+                color: colorScheme.onSurface,
                 fontSize: 12.0,
                 fontWeight: FontWeight.w600,
               ),

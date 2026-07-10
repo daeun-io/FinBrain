@@ -2,6 +2,7 @@ import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,23 +34,24 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final text = ref.watch(aiComparisonScreenViewmodelProvider(widget.tag));
 
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: colorScheme.primary,
       appBar: AppBar(
-        backgroundColor: primary100,
+        backgroundColor: colorScheme.tertiary,
         scrolledUnderElevation: 0.0,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
         ),
-        title: const Text(
+        title: Text(
           "AI 비교 분석",
           style: TextStyle(
-            color: textPrimary,
+            color: colorScheme.onPrimary,
             fontSize: 20.0,
             fontWeight: FontWeight.w600,
           ),
@@ -57,7 +59,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
         titleSpacing: -6.0,
       ),
       body: (text.isEmpty)
-          ? Center(child: const CircularProgressIndicator(color: primary400))
+          ? const CustomProgressIndicator()
           : Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 8.0,
@@ -73,8 +75,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                       child: Text(
                         text,
                         style: TextStyle(
-                          color: black,
-                          fontSize: 12.0,
+                          color: colorScheme.onSecondary,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -94,7 +96,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                           },
                           style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(
-                              Color(0xfff4f4f4),
+                              colorScheme.secondary,
                             ),
                           ),
                           child: Padding(
@@ -110,8 +112,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                           ),
                         ),
                         const SizedBox(width: 16.0),
-                        TextButton(
-                          onPressed: () {
+                        GestureDetector(
+                          onTap: () {
                             ref
                                 .read(
                                   selectedProductsViewmodelProvider.notifier,
@@ -126,15 +128,22 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                 .saveComparisonText(widget.ctg);
                             Navigator.of(context).pop();
                           },
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(primary400),
-                          ),
-                          child: Padding(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  colorScheme.surfaceContainerLowest,
+                                  colorScheme.surfaceContainerLow,
+                                ],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight
+                              ),
+                            ),
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
                               "이 분석 저장하기",
                               style: TextStyle(
-                                color: textPrimary,
+                                color: colorScheme.onPrimary,
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w600,
                               ),

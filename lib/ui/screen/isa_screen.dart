@@ -1,6 +1,5 @@
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';
 import 'package:finbrain/ui/screen/isa_mp_screen.dart';
@@ -44,13 +43,15 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
           children: [
             Card(
               margin: EdgeInsets.zero,
-              color: primary100,
+              color: colorScheme.tertiary,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
@@ -58,19 +59,19 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
               child: TabBar(
                 controller: _controller,
                 padding: EdgeInsets.zero,
-                labelStyle: const TextStyle(
+                labelStyle: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: white,
+                  color: colorScheme.onSurface,
                 ),
-                unselectedLabelStyle: const TextStyle(
+                unselectedLabelStyle: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
-                  color: textSecondary,
+                  color: colorScheme.onTertiary,
                 ),
-                indicator: const BoxDecoration(
+                indicator: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  color: primary700,
+                  color: colorScheme.surfaceContainerHigh,
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,

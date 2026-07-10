@@ -10,6 +10,8 @@ class OnBoardingScreen extends StatelessWidget {
   final PageController _pageController = PageController();
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       color: Colors.white,
       child: Column(
@@ -54,20 +56,34 @@ class OnBoardingScreen extends StatelessWidget {
           SmoothPageIndicator(
             controller: _pageController,
             count: 3, // Number of pages
-            effect: const ScrollingDotsEffect(
+            effect: ScrollingDotsEffect(
               spacing: 12.0,
               dotHeight: 8,
               dotWidth: 8,
-              activeDotColor: primary400,
-              dotColor: Color(0xffD9D9D9),
+              activeDotColor: colorScheme.onTertiaryFixed,
+              dotColor: colorScheme.shadow,
             ),
           ),
           const SizedBox(height: 40),
           GestureDetector(
-            onTap: () => _signInWithGoogle(context),
-            child: Image.asset(
-              'assets/images/signin_neutral.png',
-              width: MediaQuery.of(context).size.width * 0.65,
+            onTap: () {
+              print("구글 로그인 클릭됨!");
+              _signInWithGoogle(context);
+            },
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              decoration: BoxDecoration(
+                color: colorScheme.surface,
+                border: Border.all(color: colorScheme.onPrimary, width: 1),
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 32.0),
+              child: Text("FINBRAIN 시작하기", style: TextStyle(
+                color: colorScheme.onPrimary,
+                fontSize: 24.0,
+                fontWeight: FontWeight.w600,
+                decoration: TextDecoration.none
+              ),),
             ),
           ),
           const SizedBox(height: 60),
@@ -77,6 +93,8 @@ class OnBoardingScreen extends StatelessWidget {
   }
 
   void _signInWithGoogle(BuildContext context) async {
+    if(!context.mounted) return;
+
     final userCredential = await GoogleAuthService().signInWithGoogle();
 
     if (userCredential == null) {

@@ -17,24 +17,26 @@ class ProductFilterCondition extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           filter,
-          style: const TextStyle(
-            fontSize: 12.0,
+          style: TextStyle(
+            fontSize: 14.0,
             fontWeight: FontWeight.w400,
-            color: textSecondary,
+            color: colorScheme.onTertiary,
           ),
         ),
         const SizedBox(height: 8.0),
         if (filter == "회사 선택") ...[
-          const Text(
+          Text(
             "* 미선택 시 전부 해당됩니다",
             style: TextStyle(
-              fontSize: 10.0,
-              color: textPrimary,
+              fontSize: 12.0,
+              color: colorScheme.onPrimary,
               fontWeight: FontWeight.w600,
             ),
           ),

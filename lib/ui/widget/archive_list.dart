@@ -13,6 +13,8 @@ class ArchiveList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -29,8 +31,8 @@ class ArchiveList extends ConsumerWidget {
                         .pinRecord(item);
                   },
                   icon: item.isPinned
-                      ? Icon(Icons.star, color: robotBulb, size: 24)
-                      : Icon(Icons.star_border, color: textSecondary, size: 24),
+                      ? Icon(Icons.star, color: colorScheme.onSecondaryFixed, size: 24)
+                      : Icon(Icons.star_border, color: colorScheme.onSecondaryFixedVariant, size: 24),
                 ),
                 onExpansionChanged: (expanded) {
                   ref
@@ -40,16 +42,16 @@ class ArchiveList extends ConsumerWidget {
                 initiallyExpanded: item.isExpanded,
                 backgroundColor: white,
                 collapsedBackgroundColor: white,
-                iconColor: textPrimary,
-                collapsedIconColor: textPrimary,
+                iconColor: colorScheme.onPrimary,
+                collapsedIconColor: colorScheme.onPrimary,
                 shape: const Border(),
                 title: Text(
                   (ctg == ArchiveCategory.summary)
                       ? item.key
                       : item.key.substring(8).replaceAll("-", " vs "),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14.0,
-                    color: black,
+                    color: colorScheme.onSecondary,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -62,10 +64,10 @@ class ArchiveList extends ConsumerWidget {
                           alignment: Alignment.center,
                           child: Text(
                             chat.createdAt.toIso8601String().split("T").first,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 14.0,
-                              color: textSecondary,
+                              color: colorScheme.onTertiary,
                             ),
                           ),
                         ),
@@ -74,10 +76,10 @@ class ArchiveList extends ConsumerWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             chat.text,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 14.0,
-                              color: black,
+                              color: colorScheme.onSecondary,
                             ),
                           ),
                         ),

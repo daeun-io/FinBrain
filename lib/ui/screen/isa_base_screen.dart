@@ -1,8 +1,8 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:flutter/material.dart';
@@ -107,6 +107,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final joinItems = ref.watch(isaJoinStatusViewModelProvider);
     final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
     final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
@@ -132,28 +133,36 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       }
     });
 
-    final items = (widget.category == ProductCategory.isaJoin) ? joinItems : mngmItems;
-    final column = (widget.category == ProductCategory.isaJoin) ? joinColumn : mngmColumn;
+    final items = (widget.category == ProductCategory.isaJoin)
+        ? joinItems
+        : mngmItems;
+    final column = (widget.category == ProductCategory.isaJoin)
+        ? joinColumn
+        : mngmColumn;
     return Column(
       children: [
-        const SizedBox(height: 16.0),
-        ProductFilter(
-          category: widget.category,
+        const SizedBox(height: 24.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ProductFilter(category: widget.category),
+            Expanded(
+              child: SortOrFilterText(
+                category: widget.category,
+                onSortCriteriaChanged: (criteria) {
+                  (widget.category == ProductCategory.isaJoin)
+                      ? ref
+                            .read(isaJoinStatusViewModelProvider.notifier)
+                            .sortByCriteria(criteria, totalCount)
+                      : ref
+                            .read(isaManagementStatusViewModelProvider.notifier)
+                            .sortByCriteria(criteria, totalCount);
+                },
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 24.0),
-        SortOrFilterText(
-          category: widget.category,
-          onSortCriteriaChanged: (criteria) {
-            (widget.category == ProductCategory.isaJoin)
-                ? ref
-                      .read(isaJoinStatusViewModelProvider.notifier)
-                      .sortByCriteria(criteria, totalCount)
-                : ref
-                      .read(isaManagementStatusViewModelProvider.notifier)
-                      .sortByCriteria(criteria, totalCount);
-          },
-        ),
-        
         items.when(
           data: (data) {
             final (maxPage, items) = data;
@@ -163,7 +172,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    border: Border.all(color: primary300),
+                    border: Border.all(color: colorScheme.outline),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -171,7 +180,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                       // header
                       Container(
                         height: 40.0,
-                        color: primary100,
+                        color: colorScheme.secondary,
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
@@ -183,9 +192,9 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                 child: Center(
                                   child: Text(
                                     label,
-                                    style: const TextStyle(
-                                      color: textPrimary,
-                                      fontSize: 12.0,
+                                    style: TextStyle(
+                                      color: colorScheme.onPrimary,
+                                      fontSize: 14.0,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -209,7 +218,11 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                 index,
                               ) {
                                 final item = items[index];
-                                return _buildTableRow(item);
+                                return _buildTableRow(
+                                  item,
+                                  colorScheme.surface,
+                                  colorScheme.onSecondary,
+                                );
                               }, childCount: items.length),
                             ),
                           ],
@@ -226,29 +239,28 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
               child: Text(
                 "오류가 발생했습니다. 다시 시도해주세요",
                 style: TextStyle(
-                  color: black,
-                  fontSize: 12.0,
+                  color: colorScheme.onSecondary,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.w400,
                 ),
               ),
             ),
           ),
-          loading: () =>
-              Center(child: const CircularProgressIndicator(color: primary500)),
+          loading: () => const CustomProgressIndicator(),
         ),
       ],
     );
   }
 
-  Widget rowCell(String text, String type) {
+  Widget rowCell(String text, String type, Color color) {
     return Flexible(
       flex: (type == "incAstCtg" || type == "isaForm") ? 3 : 2,
       child: Center(
         child: Text(
           text,
           style: TextStyle(
-            color: textPrimary,
-            fontSize: 12.0,
+            color: color,
+            fontSize: 14.0,
             fontWeight: FontWeight.w400,
           ),
           textAlign: TextAlign.center,
@@ -257,23 +269,28 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     );
   }
 
-  Widget _buildTableRow(Object item) {
+  Widget _buildTableRow(Object item, Color ctnColor, Color txtColor) {
     return Container(
+      color: ctnColor,
       height: 48.0,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: [
           if (widget.category == ProductCategory.isaJoin) ...[
-            rowCell((item as IsaJoinStatus).isaForm!, "isaForm"),
-            rowCell(item.companyCount.toString(), "cmpyCnt"),
-            rowCell(item.joinMemberCount.toString(), "jnMbCnt"),
-            rowCell(item.category!, "category"),
+            rowCell((item as IsaJoinStatus).isaForm!, "isaForm", txtColor),
+            rowCell(item.companyCount.toString(), "cmpyCnt", txtColor),
+            rowCell(item.joinMemberCount.toString(), "jnMbCnt", txtColor),
+            rowCell(item.category!, "category", txtColor),
           ] else ...[
-            rowCell((item as IsaManagementStatus).isaForm!, "isaForm"),
-            rowCell(item.businessDomain!, "bzds"),
-            rowCell(item.includeAssetCtg!, "incAstCtg"),
-            rowCell(item.category!, "category"),
-            rowCell(item.amount.toString(), "amount"),
+            rowCell(
+              (item as IsaManagementStatus).isaForm!,
+              "isaForm",
+              txtColor,
+            ),
+            rowCell(item.businessDomain!, "bzds", txtColor),
+            rowCell(item.includeAssetCtg!, "incAstCtg", txtColor),
+            rowCell(item.category!, "category", txtColor),
+            rowCell(item.amount.toString(), "amount", txtColor),
           ],
         ],
       ),

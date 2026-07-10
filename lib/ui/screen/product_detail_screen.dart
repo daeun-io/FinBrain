@@ -15,6 +15,7 @@ import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,6 +34,7 @@ class ProductDetailScreen extends ConsumerWidget {
         .fetchAndOpenProductUrl(companyName, productName)
         .then((isSuccess) {
           if (!isSuccess) {
+            if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 duration: Duration(seconds: 3),
@@ -45,6 +47,8 @@ class ProductDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     final productList = ref.watch(productViewmodelProvider);
     final likedList = ref.watch(likedProductViewmodelProvider);
 
@@ -70,21 +74,24 @@ class ProductDetailScreen extends ConsumerWidget {
         }
 
         return Scaffold(
-          backgroundColor: white,
+          backgroundColor: colorScheme.primary,
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            backgroundColor: primary100,
+            backgroundColor: colorScheme.tertiary,
             scrolledUnderElevation: 0.0,
             leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                color: colorScheme.onPrimary,
+              ),
             ),
             title: Text(
               productName,
               style: TextStyle(
-                color: textPrimary,
+                color: colorScheme.onPrimary,
                 fontSize: 20.0,
                 fontWeight: FontWeight.w600,
               ),
@@ -95,14 +102,18 @@ class ProductDetailScreen extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(productViewmodelProvider.notifier)
-                      .toggleLiked(product!);
+                      .toggleLiked(product);
                 },
-                icon: product!.commonInfo.isLiked
-                    ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
-                    : const Icon(
+                icon: product.commonInfo.isLiked
+                    ? Icon(
                         Icons.favorite,
-                        color: unlikedColor,
-                        size: 32.0,
+                        color: colorScheme.onPrimaryFixed,
+                        size: 28.0,
+                      )
+                    : Icon(
+                        Icons.favorite,
+                        color: colorScheme.onPrimaryFixedVariant,
+                        size: 28.0,
                       ),
               ),
             ],
@@ -122,10 +133,11 @@ class ProductDetailScreen extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ..._displayDefaultWidgetList(product),
+                          ..._displayDefaultWidgetList(product, colorScheme),
                           ..._displayDynamicWidgetList(
                             product.commonInfo.category,
                             product,
+                            colorScheme,
                           ),
                           SizedBox(height: 160.0),
                         ],
@@ -154,15 +166,31 @@ class ProductDetailScreen extends ConsumerWidget {
                       ),
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
-                        color: primary100,
-                        alignment: Alignment.center,
-                        child: Text(
-                          "공식 홈페이지로 이동",
-                          style: TextStyle(
-                            color: textPrimary,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w400,
+                        decoration: BoxDecoration(
+                          color: colorScheme.secondary,
+                          border: Border.all(
+                            color: colorScheme.outline,
+                            width: 1.0,
                           ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.ads_click,
+                              color: colorScheme.onSecondary,
+                              size: 24.0,
+                            ),
+                            const SizedBox(width: 4.0),
+                            Text(
+                              "공식 홈페이지로 이동",
+                              style: TextStyle(
+                                color: colorScheme.onSecondary,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -218,15 +246,31 @@ class ProductDetailScreen extends ConsumerWidget {
                             },
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 20.0),
-                              color: primary300,
-                              alignment: Alignment.center,
-                              child: Text(
-                                "금융 계산기",
-                                style: TextStyle(
-                                  color: textPrimary,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w400,
+                              decoration: BoxDecoration(
+                                color: colorScheme.secondary,
+                                border: Border.all(
+                                  color: colorScheme.outline,
+                                  width: 1.0,
                                 ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.calculate_outlined,
+                                    color: colorScheme.onSecondary,
+                                    size: 24.0,
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  Text(
+                                    "금융 계산기",
+                                    style: TextStyle(
+                                      color: colorScheme.onSecondary,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -240,15 +284,31 @@ class ProductDetailScreen extends ConsumerWidget {
                             ),
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 20.0),
-                              color: primary100,
-                              alignment: Alignment.center,
-                              child: Text(
-                                "공식 홈페이지로 이동",
-                                style: TextStyle(
-                                  color: textPrimary,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w400,
+                              decoration: BoxDecoration(
+                                color: colorScheme.secondary,
+                                border: Border.all(
+                                  color: colorScheme.outline,
+                                  width: 1.0,
                                 ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.ads_click,
+                                    color: colorScheme.onSecondary,
+                                    size: 24.0,
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  Text(
+                                    "공식 홈페이지로 이동",
+                                    style: TextStyle(
+                                      color: colorScheme.onSecondary,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -266,46 +326,45 @@ class ProductDetailScreen extends ConsumerWidget {
           child: Text(
             "오류가 발생했습니다. 다시 시도해주세요",
             style: TextStyle(
-              color: black,
-              fontSize: 12.0,
+              color: colorScheme.onSecondary,
+              fontSize: 14.0,
               fontWeight: FontWeight.w400,
             ),
           ),
         ),
       ),
-      loading: () =>
-          Center(child: const CircularProgressIndicator(color: primary500)),
+      loading: () => const CustomProgressIndicator(),
     );
   }
 
-  Widget textFrame(String text) {
+  Widget textFrame(String text, Color color) {
     return Text(
       text,
-      style: const TextStyle(
-        color: black,
+      style: TextStyle(
+        color: color,
         fontSize: 14.0,
         fontWeight: FontWeight.w400,
       ),
     );
   }
 
-  Widget tableCellFrame(String text) {
+  Widget tableCellFrame(String text, Color color) {
     return TableCell(
       verticalAlignment: TableCellVerticalAlignment.middle,
       child: Padding(
         padding: const EdgeInsets.all(4.0),
-        child: Center(child: textFrame(text)),
+        child: Center(child: textFrame(text, color)),
       ),
     );
   }
 
-  Widget dataTableCellText(String text) {
+  Widget dataTableCellText(String text, Color color) {
     return Center(
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: const TextStyle(
-          color: black,
+        style: TextStyle(
+          color: color,
           fontSize: 14.0,
           fontWeight: FontWeight.w400,
         ),
@@ -313,80 +372,114 @@ class ProductDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget tableFrame(ProductCategory category, List<dynamic> options) {
+  Widget tableFrame(
+    ProductCategory category,
+    List<dynamic> options,
+    ColorScheme colorScheme,
+  ) {
     if (category == ProductCategory.credit) {
       return Column(
         children: [
           for (final option in options as List<CreditLoanOption>)
             if (option.creditLendRateTypeName != null) ...[
-              textFrame(option.creditLendRateTypeName!),
+              textFrame(
+                option.creditLendRateTypeName!,
+                colorScheme.onSecondary,
+              ),
               const SizedBox(height: 8.0),
               Table(
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                border: TableBorder.all(color: primary300),
+                border: TableBorder.all(color: colorScheme.outline),
                 children: [
                   TableRow(
                     decoration: BoxDecoration(
-                      color: primary100,
-                      border: BoxBorder.all(color: primary300),
+                      color: colorScheme.secondary,
+                      border: BoxBorder.all(color: colorScheme.outline),
                     ),
                     children: [
-                      tableCellFrame("신용 등급"),
-                      tableCellFrame("대출 금리"),
+                      tableCellFrame("신용 등급", colorScheme.onSecondary),
+                      tableCellFrame("대출 금리", colorScheme.onSecondary),
                     ],
                   ),
                   TableRow(
                     children: [
-                      tableCellFrame("900점 초과"),
-                      tableCellFrame(option.gradeOver900.toString()),
+                      tableCellFrame("900점 초과", colorScheme.onSecondary),
+                      tableCellFrame(
+                        option.gradeOver900.toString(),
+                        colorScheme.onSecondary,
+                      ),
                     ],
                   ),
                   TableRow(
                     children: [
-                      tableCellFrame("801~900점"),
-                      tableCellFrame(option.grade801900.toString()),
+                      tableCellFrame("801~900점", colorScheme.onSecondary),
+                      tableCellFrame(
+                        option.grade801900.toString(),
+                        colorScheme.onSecondary,
+                      ),
                     ],
                   ),
                   TableRow(
                     children: [
-                      tableCellFrame("701~800점"),
-                      tableCellFrame(option.grade701800.toString()),
+                      tableCellFrame("701~800점", colorScheme.onSecondary),
+                      tableCellFrame(
+                        option.grade701800.toString(),
+                        colorScheme.onSecondary,
+                      ),
                     ],
                   ),
                   TableRow(
                     children: [
-                      tableCellFrame("601~700점"),
-                      tableCellFrame((option.grade601700.toString())),
+                      tableCellFrame("601~700점", colorScheme.onSecondary),
+                      tableCellFrame(
+                        option.grade601700.toString(),
+                        colorScheme.onSecondary,
+                      ),
                     ],
                   ),
                   TableRow(
                     children: [
-                      tableCellFrame(("501~600점")),
-                      tableCellFrame((option.grade501600.toString())),
+                      tableCellFrame("501~600점", colorScheme.onSecondary),
+                      tableCellFrame(
+                        option.grade501600.toString(),
+                        colorScheme.onSecondary,
+                      ),
                     ],
                   ),
                   TableRow(
                     children: [
-                      tableCellFrame(("401~500점")),
-                      tableCellFrame((option.grade401500.toString())),
+                      tableCellFrame("401~500점", colorScheme.onSecondary),
+                      tableCellFrame(
+                        option.grade401500.toString(),
+                        colorScheme.onSecondary,
+                      ),
                     ],
                   ),
                   TableRow(
                     children: [
-                      tableCellFrame(("301~400점")),
-                      tableCellFrame((option.grade301400.toString())),
+                      tableCellFrame("301~400점", colorScheme.onSecondary),
+                      tableCellFrame(
+                        option.grade301400.toString(),
+                        colorScheme.onSecondary,
+                      ),
                     ],
                   ),
                   TableRow(
                     children: [
-                      tableCellFrame(("300점 이하")),
-                      tableCellFrame((option.gradeUnder300.toString())),
+                      tableCellFrame("300점 이하", colorScheme.onSecondary),
+                      tableCellFrame(
+                        option.gradeUnder300.toString(),
+                        colorScheme.onSecondary,
+                      ),
                     ],
                   ),
                   TableRow(
                     children: [
-                      tableCellFrame(("평균 금리")),
-                      tableCellFrame((option.averageGrade.toString())),
+                      tableCellFrame("평균 금리", colorScheme.onSecondary),
+                      tableCellFrame(
+                        option.averageGrade.toString(),
+                        colorScheme.onSecondary,
+                      ),
                     ],
                   ),
                 ],
@@ -398,21 +491,27 @@ class ProductDetailScreen extends ConsumerWidget {
     } else {
       return Table(
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        border: TableBorder.all(color: primary300),
+        border: TableBorder.all(color: colorScheme.outline),
         children: [
           TableRow(
             decoration: BoxDecoration(
-              color: primary100,
-              border: BoxBorder.all(color: primary300),
+              color: colorScheme.secondary,
+              border: BoxBorder.all(color: colorScheme.outline),
             ),
-            children: [tableCellFrame("기간"), tableCellFrame("수익률")],
+            children: [
+              tableCellFrame("기간", colorScheme.onSecondary),
+              tableCellFrame("수익률", colorScheme.onSecondary),
+            ],
           ),
           for (final option in options as List<IsaMpBenefitRateOption>) ...[
             if (option.term != null && option.benefitRate != null)
               TableRow(
                 children: [
-                  tableCellFrame(option.term!),
-                  tableCellFrame(option.benefitRate.toString()),
+                  tableCellFrame(option.term!, colorScheme.onSecondary),
+                  tableCellFrame(
+                    option.benefitRate.toString(),
+                    colorScheme.onSecondary,
+                  ),
                 ],
               ),
           ],
@@ -425,141 +524,270 @@ class ProductDetailScreen extends ConsumerWidget {
     ProductCategory category,
     List<String> columns,
     List<dynamic> options,
+    ColorScheme colorScheme,
   ) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: DataTable(
-        decoration: BoxDecoration(border: Border.all(color: primary300)),
-        headingRowColor: const WidgetStatePropertyAll(primary100),
-        headingRowHeight: 40.0,
-        dataRowColor: const WidgetStatePropertyAll(white),
-        columnSpacing: 36.0,
-        columns: [
-          for (final column in columns)
-            DataColumn(
-              label: Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [dataTableCellText(column)],
+      child: Theme(
+        data: ThemeData(useMaterial3: false, dividerColor: colorScheme.outline),
+        child: DataTable(
+          decoration: BoxDecoration(
+            border: Border.all(color: colorScheme.outline),
+          ),
+          headingRowColor: WidgetStatePropertyAll(colorScheme.secondary),
+          headingRowHeight: 40.0,
+          dataRowColor: WidgetStatePropertyAll(colorScheme.surface),
+          columnSpacing: 36.0,
+          columns: [
+            for (final column in columns)
+              DataColumn(
+                label: Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      dataTableCellText(column, colorScheme.onSecondary),
+                    ],
+                  ),
                 ),
               ),
-            ),
-        ],
-        rows: [
-          if (category == ProductCategory.deposit)
-            for (final option
-                in options as List<DepositAndInstallmentSavingsOption>)
-              DataRow(
-                cells: [
-                  DataCell(
-                    dataTableCellText(option.intRateTypeName.toString()),
-                  ),
-                  DataCell(dataTableCellText(option.saveTerm.toString())),
-                  DataCell(dataTableCellText(option.intRate.toString())),
-                  DataCell(dataTableCellText(option.maxIntRate.toString())),
-                ],
-              ),
-          if (category == ProductCategory.installment)
-            for (final option
-                in options as List<DepositAndInstallmentSavingsOption>)
-              DataRow(
-                cells: [
-                  DataCell(dataTableCellText(option.intRateTypeName!)),
-                  DataCell(
-                    dataTableCellText(option.reserveTypeName.toString()),
-                  ),
-                  DataCell(dataTableCellText(option.saveTerm.toString())),
-                  DataCell(dataTableCellText(option.intRate.toString())),
-                  DataCell(dataTableCellText(option.maxIntRate.toString())),
-                ],
-              ),
-          if (category == ProductCategory.mortgage)
-            for (final option in options as List<MortageAndRentLoanOption>)
-              DataRow(
-                cells: [
-                  DataCell(dataTableCellText(option.loanTypeName!)),
-                  DataCell(dataTableCellText(option.repayTypeName!)),
-                  DataCell(dataTableCellText(option.lendRateTypeName!)),
-                  DataCell(dataTableCellText(option.lendRateMin.toString())),
-                  DataCell(dataTableCellText(option.lendRateMax.toString())),
-                  DataCell(dataTableCellText(option.lendRateAvg.toString())),
-                ],
-              ),
-          if (category == ProductCategory.rent)
-            for (final option in options as List<MortageAndRentLoanOption>)
-              DataRow(
-                cells: [
-                  DataCell(dataTableCellText(option.repayTypeName!)),
-                  DataCell(dataTableCellText(option.lendRateTypeName!)),
-                  DataCell(dataTableCellText(option.lendRateMin.toString())),
-                  DataCell(dataTableCellText(option.lendRateMax.toString())),
-                  DataCell(dataTableCellText(option.lendRateAvg.toString())),
-                ],
-              ),
-        ],
+          ],
+          rows: [
+            if (category == ProductCategory.deposit)
+              for (final option
+                  in options as List<DepositAndInstallmentSavingsOption>)
+                DataRow(
+                  cells: [
+                    DataCell(
+                      dataTableCellText(
+                        option.intRateTypeName.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.saveTerm.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.intRate.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.maxIntRate.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+            if (category == ProductCategory.installment)
+              for (final option
+                  in options as List<DepositAndInstallmentSavingsOption>)
+                DataRow(
+                  cells: [
+                    DataCell(
+                      dataTableCellText(
+                        option.intRateTypeName!,
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.reserveTypeName.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.saveTerm.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.intRate.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.maxIntRate.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+            if (category == ProductCategory.mortgage)
+              for (final option in options as List<MortageAndRentLoanOption>)
+                DataRow(
+                  cells: [
+                    DataCell(
+                      dataTableCellText(
+                        option.loanTypeName!,
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.repayTypeName!,
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.lendRateTypeName!,
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.lendRateMin.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.lendRateMax.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.lendRateAvg.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+            if (category == ProductCategory.rent)
+              for (final option in options as List<MortageAndRentLoanOption>)
+                DataRow(
+                  cells: [
+                    DataCell(
+                      dataTableCellText(
+                        option.repayTypeName!,
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.lendRateTypeName!,
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.lendRateMin.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.lendRateMax.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                    DataCell(
+                      dataTableCellText(
+                        option.lendRateAvg.toString(),
+                        colorScheme.onSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+          ],
+        ),
       ),
     );
   }
 
-  List<Widget> _displayDefaultWidgetList(FinancialProduct product) {
+  List<Widget> _displayDefaultWidgetList(
+    FinancialProduct product,
+    ColorScheme colorScheme,
+  ) {
     return [
-      const Text(
+      Text(
         "상품 안내",
         style: TextStyle(
-          color: textPrimary,
+          color: colorScheme.onPrimary,
           fontSize: 16.0,
           fontWeight: FontWeight.w600,
         ),
       ),
-      const Divider(thickness: 1, color: textPrimary),
-      textFrame("금융 상품명: ${product.commonInfo.productName}"),
-      textFrame("금융회사: ${product.commonInfo.companyName}"),
+      Divider(thickness: 1, color: colorScheme.secondary),
+      textFrame(
+        "금융 상품명: ${product.commonInfo.productName}",
+        colorScheme.onSecondary,
+      ),
+      textFrame(
+        "금융회사: ${product.commonInfo.companyName}",
+        colorScheme.onSecondary,
+      ),
     ];
   }
 
   List<Widget> _displayDynamicWidgetList(
     ProductCategory category,
     FinancialProduct product,
+    ColorScheme colorScheme,
   ) {
     return [
       if (category != ProductCategory.isaMp)
         textFrame(
-          "가입 방법: ${(product.commonInfo.joinWay == null) ? "미제공" : product.commonInfo.joinWay!.join(",")}",
+          "가입 방법: ${(product.commonInfo.joinWay == null || product.commonInfo.joinWay!.isEmpty) ? "미제공" : product.commonInfo.joinWay!.join(",")}",
+          colorScheme.onSecondary,
         ),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
         textFrame(
-          "가입 제한: ${((product as DepositAndInstallmentSavings).joinDeny == null) ? "미제공" : product.joinDeny}",
+          "가입 제한: ${((product as DepositAndInstallmentSavings).joinDeny == null || product.joinDeny == "null") ? "미제공" : product.joinDeny}",
+          colorScheme.onSecondary,
         ),
         textFrame(
-          "가입 대상: ${(product.joinMember == null) ? "미제공" : product.joinMember}",
+          "가입 대상: ${(product.joinMember == null || product.joinMember == "null") ? "미제공" : product.joinMember}",
+          colorScheme.onSecondary,
         ),
       ] else if (category == ProductCategory.credit) ...[
         textFrame(
-          "CB 회사: ${((product as CreditLoan).cbName == null) ? "미제공" : product.cbName}",
+          "CB 회사: ${((product as CreditLoan).cbName == null || product.cbName == "null") ? "미제공" : product.cbName}",
+          colorScheme.onSecondary,
         ),
         textFrame(
-          "대출 종류 ${(product.productTypeName == null) ? "미제공" : product.productTypeName}",
+          "대출 종류 ${(product.productTypeName == null || product.productTypeName == "null") ? "미제공" : product.productTypeName}",
+          colorScheme.onSecondary,
         ),
       ] else if (category == ProductCategory.annuity) ...[
         textFrame(
-          "연금 종류: ${((product as AnnuitySavings).pensionKindName == null) ? "미제공" : product.pensionKindName}",
+          "연금 종류: ${((product as AnnuitySavings).pensionKindName == null || product.pensionKindName == "null") ? "미제공" : product.pensionKindName}",
+          colorScheme.onSecondary,
         ),
         textFrame(
-          "상품 유형: ${(product.productTypeName == null) ? "미제공" : product.productTypeName}",
+          "상품 유형: ${(product.productTypeName == null || product.productTypeName == "null") ? "미제공" : product.productTypeName}",
+          colorScheme.onSecondary,
         ),
         textFrame(
-          "판매사: ${(product.saleCompany == null) ? "미제공" : product.saleCompany}",
+          "판매사: ${(product.saleCompany == null || product.saleCompany == "null") ? "미제공" : product.saleCompany}",
+          colorScheme.onSecondary,
         ),
       ] else if (category == ProductCategory.isaMp) ...[
         textFrame(
-          "업권: ${((product as IsaMpBenefitRate).businessDomain == null) ? "미제공" : product.businessDomain}",
+          "업권: ${((product as IsaMpBenefitRate).businessDomain == null || product.businessDomain == "null") ? "미제공" : product.businessDomain}",
+          colorScheme.onSecondary,
         ),
-        textFrame("mp유형: ${(product.mpType == null) ? "미제공" : product.mpType}"),
+        textFrame(
+          "mp유형: ${(product.mpType == null || product.mpType == "null") ? "미제공" : product.mpType}",
+          colorScheme.onSecondary,
+        ),
       ] else
         ...[],
-      textFrame("공시 제출일: ${product.commonInfo.submittedDay}"),
-      SizedBox(height: 24.0),
+      textFrame(
+        "공시 제출일: ${product.commonInfo.submittedDay}",
+        colorScheme.onSecondary,
+      ),
+      const SizedBox(height: 24.0),
       Text(
         switch (category) {
           ProductCategory.credit => "대출 금리 안내",
@@ -568,36 +796,42 @@ class ProductDetailScreen extends ConsumerWidget {
           _ => "상품 세부사항",
         },
         style: TextStyle(
-          color: textPrimary,
+          color: colorScheme.onPrimary,
           fontSize: 16.0,
           fontWeight: FontWeight.w600,
         ),
       ),
-      const Divider(thickness: 1, color: textPrimary),
+      Divider(thickness: 1, color: colorScheme.onSecondary),
       const SizedBox(height: 14.0),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
-        textFrame("금리"),
+        textFrame("금리", colorScheme.onSecondary),
         dataTableFrame(
           category,
           (category == ProductCategory.deposit)
               ? const ["금리 유형", "기간(개월)", "기본 금리", "최고 우대 금리"]
               : const ["금리 유형", "적금 유형", "기간(개월)", "금리", "최고 우대 금리"],
           (product as DepositAndInstallmentSavings).options,
+          colorScheme,
         ),
         const SizedBox(height: 14.0),
         textFrame(
-          "만기 후 이자율:\n${(product.interestAfterExpiration == null) ? "미제공" : product.interestAfterExpiration}",
+          "만기 후 이자율:\n${(product.interestAfterExpiration == null || product.interestAfterExpiration == "null") ? "미제공" : product.interestAfterExpiration}",
+          colorScheme.onSecondary,
         ),
         const SizedBox(height: 14.0),
         textFrame(
-          "우대 조건:\n${(product.specialCondition == null) ? "미제공" : product.specialCondition}",
+          "우대 조건:\n${(product.specialCondition == null || product.specialCondition == "null") ? "미제공" : product.specialCondition}",
+          colorScheme.onSecondary,
         ),
         const SizedBox(height: 14.0),
-        textFrame("기타 유의 사항:\n${(product.etc == null) ? "미제공" : product.etc}"),
+        textFrame(
+          "기타 유의 사항:\n${(product.etc == null || product.etc == "null") ? "미제공" : product.etc}",
+          colorScheme.onSecondary,
+        ),
       ] else if (category == ProductCategory.mortgage ||
           category == ProductCategory.rent) ...[
-        textFrame("금리"),
+        textFrame("금리", colorScheme.onSecondary),
         const SizedBox(height: 14.0),
         dataTableFrame(
           category,
@@ -612,49 +846,65 @@ class ProductDetailScreen extends ConsumerWidget {
                 ]
               : const ["대출 상환 유형", "대출 금리 유형", "최저 금리", "최대 금리", "평균 금리"],
           (product as MortageAndRentLoan).options,
+          colorScheme,
         ),
         const SizedBox(height: 14.0),
         textFrame(
-          "대출 부대 비용:\n${(product.extraExpense == null) ? "미제공" : product.extraExpense}",
+          "대출 부대 비용:\n${(product.extraExpense == null || product.extraExpense == "null") ? "미제공" : product.extraExpense}",
+          colorScheme.onSecondary,
         ),
         const SizedBox(height: 14.0),
         textFrame(
-          "중도 상환 수수료:\n${(product.earlyRepayFee == null) ? "미제공" : product.earlyRepayFee}",
+          "중도 상환 수수료:\n${(product.earlyRepayFee == null || product.earlyRepayFee == "null") ? "미제공" : product.earlyRepayFee}",
+          colorScheme.onSecondary,
         ),
         const SizedBox(height: 14.0),
         textFrame(
-          "연체 이자율:\n${(product.delayRate == null) ? "미제공" : product.delayRate}",
+          "연체 이자율:\n${(product.delayRate == null || product.delayRate == "null") ? "미제공" : product.delayRate}",
+          colorScheme.onSecondary,
         ),
         const SizedBox(height: 14.0),
         textFrame(
-          "대출 한도: ${(product.loanLimit == null) ? "미제공" : product.loanLimit}",
+          "대출 한도: ${(product.loanLimit == null || product.loanLimit == "null") ? "미제공" : product.loanLimit}",
+          colorScheme.onSecondary,
         ),
       ] else if (category == ProductCategory.credit)
-        tableFrame(category, (product as CreditLoan).options)
+        tableFrame(category, (product as CreditLoan).options, colorScheme)
       else if (category == ProductCategory.annuity) ...[
         textFrame(
-          "유지건수/설정액 ${((product as AnnuitySavings).maintenanceCount == null) ? "미제공" : product.maintenanceCount}",
+          "유지건수/설정액 ${((product as AnnuitySavings).maintenanceCount == null || product.maintenanceCount == "null") ? "미제공" : product.maintenanceCount}",
+          colorScheme.onSecondary,
         ),
         textFrame(
           "평균 수익률: ${(product.averageProfit == null) ? "미제공" : product.averageProfit}",
+          colorScheme.onSecondary,
         ),
         textFrame(
-          "공시 이율: ${(product.declaredRate == null) ? "미제공" : product.declaredRate}",
+          "공시 이율: ${(product.declaredRate == null || product.declaredRate == "null") ? "미제공" : product.declaredRate}",
+          colorScheme.onSecondary,
         ),
         textFrame(
-          "최저 보증 이율: ${(product.guaranteedRate == null) ? "미제공" : product.guaranteedRate}",
+          "최저 보증 이율: ${(product.guaranteedRate == null || product.guaranteedRate == "null") ? "미제공" : product.guaranteedRate}",
+          colorScheme.onSecondary,
         ),
         textFrame(
           "전년도 수익률: ${(product.pyProfitRate == null) ? "미제공" : product.pyProfitRate}",
+          colorScheme.onSecondary,
         ),
         textFrame(
           "전전년도 수익률: ${(product.ppyProfitRate == null) ? "미제공" : product.ppyProfitRate}",
+          colorScheme.onSecondary,
         ),
         textFrame(
           "전전전년도 수익률: ${(product.pppyProfitRate == null) ? "미제공" : product.pppyProfitRate}",
+          colorScheme.onSecondary,
         ),
       ] else
-        tableFrame(category, (product as IsaMpBenefitRate).options),
+        tableFrame(
+          category,
+          (product as IsaMpBenefitRate).options,
+          colorScheme,
+        ),
     ];
   }
 }

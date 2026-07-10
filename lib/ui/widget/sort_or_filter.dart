@@ -1,5 +1,4 @@
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +19,7 @@ class SortOrFilterText extends ConsumerStatefulWidget {
 class _FilterTextState extends ConsumerState<SortOrFilterText> {
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final filter = ref.watch(
       sortOrFilterTextViewModelProvider(widget.category),
     );
@@ -31,7 +31,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
         ? filter.$1 as List<String>
         : [];
     String text = selectedOption;
-    print("filter ctg: ${widget.category}");
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -40,14 +40,18 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400),
+            style: TextStyle(
+              color: colorScheme.onSecondary,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ),
         IconButton(
           onPressed: () {
             showModalBottomSheet(
               context: context,
-              backgroundColor: Colors.white,
+              backgroundColor: colorScheme.surfaceContainer,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20.0),
@@ -64,7 +68,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                           children: [
                             Text(
                               filter.$2[index],
-                              style: const TextStyle(fontSize: 16.0),
+                              style: TextStyle(color: colorScheme.onSecondary,fontSize: 16.0),
                             ),
                             const Spacer(),
                             if (widget.category == ProductCategory.liked)
@@ -104,15 +108,15 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                 },
                                 icon:
                                     (selectedOptions.contains(filter.$2[index]))
-                                    ? const Icon(
+                                    ? Icon(
                                         Icons.check_circle,
                                         size: 24.0,
-                                        color: primary500,
+                                        color: colorScheme.onTertiaryFixed,
                                       )
-                                    : const Icon(
+                                    : Icon(
                                         Icons.circle_outlined,
                                         size: 24.0,
-                                        color: primary300,
+                                        color: colorScheme.outline,
                                       ),
                               )
                             else
@@ -120,7 +124,6 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                 onPressed: () {
                                   setModalState(() {
                                     selectedOption = filter.$2[index];
-                                    print("selected option: $selectedOption");
                                   });
                                   setState(() {
                                     text = filter.$2[index];
@@ -139,15 +142,15 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                       .changeCriteria(selectedOption);
                                 },
                                 icon: (selectedOption == filter.$2[index])
-                                    ? const Icon(
+                                    ? Icon(
                                         Icons.radio_button_checked,
                                         size: 24.0,
-                                        color: primary500,
+                                        color: colorScheme.onTertiaryFixed,
                                       )
-                                    : const Icon(
+                                    : Icon(
                                         Icons.circle_outlined,
                                         size: 24.0,
-                                        color: primary300,
+                                        color: colorScheme.outline,
                                       ),
                               ),
                           ],
@@ -167,10 +170,10 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                             (widget.category == ProductCategory.liked)
                                 ? "선택 상품"
                                 : "정렬 기준",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.w600,
-                              color: textPrimary,
+                              color: colorScheme.onPrimary,
                             ),
                           ),
                           const SizedBox(height: 28.0),
@@ -186,7 +189,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
           visualDensity: VisualDensity.compact,
-          icon: const Icon(Icons.keyboard_arrow_down, size: 24),
+          icon: Icon(Icons.keyboard_arrow_down, size: 24, color: colorScheme.onSecondary,),
         ),
       ],
     );

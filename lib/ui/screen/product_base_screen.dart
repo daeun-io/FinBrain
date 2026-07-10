@@ -1,6 +1,8 @@
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
@@ -77,6 +79,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final products = ref.watch(productViewmodelProvider);
 
     // Move to center after fetching data
@@ -89,7 +92,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
         });
       }
     });
-
     return Padding(
       padding: const EdgeInsets.only(
         top: 24.0,
@@ -99,26 +101,40 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       ),
       child: Column(
         children: [
-          ProductFilter(category: widget.category),
-          const SizedBox(height: 24.0),
-          SortOrFilterText(
-            category: widget.category,
-            onSortCriteriaChanged: (criteria) {
+          SearchBox(
+            searchItem: (value) {
               ref
                   .read(productViewmodelProvider.notifier)
-                  .sortByCriteria(criteria, widget.category, _maxPage);
+                  .filterByKeyword(value);
             },
           ),
-          const SizedBox(height: 12.0),
+          const SizedBox(height: 24.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ProductFilter(category: widget.category),
+              Expanded(
+                child: SortOrFilterText(
+                  category: widget.category,
+                  onSortCriteriaChanged: (criteria) {
+                    ref
+                        .read(productViewmodelProvider.notifier)
+                        .sortByCriteria(criteria, widget.category, _maxPage);
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24.0),
           products.when(
             data: (data) {
               if (data.$2.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
                     "상품이 존재하지 않습니다",
                     style: TextStyle(
                       fontSize: 14.0,
-                      color: black,
+                      color: colorScheme.onSecondary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -160,9 +176,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                 ),
               ),
             ),
-            loading: () => Center(
-              child: const CircularProgressIndicator(color: primary500),
-            ),
+            loading: () => const CustomProgressIndicator()
           ),
         ],
       ),

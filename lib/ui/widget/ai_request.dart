@@ -8,13 +8,15 @@ class AiRequest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         minWidth: 0,
         maxWidth: MediaQuery.of(context).size.width * 0.8
       ),
       child: Card(
-        color: const Color(0xFFF4F4F4),
+        color: colorScheme.secondary,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.all(Radius.circular(20.0)),
         ),
@@ -28,8 +30,8 @@ class AiRequest extends StatelessWidget {
               Text(
                 text,
                 style: TextStyle(
-                  color: black,
-                  fontSize: 12.0,
+                  color: colorScheme.onSecondary,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.w400,
                 ),
               ),

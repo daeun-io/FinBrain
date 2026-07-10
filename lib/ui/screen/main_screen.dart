@@ -6,7 +6,6 @@ import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/screen/product_base_screen.dart';
 import 'package:finbrain/ui/screen/product_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -62,6 +61,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     ref.listen<ProductCategory>(currentCtgViewmodelProvider, (prev, next) {
       if (_currentIndex != 3) {
         loadData(next);
@@ -76,18 +77,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: colorScheme.primary,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0),
           child: AppBar(
-            backgroundColor: white,
+            backgroundColor: colorScheme.primary,
             scrolledUnderElevation: 0.0,
+            // change later
             leading: Image.asset("assets/images/app_icon.png"),
-            title: const Text(
+            title: Text(
               "FinBrain",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+              style: TextStyle(color: colorScheme.onPrimary, fontSize: 18, fontWeight: FontWeight.w900),
             ),
             titleSpacing: -8,
             actions: [
@@ -99,12 +101,12 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     vertical: 4.0,
                     horizontal: 12.0,
                   ),
-                  side: const BorderSide(color: textPrimary, width: 1),
+                  side: BorderSide(color: colorScheme.onPrimary, width: 1),
                 ),
                 // todo: implement later
-                child: const Text(
+                child: Text(
                   "큰 글씨",
-                  style: TextStyle(color: textPrimary, fontSize: 14.0),
+                  style: TextStyle(color: colorScheme.onPrimary, fontSize: 14.0),
                 ),
               ),
               const SizedBox(width: 8),
@@ -114,7 +116,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     context,
                   ).push(MaterialPageRoute(builder: (ctx) => ArchiveScreen()));
                 },
-                icon: Icon(Icons.archive_sharp, color: primary900, size: 32),
+                icon: Icon(Icons.archive_sharp, color: colorScheme.surfaceContainerHighest, size: 32),
               ),
             ],
           ),
@@ -123,14 +125,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       body: IndexedStack(index: _currentIndex, children: pages),
       bottomNavigationBar: Container(
         height: 70,
-        decoration: const BoxDecoration(
-          color: primary100,
-          border: Border(top: BorderSide(color: primary300, width: 1.0)),
+        decoration: BoxDecoration(
+          color: colorScheme.secondary,
+          border: Border(top: BorderSide(color: colorScheme.outline, width: 1.0)),
         ),
         child: Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
-            highlightColor: Colors.transparent,
+            highlightColor: colorScheme.onSurface,
           ),
           child: BottomNavigationBar(
             onTap: (value) {
@@ -152,8 +154,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             elevation: 0,
             enableFeedback: false,
             backgroundColor: Colors.transparent,
-            selectedItemColor: textPrimary,
-            unselectedItemColor: textSecondary,
+            selectedItemColor: colorScheme.onPrimary,
+            unselectedItemColor: colorScheme.onTertiary,
             selectedLabelStyle: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 14,

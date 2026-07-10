@@ -1,5 +1,4 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class AiSummary extends StatelessWidget {
@@ -9,13 +8,15 @@ class AiSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: texts.map((e) => _buildSingleSummary(context, e.text)).toList(),
+      children: texts.map((e) => _buildSingleSummary(context, e.text, colorScheme)).toList(),
     );
   }
 
-  Widget _buildSingleSummary(BuildContext context, String text) {
+  Widget _buildSingleSummary(BuildContext context, String text, ColorScheme colorScheme) {
     return Align(
       alignment: Alignment.centerLeft,
       child: ConstrainedBox(
@@ -23,30 +24,38 @@ class AiSummary extends StatelessWidget {
           minWidth: 0,
           maxWidth: MediaQuery.of(context).size.width * 0.8,
         ),
-        child: Card(
-          color: primary100,
-          shape: const RoundedRectangleBorder(
-            side: BorderSide(color: primary300, width: 1.0),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              colorScheme.surfaceContainerLowest,
+              colorScheme.surfaceContainerLow
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight
+            ),
             borderRadius: BorderRadiusGeometry.all(Radius.circular(20.0)),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: Column(
               children: [
-                const Text(
-                  "지난 대화 요약",
-                  style: TextStyle(
-                    color: textPrimary,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "지난 대화 요약",
+                    style: TextStyle(
+                      color: colorScheme.onSecondary,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 8.0),
+                const SizedBox(height: 12.0),
                 Text(
                   text,
                   style: TextStyle(
-                    color: black,
-                    fontSize: 12.0,
+                    color: colorScheme.onSecondary,
+                    fontSize: 14.0,
                     fontWeight: FontWeight.w400,
                   ),
                 ),

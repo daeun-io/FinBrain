@@ -1,5 +1,4 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/screen/archive_tabview_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -8,26 +7,27 @@ class ArchiveScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final tabList = ["AI 대화 요약", "AI 비교 분석"];
     final tabView = TabBarView(
       children: const [ ArchiveTabViewScreen(category: ArchiveCategory.summary,), ArchiveTabViewScreen(category: ArchiveCategory.comparison,)],
     );
 
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: colorScheme.primary,
       appBar: AppBar(
-        backgroundColor: white,
+        backgroundColor: colorScheme.tertiary,
         scrolledUnderElevation: 0.0,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
         ),
         title: Text(
           "아카이브",
           style: TextStyle(
-            color: textPrimary,
+            color: colorScheme.onPrimary,
             fontSize: 20.0,
             fontWeight: FontWeight.w600,
           ),
@@ -39,7 +39,7 @@ class ArchiveScreen extends StatelessWidget {
           child: Column(
             children: [
               TabBar(
-                labelColor: textPrimary,
+                labelColor: colorScheme.onPrimary,
                 labelStyle: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -51,7 +51,7 @@ class ArchiveScreen extends StatelessWidget {
                 indicator: const UnderlineTabIndicator(
                   borderSide: BorderSide(width: 2),
                 ),
-                indicatorColor: textPrimary,
+                indicatorColor: colorScheme.onPrimary,
                 indicatorSize: TabBarIndicatorSize.tab,
                 splashFactory: NoSplash.splashFactory,
                 tabs: [

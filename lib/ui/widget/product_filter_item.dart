@@ -18,6 +18,7 @@ class ProductFilterItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     var localIsSelected = isSelected;
 
     return GestureDetector(
@@ -27,10 +28,10 @@ class ProductFilterItem extends ConsumerWidget {
             .toggleSelected(category, text, localIsSelected);
       },
       child: Card(
-        color: localIsSelected ? primary700 : white,
+        color: localIsSelected ? colorScheme.surfaceContainerHigh : colorScheme.onSurface,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: localIsSelected ? primary700 : primary300,
+            color: localIsSelected ? colorScheme.surfaceContainerHigh : colorScheme.outline,
             width: 1.0,
           ),
           borderRadius: BorderRadiusGeometry.circular(10.0),
@@ -41,8 +42,8 @@ class ProductFilterItem extends ConsumerWidget {
           child: Text(
             text,
             style: TextStyle(
-              color: localIsSelected ? white : black,
-              fontSize: 12.0,
+              color: localIsSelected ? colorScheme.onSurface : colorScheme.onSecondary,
+              fontSize: 14.0,
               fontWeight: localIsSelected ? FontWeight.w600 : FontWeight.w400,
             ),
           ),

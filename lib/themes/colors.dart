@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 
-const primary100 = Color(0xffE9F0F6);
-const primary200 = Color(0xffDCE9F2);
-const primary300 = Color(0xffD0DEED);
-const primary400 = Color(0xffA8DFF5);
-const primary500 = Color(0xff72CEF0);
-const primary600 = Color(0xff3DB8E8);
-const primary700 = Color(0xff0E9FD5);
-const primary800 = Color(0xff0880A8);
-const primary900 = Color(0xff06607F);
-const aiButtonBg = Color(0xD906607F);
+// Color Palette
+const transparent = Colors.transparent;
+const white = Colors.white;
+const lightGray = Color(0xFFF4F4F4);
+const gray = Color(0xFFD9D9D9);
+const ashGray = Color(0xFF6D6D6D);
+const darkGray = Color(0xFF2C2C2C);
+const offBlack = Color(0xFF121212);
+const black = Colors.black;
 
-const textPrimary = Color(0xff02303F);
-const textSecondary = Color(0xff838FA1);
-const textTertiary = Color(0xffE9F0F6);
-const black = Color(0xff000000);
-const white = Color(0xffffffff);
 
-const likedColor = Color(0xffFF0059);
-const unlikedColor = Color(0xffffffff);
+const lightGrayishBlue = Color(0xFFE9F0F6);
+const grayishBlue = Color(0xFF838FA1);
+const darkGrayishBlue = Color(0xFF27333C);
+const paleBlue = Color(0xFFD0DEED);
+const paleBlue70 = Color(0xB2D0DEED);
+const lightSkyBlue = Color(0xFF72CEF0);
+const pastelSkyBlue55 = Color(0x8CA8DFF5);
+const pastelSkyBlue85 = Color(0xD9A8DFF5);
+const skyBlue = Color(0xFF0E9FD5);
+const blueHeist = Color(0xFF06607F);
+const blueHeist85 = Color(0xD906607F);
+const navy = Color(0xFF02303F);
 
-const robotPrimary = Color(0xff7BF2DB);
-const robotEyes = Color(0xff06607F);
-const robotBulb = Color(0xffFFC800);
-const robotEar = Color(0xffFF7A59);
-const robotLine = Color(0xff858683);
+
+const neonPink = Color(0xFFFF0059);
+const yellow = Color(0xFFFFC800);

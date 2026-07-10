@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:finbrain/themes/color_theme.dart';
 import 'package:finbrain/ui/screen/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,9 +24,17 @@ class FinBrain extends StatelessWidget {
         title: "FinBrain",
         theme: ThemeData(
           textTheme: GoogleFonts.notoSansKrTextTheme(),
+          colorScheme: lightTheme.colorScheme,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
         ),
+        darkTheme: ThemeData(
+          textTheme: GoogleFonts.notoSansKrTextTheme(),
+          colorScheme: darkTheme.colorScheme,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        themeMode: ThemeMode.system,
         home: OnBoardingScreen(),
       ),
     );

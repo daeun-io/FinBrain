@@ -2,6 +2,7 @@ import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/viewModel/archive_viewmodel.dart';
 import 'package:finbrain/ui/widget/archive_list.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,6 +12,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final filterCtg = [
       ProductCategory.deposit,
       ProductCategory.installment,
@@ -30,7 +32,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
     return ((category == ArchiveCategory.comparison) ? compTexts : summaries)
         .when(
           data: (data) => Container(
-            color: Color(0xFFF4F4F4),
+            color: colorScheme.primary,
             padding: EdgeInsets.only(
               top: 24.0,
               left: 20.0,
@@ -85,9 +87,9 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                                     ? compTextfilters
                                     : summariesFilters)
                                 .contains(e),
-                        selectedColor: primary700,
-                        backgroundColor: white,
-                        checkmarkColor: white,
+                        selectedColor: colorScheme.surfaceContainerHigh,
+                        backgroundColor: colorScheme.secondary,
+                        checkmarkColor: colorScheme.onSurface,
                         label: Text(
                           switch (e) {
                             ProductCategory.deposit => "정기예금",
@@ -138,12 +140,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
             print("stack trace: $stackTrace");
             return Center(child: Text("오류가 발생했습니다!\n다시 시도해주세요"));
           },
-          loading: () => const Center(
-            child: CircularProgressIndicator(
-              color: primary400,
-              backgroundColor: Color(0xFFF4F4F4),
-            ),
-          ),
+          loading: () => const CustomProgressIndicator()
         );
   }
 }

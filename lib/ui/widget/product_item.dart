@@ -7,7 +7,6 @@ import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +31,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final sortFilter = ref.watch(
       sortOrFilterTextViewModelProvider(widget.product.commonInfo.category),
     );
@@ -76,7 +76,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          color: isSelected ? primary300 : primary100,
+          color: isSelected ? colorScheme.surfaceContainerLow : colorScheme.secondary,
         ),
         child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -89,21 +89,21 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     Text(
                       widget.product.commonInfo.productName!.replaceAll(
                         r'\\n',
-                        " ",
+                        "\n",
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w600,
-                        color: textPrimary,
+                        color: colorScheme.onPrimary,
                       ),
                     ),
                     const SizedBox(height: 6.0),
                     Text(
                       widget.product.commonInfo.companyName!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.w400,
-                        color: textSecondary,
+                        color: colorScheme.onTertiary,
                       ),
                     ),
                   ],
@@ -115,10 +115,10 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                 children: [
                   Text(
                     sortCriteria.split('(').first,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12.0,
                       fontWeight: FontWeight.w400,
-                      color: textSecondary,
+                      color: colorScheme.onTertiary,
                     ),
                   ),
                   const SizedBox(height: 6.0),
@@ -217,10 +217,10 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                               .toString(),
                       },
                     },
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w600,
-                      color: textPrimary,
+                      color: colorScheme.onPrimary,
                     ),
                   ),
                 ],
@@ -233,16 +233,16 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                       .toggleLiked(widget.product);
                 },
                 icon: isSelected
-                    ? const Icon(
+                    ? Icon(
                         Icons.check_circle,
-                        color: primary700,
+                        color: colorScheme.surfaceContainerHigh,
                         size: 32.0,
                       )
                     : widget.product.commonInfo.isLiked
-                    ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
-                    : const Icon(
+                    ? Icon(Icons.favorite, color: colorScheme.onPrimaryFixed, size: 32.0)
+                    : Icon(
                         Icons.favorite,
-                        color: unlikedColor,
+                        color: colorScheme.onPrimaryFixedVariant,
                         size: 32.0,
                       ),
               ),
