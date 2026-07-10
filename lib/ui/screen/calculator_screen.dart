@@ -85,13 +85,20 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           }
         }
       } else {
-        String text = _moneyController.text.trim();
+        String text = _periodController.text.trim();
         String digits = text.replaceAll(RegExp(r'[^0-9]'), '');
-        _moneyController.text = digits;
+        _periodController.text = digits;
       }
     });
   }
-
+  @override
+  void dispose() {
+    _moneyController.dispose();
+    _moneyFocusNode.dispose();
+    _periodController.dispose();
+    _periodFocusNode.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -122,7 +122,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         });
       }
     });
-    ref.listen(isaJoinStatusViewModelProvider, (prev, next) {
+    ref.listen(isaManagementStatusViewModelProvider, (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {

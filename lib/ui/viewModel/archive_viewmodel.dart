@@ -43,7 +43,7 @@ class AiSummariesViewmodel extends _$AiSummariesViewmodel {
         return <AiRecord>[];
       }
       final summaries = await summaryRepository.getAllSummaries(user.uid);
-      summaries.sort((a, b) => b.isPinned ? 1 : -1);
+      summaries.sort((a, b) => (b.isPinned ? 1 : -1).compareTo(a.isPinned ? 1 : -1));
       return summaries;
     } catch (e) {
       print("Error occured in building vm, $e");

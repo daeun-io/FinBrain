@@ -37,11 +37,11 @@ class ProductViewmodel extends _$ProductViewmodel {
       return;
     }
 
-    if (ctg == ProductCategory.isaMp &&
-        ctg == ProductCategory.isaJoin &&
-        ctg == ProductCategory.isaManagement &&
+    if (ctg == ProductCategory.isaMp ||
+        ctg == ProductCategory.isaJoin ||
+        ctg == ProductCategory.isaManagement ||
         ctg == ProductCategory.liked) {
-      state = AsyncData((0, <FinancialProduct>[]));
+      return;
     }
 
     final filters =
