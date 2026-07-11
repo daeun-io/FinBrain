@@ -39,6 +39,7 @@ class LikedScreen extends ConsumerWidget {
           const SizedBox(height: 32.0),
           SortOrFilterText(
             category: ProductCategory.liked,
+            baseYear: "",
             onSortCriteriaChanged: (criteria) {
               ref
                   .read(likedProductViewmodelProvider.notifier)

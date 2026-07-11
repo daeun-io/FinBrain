@@ -1,5 +1,6 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
@@ -88,6 +89,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
     final products = ref.watch(
       productViewmodelProvider(ProductCategory.isaMp, "$_cPage"),
     );
+    final filters = ref.watch(filtersViewmodelProvider(ProductCategory.isaMp));
 
     // Move to center after fetching data
     ref.listen(productViewmodelProvider(ProductCategory.isaMp, "$_cPage"), (
@@ -102,6 +104,14 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         });
       }
     });
+
+    final baseYear =
+        filters
+            .whenData(
+              (data) => data["기준년도"]!.firstWhere((e) => e.$2 == true).$1,
+            )
+            .value ??
+        "";
 
     return Column(
       children: [
@@ -126,6 +136,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
             Expanded(
               child: SortOrFilterText(
                 category: ProductCategory.isaMp,
+                baseYear: baseYear,
                 onSortCriteriaChanged: (criteria) {
                   ref
                       .read(

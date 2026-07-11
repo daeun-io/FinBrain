@@ -136,6 +136,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
               Expanded(
                 child: SortOrFilterText(
                   category: widget.category,
+                  baseYear: "",
                   onSortCriteriaChanged: (criteria) {
                     ref
                         .read(

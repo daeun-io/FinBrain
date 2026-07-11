@@ -7,10 +7,12 @@ class SortOrFilterText extends ConsumerStatefulWidget {
   const SortOrFilterText({
     super.key,
     required this.category,
+    required this.baseYear,
     required this.onSortCriteriaChanged,
   });
 
   final ProductCategory category;
+  final String baseYear;
   final Function(String) onSortCriteriaChanged;
   @override
   ConsumerState<SortOrFilterText> createState() => _FilterTextState();
@@ -32,7 +34,12 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
     List<String> selectedOptions = (widget.category == ProductCategory.liked)
         ? filter.$1 as List<String>
         : [];
-    String text = selectedOption;
+    String text =
+        (widget.category == ProductCategory.isaJoin ||
+            widget.category == ProductCategory.isaManagement ||
+            widget.category == ProductCategory.isaMp)
+        ? "${widget.baseYear}년, $selectedOption"
+        : selectedOption;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -42,7 +49,9 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)
+            style: textTheme.bodyMedium!.copyWith(
+              color: colorScheme.onSecondary,
+            ),
           ),
         ),
         IconButton(
@@ -66,7 +75,9 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                           children: [
                             Text(
                               filter.$2[index],
-                              style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: colorScheme.onSecondary,
+                              ),
                             ),
                             const Spacer(),
                             if (widget.category == ProductCategory.liked)
@@ -124,7 +135,11 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                     selectedOption = filter.$2[index];
                                   });
                                   setState(() {
-                                    text = filter.$2[index];
+                                    if(widget.category == ProductCategory.isaJoin || widget.category == ProductCategory.isaManagement || widget.category == ProductCategory.isaMp){
+                                      text = "${widget.baseYear}년, ${filter.$2[index]}";
+                                    } else {
+                                      text = filter.$2[index];
+                                    }
                                     if (selectedOption.isNotEmpty) {
                                       widget.onSortCriteriaChanged(
                                         selectedOption,
@@ -168,7 +183,9 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                             (widget.category == ProductCategory.liked)
                                 ? "선택 상품"
                                 : "정렬 기준",
-                            style: textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary)
+                            style: textTheme.headlineMedium!.copyWith(
+                              color: colorScheme.onPrimary,
+                            ),
                           ),
                           const SizedBox(height: 28.0),
                           Expanded(child: optionView),
@@ -183,7 +200,11 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
           visualDensity: VisualDensity.compact,
-          icon: Icon(Icons.keyboard_arrow_down, size: 24, color: colorScheme.onSecondary,),
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            size: 24,
+            color: colorScheme.onSecondary,
+          ),
         ),
       ],
     );
