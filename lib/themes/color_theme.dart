@@ -63,7 +63,7 @@ final ThemeData darkTheme = ThemeData(
     outlineVariant: skyBlue,
     // liked
     onPrimaryFixed: neonPink,
-    onPrimaryFixedVariant: white,
+    onPrimaryFixedVariant: paleBlue,
     // pinned
     onSecondaryFixed: yellow,
     onSecondaryFixedVariant: grayishBlue,

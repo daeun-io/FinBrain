@@ -13,7 +13,7 @@ class OnBoardingScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      color: Colors.white,
+      color: colorScheme.primary,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
