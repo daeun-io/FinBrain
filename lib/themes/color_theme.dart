@@ -8,6 +8,7 @@ final ThemeData lightTheme = ThemeData(
     secondary: lightGray,
     tertiary: lightGrayishBlue,
     surface: transparent,
+    // dialog background
     surfaceContainer: white,
     // text
     onPrimary: navy,
@@ -33,10 +34,10 @@ final ThemeData lightTheme = ThemeData(
     // other button
     surfaceContainerHighest: blueHeist,
     // gradient
-    surfaceContainerLowest: paleBlue70,
-    surfaceContainerLow: pastelSkyBlue85,
-    // indicator
-    shadow: gray,
+    surfaceContainerLowest: paleBlue55,
+    surfaceContainerLow: pastelSkyBlue55,
+    // indicator/snackbar background
+    scrim: gray,
     // slider
     surfaceBright: paleBlue,
   ),
@@ -49,6 +50,7 @@ final ThemeData darkTheme = ThemeData(
     secondary: darkGray,
     tertiary: darkGrayishBlue,
     surface: transparent,
+    // dialog background
     surfaceContainer: darkGray,
     // text
     onPrimary: paleBlue,
@@ -74,10 +76,10 @@ final ThemeData darkTheme = ThemeData(
     // other button
     surfaceContainerHighest: lightGrayishBlue,
     // gradient
-    surfaceContainerLowest: paleBlue70,
+    surfaceContainerLowest: paleBlue55,
     surfaceContainerLow: pastelSkyBlue55,
-    // indicator
-    shadow: ashGray,
+    // indicator/snackbar background
+    scrim: ashGray,
     // slider
     surfaceBright: darkGrayishBlue
   ),

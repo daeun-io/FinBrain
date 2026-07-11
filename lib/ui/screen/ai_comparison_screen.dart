@@ -3,6 +3,7 @@ import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,17 +19,19 @@ class AiComparisonScreen extends ConsumerStatefulWidget {
 
 class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   late List<String> items;
+  late String request;
 
   @override
   void initState() {
     super.initState();
     items = widget.tag.split("-");
     items.remove("compare");
+    request = "$items들의 공통점과 차이점을 바탕으로 표 없이 비교 분석해줘";
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(aiComparisonScreenViewmodelProvider(widget.tag).notifier)
-          .askComparsion("$items를 비교 분석하고 내용을 표로 정리해줘");
+          .askComparsion(request);
     });
   }
 
@@ -72,16 +75,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                     const SizedBox(height: 16.0),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        text,
-                        style: TextStyle(
-                          color: colorScheme.onSecondary,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+                      child: MarkdownTextRenderer(str: text),
                     ),
-                    const SizedBox(height: 24.0),
                     Row(
                       children: [
                         TextButton(
@@ -92,7 +87,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                     widget.tag,
                                   ).notifier,
                                 )
-                                .askComparsion("$items를 비교 분석하고 내용을 표로 정리해줘");
+                                .askComparsion(request);
                           },
                           style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(
@@ -138,8 +133,9 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight
                               ),
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
-                            padding: const EdgeInsets.all(4.0),
+                            padding: const EdgeInsets.all(12.0),
                             child: Text(
                               "이 분석 저장하기",
                               style: TextStyle(
@@ -152,6 +148,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 16.0,),
                   ],
                 ),
               ),

@@ -51,7 +51,7 @@ class ProductDialog extends ConsumerWidget {
                             .resetChanges();
                       },
                       style: TextButton.styleFrom(
-                        side: BorderSide(color: colorScheme.outline, width: 1.0),
+                        side: BorderSide(color: colorScheme.onTertiary, width: 1.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadiusGeometry.circular(0.0),
                         ),
@@ -150,7 +150,7 @@ class ProductDialog extends ConsumerWidget {
                           backgroundColor: colorScheme.tertiary,
                           side: BorderSide(
                             color: colorScheme.outline,
-                            width: 1
+                            width: 1.0
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadiusGeometry.circular(10.0),

@@ -112,16 +112,13 @@ class MortageAndRentLoan extends FinancialProduct {
     };
   }
 
-  List<double> returnRates() {
+  List<double?> returnRates() {
     final min =
-        options.map((e) => (e).lendRateMin).whereType<double>().minOrNull ??
-        double.infinity;
+        options.map((e) => (e).lendRateMin).whereType<double>().minOrNull;
     final max =
-        options.map((e) => (e).lendRateMax).whereType<double>().minOrNull ??
-        double.infinity;
+        options.map((e) => (e).lendRateMax).whereType<double>().minOrNull;
     final avg =
-        options.map((e) => (e).lendRateAvg).whereType<double>().minOrNull ??
-        double.infinity;
+        options.map((e) => (e).lendRateAvg).whereType<double>().minOrNull;
     return [min, avg, max];
   }
 }

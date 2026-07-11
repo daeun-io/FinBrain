@@ -54,11 +54,7 @@ dependencies:
   cloud_firestore: ^6.6.0
   integration_test:
     sdk: flutter
-  barcode_widget: ^2.0.4
-  firebase_messaging: ^16.4.1
-  flutter_facebook_auth: ^7.1.7
-  flutter_signin_button: ^2.1.1
-  flutter_local_notifications: ^22.0.1
+  intl: ^0.20.3
 
 dev_dependencies:
   flutter_test:

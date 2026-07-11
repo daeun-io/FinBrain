@@ -2,8 +2,8 @@ import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/viewModel/archive_viewmodel.dart';
-import 'package:finbrain/ui/widget/archive_list.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -208,7 +208,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                   ),
                   children: item.value.map((chat) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       child: Column(
                         children: [
                           Align(
@@ -225,14 +225,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                           const SizedBox(height: 8.0),
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(
-                              chat.text,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14.0,
-                                color: colorScheme.onSecondary,
-                              ),
-                            ),
+                            child: MarkdownTextRenderer(str: chat.text)
                           ),
                           const SizedBox(height: 12.0),
                         ],

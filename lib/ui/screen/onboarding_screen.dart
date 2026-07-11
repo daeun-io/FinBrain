@@ -61,7 +61,7 @@ class OnBoardingScreen extends StatelessWidget {
               dotHeight: 8,
               dotWidth: 8,
               activeDotColor: colorScheme.onTertiaryFixed,
-              dotColor: colorScheme.shadow,
+              dotColor: colorScheme.scrim,
             ),
           ),
           const SizedBox(height: 40),

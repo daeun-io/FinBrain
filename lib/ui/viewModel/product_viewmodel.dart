@@ -238,17 +238,33 @@ class ProductViewmodel extends _$ProductViewmodel {
         state = AsyncValue.data((
           maxPage,
           products..sort(switch (criteria) {
-            "최저 금리(낮은 순)" =>
-              (a, b) => (a as MortageAndRentLoan).returnRates()[0].compareTo(
-                (b as MortageAndRentLoan).returnRates()[0],
-              ),
-            "최고 금리(낮은 순)" =>
-              (a, b) => (a as MortageAndRentLoan).returnRates()[2].compareTo(
-                (b as MortageAndRentLoan).returnRates()[2],
-              ),
-            _ => (a, b) => (a as MortageAndRentLoan).returnRates()[1].compareTo(
-              (b as MortageAndRentLoan).returnRates()[1],
-            ),
+            "최저 금리(낮은 순)" => (a, b) {
+              if ((a as MortageAndRentLoan).returnRates()[0] == null) {
+                return 1;
+              } else if ((b as MortageAndRentLoan).returnRates()[0] == null) {
+                return -1;
+              } else {
+                return a.returnRates()[0]!.compareTo(b.returnRates()[0]!);
+              }
+            },
+            "최고 금리(낮은 순)" => (a, b) {
+              if ((a as MortageAndRentLoan).returnRates()[2] == null) {
+                return 1;
+              } else if ((b as MortageAndRentLoan).returnRates()[2] == null) {
+                return -1;
+              } else {
+                return a.returnRates()[2]!.compareTo(b.returnRates()[2]!);
+              }
+            },
+            _ => (a, b) {
+              if ((a as MortageAndRentLoan).returnRates()[1] == null) {
+                return 1;
+              } else if ((b as MortageAndRentLoan).returnRates()[1] == null) {
+                return -1;
+              } else {
+                return a.returnRates()[1]!.compareTo(b.returnRates()[1]!);
+              }
+            },
           }),
         ));
       case ProductCategory.credit:
