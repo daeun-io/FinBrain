@@ -1,3 +1,4 @@
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/calculator_screen_viewmodel.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
@@ -190,7 +191,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                               duration: const Duration(seconds: 3),
                               content: Text(
                                 "항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요",
-                                style: TextStyle(color: colorScheme.onSecondary),
+                                style: bodyRgSm.copyWith(color: colorScheme.onSecondary),
                               ),
                             ),
                           );
@@ -205,7 +206,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                               duration: const Duration(seconds: 3),
                               content: Text(
                                 "입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요",
-                                style: TextStyle(color: colorScheme.onSecondary),
+                                style: bodyRgSm.copyWith(color: colorScheme.onSecondary),
                               ),
                             ),
                           );
@@ -328,22 +329,14 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   Widget text(String text, Color color) {
     return Text(
       text,
-      style: TextStyle(
-        fontSize: 18.0,
-        fontWeight: FontWeight.w400,
-        color: color,
-      ),
+      style: bodyRgLg.copyWith(color: color),
     );
   }
 
   Widget captionText(String text, Color color) {
     return Text(
       text,
-      style: TextStyle(
-        fontSize: 14.0,
-        fontWeight: FontWeight.w400,
-        color: color,
-      ),
+      style: bodyRgSm.copyWith(color: color)
     );
   }
 
@@ -628,11 +621,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           children: [
             Text(
               (rates.firstOrNull ?? 0.0).toString(),
-              style: const TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                color: black,
-              ),
+              style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
               textAlign: TextAlign.left,
             ),
             Expanded(
@@ -661,11 +650,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             ),
             Text(
               (rates.lastOrNull ?? 20.0).toString(),
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                color: colorScheme.onSecondary,
-              ),
+              style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
               textAlign: TextAlign.right,
             ),
           ],

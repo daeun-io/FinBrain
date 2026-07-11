@@ -1,4 +1,4 @@
-import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
@@ -67,7 +67,6 @@ class OnBoardingScreen extends StatelessWidget {
           const SizedBox(height: 40),
           GestureDetector(
             onTap: () {
-              print("구글 로그인 클릭됨!");
               _signInWithGoogle(context);
             },
             behavior: HitTestBehavior.opaque,
@@ -78,12 +77,10 @@ class OnBoardingScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30.0),
               ),
               padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 32.0),
-              child: Text("FINBRAIN 시작하기", style: TextStyle(
-                color: colorScheme.onPrimary,
-                fontSize: 24.0,
-                fontWeight: FontWeight.w600,
-                decoration: TextDecoration.none
-              ),),
+              child: Text(
+                "FINBRAIN 시작하기",
+                style: headingLg.copyWith(color: colorScheme.onPrimary),
+              ),
             ),
           ),
           const SizedBox(height: 60),
@@ -93,7 +90,7 @@ class OnBoardingScreen extends StatelessWidget {
   }
 
   void _signInWithGoogle(BuildContext context) async {
-    if(!context.mounted) return;
+    if (!context.mounted) return;
 
     final userCredential = await GoogleAuthService().signInWithGoogle();
 

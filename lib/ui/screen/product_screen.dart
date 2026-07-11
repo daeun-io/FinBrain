@@ -1,3 +1,4 @@
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_screen.dart';
@@ -63,14 +64,8 @@ class ProductScreen extends ConsumerWidget {
             labelColor: colorScheme.onPrimary,
             unselectedLabelColor: colorScheme.onTertiary,
             dividerColor: colorScheme.onTertiary,
-            labelStyle: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-            unselectedLabelStyle: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
+            labelStyle: bodySbMd,
+            unselectedLabelStyle: bodyRgMd,
             indicatorSize: TabBarIndicatorSize.tab,
             splashFactory: NoSplash.splashFactory,
             tabs: [

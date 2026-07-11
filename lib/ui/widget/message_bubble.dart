@@ -1,3 +1,4 @@
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/widget/ai_request.dart';
 import 'package:flutter/material.dart';
 
@@ -20,11 +21,7 @@ class MessageBubble extends StatelessWidget {
             ? AiRequest(text: text)
             : Text(
                 text,
-                style: TextStyle(
-                  color: colorScheme.onSecondary,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: bodyRgMd.copyWith(color: colorScheme.onSecondary)
               ),
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/screen/ai_comparison_screen.dart';
 import 'package:flutter/material.dart';
@@ -73,11 +73,7 @@ class AiButton extends ConsumerWidget {
             SvgPicture.asset("assets/images/ai_assist.svg"),
             Text(
               "AI 도우미",
-              style: TextStyle(
-                color: colorScheme.onSurface,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w600,
-              ),
+              style: captionSb.copyWith(color: colorScheme.onSurface)
             ),
           ],
         ),

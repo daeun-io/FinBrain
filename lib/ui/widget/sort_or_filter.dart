@@ -1,3 +1,4 @@
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +41,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: colorScheme.onSecondary,
-              fontSize: 14.0,
-              fontWeight: FontWeight.w400,
-            ),
+            style: bodyRgMd.copyWith(color: colorScheme.onSecondary)
           ),
         ),
         IconButton(
@@ -68,7 +65,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                           children: [
                             Text(
                               filter.$2[index],
-                              style: TextStyle(color: colorScheme.onSecondary,fontSize: 16.0),
+                              style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
                             ),
                             const Spacer(),
                             if (widget.category == ProductCategory.liked)
@@ -170,11 +167,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                             (widget.category == ProductCategory.liked)
                                 ? "선택 상품"
                                 : "정렬 기준",
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w600,
-                              color: colorScheme.onPrimary,
-                            ),
+                            style: headingMd.copyWith(color: colorScheme.onPrimary)
                           ),
                           const SizedBox(height: 28.0),
                           Expanded(child: optionView),

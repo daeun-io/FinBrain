@@ -1,5 +1,5 @@
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/widget/product_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -46,11 +46,7 @@ class _ProductFilterState extends State<ProductFilter> {
               const SizedBox(width: 4.0,),
               Text(
                 "필터",
-                style: TextStyle(
-                  color: colorScheme.onSurface,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: bodySbLg.copyWith(color: colorScheme.onSurface)
               ),
             ],
           ),

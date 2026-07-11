@@ -8,6 +8,7 @@ import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
@@ -16,6 +17,7 @@ import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,7 +30,12 @@ class ProductDetailScreen extends ConsumerWidget {
   final String productName;
   final bool fromLikedScreen;
 
-  void launchPrdtUrl(WidgetRef ref, BuildContext context, ColorScheme colorScheme, String companyName) {
+  void launchPrdtUrl(
+    WidgetRef ref,
+    BuildContext context,
+    ColorScheme colorScheme,
+    String companyName,
+  ) {
     ref
         .read(productDetailScreenViewmodelProvider.notifier)
         .fetchAndOpenProductUrl(companyName, productName)
@@ -39,7 +46,10 @@ class ProductDetailScreen extends ConsumerWidget {
               SnackBar(
                 backgroundColor: colorScheme.scrim,
                 duration: Duration(seconds: 3),
-                content: Text("오류: 외부 url으로의 이동이 실패했습니다, 다시 시도해주세요", style: TextStyle(color: colorScheme.onSecondary),),
+                content: Text(
+                  "오류: 외부 url으로의 이동이 실패했습니다, 다시 시도해주세요",
+                  style: bodyRgSm.copyWith(color: colorScheme.onSecondary),
+                ),
               ),
             );
           }
@@ -91,11 +101,7 @@ class ProductDetailScreen extends ConsumerWidget {
             ),
             title: Text(
               productName.replaceAll(r'\\n', ""),
-              style: TextStyle(
-                color: colorScheme.onPrimary,
-                fontSize: 20.0,
-                fontWeight: FontWeight.w600,
-              ),
+              style: headingMd.copyWith(color: colorScheme.onPrimary),
             ),
             titleSpacing: -6.0,
             actions: [
@@ -186,10 +192,8 @@ class ProductDetailScreen extends ConsumerWidget {
                             const SizedBox(width: 4.0),
                             Text(
                               "공식 홈페이지로 이동",
-                              style: TextStyle(
+                              style: bodySbLg.copyWith(
                                 color: colorScheme.onSecondary,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -266,10 +270,8 @@ class ProductDetailScreen extends ConsumerWidget {
                                   const SizedBox(width: 4.0),
                                   Text(
                                     "금융 계산기",
-                                    style: TextStyle(
+                                    style: bodySbLg.copyWith(
                                       color: colorScheme.onSecondary,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
@@ -305,10 +307,8 @@ class ProductDetailScreen extends ConsumerWidget {
                                   const SizedBox(width: 4.0),
                                   Text(
                                     "공식 홈페이지로 이동",
-                                    style: TextStyle(
+                                    style: bodySbLg.copyWith(
                                       color: colorScheme.onSecondary,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
@@ -324,18 +324,7 @@ class ProductDetailScreen extends ConsumerWidget {
           ),
         );
       },
-      error: (err, stack) => Expanded(
-        child: Center(
-          child: Text(
-            "오류가 발생했습니다. 다시 시도해주세요",
-            style: TextStyle(
-              color: colorScheme.onSecondary,
-              fontSize: 14.0,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-      ),
+      error: (err, stack) => const ShowingErrorWidget(),
       loading: () => const CustomProgressIndicator(),
     );
   }
@@ -343,11 +332,7 @@ class ProductDetailScreen extends ConsumerWidget {
   Widget textFrame(String text, Color color) {
     return Text(
       text,
-      style: TextStyle(
-        color: color,
-        fontSize: 14.0,
-        fontWeight: FontWeight.w400,
-      ),
+      style: bodyRgMd.copyWith(color: color),
     );
   }
 
@@ -366,11 +351,7 @@ class ProductDetailScreen extends ConsumerWidget {
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          color: color,
-          fontSize: 14.0,
-          fontWeight: FontWeight.w400,
-        ),
+        style: bodyRgMd.copyWith(color: color),
       ),
     );
   }
@@ -408,7 +389,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       tableCellFrame("900점 초과", colorScheme.onSecondary),
                       tableCellFrame(
-                        (option.gradeOver900 == null) ? "미제공" : option.gradeOver900.toString(),
+                        (option.gradeOver900 == null)
+                            ? "미제공"
+                            : option.gradeOver900.toString(),
                         colorScheme.onSecondary,
                       ),
                     ],
@@ -417,7 +400,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       tableCellFrame("801~900점", colorScheme.onSecondary),
                       tableCellFrame(
-                        (option.grade801900 == null) ? "미제공" : option.grade801900.toString(),
+                        (option.grade801900 == null)
+                            ? "미제공"
+                            : option.grade801900.toString(),
                         colorScheme.onSecondary,
                       ),
                     ],
@@ -426,7 +411,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       tableCellFrame("701~800점", colorScheme.onSecondary),
                       tableCellFrame(
-                        (option.grade701800 == null)? "미제공": option.grade701800.toString(),
+                        (option.grade701800 == null)
+                            ? "미제공"
+                            : option.grade701800.toString(),
                         colorScheme.onSecondary,
                       ),
                     ],
@@ -435,7 +422,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       tableCellFrame("601~700점", colorScheme.onSecondary),
                       tableCellFrame(
-                        (option.grade601700 == null) ? "미제공" : option.grade601700.toString(),
+                        (option.grade601700 == null)
+                            ? "미제공"
+                            : option.grade601700.toString(),
                         colorScheme.onSecondary,
                       ),
                     ],
@@ -444,7 +433,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       tableCellFrame("501~600점", colorScheme.onSecondary),
                       tableCellFrame(
-                        (option.grade501600 == null) ? "미제공" : option.grade501600.toString(),
+                        (option.grade501600 == null)
+                            ? "미제공"
+                            : option.grade501600.toString(),
                         colorScheme.onSecondary,
                       ),
                     ],
@@ -453,7 +444,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       tableCellFrame("401~500점", colorScheme.onSecondary),
                       tableCellFrame(
-                        (option.grade401500 == null) ? "미제공" : option.grade401500.toString(),
+                        (option.grade401500 == null)
+                            ? "미제공"
+                            : option.grade401500.toString(),
                         colorScheme.onSecondary,
                       ),
                     ],
@@ -462,7 +455,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       tableCellFrame("301~400점", colorScheme.onSecondary),
                       tableCellFrame(
-                        (option.grade301400 == null) ? "미제공" : option.grade301400.toString(),
+                        (option.grade301400 == null)
+                            ? "미제공"
+                            : option.grade301400.toString(),
                         colorScheme.onSecondary,
                       ),
                     ],
@@ -471,7 +466,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       tableCellFrame("300점 이하", colorScheme.onSecondary),
                       tableCellFrame(
-                        (option.gradeUnder300 == null) ? "미제공" : option.gradeUnder300.toString(),
+                        (option.gradeUnder300 == null)
+                            ? "미제공"
+                            : option.gradeUnder300.toString(),
                         colorScheme.onSecondary,
                       ),
                     ],
@@ -480,7 +477,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     children: [
                       tableCellFrame("평균 금리", colorScheme.onSecondary),
                       tableCellFrame(
-                        (option.averageGrade == null) ? "미제공" : option.averageGrade.toString(),
+                        (option.averageGrade == null)
+                            ? "미제공"
+                            : option.averageGrade.toString(),
                         colorScheme.onSecondary,
                       ),
                     ],
@@ -512,7 +511,9 @@ class ProductDetailScreen extends ConsumerWidget {
                 children: [
                   tableCellFrame(option.term!, colorScheme.onSecondary),
                   tableCellFrame(
-                    (option.benefitRate == null) ? "미제공" : option.benefitRate.toString(),
+                    (option.benefitRate == null)
+                        ? "미제공"
+                        : option.benefitRate.toString(),
                     colorScheme.onSecondary,
                   ),
                 ],
@@ -568,19 +569,25 @@ class ProductDetailScreen extends ConsumerWidget {
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.saveTerm == null) ? "미제공" : option.saveTerm.toString(),
+                        (option.saveTerm == null)
+                            ? "미제공"
+                            : option.saveTerm.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.intRate == null) ? "미제공" : option.intRate.toString(),
+                        (option.intRate == null)
+                            ? "미제공"
+                            : option.intRate.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.maxIntRate == null) ? "미제공" : option.maxIntRate.toString(),
+                        (option.maxIntRate == null)
+                            ? "미제공"
+                            : option.maxIntRate.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
@@ -605,19 +612,25 @@ class ProductDetailScreen extends ConsumerWidget {
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.saveTerm == null) ? "미제공" : option.saveTerm.toString(),
+                        (option.saveTerm == null)
+                            ? "미제공"
+                            : option.saveTerm.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.intRate == null) ? "미제공" : option.intRate.toString(),
+                        (option.intRate == null)
+                            ? "미제공"
+                            : option.intRate.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.maxIntRate == null) ? "미제공" : option.maxIntRate.toString(),
+                        (option.maxIntRate == null)
+                            ? "미제공"
+                            : option.maxIntRate.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
@@ -647,19 +660,25 @@ class ProductDetailScreen extends ConsumerWidget {
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.lendRateMin == null) ? "미제공" : option.lendRateMin.toString(),
+                        (option.lendRateMin == null)
+                            ? "미제공"
+                            : option.lendRateMin.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.lendRateMax == null) ? "미제공" : option.lendRateMax.toString(),
+                        (option.lendRateMax == null)
+                            ? "미제공"
+                            : option.lendRateMax.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.lendRateAvg == null) ? "미제공" : option.lendRateAvg.toString(),
+                        (option.lendRateAvg == null)
+                            ? "미제공"
+                            : option.lendRateAvg.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
@@ -683,19 +702,25 @@ class ProductDetailScreen extends ConsumerWidget {
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.lendRateMin == null) ? "미제공" : option.lendRateMin.toString(),
+                        (option.lendRateMin == null)
+                            ? "미제공"
+                            : option.lendRateMin.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.lendRateMax == null) ? "미제공" : option.lendRateMax.toString(),
+                        (option.lendRateMax == null)
+                            ? "미제공"
+                            : option.lendRateMax.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
                     DataCell(
                       dataTableCellText(
-                        (option.lendRateAvg == null) ? "미제공" : option.lendRateAvg.toString(),
+                        (option.lendRateAvg == null)
+                            ? "미제공"
+                            : option.lendRateAvg.toString(),
                         colorScheme.onSecondary,
                       ),
                     ),
@@ -714,11 +739,7 @@ class ProductDetailScreen extends ConsumerWidget {
     return [
       Text(
         "상품 안내",
-        style: TextStyle(
-          color: colorScheme.onPrimary,
-          fontSize: 16.0,
-          fontWeight: FontWeight.w600,
-        ),
+        style: bodySbLg.copyWith(color: colorScheme.onPrimary),
       ),
       Divider(thickness: 1, color: colorScheme.onSecondary),
       textFrame(
@@ -798,18 +819,14 @@ class ProductDetailScreen extends ConsumerWidget {
           ProductCategory.isaMp => "수익률",
           _ => "상품 세부사항",
         },
-        style: TextStyle(
-          color: colorScheme.onPrimary,
-          fontSize: 16.0,
-          fontWeight: FontWeight.w600,
-        ),
+        style: bodySbLg.copyWith(color: colorScheme.onPrimary),
       ),
       Divider(thickness: 1, color: colorScheme.onSecondary),
       const SizedBox(height: 14.0),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
         textFrame("금리", colorScheme.onSecondary),
-        const SizedBox(height: 14.0,),
+        const SizedBox(height: 14.0),
         dataTableFrame(
           category,
           (category == ProductCategory.deposit)
@@ -912,11 +929,11 @@ class ProductDetailScreen extends ConsumerWidget {
     ];
   }
 
-  String replace(String text){
+  String replace(String text) {
     return text.replaceAll(r'\\n', "\n");
   }
 
-  String addSlash(String text){
-    return "${text.substring(0,4)}/${text.substring(4,6)}/${text.substring(6,8)}";
-  } 
+  String addSlash(String text) {
+    return "${text.substring(0, 4)}/${text.substring(4, 6)}/${text.substring(6, 8)}";
+  }
 }

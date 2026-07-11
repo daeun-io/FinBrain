@@ -1,6 +1,7 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewModel/archive_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
@@ -107,16 +108,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                                       ? compTextfilters
                                       : summariesFilters)
                                   .contains(e))
-                              ? const TextStyle(
-                                  color: white,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w600,
-                                )
-                              : const TextStyle(
-                                  color: black,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              ? bodyRgMd.copyWith(color: colorScheme.onSurface)
+                              : bodyRgMd.copyWith(color: colorScheme.onSecondary)
                         ),
                       );
                     }).toList(),
@@ -200,11 +193,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                     (category == ArchiveCategory.summary)
                         ? item.key
                         : item.key.substring(8).replaceAll("-", " vs "),
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: colorScheme.onSecondary,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
                   ),
                   children: item.value.map((chat) {
                     return Padding(
@@ -215,11 +204,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                             alignment: Alignment.center,
                             child: Text(
                               chat.createdAt.toIso8601String().split("T").first,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14.0,
-                                color: colorScheme.onTertiary,
-                              ),
+                              style: bodyRgSm.copyWith(color: colorScheme.onTertiary)
                             ),
                           ),
                           const SizedBox(height: 8.0),

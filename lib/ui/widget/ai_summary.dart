@@ -1,4 +1,5 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
 
@@ -46,11 +47,7 @@ class AiSummary extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "지난 대화 요약",
-                      style: TextStyle(
-                        color: colorScheme.onSecondary,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: bodySbLg.copyWith(color: colorScheme.onSecondary),
                     ),
                   ),
                   const SizedBox(height: 12.0),

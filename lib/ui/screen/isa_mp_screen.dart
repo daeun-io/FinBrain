@@ -1,6 +1,7 @@
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
@@ -147,18 +148,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
               ),
             );
           },
-          error: (err, stack) => Expanded(
-            child: Center(
-              child: Text(
-                "오류가 발생했습니다. 다시 시도해주세요",
-                style: TextStyle(
-                  color: colorScheme.onSecondary,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ),
+          error: (err, stack) => const ShowingErrorWidget(),
           loading: () => const CustomProgressIndicator(),
         ),
       ],

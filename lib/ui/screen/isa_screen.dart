@@ -1,3 +1,4 @@
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
@@ -59,16 +60,8 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
               child: TabBar(
                 controller: _controller,
                 padding: EdgeInsets.zero,
-                labelStyle: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface,
-                ),
-                unselectedLabelStyle: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: colorScheme.onTertiary,
-                ),
+                labelStyle: bodySbMd.copyWith(color: colorScheme.onSurface),
+                unselectedLabelStyle: bodyRgMd.copyWith(color: colorScheme.onTertiary),
                 indicator: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   color: colorScheme.surfaceContainerHigh,
@@ -80,7 +73,7 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
                   Container(
                     alignment: Alignment.center,
                     height: 40,
-                    child: const Text("업권별 가입 현황"),
+                    child: const Text("가입 현황"),
                   ),
                   Container(
                     alignment: Alignment.center,

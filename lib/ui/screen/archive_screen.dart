@@ -1,4 +1,5 @@
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/screen/archive_tabview_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -26,11 +27,7 @@ class ArchiveScreen extends StatelessWidget {
         ),
         title: Text(
           "아카이브",
-          style: TextStyle(
-            color: colorScheme.onPrimary,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w600,
-          ),
+          style: headingMd.copyWith(color: colorScheme.onPrimary)
         ),
         titleSpacing: -6.0,
       ),
@@ -45,14 +42,8 @@ class ArchiveScreen extends StatelessWidget {
                 labelColor: colorScheme.onPrimary,
                 unselectedLabelColor: colorScheme.onTertiary,
                 dividerColor: colorScheme.onTertiary,
-                labelStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-                unselectedLabelStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
+                labelStyle: bodySbSm,
+                unselectedLabelStyle: bodyRgSm,
                 indicatorSize: TabBarIndicatorSize.tab,
                 splashFactory: NoSplash.splashFactory,
                 tabs: [

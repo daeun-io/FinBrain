@@ -1,3 +1,4 @@
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/screen/archive_screen.dart';
 import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
@@ -89,7 +90,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             leading: Image.asset("assets/images/app_icon.png"),
             title: Text(
               "FinBrain",
-              style: TextStyle(color: colorScheme.onPrimary, fontSize: 18, fontWeight: FontWeight.w900),
+              style: headingMd.copyWith(
+                color: colorScheme.onPrimary,
+                fontWeight: FontWeight.w900,
+              ),
             ),
             titleSpacing: -8,
             actions: [
@@ -106,7 +110,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 // todo: implement later
                 child: Text(
                   "큰 글씨",
-                  style: TextStyle(color: colorScheme.onPrimary, fontSize: 14.0),
+                  style: bodyRgMd.copyWith(color: colorScheme.onPrimary),
                 ),
               ),
               const SizedBox(width: 8),
@@ -116,7 +120,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     context,
                   ).push(MaterialPageRoute(builder: (ctx) => ArchiveScreen()));
                 },
-                icon: Icon(Icons.archive_sharp, color: colorScheme.surfaceContainerHighest, size: 32),
+                icon: Icon(
+                  Icons.archive_sharp,
+                  color: colorScheme.surfaceContainerHighest,
+                  size: 32,
+                ),
               ),
             ],
           ),
@@ -127,7 +135,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         height: 70,
         decoration: BoxDecoration(
           color: colorScheme.secondary,
-          border: Border(top: BorderSide(color: colorScheme.outline, width: 1.0)),
+          border: Border(
+            top: BorderSide(color: colorScheme.outline, width: 1.0),
+          ),
         ),
         child: Theme(
           data: Theme.of(context).copyWith(
@@ -156,14 +166,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             backgroundColor: Colors.transparent,
             selectedItemColor: colorScheme.onPrimary,
             unselectedItemColor: colorScheme.onTertiary,
-            selectedLabelStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
-            unselectedLabelStyle: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-            ),
+            selectedLabelStyle: bodySbMd,
+            unselectedLabelStyle: bodyRgMd,
             type: BottomNavigationBarType.fixed,
             items: [
               const BottomNavigationBarItem(

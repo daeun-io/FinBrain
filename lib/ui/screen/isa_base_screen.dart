@@ -1,8 +1,10 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:flutter/material.dart';
@@ -192,11 +194,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                 child: Center(
                                   child: Text(
                                     label,
-                                    style: TextStyle(
-                                      color: colorScheme.onPrimary,
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                    style: bodyRgMd.copyWith(color: colorScheme.onPrimary)
                                   ),
                                 ),
                               ),
@@ -234,18 +232,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
               ),
             );
           },
-          error: (err, stack) => Expanded(
-            child: Center(
-              child: Text(
-                "오류가 발생했습니다. 다시 시도해주세요",
-                style: TextStyle(
-                  color: colorScheme.onSecondary,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ),
+          error: (err, stack) => const ShowingErrorWidget(),
           loading: () => const CustomProgressIndicator(),
         ),
       ],
@@ -258,11 +245,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       child: Center(
         child: Text(
           text,
-          style: TextStyle(
-            color: color,
-            fontSize: 14.0,
-            fontWeight: FontWeight.w400,
-          ),
+          style: bodyRgMd.copyWith(color: color),
           textAlign: TextAlign.center,
         ),
       ),

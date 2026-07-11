@@ -1,8 +1,10 @@
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
+import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
@@ -132,11 +134,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                 return Center(
                   child: Text(
                     "상품이 존재하지 않습니다",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: colorScheme.onSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: bodyRgMd.copyWith(color: colorScheme.onSecondary)
                   ),
                 );
               }
@@ -164,18 +162,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                 ),
               );
             },
-            error: (err, stack) => Expanded(
-              child: Center(
-                child: Text(
-                  "오류가 발생했습니다. 다시 시도해주세요",
-                  style: TextStyle(
-                    color: black,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
+            error: (err, stack) => const ShowingErrorWidget(),
             loading: () => const CustomProgressIndicator()
           ),
         ],

@@ -1,5 +1,6 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -83,11 +84,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
         ),
         title: Text(
           "AI 어시스트",
-          style: TextStyle(
-            color: colorScheme.onPrimary,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w600,
-          ),
+          style: headingMd.copyWith(color: colorScheme.onPrimary)
         ),
         titleSpacing: -6.0,
       ),
@@ -172,11 +169,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                               maxLines: null,
                               decoration: InputDecoration(
                                 hintText: "AI한테 질문하기",
-                                hintStyle: TextStyle(
-                                  color: colorScheme.onTertiary,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                hintStyle: bodyRgMd.copyWith(color: colorScheme.onTertiary),
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,

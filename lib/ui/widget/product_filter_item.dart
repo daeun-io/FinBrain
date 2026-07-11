@@ -1,6 +1,6 @@
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,10 +28,14 @@ class ProductFilterItem extends ConsumerWidget {
             .toggleSelected(category, text, localIsSelected);
       },
       child: Card(
-        color: localIsSelected ? colorScheme.surfaceContainerHigh : colorScheme.onSurface,
+        color: localIsSelected
+            ? colorScheme.surfaceContainerHigh
+            : colorScheme.onSurface,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: localIsSelected ? colorScheme.surfaceContainerHigh : colorScheme.outline,
+            color: localIsSelected
+                ? colorScheme.surfaceContainerHigh
+                : colorScheme.outline,
             width: 1.0,
           ),
           borderRadius: BorderRadiusGeometry.circular(10.0),
@@ -41,11 +45,9 @@ class ProductFilterItem extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           child: Text(
             text,
-            style: TextStyle(
-              color: localIsSelected ? colorScheme.onSurface : colorScheme.onSecondary,
-              fontSize: 14.0,
-              fontWeight: localIsSelected ? FontWeight.w600 : FontWeight.w400,
-            ),
+            style: (localIsSelected)
+                ? bodySbMd.copyWith(color: colorScheme.onSurface)
+                : bodyRgMd.copyWith(color: colorScheme.onSecondary),
           ),
         ),
       ),

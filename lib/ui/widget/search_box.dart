@@ -1,3 +1,4 @@
+import 'package:finbrain/themes/text_style.dart';
 import 'package:flutter/material.dart';
 
 class SearchBox extends StatefulWidget {
@@ -36,19 +37,11 @@ class _SearchBoxState extends State<SearchBox> {
       ),
       elevation: const WidgetStatePropertyAll(0.0),
       textStyle: WidgetStatePropertyAll(
-        TextStyle(
-          color: colorScheme.onPrimary,
-          fontSize: 14.0,
-          fontWeight: FontWeight.w400,
-        ),
+        bodyRgMd.copyWith(color: colorScheme.onPrimary)
       ),
       hintText: "상품명 검색",
       hintStyle: WidgetStatePropertyAll(
-        TextStyle(
-          color: colorScheme.onTertiary,
-          fontSize: 14.0,
-          fontWeight: FontWeight.w400,
-        ),
+        bodyRgMd.copyWith(color: colorScheme.onTertiary)
       ),
     );
   }

@@ -1,4 +1,4 @@
-import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:flutter/material.dart';
 
 class AiRequest extends StatelessWidget {
@@ -29,11 +29,7 @@ class AiRequest extends StatelessWidget {
             children: [
               Text(
                 text,
-                style: TextStyle(
-                  color: colorScheme.onSecondary,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: bodyRgMd.copyWith(color: colorScheme.onSecondary)
               ),
             ],
           ),

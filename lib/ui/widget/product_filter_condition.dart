@@ -1,5 +1,5 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/widget/product_filter_item.dart';
 import 'package:flutter/material.dart';
 
@@ -24,21 +24,13 @@ class ProductFilterCondition extends StatelessWidget {
       children: [
         Text(
           filter,
-          style: TextStyle(
-            fontSize: 14.0,
-            fontWeight: FontWeight.w400,
-            color: colorScheme.onTertiary,
-          ),
+          style: bodyRgMd.copyWith(color: colorScheme.onTertiary)
         ),
         const SizedBox(height: 8.0),
         if (filter == "회사 선택") ...[
           Text(
             "* 미선택 시 전부 해당됩니다",
-            style: TextStyle(
-              fontSize: 12.0,
-              color: colorScheme.onPrimary,
-              fontWeight: FontWeight.w600,
-            ),
+            style: bodySbSm.copyWith(color: colorScheme.onPrimary)
           ),
           const SizedBox(height: 8.0),
         ],
