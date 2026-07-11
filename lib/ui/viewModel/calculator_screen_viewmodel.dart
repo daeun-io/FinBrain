@@ -1,9 +1,8 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
-import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
+import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'calculator_screen_viewmodel.g.dart';
@@ -66,6 +65,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
               (e) => (e as CreditLoanOption).creditLendRateTypeName == "대출금리",
             )
             .firstOrNull;
+
         if (foundOption == null) return [];
         final rates = [
           (foundOption as CreditLoanOption).gradeOver900,
@@ -77,6 +77,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
           foundOption.grade301400,
           foundOption.gradeUnder300,
         ].whereType<double>();
+
         if (rates.isNotEmpty) {
           final avgRates = foundOption.averageGrade;
           final min = rates.min;
@@ -89,15 +90,15 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
       case ProductCategory.mortgage:
       case ProductCategory.rent:
         final min = options
-            .map((e) => (e as MortageAndRentLoanOption).lendRateMin)
+            .map((e) => (e as MortgageAndRentLoanOption).lendRateMin)
             .whereType<double>()
             .min;
         final max = options
-            .map((e) => (e as MortageAndRentLoanOption).lendRateMax)
+            .map((e) => (e as MortgageAndRentLoanOption).lendRateMax)
             .whereType<double>()
             .max;
         final avg = options
-            .map((e) => (e as MortageAndRentLoanOption).lendRateAvg)
+            .map((e) => (e as MortgageAndRentLoanOption).lendRateAvg)
             .whereType<double>()
             .average;
         return [min, avg, max];
@@ -116,10 +117,6 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
     List<Object> options,
     Map<String, String> selectedValues,
   ) {
-    final keys = selectedValues.keys.toList();
-    if (category != ProductCategory.annuity && rate == null) {
-      return {};
-    }
     final monthlyRate = (rate! / 100) / 12;
     switch (category) {
       case ProductCategory.deposit:
@@ -156,30 +153,6 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
           "세후 이자(15.4%)": interestAfterTax.toInt(),
           "만기수령액": (totalPrincipal + interestAfterTax).toInt(),
         };
-      case ProductCategory.annuity:
-        final option = options
-            .where(
-              (e) =>
-                  (e as AnnuitySavingsOption).monthlyPaymentName ==
-                      selectedValues[keys[0]] &&
-                  e.receiptTermName == selectedValues[keys[1]] &&
-                  e.paymentPeriodName == selectedValues[keys[2]] &&
-                  e.entryAgeName == selectedValues[keys[3]] &&
-                  e.startAgeName == selectedValues[keys[4]],
-            )
-            .toList();
-        if ((option as List<AnnuitySavingsOption>).isNotEmpty) {
-          return {
-            "월 납입 금액": selectedValues[keys[0]],
-            "연금 수령 기간": selectedValues[keys[1]],
-            "납입 기간": selectedValues[keys[2]],
-            "가입 연령": selectedValues[keys[3]],
-            "개시 연령": selectedValues[keys[4]],
-            "예상 수령액": option.first.monthlyReceiptAmount,
-          };
-        } else {
-          return {};
-        }
       default:
         final num = List.generate(term, (index) => index + 1);
         List<int> monthlyPaymentList = []; // 월 납입금(원금 + 이자)

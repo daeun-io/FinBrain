@@ -26,11 +26,6 @@ class ProductRemoteDataSource {
         '/finlifeapi/savingProductsSearch.xml',
         options.toQueryParams(),
       ),
-      ProductCategory.annuity => Uri.http(
-        finlife,
-        '/finlifeapi/annuitySavingProductsSearch.xml',
-        options.toQueryParams(),
-      ),
       ProductCategory.mortgage => Uri.http(
         finlife,
         '/finlifeapi/mortgageLoanProductsSearch.xml',

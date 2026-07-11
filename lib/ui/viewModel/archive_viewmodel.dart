@@ -20,7 +20,6 @@ class SelectedCtgForSummariesViewmodel
     ProductCategory.mortgage,
     ProductCategory.rent,
     ProductCategory.credit,
-    ProductCategory.annuity,
   ];
 
   void addCtg(ProductCategory ctg) {
@@ -99,7 +98,6 @@ class SelectedCtgForCompTextViewmodel
     ProductCategory.mortgage,
     ProductCategory.rent,
     ProductCategory.credit,
-    ProductCategory.annuity,
   ];
 
   void addCtg(ProductCategory ctg) {

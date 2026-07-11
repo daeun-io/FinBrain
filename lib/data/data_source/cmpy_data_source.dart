@@ -1,10 +1,7 @@
 import 'dart:convert';
-
-import 'package:charset_converter/charset_converter.dart';
 import 'package:finbrain/data/api_constants.dart';
 import 'package:finbrain/data/model/request/finlife_search_options.dart';
 import 'package:http/http.dart' as http;
-import 'package:xml2json/xml2json.dart';
 
 class CmpyRemoteDataSource {
   final http.Client _client;

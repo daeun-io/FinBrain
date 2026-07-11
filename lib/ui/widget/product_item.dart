@@ -1,9 +1,8 @@
-import 'package:finbrain/data/model/entities/annuity_savings.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
+import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
@@ -42,7 +41,6 @@ class _ProductItemState extends ConsumerState<ProductItem> {
         ? switch (widget.product.commonInfo.category) {
             ProductCategory.deposit => "최고 금리(높은순)",
             ProductCategory.installment => "최고 금리(높은순)",
-            ProductCategory.annuity => "평균 수익률(높은 순)",
             ProductCategory.isaMp => "평균 수익률(높은 순)",
             _ => "최저 금리(낮은 순)",
           }
@@ -136,24 +134,6 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                                   .returnHighestRateValue()
                                   .$2
                                   .toStringAsFixed(2),
-                      ProductCategory.annuity => switch (sortCriteria) {
-                        "평균 수익률(높은 순)" =>
-                          (widget.product as AnnuitySavings)
-                              .returnProfits()[0]
-                              .toStringAsFixed(2),
-                        "전년도 수익률(높은 순)" =>
-                          (widget.product as AnnuitySavings)
-                              .returnProfits()[1]
-                              .toStringAsFixed(2),
-                        "전전년도 수익률(높은 순)" =>
-                          (widget.product as AnnuitySavings)
-                              .returnProfits()[2]
-                              .toStringAsFixed(2),
-                        _ =>
-                          (widget.product as AnnuitySavings)
-                              .returnProfits()[3]
-                              .toStringAsFixed(2),
-                      },
                       ProductCategory.credit => switch (sortCriteria) {
                         "최저 금리(낮은 순)" =>
                           (widget.product as CreditLoan)
@@ -170,53 +150,53 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                       },
                       ProductCategory.mortgage => switch (sortCriteria) {
                         "최저 금리(낮은 순)" =>
-                          ((widget.product as MortageAndRentLoan)
+                          ((widget.product as MortgageAndRentLoan)
                                       .returnRates()[0] ==
                                   null)
                               ? "미제공"
-                              : (widget.product as MortageAndRentLoan)
+                              : (widget.product as MortgageAndRentLoan)
                                     .returnRates()[0]!
                                     .toStringAsFixed(2),
                         "최고 금리(낮은 순)" =>
-                          ((widget.product as MortageAndRentLoan)
+                          ((widget.product as MortgageAndRentLoan)
                                       .returnRates()[0] ==
                                   null)
                               ? "미제공"
-                              : (widget.product as MortageAndRentLoan)
+                              : (widget.product as MortgageAndRentLoan)
                                     .returnRates()[2]!
                                     .toStringAsFixed(2),
                         _ =>
-                          ((widget.product as MortageAndRentLoan)
+                          ((widget.product as MortgageAndRentLoan)
                                       .returnRates()[1] ==
                                   null)
                               ? "미제공"
-                              : (widget.product as MortageAndRentLoan)
+                              : (widget.product as MortgageAndRentLoan)
                                     .returnRates()[1]!
                                     .toStringAsFixed(2),
                       },
                       ProductCategory.rent => switch (sortCriteria) {
                         "최저 금리(낮은 순)" =>
-                          ((widget.product as MortageAndRentLoan)
+                          ((widget.product as MortgageAndRentLoan)
                                       .returnRates()[0] ==
                                   null)
                               ? "미제공"
-                              : (widget.product as MortageAndRentLoan)
+                              : (widget.product as MortgageAndRentLoan)
                                     .returnRates()[0]!
                                     .toStringAsFixed(2),
                         "최고 금리(낮은 순)" =>
-                          ((widget.product as MortageAndRentLoan)
+                          ((widget.product as MortgageAndRentLoan)
                                       .returnRates()[0] ==
                                   null)
                               ? "미제공"
-                              : (widget.product as MortageAndRentLoan)
+                              : (widget.product as MortgageAndRentLoan)
                                     .returnRates()[2]!
                                     .toStringAsFixed(2),
                         _ =>
-                          ((widget.product as MortageAndRentLoan)
+                          ((widget.product as MortgageAndRentLoan)
                                       .returnRates()[1] ==
                                   null)
                               ? "미제공"
-                              : (widget.product as MortageAndRentLoan)
+                              : (widget.product as MortgageAndRentLoan)
                                     .returnRates()[1]!
                                     .toStringAsFixed(2),
                       },

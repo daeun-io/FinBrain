@@ -50,18 +50,12 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     if (criteriaList.contains("모든 상품")) {
       categories.addAll(ProductCategory.values);
     } else {
-      if (criteriaList.contains("정기예금"))
-        categories.add(ProductCategory.deposit);
-      if (criteriaList.contains("적금"))
-        categories.add(ProductCategory.installment);
+      if (criteriaList.contains("정기예금")) categories.add(ProductCategory.deposit);
+      if (criteriaList.contains("적금")) categories.add(ProductCategory.installment);
       if (criteriaList.contains("ISA")) categories.add(ProductCategory.isaMp);
-      if (criteriaList.contains("주택담보대출"))
-        categories.add(ProductCategory.mortgage);
+      if (criteriaList.contains("주택담보대출")) categories.add(ProductCategory.mortgage);
       if (criteriaList.contains("전세자금대출")) categories.add(ProductCategory.rent);
-      if (criteriaList.contains("개인신용대출"))
-        categories.add(ProductCategory.credit);
-      if (criteriaList.contains("연금저축"))
-        categories.add(ProductCategory.annuity);
+      if (criteriaList.contains("개인신용대출")) categories.add(ProductCategory.credit);
     }
 
     final fetchedProducts = ref.read(fetchLikedViewmodelProvider);

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/repository/filters_repository.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
@@ -24,7 +23,6 @@ class FiltersViewmodel extends _$FiltersViewmodel {
           ProductCategory.mortgage ||
           ProductCategory.rent ||
           ProductCategory.credit => "대출",
-          ProductCategory.annuity => "연금저축",
           _ => "",
         }] ??
         "020000";
@@ -122,16 +120,13 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
       final topFinGrpName = snapshot["금융회사"]!
           .firstWhere((e) => e.$2 == true)
           .$1;
-      final topFinGrpNo =
-          getFinGroupCode[topFinGrpName] ??
-          ((ctg == ProductCategory.annuity) ? "050000" : "020000");
+      final topFinGrpNo = getFinGroupCode[topFinGrpName] ?? "020000";
       ref.read(selectedTopfingrpnoViewmodelProvider.notifier).changeTopFinGrp(
         switch (ctg) {
           ProductCategory.deposit || ProductCategory.installment => "예적금",
           ProductCategory.mortgage ||
           ProductCategory.rent ||
           ProductCategory.credit => "대출",
-          ProductCategory.annuity => "연금저축",
           _ => "",
         },
         topFinGrpNo,

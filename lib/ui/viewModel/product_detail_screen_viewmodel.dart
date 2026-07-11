@@ -1,4 +1,3 @@
-import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/data/repository/url_repository.dart';
 import 'package:finbrain/product_categories.dart';
@@ -16,13 +15,6 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
     List<String> keys = switch (category) {
       ProductCategory.deposit => ["예치 기간", "저축 금리 유형"],
       ProductCategory.installment => ["예치 종류", "예치 기간", "저축 금리 유형"],
-      ProductCategory.annuity => [
-        "월 납입 금액",
-        "연금 수령 기간",
-        "납입 기간",
-        "가입 연령",
-        "개시 연령",
-      ],
       _ => ["상환 방법"],
     };
     final values = [];
@@ -53,27 +45,6 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
         );
         values.add(
           List.of(options.map((e) => e.intRateTypeName!).toSet().toList()),
-        );
-      case ProductCategory.annuity:
-        values.add(
-          List.of(
-            (options as List<AnnuitySavingsOption>)
-                .map((e) => e.monthlyPaymentName!)
-                .toSet()
-                .toList(),
-          ),
-        );
-        values.add(
-          List.of(options.map((e) => e.receiptTermName!).toSet().toList()),
-        );
-        values.add(
-          List.of(options.map((e) => e.paymentPeriodName!).toSet().toList()),
-        );
-        values.add(
-          List.of(options.map((e) => e.entryAgeName!).toSet().toList()),
-        );
-        values.add(
-          List.of(options.map((e) => e.startAgeName!).toSet().toList()),
         );
       default:
         values.add(["원리금균등상환방식", "원금균등상환방식", "만기일시상환방식"]);

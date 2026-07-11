@@ -1,5 +1,5 @@
 // 주택담보대출 & 전세자금대출 옵션
-class MortageAndRentLoanOption {
+class MortgageAndRentLoanOption {
   // 프로퍼티명(필드명): 의미
   // loanType(mrtg_type): 담보유형 코드
   // loanTypeName(mrtg_type_nm): 담보유형
@@ -21,7 +21,7 @@ class MortageAndRentLoanOption {
   final double? lendRateMax;
   final double? lendRateAvg;
 
-  const MortageAndRentLoanOption({
+  const MortgageAndRentLoanOption({
     required this.loanType,
     required this.loanTypeName,
     required this.repayType,

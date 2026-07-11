@@ -1,11 +1,10 @@
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/google_auth_service.dart';
-import 'package:finbrain/data/model/entities/annuity_savings.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
+import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/data/repository/product_repository.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
@@ -56,9 +55,7 @@ class ProductViewmodel extends _$ProductViewmodel {
           .toList();
     }
     final topFinGrpNo =
-        getFinGroupCode[selectedFilters["금융회사"]?.first ??
-            ((ctg == ProductCategory.annuity) ? "050000" : "020000")] ??
-        ((ctg == ProductCategory.annuity) ? "050000" : "020000");
+        getFinGroupCode[selectedFilters["금융회사"]?.first ?? "020000"] ?? "020000";
 
     if (selectedFilters["회사 선택"] != null && selectedFilters["회사 선택"]!.isEmpty) {
       final List<String> companies = [];
@@ -211,55 +208,33 @@ class ProductViewmodel extends _$ProductViewmodel {
           ),
         ));
         break;
-      case ProductCategory.annuity:
-        state = AsyncValue.data((
-          maxPage,
-          products..sort(switch (criteria) {
-            "평균 수익률(높은 순)" =>
-              (a, b) => (b as AnnuitySavings).returnProfits()[0].compareTo(
-                (a as AnnuitySavings).returnProfits()[0],
-              ),
-            "전년도 수익률(높은 순)" =>
-              (a, b) => (b as AnnuitySavings).returnProfits()[1].compareTo(
-                (a as AnnuitySavings).returnProfits()[1],
-              ),
-            "전전년도 수익률(높은 순)" =>
-              (a, b) => (b as AnnuitySavings).returnProfits()[2].compareTo(
-                (a as AnnuitySavings).returnProfits()[2],
-              ),
-            _ => (a, b) => (b as AnnuitySavings).returnProfits()[3].compareTo(
-              (a as AnnuitySavings).returnProfits()[3],
-            ),
-          }),
-        ));
-        break;
       case ProductCategory.mortgage:
       case ProductCategory.rent:
         state = AsyncValue.data((
           maxPage,
           products..sort(switch (criteria) {
             "최저 금리(낮은 순)" => (a, b) {
-              if ((a as MortageAndRentLoan).returnRates()[0] == null) {
+              if ((a as MortgageAndRentLoan).returnRates()[0] == null) {
                 return 1;
-              } else if ((b as MortageAndRentLoan).returnRates()[0] == null) {
+              } else if ((b as MortgageAndRentLoan).returnRates()[0] == null) {
                 return -1;
               } else {
                 return a.returnRates()[0]!.compareTo(b.returnRates()[0]!);
               }
             },
             "최고 금리(낮은 순)" => (a, b) {
-              if ((a as MortageAndRentLoan).returnRates()[2] == null) {
+              if ((a as MortgageAndRentLoan).returnRates()[2] == null) {
                 return 1;
-              } else if ((b as MortageAndRentLoan).returnRates()[2] == null) {
+              } else if ((b as MortgageAndRentLoan).returnRates()[2] == null) {
                 return -1;
               } else {
                 return a.returnRates()[2]!.compareTo(b.returnRates()[2]!);
               }
             },
             _ => (a, b) {
-              if ((a as MortageAndRentLoan).returnRates()[1] == null) {
+              if ((a as MortgageAndRentLoan).returnRates()[1] == null) {
                 return 1;
-              } else if ((b as MortageAndRentLoan).returnRates()[1] == null) {
+              } else if ((b as MortgageAndRentLoan).returnRates()[1] == null) {
                 return -1;
               } else {
                 return a.returnRates()[1]!.compareTo(b.returnRates()[1]!);

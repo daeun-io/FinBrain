@@ -1,4 +1,3 @@
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/themes/text_theme.dart';
 import 'package:finbrain/ui/screen/archive_screen.dart';
 import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
@@ -6,7 +5,6 @@ import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
-import 'package:finbrain/ui/screen/product_base_screen.dart';
 import 'package:finbrain/ui/screen/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,8 +53,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           return ctgInVM;
         }
         return ProductCategory.mortgage;
-      case 2:
-        return ProductCategory.annuity;
       default:
         return ctgInVM;
     }
@@ -77,7 +73,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final pages = [
       ProductScreen(category: ProductScreenCategory.savings),
       ProductScreen(category: ProductScreenCategory.loan),
-      ProductBaseScreen(category: ProductCategory.annuity),
       const LikedScreen(),
     ];
 
@@ -173,8 +168,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             backgroundColor: Colors.transparent,
             selectedItemColor: colorScheme.onPrimary,
             unselectedItemColor: colorScheme.onTertiary,
-            selectedLabelStyle: bodySbMd,
-            unselectedLabelStyle: bodyRgMd,
+            selectedLabelStyle: textTheme.titleMedium,
+            unselectedLabelStyle: textTheme.bodyMedium,
             type: BottomNavigationBarType.fixed,
             items: [
               const BottomNavigationBarItem(
@@ -184,10 +179,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               const BottomNavigationBarItem(
                 icon: Icon(Icons.paid, size: 28),
                 label: "대출",
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.money, size: 28),
-                label: "연금저축",
               ),
               const BottomNavigationBarItem(
                 icon: Icon(Icons.favorite, size: 28),

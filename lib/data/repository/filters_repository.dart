@@ -55,7 +55,6 @@ class FiltersRepository {
       final List<String> finGroups = switch (ctg) {
         ProductCategory.deposit || ProductCategory.installment => ["은행", "저축은행"],
         ProductCategory.mortgage || ProductCategory.rent || ProductCategory.credit =>  ["은행", "저축은행", "여신전문", "보험"],
-        ProductCategory.annuity => ["보험", "금융투자"],
         _ => [],
       };
 
