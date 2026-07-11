@@ -6,6 +6,7 @@ import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/data/repository/product_repository.dart';
+import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
@@ -89,7 +90,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
                 );
           }).toList();
 
-      return (maxPage, filtered);
+    return (maxPage, filtered);
   }
 }
 
@@ -103,12 +104,14 @@ class ProductViewmodel extends _$ProductViewmodel {
     final result = ref.watch(fetchProductViewmodelProvider(ctg, pageNo));
 
     final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(ctg))
+        .watch(sortOrFilterTextViewModelProvider(ctg))
         .$1
         .toString();
 
     final maxPage = (result.value == null) ? 0 : result.value!.$1;
-    final products = (result.value == null) ? <FinancialProduct>[] : result.value!.$2;
+    final products = (result.value == null)
+        ? <FinancialProduct>[]
+        : result.value!.$2;
     return sortByCriteria(criteria, ctg, maxPage, products);
   }
 
@@ -242,12 +245,22 @@ class ProductViewmodel extends _$ProductViewmodel {
   void filterByKeyword(String keyword) {
     if (keyword.isNotEmpty) {
       final currentState = state.value ?? (0, <FinancialProduct>[]);
-      state = AsyncData((
+      state = AsyncValue.data((
         currentState.$1,
         currentState.$2
             .where((e) => e.commonInfo.productName!.contains(keyword))
             .toList(),
       ));
+    } else {
+      final page = ref.read(currentPageViewmodelProvider(ctg));
+      final original = ref.read(fetchProductViewmodelProvider(ctg,"$page"));
+      final maxPage = (original.value == null) ? 0 : original.value!.$1;
+      final products = (original.value == null) ? <FinancialProduct>[] : original.value!.$2;
+      final criteria = ref
+          .read(sortOrFilterTextViewModelProvider(ctg))
+          .$1
+          .toString();
+      state = sortByCriteria(criteria, ctg, maxPage, products);
     }
   }
 }

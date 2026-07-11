@@ -121,7 +121,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
               ref
                   .read(
                     productViewmodelProvider(
-                      ProductCategory.isaMp,
+                      widget.category,
                       "$_cPage",
                     ).notifier,
                   )

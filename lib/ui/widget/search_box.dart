@@ -21,7 +21,6 @@ class _SearchBoxState extends State<SearchBox> {
     return SearchBar(
       onSubmitted: ((value) => widget.searchItem(value)),
       onChanged: (value) {
-        // change later
         if (value.isEmpty) widget.searchItem(value);
       },
       padding: const WidgetStatePropertyAll(

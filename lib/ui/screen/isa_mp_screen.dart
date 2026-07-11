@@ -108,7 +108,14 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         const SizedBox(height: 24.0),
         SearchBox(
           searchItem: (value) {
-            //ref.read(productViewmodelProvider().notifier).filterByKeyword(value);
+            ref
+                .read(
+                  productViewmodelProvider(
+                    ProductCategory.isaMp,
+                    "$_cPage",
+                  ).notifier,
+                )
+                .filterByKeyword(value);
           },
         ),
         const SizedBox(height: 24.0),
