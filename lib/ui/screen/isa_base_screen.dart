@@ -1,6 +1,5 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -110,6 +109,8 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final joinItems = ref.watch(isaJoinStatusViewModelProvider);
     final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
     final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
@@ -194,7 +195,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                 child: Center(
                                   child: Text(
                                     label,
-                                    style: bodyRgMd.copyWith(color: colorScheme.onPrimary)
+                                    style: textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary)
                                   ),
                                 ),
                               ),
@@ -220,6 +221,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                   item,
                                   colorScheme.surface,
                                   colorScheme.onSecondary,
+                                  textTheme.bodyMedium!,
                                 );
                               }, childCount: items.length),
                             ),
@@ -239,20 +241,20 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     );
   }
 
-  Widget rowCell(String text, String type, Color color) {
+  Widget rowCell(String text, String type, Color color, TextStyle style) {
     return Flexible(
       flex: (type == "incAstCtg" || type == "isaForm") ? 3 : 2,
       child: Center(
         child: Text(
           text,
-          style: bodyRgMd.copyWith(color: color),
+          style: style.copyWith(color: color),
           textAlign: TextAlign.center,
         ),
       ),
     );
   }
 
-  Widget _buildTableRow(Object item, Color ctnColor, Color txtColor) {
+  Widget _buildTableRow(Object item, Color ctnColor, Color txtColor, TextStyle style) {
     return Container(
       color: ctnColor,
       height: 48.0,
@@ -260,20 +262,21 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       child: Row(
         children: [
           if (widget.category == ProductCategory.isaJoin) ...[
-            rowCell((item as IsaJoinStatus).isaForm!, "isaForm", txtColor),
-            rowCell(item.companyCount.toString(), "cmpyCnt", txtColor),
-            rowCell(item.joinMemberCount.toString(), "jnMbCnt", txtColor),
-            rowCell(item.category!, "category", txtColor),
+            rowCell((item as IsaJoinStatus).isaForm!, "isaForm", txtColor, style),
+            rowCell(item.companyCount.toString(), "cmpyCnt", txtColor, style),
+            rowCell(item.joinMemberCount.toString(), "jnMbCnt", txtColor, style),
+            rowCell(item.category!, "category", txtColor, style),
           ] else ...[
             rowCell(
               (item as IsaManagementStatus).isaForm!,
               "isaForm",
               txtColor,
+              style
             ),
-            rowCell(item.businessDomain!, "bzds", txtColor),
-            rowCell(item.includeAssetCtg!, "incAstCtg", txtColor),
-            rowCell(item.category!, "category", txtColor),
-            rowCell(item.amount.toString(), "amount", txtColor),
+            rowCell(item.businessDomain!, "bzds", txtColor, style),
+            rowCell(item.includeAssetCtg!, "incAstCtg", txtColor, style),
+            rowCell(item.category!, "category", txtColor, style),
+            rowCell(item.amount.toString(), "amount", txtColor, style),
           ],
         ],
       ),

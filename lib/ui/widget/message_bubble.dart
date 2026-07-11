@@ -1,4 +1,3 @@
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/widget/ai_request.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +11,7 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -21,7 +21,7 @@ class MessageBubble extends StatelessWidget {
             ? AiRequest(text: text)
             : Text(
                 text,
-                style: bodyRgMd.copyWith(color: colorScheme.onSecondary)
+                style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)
               ),
       ),
     );

@@ -1,4 +1,3 @@
-import 'package:finbrain/themes/text_style.dart';
 import 'package:flutter/material.dart';
 
 class CustomYearPicker extends StatefulWidget {
@@ -42,6 +41,7 @@ class _YearPickerPageState extends State<CustomYearPicker> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return SizedBox(
       height: 150,
@@ -76,7 +76,7 @@ class _YearPickerPageState extends State<CustomYearPicker> {
                   child: Center(
                     child: Text(
                       "${yearList[index]}년",
-                      style: bodySbLg.copyWith(color: colorScheme.onSecondary),
+                      style: textTheme.titleLarge!.copyWith(color: colorScheme.onSecondary),
                     ),
                   ),
                 ),
@@ -86,7 +86,7 @@ class _YearPickerPageState extends State<CustomYearPicker> {
                 key: ValueKey('Unselected: ${yearList[index]}'),
                 child: Text(
                   "${yearList[index]}년",
-                  style: bodySbLg.copyWith(color: colorScheme.onTertiary),
+                  style: textTheme.bodyLarge!.copyWith(color: colorScheme.onTertiary),
                 ),
               );
             }

@@ -1,8 +1,6 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +37,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final text = ref.watch(aiComparisonScreenViewmodelProvider(widget.tag));
 
     return Scaffold(
@@ -54,7 +54,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
         ),
         title: Text(
           "AI 비교 분석",
-          style: headingMd.copyWith(color: colorScheme.onPrimary)
+          style: textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary)
         ),
         titleSpacing: -6.0,
       ),
@@ -95,7 +95,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
                               "다시 생성하기",
-                              style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
+                              style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
                             ),
                           ),
                         ),
@@ -131,7 +131,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                             padding: const EdgeInsets.all(12.0),
                             child: Text(
                               "이 분석 저장하기",
-                              style: bodyRgSm.copyWith(color: colorScheme.onPrimary)
+                              style: textTheme.titleMedium!.copyWith(color: colorScheme.onPrimary)
                             ),
                           ),
                         ),

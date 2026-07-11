@@ -1,41 +1,79 @@
 import 'package:flutter/painting.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-const headingLg = TextStyle(
+final headingLg = GoogleFonts.notoSansKr(
+  fontSize: 28.0,
+  fontWeight: FontWeight.w600,
+  letterSpacing: -1,
+  decoration: TextDecoration.none
+);
+
+final headingMd = GoogleFonts.notoSansKr(
   fontSize: 24.0,
   fontWeight: FontWeight.w600,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );
 
-const headingMd = TextStyle(
+final headingSm = GoogleFonts.notoSansKr(
   fontSize: 20.0,
   fontWeight: FontWeight.w600,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );
 
-const bodySbLg = TextStyle(
+final bodySbXl = GoogleFonts.notoSansKr(
+  fontSize: 22.0,
+  fontWeight: FontWeight.w600,
+  letterSpacing: -1,
+  decoration: TextDecoration.none
+);
+
+final bodySbLg = GoogleFonts.notoSansKr(
+  fontSize: 20.0,
+  fontWeight: FontWeight.w600,
+  letterSpacing: -1,
+  decoration: TextDecoration.none
+);
+
+final bodySbMd = GoogleFonts.notoSansKr(
   fontSize: 18.0,
   fontWeight: FontWeight.w600,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );
 
-const bodySbMd = TextStyle(
+final bodySbSm = GoogleFonts.notoSansKr(
   fontSize: 16.0,
   fontWeight: FontWeight.w600,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );
 
-const bodySbSm = TextStyle(
+final bodySbXs = GoogleFonts.notoSansKr(
   fontSize: 14.0,
   fontWeight: FontWeight.w600,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );
 
-const bodyRgLg = TextStyle(
+final bodyRgXl = GoogleFonts.notoSansKr(
+  fontSize: 22.0,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -1,
+  decoration: TextDecoration.none
+);
+
+
+final bodyRgLg = GoogleFonts.notoSansKr(
+  fontSize: 20.0,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -1,
+  decoration: TextDecoration.none
+);
+
+
+final bodyRgMd = GoogleFonts.notoSansKr(
   fontSize: 18.0,
   fontWeight: FontWeight.w400,
   letterSpacing: -1,
@@ -43,28 +81,29 @@ const bodyRgLg = TextStyle(
 );
 
 
-const bodyRgMd = TextStyle(
+final bodyRgSm = GoogleFonts.notoSansKr(
   fontSize: 16.0,
   fontWeight: FontWeight.w400,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );
 
-const bodyRgSm = TextStyle(
+
+final bodyRgXs = GoogleFonts.notoSansKr(
   fontSize: 14.0,
   fontWeight: FontWeight.w400,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );
 
-const captionSb = TextStyle(
+final captionSb = GoogleFonts.notoSansKr(
   fontSize: 12.0,
   fontWeight: FontWeight.w600,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );
 
-const captionRg = TextStyle(
+final captionRg = GoogleFonts.notoSansKr(
   fontSize: 12.0,
   fontWeight: FontWeight.w400,
   letterSpacing: -1,

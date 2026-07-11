@@ -1,4 +1,3 @@
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
@@ -45,6 +44,7 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -60,8 +60,8 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
               child: TabBar(
                 controller: _controller,
                 padding: EdgeInsets.zero,
-                labelStyle: bodySbMd.copyWith(color: colorScheme.onSurface),
-                unselectedLabelStyle: bodyRgMd.copyWith(color: colorScheme.onTertiary),
+                labelStyle: textTheme.titleMedium!.copyWith(color: colorScheme.onSurface),
+                unselectedLabelStyle: textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary),
                 indicator: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   color: colorScheme.surfaceContainerHigh,

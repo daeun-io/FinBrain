@@ -1,4 +1,3 @@
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_screen.dart';
@@ -14,6 +13,7 @@ class ProductScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     final tabList = switch (category) {
       ProductScreenCategory.savings => ["정기예금", "적금", "ISA"],
@@ -64,8 +64,8 @@ class ProductScreen extends ConsumerWidget {
             labelColor: colorScheme.onPrimary,
             unselectedLabelColor: colorScheme.onTertiary,
             dividerColor: colorScheme.onTertiary,
-            labelStyle: bodySbMd,
-            unselectedLabelStyle: bodyRgMd,
+            labelStyle: textTheme.titleMedium,
+            unselectedLabelStyle: textTheme.bodyMedium,
             indicatorSize: TabBarIndicatorSize.tab,
             splashFactory: NoSplash.splashFactory,
             tabs: [

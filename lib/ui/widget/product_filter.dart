@@ -1,5 +1,4 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/widget/product_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +18,7 @@ class _ProductFilterState extends State<ProductFilter> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.25,
@@ -46,7 +46,7 @@ class _ProductFilterState extends State<ProductFilter> {
               const SizedBox(width: 4.0,),
               Text(
                 "필터",
-                style: bodySbLg.copyWith(color: colorScheme.onSurface)
+                style: textTheme.titleLarge!.copyWith(color: colorScheme.onSurface)
               ),
             ],
           ),

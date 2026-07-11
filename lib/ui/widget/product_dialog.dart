@@ -1,6 +1,4 @@
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_year_picker.dart';
 import 'package:finbrain/ui/widget/product_filter_condition.dart';
@@ -14,12 +12,14 @@ class ProductDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final filters = ref.watch(dialogFiltersViewModelProvider(category));
 
     return Consumer(
       builder: (ctx, ref, child) {
         return AlertDialog(
-          backgroundColor: white,
+          backgroundColor: colorScheme.surfaceContainer,
           contentPadding: const EdgeInsets.only(
             top: 20.0,
             left: 20.0,
@@ -36,7 +36,7 @@ class ProductDialog extends ConsumerWidget {
                     Icon(Icons.tune, color: colorScheme.onPrimary, size: 24.0),
                     Text(
                       "필터",
-                      style: headingMd.copyWith(color: colorScheme.onPrimary)
+                      style: textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary)
                     ),
                     const Spacer(),
                     TextButton(
@@ -62,7 +62,7 @@ class ProductDialog extends ConsumerWidget {
                           Icon(Icons.refresh, color: colorScheme.onTertiary, size: 16.0),
                           Text(
                             "초기화",
-                            style: bodyRgSm.copyWith(color: colorScheme.onTertiary)
+                            style: textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary)
                           ),
                         ],
                       ),
@@ -92,7 +92,7 @@ class ProductDialog extends ConsumerWidget {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     "기준년도",
-                                    style: bodyRgMd.copyWith(color: colorScheme.onTertiary)
+                                    style: textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary)
                                   ),
                                 ),
                                 CustomYearPicker(
@@ -147,7 +147,7 @@ class ProductDialog extends ConsumerWidget {
                         ),
                         child: Text(
                           "필터 적용",
-                          style: bodyRgMd.copyWith(color: colorScheme.onPrimary)
+                          style: textTheme.titleMedium!.copyWith(color: colorScheme.onPrimary)
                         ),
                       ),
                     ),

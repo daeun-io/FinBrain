@@ -1,6 +1,4 @@
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/calculator_screen_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,10 +108,11 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: white,
+        backgroundColor: colorScheme.primary,
         scrolledUnderElevation: 0.0,
         leading: IconButton(
           onPressed: () {
@@ -122,7 +121,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
         ),
       ),
-      backgroundColor: white,
+      backgroundColor: colorScheme.primary,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
@@ -134,7 +133,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   "예치금",
                 ProductCategory.annuity => "월 납입 금액",
                 _ => "대출 원금",
-              }, colorScheme.onPrimary),
+              }, colorScheme.onPrimary, textTheme.bodyLarge!),
               const SizedBox(height: 2.0),
               ..._displayDynamicWidgetList(
                 widget.category,
@@ -147,6 +146,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                       _selectedValues,
                     ),
                 colorScheme,
+                textTheme,
               ),
               const SizedBox(height: 32.0),
               Row(
@@ -174,7 +174,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                         color: colorScheme.secondary,
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
-                      child: text("리셋", colorScheme.onPrimary),
+                      child: text("리셋", colorScheme.onPrimary, textTheme.bodyLarge!),
                     ),
                   ),
                   const SizedBox(width: 12.0),
@@ -191,7 +191,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                               duration: const Duration(seconds: 3),
                               content: Text(
                                 "항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요",
-                                style: bodyRgSm.copyWith(color: colorScheme.onSecondary),
+                                style: textTheme.bodySmall!.copyWith(color: colorScheme.onSecondary),
                               ),
                             ),
                           );
@@ -206,7 +206,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                               duration: const Duration(seconds: 3),
                               content: Text(
                                 "입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요",
-                                style: bodyRgSm.copyWith(color: colorScheme.onSecondary),
+                                style: textTheme.bodySmall!.copyWith(color: colorScheme.onSecondary),
                               ),
                             ),
                           );
@@ -229,7 +229,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                         color: colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
-                      child: text("계산", colorScheme.onSurface),
+                      child: text("계산", colorScheme.onSurface, textTheme.bodyLarge!),
                     ),
                   ),
                 ],
@@ -239,7 +239,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 40.0),
-                    text("계산 결과", colorScheme.onPrimary),
+                    text("계산 결과", colorScheme.onPrimary, textTheme.bodyLarge!),
                     const SizedBox(height: 16.0),
                     _displayResult(
                       widget.category,
@@ -315,6 +315,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                           ),
                       int.parse(_period),
                       colorScheme,
+                      textTheme
                     ),
                     const SizedBox(height: 40.0),
                   ],
@@ -326,17 +327,17 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     );
   }
 
-  Widget text(String text, Color color) {
+  Widget text(String text, Color color, TextStyle style) {
     return Text(
       text,
-      style: bodyRgLg.copyWith(color: color),
+      style: style.copyWith(color: color),
     );
   }
 
-  Widget captionText(String text, Color color) {
+  Widget captionText(String text, Color color, TextStyle style) {
     return Text(
       text,
-      style: bodyRgSm.copyWith(color: color)
+      style: style.copyWith(color: color)
     );
   }
 
@@ -344,6 +345,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     String key,
     List<dynamic> items,
     ColorScheme colorScheme,
+    TextTheme textTheme,
   ) {
     return Card(
       color: colorScheme.primary,
@@ -373,7 +375,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   value: item,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: text(item, colorScheme.onSecondary),
+                    child: text(item, colorScheme.onSecondary, textTheme.bodyLarge!),
                   ),
                 ),
             ],
@@ -396,19 +398,21 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     String item,
     String value,
     Color headerColor,
+    Color bodyColor,
     Color txtColor,
+    TextStyle style,
   ) {
     return TableRow(
       children: [
         Container(
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           color: headerColor,
-          child: text(item, txtColor),
+          child: text(item, txtColor, style),
         ),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-          color: white,
-          child: text(value, txtColor),
+          color: bodyColor,
+          child: text(value, txtColor, style),
         ),
       ],
     );
@@ -419,11 +423,12 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     Map<String, List<String>> mapOptions,
     List<double> rates,
     ColorScheme colorScheme,
+    TextTheme textTheme,
   ) {
     final keys = mapOptions.keys.toList();
     return [
       if (category == ProductCategory.annuity)
-        dropdownCard(keys[0], mapOptions[keys[0]] ?? [], colorScheme)
+        dropdownCard(keys[0], mapOptions[keys[0]] ?? [], colorScheme, textTheme)
       else
         TextField(
           controller: _moneyController,
@@ -460,12 +465,12 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         (ProductCategory.deposit || ProductCategory.installment) => "예치 기간(개월)",
         ProductCategory.annuity => "연금수령 기간 및 납입 기간",
         _ => "상환 방법 및 대출 기간",
-      }, colorScheme.onPrimary),
+      }, colorScheme.onPrimary, textTheme.bodyLarge!),
       const SizedBox(height: 2.0),
       if (category == ProductCategory.deposit)
-        dropdownCard(keys[0], mapOptions[keys[0]] ?? [], colorScheme)
+        dropdownCard(keys[0], mapOptions[keys[0]] ?? [], colorScheme, textTheme)
       else if (category == ProductCategory.installment)
-        dropdownCard(keys[1], mapOptions[keys[1]] ?? [], colorScheme)
+        dropdownCard(keys[1], mapOptions[keys[1]] ?? [], colorScheme, textTheme)
       else
         Row(
           children: [
@@ -476,6 +481,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     ? mapOptions[keys[1]] ?? []
                     : mapOptions[keys[0]] ?? [],
                 colorScheme,
+                textTheme
               ),
             ),
             const SizedBox(width: 8.0),
@@ -485,6 +491,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   keys[2],
                   mapOptions[keys[2]] ?? [],
                   colorScheme,
+                  textTheme
                 ),
               )
             else
@@ -528,7 +535,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         ProductCategory.installment => "예치 기간 및 종류",
         ProductCategory.annuity => "가입 연령 및 개시 연령",
         _ => "대출 금리",
-      }, colorScheme.onPrimary),
+      }, colorScheme.onPrimary, textTheme.bodyLarge!),
       const SizedBox(height: 2.0),
       if (category == ProductCategory.annuity)
         Row(
@@ -538,6 +545,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                 keys[3],
                 mapOptions[keys[3]] ?? [],
                 colorScheme,
+                textTheme
               ),
             ),
             const SizedBox(width: 8.0),
@@ -546,6 +554,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                 keys[4],
                 mapOptions[keys[4]] ?? [],
                 colorScheme,
+                textTheme
               ),
             ),
           ],
@@ -577,7 +586,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               ),
             ),
             const SizedBox(width: 4.0),
-            captionText("우대 금리 적용", colorScheme.onSecondary),
+            captionText("우대 금리 적용", colorScheme.onSecondary, textTheme.bodySmall!),
           ],
         ),
         const SizedBox(height: 1.0),
@@ -591,6 +600,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     ? mapOptions[keys[1]] ?? []
                     : mapOptions[keys[2]] ?? [],
                 colorScheme,
+                textTheme
               ),
             ),
             const SizedBox(width: 8.0),
@@ -610,6 +620,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                       ? rates.lastOrNull.toString()
                       : rates.firstOrNull.toString(),
                   colorScheme.onSecondary,
+                  textTheme.bodyLarge!
                 ),
               ),
             ),
@@ -621,7 +632,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           children: [
             Text(
               (rates.firstOrNull ?? 0.0).toString(),
-              style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
+              style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
               textAlign: TextAlign.left,
             ),
             Expanded(
@@ -650,7 +661,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             ),
             Text(
               (rates.lastOrNull ?? 20.0).toString(),
-              style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
+              style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
               textAlign: TextAlign.right,
             ),
           ],
@@ -663,12 +674,13 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     Map<String, dynamic> map,
     int? term,
     ColorScheme colorScheme,
+    TextTheme textTheme
   ) {
     if (map.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
-          child: text("계산 결과를 제공할 수 없습니다", colorScheme.onSecondary),
+          child: text("계산 결과를 제공할 수 없습니다", colorScheme.onSecondary, textTheme.bodyLarge!),
         ),
       );
     }
@@ -697,7 +709,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                           label: Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [text(e, colorScheme.onSecondary)],
+                              children: [text(e, colorScheme.onSecondary, textTheme.bodyLarge!)],
                             ),
                           ),
                         ),
@@ -712,6 +724,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                                 text(
                                   formatter.format(e[i]),
                                   colorScheme.onSecondary,
+                                  textTheme.bodyLarge!
                                 ),
                               ),
                             ),
@@ -725,6 +738,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               captionText(
                 "*본 계산 결과는 매월 30일로 가정해 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
                 colorScheme.onTertiary,
+                textTheme.bodySmall!,
               ),
             ],
           )
@@ -748,7 +762,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Center(
-                                child: text(e.key, colorScheme.onSecondary),
+                                child: text(e.key, colorScheme.onSecondary, textTheme.bodyLarge!),
                               ),
                             ),
                           ),
@@ -767,6 +781,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                                 child: text(
                                   formatter.format(e.value),
                                   colorScheme.onSecondary,
+                                  textTheme.bodyLarge!
                                 ),
                               ),
                             ),
@@ -781,6 +796,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               captionText(
                 "*본 계산 결과는 월을 기준으로 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
                 colorScheme.onTertiary,
+                textTheme.bodySmall!
               ),
             ],
           );

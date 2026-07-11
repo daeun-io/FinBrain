@@ -1,6 +1,5 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewModel/archive_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -15,6 +14,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final filterCtg = [
       ProductCategory.deposit,
       ProductCategory.installment,
@@ -108,8 +109,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                                       ? compTextfilters
                                       : summariesFilters)
                                   .contains(e))
-                              ? bodyRgMd.copyWith(color: colorScheme.onSurface)
-                              : bodyRgMd.copyWith(color: colorScheme.onSecondary)
+                              ? textTheme.bodyMedium!.copyWith(color: colorScheme.onSurface)
+                              : textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)
                         ),
                       );
                     }).toList(),

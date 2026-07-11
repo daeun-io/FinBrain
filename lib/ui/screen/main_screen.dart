@@ -1,5 +1,7 @@
 import 'package:finbrain/themes/text_style.dart';
+import 'package:finbrain/themes/text_theme.dart';
 import 'package:finbrain/ui/screen/archive_screen.dart';
+import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
@@ -62,7 +64,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currTxtTheme = ref.watch(textThemeViewmodelProvider);
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     ref.listen<ProductCategory>(currentCtgViewmodelProvider, (prev, next) {
       if (_currentIndex != 3) {
@@ -90,7 +94,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             leading: Image.asset("assets/images/app_icon.png"),
             title: Text(
               "FinBrain",
-              style: headingMd.copyWith(
+              style: textTheme.headlineMedium!.copyWith(
                 color: colorScheme.onPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -98,8 +102,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             titleSpacing: -8,
             actions: [
               OutlinedButton(
-                // todo: implement later
-                onPressed: () {},
+                onPressed: () {
+                  ref.read(textThemeViewmodelProvider.notifier).changeTxtTheme(
+                    (currTxtTheme == bigTextTheme) ? true : false
+                  );
+                },
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
                     vertical: 4.0,
@@ -109,8 +116,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 ),
                 // todo: implement later
                 child: Text(
-                  "큰 글씨",
-                  style: bodyRgMd.copyWith(color: colorScheme.onPrimary),
+                  (currTxtTheme == bigTextTheme) ? "작은 글씨" : "큰 글씨",
+                  style: textTheme.titleMedium!.copyWith(color: colorScheme.onPrimary),
                 ),
               ),
               const SizedBox(width: 8),

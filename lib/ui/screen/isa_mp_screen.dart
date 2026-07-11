@@ -78,7 +78,6 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final products = ref.watch(productViewmodelProvider);
 
     // Move to center after fetching data

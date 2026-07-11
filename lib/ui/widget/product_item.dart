@@ -4,7 +4,6 @@ import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dar
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
@@ -33,6 +32,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final sortFilter = ref.watch(
       sortOrFilterTextViewModelProvider(widget.product.commonInfo.category),
     );
@@ -94,12 +95,12 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                         r'\\n',
                         "",
                       ),
-                      style: bodySbMd.copyWith(color: colorScheme.onPrimary)
+                      style: textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary)
                     ),
                     const SizedBox(height: 6.0),
                     Text(
                       widget.product.commonInfo.companyName!,
-                      style: bodyRgSm.copyWith(color: colorScheme.onTertiary)
+                      style: textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary)
                     ),
                   ],
                 ),
@@ -110,7 +111,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                 children: [
                   Text(
                     sortCriteria.split('(').first,
-                    style: bodySbSm.copyWith(color: colorScheme.onTertiary)
+                    style: textTheme.titleSmall!.copyWith(color: colorScheme.onTertiary)
                   ),
                   const SizedBox(height: 6.0),
                   Text(
@@ -232,7 +233,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                               .toStringAsFixed(2),
                       },
                     },
-                    style: bodySbMd.copyWith(color: colorScheme.onPrimary)
+                    style: textTheme.titleMedium!.copyWith(color: colorScheme.onPrimary)
                   ),
                 ],
               ),

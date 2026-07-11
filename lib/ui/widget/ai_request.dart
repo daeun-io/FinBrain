@@ -1,4 +1,3 @@
-import 'package:finbrain/themes/text_style.dart';
 import 'package:flutter/material.dart';
 
 class AiRequest extends StatelessWidget {
@@ -9,6 +8,7 @@ class AiRequest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -29,7 +29,7 @@ class AiRequest extends StatelessWidget {
             children: [
               Text(
                 text,
-                style: bodyRgMd.copyWith(color: colorScheme.onSecondary)
+                style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)
               ),
             ],
           ),

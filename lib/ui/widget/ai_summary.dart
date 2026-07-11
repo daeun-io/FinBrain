@@ -1,5 +1,4 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
 
@@ -11,14 +10,29 @@ class AiSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: texts.map((e) => _buildSingleSummary(context, e.text, colorScheme)).toList(),
+      children: texts
+          .map(
+            (e) => _buildSingleSummary(
+              context,
+              e.text,
+              colorScheme,
+              textTheme.titleLarge!,
+            ),
+          )
+          .toList(),
     );
   }
 
-  Widget _buildSingleSummary(BuildContext context, String text, ColorScheme colorScheme) {
+  Widget _buildSingleSummary(
+    BuildContext context,
+    String text,
+    ColorScheme colorScheme,
+    TextStyle style,
+  ) {
     return Align(
       alignment: Alignment.centerLeft,
       child: ConstrainedBox(
@@ -30,28 +44,34 @@ class AiSummary extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                colorScheme.surfaceContainerLowest,
-                colorScheme.surfaceContainerLow
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight
+              gradient: LinearGradient(
+                colors: [
+                  colorScheme.surfaceContainerLowest,
+                  colorScheme.surfaceContainerLow,
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
               ),
               borderRadius: BorderRadiusGeometry.all(Radius.circular(20.0)),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 16.0,
+              ),
               child: Column(
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "지난 대화 요약",
-                      style: bodySbLg.copyWith(color: colorScheme.onSecondary),
+                      style: style.copyWith(
+                        color: colorScheme.onSecondary,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12.0),
-                  MarkdownTextRenderer(str: text)
+                  MarkdownTextRenderer(str: text),
                 ],
               ),
             ),

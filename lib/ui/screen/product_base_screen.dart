@@ -82,6 +82,8 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final products = ref.watch(productViewmodelProvider);
 
     // Move to center after fetching data
@@ -134,7 +136,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                 return Center(
                   child: Text(
                     "상품이 존재하지 않습니다",
-                    style: bodyRgMd.copyWith(color: colorScheme.onSecondary)
+                    style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)
                   ),
                 );
               }
