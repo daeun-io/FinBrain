@@ -1,5 +1,6 @@
-import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
@@ -41,7 +42,9 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
     if (_isLoading) return;
     final position = _controller.position;
     if (position.pixels > position.maxScrollExtent) {
-      final data = ref.read(productViewmodelProvider);
+      final data = ref.read(
+        productViewmodelProvider(widget.category, "$_cPage"),
+      );
       if (data.hasValue && data.value != null) {
         _maxPage = data.value!.$1;
       }
@@ -54,6 +57,9 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
         setState(() {
           _isLoading = false;
         });
+        ref
+            .read(currentPageViewmodelProvider(widget.category).notifier)
+            .setCurrentPage(_cPage);
       }
     }
     if (position.pixels < position.minScrollExtent) {
@@ -66,14 +72,15 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
         setState(() {
           _isLoading = false;
         });
+        ref
+            .read(currentPageViewmodelProvider(widget.category).notifier)
+            .setCurrentPage(_cPage);
       }
     }
   }
 
   Future<void> _fetchData() async {
-    ref
-        .read(productViewmodelProvider.notifier)
-        .fetchFinlifeProducts(widget.category, _cPage.toString());
+    ref.read(fetchProductViewmodelProvider(widget.category, "$_cPage"));
     await Future.delayed(const Duration(seconds: 1));
   }
 
@@ -82,10 +89,15 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final products = ref.watch(productViewmodelProvider);
+    final products = ref.watch(
+      productViewmodelProvider(widget.category, "$_cPage"),
+    );
 
     // Move to center after fetching data
-    ref.listen(productViewmodelProvider, (prev, next) {
+    ref.listen(productViewmodelProvider(widget.category, "$_cPage"), (
+      prev,
+      next,
+    ) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -94,6 +106,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
         });
       }
     });
+
     return Padding(
       padding: const EdgeInsets.only(
         top: 24.0,
@@ -106,7 +119,12 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           SearchBox(
             searchItem: (value) {
               ref
-                  .read(productViewmodelProvider.notifier)
+                  .read(
+                    productViewmodelProvider(
+                      ProductCategory.isaMp,
+                      "$_cPage",
+                    ).notifier,
+                  )
                   .filterByKeyword(value);
             },
           ),
@@ -120,7 +138,12 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                   category: widget.category,
                   onSortCriteriaChanged: (criteria) {
                     ref
-                        .read(productViewmodelProvider.notifier)
+                        .read(
+                          productViewmodelProvider(
+                            ProductCategory.isaMp,
+                            "$_cPage",
+                          ).notifier,
+                        )
                         .sortByCriteria(criteria, widget.category, _maxPage);
                   },
                 ),
@@ -134,7 +157,9 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                 return Center(
                   child: Text(
                     "상품이 존재하지 않습니다",
-                    style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)
+                    style: textTheme.bodyMedium!.copyWith(
+                      color: colorScheme.onSecondary,
+                    ),
                   ),
                 );
               }
@@ -163,7 +188,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
               );
             },
             error: (err, stack) => const ShowingErrorWidget(),
-            loading: () => const CustomProgressIndicator()
+            loading: () => const CustomProgressIndicator(),
           ),
         ],
       ),

@@ -1,8 +1,8 @@
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';
 import 'package:finbrain/ui/screen/isa_mp_screen.dart';
+import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,7 +25,7 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
         switch(_controller.index){
           case 0: ref.read(isaJoinStatusViewModelProvider.notifier).fetchIsaJoinStatus("1"); break;
           case 1: ref.read(isaManagementStatusViewModelProvider.notifier).fetchIsaManagementStatus("1"); break;
-          default: ref.read(productViewmodelProvider.notifier).fetchIsaMpProducts("1");
+          default: ref.read(fetchProductViewmodelProvider(ProductCategory.isaMp, "1"));
         }
       }
     });

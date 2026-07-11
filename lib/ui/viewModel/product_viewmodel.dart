@@ -18,133 +18,98 @@ part 'product_viewmodel.g.dart';
 final repository = ProductRepository();
 
 @riverpod
-class ProductViewmodel extends _$ProductViewmodel {
+class FetchProductViewmodel extends _$FetchProductViewmodel {
   @override
-  Future<(int, List<FinancialProduct>)> build() async {
-    return (0, <FinancialProduct>[]);
-  }
-
-  void fetchFinlifeProducts(
+  Future<(int, List<FinancialProduct>)> build(
     ProductCategory ctg,
-    String pageNo, [
-    Map<String, List<(String, bool)>>? snapshot,
-  ]) async {
+    String pageNo,
+  ) async {
     final user = GoogleAuthService.getCurrentUser();
     if (user == null) {
       debugPrint("No user is currently signed in.");
-      state = AsyncValue.error("No user found", StackTrace.current);
-      return;
+      return (0, <FinancialProduct>[]);
     }
 
-    if (ctg == ProductCategory.isaMp ||
-        ctg == ProductCategory.isaJoin ||
-        ctg == ProductCategory.isaManagement ||
-        ctg == ProductCategory.liked) {
-      return;
-    }
-
-    final filters =
-        snapshot ??
-        (await ref.read(filtersViewmodelProvider(ctg).future) ?? {});
-
+    final filters = ref.watch(filtersViewmodelProvider(ctg));
     Map<String, List<String>> selectedFilters = {};
-    for (final entry in filters.entries) {
+    for (final entry in (filters.value ?? {}).entries) {
       selectedFilters[entry.key] = entry.value
           .where((e) => e.$2 == true)
           .map((e) => e.$1)
           .toList();
     }
+
     final topFinGrpNo =
         getFinGroupCode[selectedFilters["금융회사"]?.first ?? "020000"] ?? "020000";
-
     if (selectedFilters["회사 선택"] != null && selectedFilters["회사 선택"]!.isEmpty) {
       final List<String> companies = [];
-      for (final filter in filters["회사 선택"]!) {
+      for (final filter in (filters.value ?? {})["회사 선택"]!) {
         companies.add(filter.$1);
       }
       selectedFilters["회사 선택"] = companies;
-    }
-
-    final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(ctg))
-        .$1
-        .toString();
-
-    final result = await repository.fetchFinlifeProductsAndPageNo(
-      user.uid,
-      ctg,
-      topFinGrpNo,
-      pageNo,
-    );
-    final maxPage = result.$1;
-    final products = result.$2;
-
-    final filtered = products.where((element) {
-      return (selectedFilters["회사 선택"] ?? []).contains(
-            element.commonInfo.companyName,
-          ) &&
-          element.commonInfo.joinWay!.any(
-            (e) =>
-                (selectedFilters["가입 방법"] ??
-                        ["영업점", "인터넷", "스마트폰", "모집인", "전화(텔레뱅킹)", "기타"])
-                    .contains(e),
-          );
-    }).toList();
-    sortByCriteria(criteria, ctg, maxPage, filtered);
-  }
-
-  void fetchIsaMpProducts(
-    String pageNo, [
-    Map<String, List<(String, bool)>>? snapshot,
-  ]) async {
-    final user = GoogleAuthService.getCurrentUser();
-    if (user == null) {
-      debugPrint("No user is currently signed in.");
-      state = AsyncValue.error("No user found", StackTrace.current);
-      return;
-    }
-
-    final filters =
-        snapshot ??
-        (await ref.read(
-              filtersViewmodelProvider(ProductCategory.isaMp).future,
-            ) ??
-            {});
-    Map<String, List<String>> selectedFilters = {};
-    for (final entry in filters.entries) {
-      selectedFilters[entry.key] = entry.value
-          .where((e) => e.$2 == true)
-          .map((e) => e.$1)
-          .toList();
     }
 
     final baseYear = (selectedFilters["기준년도"]?.isNotEmpty ?? false)
         ? selectedFilters["기준년도"]!.first
         : DateTime.now().year.toString();
 
-    final result = await repository.fetchIsaMpProductsAndCount(
-      user.uid,
-      pageNo,
-      "1000",
-      baseYear,
-    );
+    final result = (ctg == ProductCategory.isaMp)
+        ? await repository.fetchIsaMpProductsAndCount(
+            user.uid,
+            pageNo,
+            "1000",
+            baseYear,
+          )
+        : await repository.fetchFinlifeProductsAndPageNo(
+            user.uid,
+            ctg,
+            topFinGrpNo,
+            pageNo,
+          );
 
-    final totalCount = result.$1;
+    final maxPage = result.$1;
     final products = result.$2;
 
-    final filtered = products.where((element) {
-      return (selectedFilters["업권"] ?? []).contains(
-            (element as IsaMpBenefitRate).businessDomain,
-          ) &&
-          (selectedFilters["MP 종류"] ?? []).contains(element.mpType);
-    }).toList();
+    final filtered = (ctg == ProductCategory.isaMp)
+        ? products.where((element) {
+            return (selectedFilters["업권"] ?? []).contains(
+                  (element as IsaMpBenefitRate).businessDomain,
+                ) &&
+                (selectedFilters["MP 종류"] ?? []).contains(element.mpType);
+          }).toList()
+        : products.where((element) {
+            return (selectedFilters["회사 선택"] ?? []).contains(
+                  element.commonInfo.companyName,
+                ) &&
+                element.commonInfo.joinWay!.any(
+                  (e) =>
+                      (selectedFilters["가입 방법"] ??
+                              ["영업점", "인터넷", "스마트폰", "모집인", "전화(텔레뱅킹)", "기타"])
+                          .contains(e),
+                );
+          }).toList();
+
+      return (maxPage, filtered);
+  }
+}
+
+@riverpod
+class ProductViewmodel extends _$ProductViewmodel {
+  @override
+  AsyncValue<(int, List<FinancialProduct>)> build(
+    ProductCategory ctg,
+    String pageNo,
+  ) {
+    final result = ref.watch(fetchProductViewmodelProvider(ctg, pageNo));
 
     final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(ProductCategory.isaMp))
+        .read(sortOrFilterTextViewModelProvider(ctg))
         .$1
         .toString();
 
-    sortByCriteria(criteria, ProductCategory.isaMp, totalCount, filtered);
+    final maxPage = (result.value == null) ? 0 : result.value!.$1;
+    final products = (result.value == null) ? <FinancialProduct>[] : result.value!.$2;
+    return sortByCriteria(criteria, ctg, maxPage, products);
   }
 
   bool toggleLiked(FinancialProduct product) {
@@ -171,7 +136,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     return isLiked;
   }
 
-  void sortByCriteria(
+  AsyncValue<(int, List<FinancialProduct>)> sortByCriteria(
     String criteria,
     ProductCategory category,
     int maxPage, [
@@ -180,102 +145,98 @@ class ProductViewmodel extends _$ProductViewmodel {
     final products =
         prdt ?? ((state.value == null) ? [] : [...state.value!.$2]);
 
-    switch (category) {
-      case ProductCategory.deposit:
-      case ProductCategory.installment:
-        state = AsyncValue.data((
-          maxPage,
-          products..sort(
-            (criteria == "최고 금리(높은 순)")
-                ? (a, b) =>
-                      ((b as DepositAndInstallmentSavings)
+    final sorted = switch (category) {
+      ProductCategory.deposit ||
+      ProductCategory.installment => AsyncValue.data((
+        maxPage,
+        products..sort(
+          (criteria == "최고 금리(높은 순)")
+              ? (a, b) =>
+                    ((b as DepositAndInstallmentSavings)
+                            .returnHighestRateValue()
+                            .$1)
+                        .compareTo(
+                          ((a as DepositAndInstallmentSavings)
                               .returnHighestRateValue()
-                              .$1)
-                          .compareTo(
-                            ((a as DepositAndInstallmentSavings)
-                                .returnHighestRateValue()
-                                .$1),
-                          )
-                : (a, b) =>
-                      ((b as DepositAndInstallmentSavings)
+                              .$1),
+                        )
+              : (a, b) =>
+                    ((b as DepositAndInstallmentSavings)
+                            .returnHighestRateValue()
+                            .$2)
+                        .compareTo(
+                          ((a as DepositAndInstallmentSavings)
                               .returnHighestRateValue()
-                              .$2)
-                          .compareTo(
-                            ((a as DepositAndInstallmentSavings)
-                                .returnHighestRateValue()
-                                .$2),
-                          ),
-          ),
-        ));
-        break;
-      case ProductCategory.mortgage:
-      case ProductCategory.rent:
-        state = AsyncValue.data((
-          maxPage,
-          products..sort(switch (criteria) {
-            "최저 금리(낮은 순)" => (a, b) {
-              if ((a as MortgageAndRentLoan).returnRates()[0] == null) {
-                return 1;
-              } else if ((b as MortgageAndRentLoan).returnRates()[0] == null) {
-                return -1;
-              } else {
-                return a.returnRates()[0]!.compareTo(b.returnRates()[0]!);
-              }
-            },
-            "최고 금리(낮은 순)" => (a, b) {
-              if ((a as MortgageAndRentLoan).returnRates()[2] == null) {
-                return 1;
-              } else if ((b as MortgageAndRentLoan).returnRates()[2] == null) {
-                return -1;
-              } else {
-                return a.returnRates()[2]!.compareTo(b.returnRates()[2]!);
-              }
-            },
-            _ => (a, b) {
-              if ((a as MortgageAndRentLoan).returnRates()[1] == null) {
-                return 1;
-              } else if ((b as MortgageAndRentLoan).returnRates()[1] == null) {
-                return -1;
-              } else {
-                return a.returnRates()[1]!.compareTo(b.returnRates()[1]!);
-              }
-            },
-          }),
-        ));
-      case ProductCategory.credit:
-        state = AsyncValue.data((
-          maxPage,
-          products..sort(switch (criteria) {
-            "최저 금리(낮은 순)" =>
-              (a, b) => (a as CreditLoan).returnRates()[0].compareTo(
-                (b as CreditLoan).returnRates()[0],
-              ),
-            "최고 금리(낮은 순)" =>
-              (a, b) => (a as CreditLoan).returnRates()[2].compareTo(
-                (b as CreditLoan).returnRates()[2],
-              ),
-            _ => (a, b) => (a as CreditLoan).returnRates()[1].compareTo(
-              (b as CreditLoan).returnRates()[1],
+                              .$2),
+                        ),
+        ),
+      )),
+      ProductCategory.mortgage || ProductCategory.rent => AsyncValue.data((
+        maxPage,
+        products..sort(switch (criteria) {
+          "최저 금리(낮은 순)" => (a, b) {
+            if ((a as MortgageAndRentLoan).returnRates()[0] == null) {
+              return 1;
+            } else if ((b as MortgageAndRentLoan).returnRates()[0] == null) {
+              return -1;
+            } else {
+              return a.returnRates()[0]!.compareTo(b.returnRates()[0]!);
+            }
+          },
+          "최고 금리(낮은 순)" => (a, b) {
+            if ((a as MortgageAndRentLoan).returnRates()[2] == null) {
+              return 1;
+            } else if ((b as MortgageAndRentLoan).returnRates()[2] == null) {
+              return -1;
+            } else {
+              return a.returnRates()[2]!.compareTo(b.returnRates()[2]!);
+            }
+          },
+          _ => (a, b) {
+            if ((a as MortgageAndRentLoan).returnRates()[1] == null) {
+              return 1;
+            } else if ((b as MortgageAndRentLoan).returnRates()[1] == null) {
+              return -1;
+            } else {
+              return a.returnRates()[1]!.compareTo(b.returnRates()[1]!);
+            }
+          },
+        }),
+      )),
+      ProductCategory.credit => AsyncValue.data((
+        maxPage,
+        products..sort(switch (criteria) {
+          "최저 금리(낮은 순)" =>
+            (a, b) => (a as CreditLoan).returnRates()[0].compareTo(
+              (b as CreditLoan).returnRates()[0],
             ),
-          }),
-        ));
-      default:
-        state = AsyncData((
-          maxPage,
-          products..sort(switch (criteria) {
-            "평균 수익률(높은 순)" =>
-              (a, b) => (b as IsaMpBenefitRate)
-                  .returnAvgMedProfits()
-                  .$1
-                  .compareTo((a as IsaMpBenefitRate).returnAvgMedProfits().$1),
-            _ =>
-              (a, b) => (b as IsaMpBenefitRate)
-                  .returnAvgMedProfits()
-                  .$2
-                  .compareTo((a as IsaMpBenefitRate).returnAvgMedProfits().$2),
-          }),
-        ));
-    }
+          "최고 금리(낮은 순)" =>
+            (a, b) => (a as CreditLoan).returnRates()[2].compareTo(
+              (b as CreditLoan).returnRates()[2],
+            ),
+          _ => (a, b) => (a as CreditLoan).returnRates()[1].compareTo(
+            (b as CreditLoan).returnRates()[1],
+          ),
+        }),
+      )),
+      _ => AsyncData((
+        maxPage,
+        products..sort(switch (criteria) {
+          "평균 수익률(높은 순)" =>
+            (a, b) => (b as IsaMpBenefitRate)
+                .returnAvgMedProfits()
+                .$1
+                .compareTo((a as IsaMpBenefitRate).returnAvgMedProfits().$1),
+          _ =>
+            (a, b) => (b as IsaMpBenefitRate)
+                .returnAvgMedProfits()
+                .$2
+                .compareTo((a as IsaMpBenefitRate).returnAvgMedProfits().$2),
+        }),
+      )),
+    };
+    state = sorted;
+    return sorted;
   }
 
   void filterByKeyword(String keyword) {

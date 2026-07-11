@@ -54,7 +54,7 @@ final class FiltersViewmodelProvider
   }
 }
 
-String _$filtersViewmodelHash() => r'6fe63b7ba4f5f81dfb598f03b3c01a0ea0ca06d5';
+String _$filtersViewmodelHash() => r'b2ae710d8aaaa7d29ab3f2ed182b141ec74b52d5';
 
 final class FiltersViewmodelFamily extends $Family
     with
@@ -168,7 +168,7 @@ final class DialogFiltersViewModelProvider
 }
 
 String _$dialogFiltersViewModelHash() =>
-    r'd7cb93bb700b5794b724c9a34f606e071286f4b4';
+    r'a96aa4383bd324e57901fc4a9bc05b411ee90dfd';
 
 final class DialogFiltersViewModelFamily extends $Family
     with

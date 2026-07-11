@@ -144,12 +144,11 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
             .fetchIsaManagementStatus(pageNo, snapshot);
       case ProductCategory.isaMp:
         ref
-            .read(productViewmodelProvider.notifier)
-            .fetchIsaMpProducts(pageNo, snapshot);
+            .read(fetchProductViewmodelProvider(ProductCategory.isaMp, pageNo));
       default:
         ref
-            .read(productViewmodelProvider.notifier)
-            .fetchFinlifeProducts(ctg, "1", snapshot);
+            .read(fetchProductViewmodelProvider(ctg, pageNo));
+            
     }
   }
 

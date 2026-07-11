@@ -20,7 +20,7 @@ final class TextThemeViewmodelProvider
         argument: null,
         retry: null,
         name: r'textThemeViewmodelProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -42,7 +42,7 @@ final class TextThemeViewmodelProvider
 }
 
 String _$textThemeViewmodelHash() =>
-    r'd78e1714bc6264542c78c6cfdfb76f728eec107b';
+    r'69827692854f0ae4e773dd95ca7bf124cd039b5e';
 
 abstract class _$TextThemeViewmodel extends $Notifier<TextTheme> {
   TextTheme build();

@@ -48,7 +48,7 @@ final class SelectedCtgForSummariesViewmodelProvider
 }
 
 String _$selectedCtgForSummariesViewmodelHash() =>
-    r'23d6e94106f8a7305ba5edaf07245d2cceae146a';
+    r'10ffb1997377b95d6a258220ba94a9c5d0503b29';
 
 abstract class _$SelectedCtgForSummariesViewmodel
     extends $Notifier<List<ProductCategory>> {
@@ -212,7 +212,7 @@ final class SelectedCtgForCompTextViewmodelProvider
 }
 
 String _$selectedCtgForCompTextViewmodelHash() =>
-    r'fb3bdb3d48001e7b14c5c55268f054be7bd9b88e';
+    r'261f4de6c48dc986464dc3dde768547c900a5a39';
 
 abstract class _$SelectedCtgForCompTextViewmodel
     extends $Notifier<List<ProductCategory>> {

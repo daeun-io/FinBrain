@@ -4,8 +4,9 @@ import 'package:finbrain/data/repository/ai_comp_repository.dart';
 import 'package:finbrain/data/repository/ai_response_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewModel/liked_product_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/data/repository/ai_convo_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:finbrain/data/google_auth_service.dart';
@@ -29,8 +30,9 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
   @override
   Map<String, String> build(String tag) => {};
 
-  Future<FinancialProduct?> getProduct(String tag) async {
-    final productList = await ref.read(productViewmodelProvider.future);
+  Future<FinancialProduct?> getProduct(String tag, ProductCategory ctg) async {
+    final page = ref.read(currentPageViewmodelProvider(ctg));
+    final productList = await ref.read(fetchProductViewmodelProvider(ctg, "$page").future);
     final likedList = await ref.read(fetchLikedViewmodelProvider.future);
     final product = productList.$2
         .where((e) => (e.commonInfo.productName == tag))
@@ -44,7 +46,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
       print("======================");
       print("tag: $tag");
 
-      final product = await getProduct(tag);
+      final product = await getProduct(tag, ctg);
       if (product == null) {
         state = {...state, newRequest: "오류가 발생했습니다. 다시 시도해주세요"};
         return;

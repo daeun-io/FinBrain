@@ -1,5 +1,6 @@
-import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
@@ -39,7 +40,9 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
     if (_isLoading) return;
     final position = _controller.position;
     if (position.pixels > position.maxScrollExtent) {
-      final data = ref.read(productViewmodelProvider);
+      final data = ref.read(
+        productViewmodelProvider(ProductCategory.isaMp, "$_cPage"),
+      );
       if (data.hasValue && data.value != null) {
         totalCount = data.value!.$1;
       }
@@ -53,6 +56,9 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         setState(() {
           _isLoading = false;
         });
+        ref
+            .read(currentPageViewmodelProvider(ProductCategory.isaMp).notifier)
+            .setCurrentPage(_cPage);
       }
     }
     if (position.pixels < position.minScrollExtent) {
@@ -65,23 +71,29 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         setState(() {
           _isLoading = false;
         });
+        ref
+            .read(currentPageViewmodelProvider(ProductCategory.isaMp).notifier)
+            .setCurrentPage(_cPage);
       }
     }
   }
 
   Future<void> _fetchData() async {
-    ref
-        .read(productViewmodelProvider.notifier)
-        .fetchIsaMpProducts(_cPage.toString());
+    ref.read(fetchProductViewmodelProvider(ProductCategory.isaMp, "$_cPage"));
     await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
-    final products = ref.watch(productViewmodelProvider);
+    final products = ref.watch(
+      productViewmodelProvider(ProductCategory.isaMp, "$_cPage"),
+    );
 
     // Move to center after fetching data
-    ref.listen(productViewmodelProvider, (prev, next) {
+    ref.listen(productViewmodelProvider(ProductCategory.isaMp, "$_cPage"), (
+      prev,
+      next,
+    ) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -96,7 +108,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         const SizedBox(height: 24.0),
         SearchBox(
           searchItem: (value) {
-            ref.read(productViewmodelProvider.notifier).filterByKeyword(value);
+            //ref.read(productViewmodelProvider().notifier).filterByKeyword(value);
           },
         ),
         const SizedBox(height: 24.0),
@@ -109,7 +121,12 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                 category: ProductCategory.isaMp,
                 onSortCriteriaChanged: (criteria) {
                   ref
-                      .read(productViewmodelProvider.notifier)
+                      .read(
+                        productViewmodelProvider(
+                          ProductCategory.isaMp,
+                          "$_cPage",
+                        ).notifier,
+                      )
                       .sortByCriteria(
                         criteria,
                         ProductCategory.isaMp,

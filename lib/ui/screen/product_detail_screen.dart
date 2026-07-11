@@ -8,6 +8,7 @@ import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
 import 'package:finbrain/themes/text_style.dart';
+import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
@@ -24,9 +25,12 @@ class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen({
     super.key,
     required this.productName,
+    required this.category,
     required this.fromLikedScreen,
   });
+
   final String productName;
+  final ProductCategory category;
   final bool fromLikedScreen;
 
   void launchPrdtUrl(
@@ -63,7 +67,8 @@ class ProductDetailScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final productList = ref.watch(productViewmodelProvider);
+    final page = ref.watch(currentPageViewmodelProvider(category));
+    final productList = ref.watch(productViewmodelProvider(category, "$page"));
     final likedList = ref.watch(likedProductViewmodelProvider);
 
     return ((fromLikedScreen) ? likedList : productList).when(
@@ -113,7 +118,7 @@ class ProductDetailScreen extends ConsumerWidget {
               IconButton(
                 onPressed: () {
                   ref
-                      .read(productViewmodelProvider.notifier)
+                      .read(productViewmodelProvider(category, "$page").notifier)
                       .toggleLiked(product);
                 },
                 icon: product.commonInfo.isLiked
