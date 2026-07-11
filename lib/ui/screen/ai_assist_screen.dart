@@ -1,12 +1,11 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class AiAssistScreen extends ConsumerStatefulWidget {
   const AiAssistScreen({super.key, required this.tag, required this.category});
@@ -66,33 +65,32 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     Map<String, String> aiMessages = ref.watch(
       aiScreenViewmodelProvider(widget.tag),
     );
 
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: colorScheme.primary,
       appBar: AppBar(
-        backgroundColor: primary100,
+        backgroundColor: colorScheme.tertiary,
         scrolledUnderElevation: 0.0,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
         ),
-        title: const Text(
+        title: Text(
           "AI 어시스트",
-          style: TextStyle(
-            color: textPrimary,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w600,
-          ),
+          style: textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary)
         ),
         titleSpacing: -6.0,
       ),
       body: (record == null)
-          ? Center(child: const CircularProgressIndicator(color: primary400))
+          ? const CustomProgressIndicator()
           : Column(
               children: [
                 Expanded(
@@ -134,12 +132,12 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                   ),
                 ),
                 Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0),
                       topRight: Radius.circular(20.0),
                     ),
-                    color: primary100,
+                    color: colorScheme.tertiary,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -170,13 +168,9 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                 }
                               },
                               maxLines: null,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "AI한테 질문하기",
-                                hintStyle: TextStyle(
-                                  color: textSecondary,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                hintStyle: textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary),
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -205,10 +199,10 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                               _messageController.clear();
                             }
                           },
-                          icon: SvgPicture.asset(
-                            "assets/images/send_icon.svg",
-                            width: 42,
-                            height: 42,
+                          icon: Icon(
+                            Icons.send,
+                            color: colorScheme.surfaceContainerHighest,
+                            size: 28.0,
                           ),
                         ),
                       ],

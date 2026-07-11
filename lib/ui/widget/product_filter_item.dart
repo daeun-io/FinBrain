@@ -1,6 +1,5 @@
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,6 +17,9 @@ class ProductFilterItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     var localIsSelected = isSelected;
 
     return GestureDetector(
@@ -27,10 +29,14 @@ class ProductFilterItem extends ConsumerWidget {
             .toggleSelected(category, text, localIsSelected);
       },
       child: Card(
-        color: localIsSelected ? primary700 : white,
+        color: localIsSelected
+            ? colorScheme.surfaceContainerHigh
+            : colorScheme.onSurface,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: localIsSelected ? primary700 : primary300,
+            color: localIsSelected
+                ? colorScheme.surfaceContainerHigh
+                : colorScheme.outline,
             width: 1.0,
           ),
           borderRadius: BorderRadiusGeometry.circular(10.0),
@@ -40,11 +46,9 @@ class ProductFilterItem extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           child: Text(
             text,
-            style: TextStyle(
-              color: localIsSelected ? white : black,
-              fontSize: 12.0,
-              fontWeight: localIsSelected ? FontWeight.w600 : FontWeight.w400,
-            ),
+            style: (localIsSelected)
+                ? textTheme.titleMedium!.copyWith(color: colorScheme.onSurface)
+                : textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
           ),
         ),
       ),

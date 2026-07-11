@@ -439,8 +439,7 @@ class ProductRepository {
                       (e) => IsaMpBenefitRateOption(
                         term: e["trm"],
                         benefitRate:
-                            double.tryParse(e["bnfRt"].toString()) ??
-                            double.negativeInfinity,
+                            double.tryParse(e["bnfRt"].toString())
                       ),
                     )
                     .toList(),

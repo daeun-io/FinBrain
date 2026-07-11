@@ -1,4 +1,3 @@
-import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class AiRequest extends StatelessWidget {
@@ -8,13 +7,16 @@ class AiRequest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         minWidth: 0,
         maxWidth: MediaQuery.of(context).size.width * 0.8
       ),
       child: Card(
-        color: const Color(0xFFF4F4F4),
+        color: colorScheme.secondary,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.all(Radius.circular(20.0)),
         ),
@@ -27,11 +29,7 @@ class AiRequest extends StatelessWidget {
             children: [
               Text(
                 text,
-                style: TextStyle(
-                  color: black,
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)
               ),
             ],
           ),

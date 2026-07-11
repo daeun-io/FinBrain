@@ -1,6 +1,5 @@
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';
 import 'package:finbrain/ui/screen/isa_mp_screen.dart';
@@ -44,13 +43,16 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
           children: [
             Card(
               margin: EdgeInsets.zero,
-              color: primary100,
+              color: colorScheme.tertiary,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
@@ -58,19 +60,11 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
               child: TabBar(
                 controller: _controller,
                 padding: EdgeInsets.zero,
-                labelStyle: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: white,
-                ),
-                unselectedLabelStyle: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: textSecondary,
-                ),
-                indicator: const BoxDecoration(
+                labelStyle: textTheme.titleMedium!.copyWith(color: colorScheme.onSurface),
+                unselectedLabelStyle: textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary),
+                indicator: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  color: primary700,
+                  color: colorScheme.surfaceContainerHigh,
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
@@ -79,7 +73,7 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
                   Container(
                     alignment: Alignment.center,
                     height: 40,
-                    child: const Text("업권별 가입 현황"),
+                    child: const Text("가입 현황"),
                   ),
                   Container(
                     alignment: Alignment.center,

@@ -1,5 +1,4 @@
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_year_picker.dart';
 import 'package:finbrain/ui/widget/product_filter_condition.dart';
@@ -12,12 +11,15 @@ class ProductDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final filters = ref.watch(dialogFiltersViewModelProvider(category));
 
     return Consumer(
       builder: (ctx, ref, child) {
         return AlertDialog(
-          backgroundColor: white,
+          backgroundColor: colorScheme.surfaceContainer,
           contentPadding: const EdgeInsets.only(
             top: 20.0,
             left: 20.0,
@@ -31,14 +33,10 @@ class ProductDialog extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.tune, color: primary900, size: 24.0),
-                    const Text(
+                    Icon(Icons.tune, color: colorScheme.onPrimary, size: 24.0),
+                    Text(
                       "필터",
-                      style: TextStyle(
-                        color: primary900,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary)
                     ),
                     const Spacer(),
                     TextButton(
@@ -50,7 +48,7 @@ class ProductDialog extends ConsumerWidget {
                             .resetChanges();
                       },
                       style: TextButton.styleFrom(
-                        side: const BorderSide(color: textTertiary, width: 1.0),
+                        side: BorderSide(color: colorScheme.onTertiary, width: 1.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadiusGeometry.circular(0.0),
                         ),
@@ -60,15 +58,11 @@ class ProductDialog extends ConsumerWidget {
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Icon(Icons.refresh, color: textSecondary, size: 16.0),
+                        children: [
+                          Icon(Icons.refresh, color: colorScheme.onTertiary, size: 16.0),
                           Text(
                             "초기화",
-                            style: TextStyle(
-                              color: textSecondary,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary)
                           ),
                         ],
                       ),
@@ -76,9 +70,9 @@ class ProductDialog extends ConsumerWidget {
                   ],
                 ),
                 if (filters.isEmpty)
-                  const Expanded(
+                  Expanded(
                     child: Center(
-                      child: CircularProgressIndicator(color: primary400),
+                      child: CircularProgressIndicator(color: colorScheme.onTertiaryFixed),
                     ),
                   )
                 else
@@ -96,13 +90,9 @@ class ProductDialog extends ConsumerWidget {
                                 const SizedBox(height: 8.0),
                                 Align(
                                   alignment: Alignment.centerLeft,
-                                  child: const Text(
+                                  child: Text(
                                     "기준년도",
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.w400,
-                                      color: textSecondary,
-                                    ),
+                                    style: textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary)
                                   ),
                                 ),
                                 CustomYearPicker(
@@ -146,19 +136,18 @@ class ProductDialog extends ConsumerWidget {
                           if (context.mounted) Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(
-                          backgroundColor: primary100,
+                          backgroundColor: colorScheme.tertiary,
+                          side: BorderSide(
+                            color: colorScheme.outline,
+                            width: 1.0
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadiusGeometry.circular(10.0),
                           ),
-                          overlayColor: primary500,
                         ),
                         child: Text(
                           "필터 적용",
-                          style: TextStyle(
-                            color: textPrimary,
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.w400,
-                          ),
+                          style: textTheme.titleMedium!.copyWith(color: colorScheme.onPrimary)
                         ),
                       ),
                     ),

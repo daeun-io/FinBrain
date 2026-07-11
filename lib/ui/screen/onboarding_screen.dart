@@ -1,4 +1,3 @@
-import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
@@ -10,8 +9,11 @@ class OnBoardingScreen extends StatelessWidget {
   final PageController _pageController = PageController();
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Container(
-      color: Colors.white,
+      color: colorScheme.primary,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -54,20 +56,31 @@ class OnBoardingScreen extends StatelessWidget {
           SmoothPageIndicator(
             controller: _pageController,
             count: 3, // Number of pages
-            effect: const ScrollingDotsEffect(
+            effect: ScrollingDotsEffect(
               spacing: 12.0,
               dotHeight: 8,
               dotWidth: 8,
-              activeDotColor: primary400,
-              dotColor: Color(0xffD9D9D9),
+              activeDotColor: colorScheme.onTertiaryFixed,
+              dotColor: colorScheme.scrim,
             ),
           ),
           const SizedBox(height: 40),
           GestureDetector(
-            onTap: () => _signInWithGoogle(context),
-            child: Image.asset(
-              'assets/images/signin_neutral.png',
-              width: MediaQuery.of(context).size.width * 0.65,
+            onTap: () {
+              _signInWithGoogle(context);
+            },
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              decoration: BoxDecoration(
+                color: colorScheme.surface,
+                border: Border.all(color: colorScheme.onPrimary, width: 1),
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 32.0),
+              child: Text(
+                "FINBRAIN 시작하기",
+                style: textTheme.headlineLarge!.copyWith(color: colorScheme.onPrimary),
+              ),
             ),
           ),
           const SizedBox(height: 60),
@@ -77,6 +90,8 @@ class OnBoardingScreen extends StatelessWidget {
   }
 
   void _signInWithGoogle(BuildContext context) async {
+    if (!context.mounted) return;
+
     final userCredential = await GoogleAuthService().signInWithGoogle();
 
     if (userCredential == null) {

@@ -7,7 +7,6 @@ import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +31,9 @@ class _ProductItemState extends ConsumerState<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final sortFilter = ref.watch(
       sortOrFilterTextViewModelProvider(widget.product.commonInfo.category),
     );
@@ -76,7 +78,9 @@ class _ProductItemState extends ConsumerState<ProductItem> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          color: isSelected ? primary300 : primary100,
+          color: isSelected
+              ? colorScheme.surfaceContainerLow
+              : colorScheme.secondary,
         ),
         child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -89,22 +93,14 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     Text(
                       widget.product.commonInfo.productName!.replaceAll(
                         r'\\n',
-                        " ",
+                        "",
                       ),
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                        color: textPrimary,
-                      ),
+                      style: textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary)
                     ),
                     const SizedBox(height: 6.0),
                     Text(
                       widget.product.commonInfo.companyName!,
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w400,
-                        color: textSecondary,
-                      ),
+                      style: textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary)
                     ),
                   ],
                 ),
@@ -115,11 +111,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                 children: [
                   Text(
                     sortCriteria.split('(').first,
-                    style: const TextStyle(
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w400,
-                      color: textSecondary,
-                    ),
+                    style: textTheme.titleSmall!.copyWith(color: colorScheme.onTertiary)
                   ),
                   const SizedBox(height: 6.0),
                   Text(
@@ -129,99 +121,119 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                             ? (widget.product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$1
-                                  .toString()
+                                  .toStringAsFixed(2)
                             : (widget.product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$2
-                                  .toString(),
+                                  .toStringAsFixed(2),
                       ProductCategory.installment =>
                         (sortCriteria == "최고 금리(높은 순)")
                             ? (widget.product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$1
-                                  .toString()
+                                  .toStringAsFixed(2)
                             : (widget.product as DepositAndInstallmentSavings)
                                   .returnHighestRateValue()
                                   .$2
-                                  .toString(),
+                                  .toStringAsFixed(2),
                       ProductCategory.annuity => switch (sortCriteria) {
                         "평균 수익률(높은 순)" =>
                           (widget.product as AnnuitySavings)
                               .returnProfits()[0]
-                              .toString(),
+                              .toStringAsFixed(2),
                         "전년도 수익률(높은 순)" =>
                           (widget.product as AnnuitySavings)
                               .returnProfits()[1]
-                              .toString(),
+                              .toStringAsFixed(2),
                         "전전년도 수익률(높은 순)" =>
                           (widget.product as AnnuitySavings)
                               .returnProfits()[2]
-                              .toString(),
+                              .toStringAsFixed(2),
                         _ =>
                           (widget.product as AnnuitySavings)
                               .returnProfits()[3]
-                              .toString(),
+                              .toStringAsFixed(2),
                       },
                       ProductCategory.credit => switch (sortCriteria) {
                         "최저 금리(낮은 순)" =>
                           (widget.product as CreditLoan)
                               .returnRates()[0]
-                              .toString(),
+                              .toStringAsFixed(2),
                         "최고 금리(낮은 순)" =>
                           (widget.product as CreditLoan)
                               .returnRates()[2]
-                              .toString(),
+                              .toStringAsFixed(2),
                         _ =>
                           (widget.product as CreditLoan)
                               .returnRates()[1]
-                              .toString(),
+                              .toStringAsFixed(2),
                       },
                       ProductCategory.mortgage => switch (sortCriteria) {
                         "최저 금리(낮은 순)" =>
-                          (widget.product as MortageAndRentLoan)
-                              .returnRates()[0]
-                              .toString(),
+                          ((widget.product as MortageAndRentLoan)
+                                      .returnRates()[0] ==
+                                  null)
+                              ? "미제공"
+                              : (widget.product as MortageAndRentLoan)
+                                    .returnRates()[0]!
+                                    .toStringAsFixed(2),
                         "최고 금리(낮은 순)" =>
-                          (widget.product as MortageAndRentLoan)
-                              .returnRates()[2]
-                              .toString(),
+                          ((widget.product as MortageAndRentLoan)
+                                      .returnRates()[0] ==
+                                  null)
+                              ? "미제공"
+                              : (widget.product as MortageAndRentLoan)
+                                    .returnRates()[2]!
+                                    .toStringAsFixed(2),
                         _ =>
-                          (widget.product as MortageAndRentLoan)
-                              .returnRates()[1]
-                              .toString(),
+                          ((widget.product as MortageAndRentLoan)
+                                      .returnRates()[1] ==
+                                  null)
+                              ? "미제공"
+                              : (widget.product as MortageAndRentLoan)
+                                    .returnRates()[1]!
+                                    .toStringAsFixed(2),
                       },
                       ProductCategory.rent => switch (sortCriteria) {
                         "최저 금리(낮은 순)" =>
-                          (widget.product as MortageAndRentLoan)
-                              .returnRates()[0]
-                              .toString(),
+                          ((widget.product as MortageAndRentLoan)
+                                      .returnRates()[0] ==
+                                  null)
+                              ? "미제공"
+                              : (widget.product as MortageAndRentLoan)
+                                    .returnRates()[0]!
+                                    .toStringAsFixed(2),
                         "최고 금리(낮은 순)" =>
-                          (widget.product as MortageAndRentLoan)
-                              .returnRates()[2]
-                              .toString(),
+                          ((widget.product as MortageAndRentLoan)
+                                      .returnRates()[0] ==
+                                  null)
+                              ? "미제공"
+                              : (widget.product as MortageAndRentLoan)
+                                    .returnRates()[2]!
+                                    .toStringAsFixed(2),
                         _ =>
-                          (widget.product as MortageAndRentLoan)
-                              .returnRates()[1]
-                              .toString(),
+                          ((widget.product as MortageAndRentLoan)
+                                      .returnRates()[1] ==
+                                  null)
+                              ? "미제공"
+                              : (widget.product as MortageAndRentLoan)
+                                    .returnRates()[1]!
+                                    .toStringAsFixed(2),
                       },
                       _ => switch (sortCriteria) {
                         "평균 수익률(높은 순)" =>
                           (widget.product as IsaMpBenefitRate)
                               .returnAvgMedProfits()
                               .$1
-                              .toString(),
+                              .toStringAsFixed(2),
                         _ =>
                           (widget.product as IsaMpBenefitRate)
                               .returnAvgMedProfits()
                               .$2
-                              .toString(),
+                              .toStringAsFixed(2),
                       },
                     },
-                    style: const TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w600,
-                      color: textPrimary,
-                    ),
+                    style: textTheme.titleMedium!.copyWith(color: colorScheme.onPrimary)
                   ),
                 ],
               ),
@@ -233,16 +245,20 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                       .toggleLiked(widget.product);
                 },
                 icon: isSelected
-                    ? const Icon(
+                    ? Icon(
                         Icons.check_circle,
-                        color: primary700,
+                        color: colorScheme.surfaceContainerHigh,
                         size: 32.0,
                       )
                     : widget.product.commonInfo.isLiked
-                    ? const Icon(Icons.favorite, color: likedColor, size: 32.0)
-                    : const Icon(
+                    ? Icon(
                         Icons.favorite,
-                        color: unlikedColor,
+                        color: colorScheme.onPrimaryFixed,
+                        size: 32.0,
+                      )
+                    : Icon(
+                        Icons.favorite,
+                        color: colorScheme.onPrimaryFixedVariant,
                         size: 32.0,
                       ),
               ),

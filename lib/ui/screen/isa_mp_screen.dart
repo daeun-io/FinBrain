@@ -1,6 +1,7 @@
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
@@ -92,28 +93,34 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
 
     return Column(
       children: [
-        const SizedBox(height: 16.0),
+        const SizedBox(height: 24.0),
         SearchBox(
           searchItem: (value) {
             ref.read(productViewmodelProvider.notifier).filterByKeyword(value);
           },
         ),
-        const SizedBox(height: 16.0),
-        ProductFilter(category: ProductCategory.isaMp),
         const SizedBox(height: 24.0),
-        SortOrFilterText(
-          category: ProductCategory.isaMp,
-          onSortCriteriaChanged: (criteria) {
-            ref
-                .read(productViewmodelProvider.notifier)
-                .sortByCriteria(
-                  criteria,
-                  ProductCategory.isaMp,
-                  products.value!.$1,
-                );
-          },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ProductFilter(category: ProductCategory.isaMp),
+            Expanded(
+              child: SortOrFilterText(
+                category: ProductCategory.isaMp,
+                onSortCriteriaChanged: (criteria) {
+                  ref
+                      .read(productViewmodelProvider.notifier)
+                      .sortByCriteria(
+                        criteria,
+                        ProductCategory.isaMp,
+                        products.value!.$1,
+                      );
+                },
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 24.0),
         products.when(
           data: (data) {
             final (maxPage, items) = data;
@@ -140,20 +147,8 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
               ),
             );
           },
-          error: (err, stack) => Expanded(
-            child: Center(
-              child: Text(
-                "오류가 발생했습니다. 다시 시도해주세요",
-                style: TextStyle(
-                  color: black,
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ),
-          loading: () =>
-              Center(child: const CircularProgressIndicator(color: primary500)),
+          error: (err, stack) => const ShowingErrorWidget(),
+          loading: () => const CustomProgressIndicator(),
         ),
       ],
     );

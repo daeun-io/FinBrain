@@ -1,6 +1,5 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/screen/ai_comparison_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,9 @@ class AiButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return SizedBox(
       height: 80,
       width: 80,
@@ -27,9 +29,11 @@ class AiButton extends ConsumerWidget {
                 .allCategoriesSame()) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
+                  backgroundColor: colorScheme.scrim,
                   duration: Duration(seconds: 3),
-                  content: const Text(
+                  content: Text(
                     "선택하신 상품들의 카테고리가 다릅니다!\n동일 카테고리의 상품을 비교해주세요",
+                    style: textTheme.bodySmall!.copyWith(color: colorScheme.onSecondary),
                   ),
                 ),
               );
@@ -43,9 +47,11 @@ class AiButton extends ConsumerWidget {
                     if (ctg == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
+                          backgroundColor: colorScheme.scrim,
                           duration: Duration(seconds: 3),
-                          content: const Text(
+                          content: Text(
                             "선택하신 상품의 카테고리가 존재하지 않습니다.\n다시 시도해주세요",
+                            style: textTheme.bodySmall!.copyWith(color: colorScheme.onSecondary),
                           ),
                         ),
                       );
@@ -61,7 +67,7 @@ class AiButton extends ConsumerWidget {
             );
           }
         },
-        backgroundColor: aiButtonBg,
+        backgroundColor: colorScheme.surfaceDim,
         splashColor: Colors.transparent,
         shape: const CircleBorder(),
         elevation: 0.0,
@@ -69,13 +75,9 @@ class AiButton extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset("assets/images/ai_assist.svg"),
-            const Text(
+            Text(
               "AI 도우미",
-              style: TextStyle(
-                color: textTertiary,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w600,
-              ),
+              style: textTheme.labelMedium!.copyWith(color: colorScheme.onSurface)
             ),
           ],
         ),

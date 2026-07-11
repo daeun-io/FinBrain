@@ -1,7 +1,9 @@
+import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/themes/colors.dart';
+import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewModel/archive_viewmodel.dart';
-import 'package:finbrain/ui/widget/archive_list.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,6 +13,9 @@ class ArchiveTabViewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final filterCtg = [
       ProductCategory.deposit,
       ProductCategory.installment,
@@ -30,7 +35,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
     return ((category == ArchiveCategory.comparison) ? compTexts : summaries)
         .when(
           data: (data) => Container(
-            color: Color(0xFFF4F4F4),
+            color: colorScheme.primary,
             padding: EdgeInsets.only(
               top: 24.0,
               left: 20.0,
@@ -85,9 +90,9 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                                     ? compTextfilters
                                     : summariesFilters)
                                 .contains(e),
-                        selectedColor: primary700,
-                        backgroundColor: white,
-                        checkmarkColor: white,
+                        selectedColor: colorScheme.surfaceContainerHigh,
+                        backgroundColor: colorScheme.secondary,
+                        checkmarkColor: colorScheme.onSurface,
                         label: Text(
                           switch (e) {
                             ProductCategory.deposit => "정기예금",
@@ -104,16 +109,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                                       ? compTextfilters
                                       : summariesFilters)
                                   .contains(e))
-                              ? const TextStyle(
-                                  color: white,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w600,
-                                )
-                              : const TextStyle(
-                                  color: black,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              ? textTheme.bodyMedium!.copyWith(color: colorScheme.onSurface)
+                              : textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)
                         ),
                       );
                     }).toList(),
@@ -121,14 +118,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                 ),
                 Expanded(
                   child: (category == ArchiveCategory.comparison)
-                      ? ArchiveList(
-                          ctg: ArchiveCategory.comparison,
-                          records: data,
-                        )
-                      : ArchiveList(
-                          ctg: ArchiveCategory.summary,
-                          records: data,
-                        ),
+                      ? archiveList(data, colorScheme, ref)
+                      : archiveList(data, colorScheme, ref),
                 ),
               ],
             ),
@@ -138,12 +129,101 @@ class ArchiveTabViewScreen extends ConsumerWidget {
             print("stack trace: $stackTrace");
             return Center(child: Text("오류가 발생했습니다!\n다시 시도해주세요"));
           },
-          loading: () => const Center(
-            child: CircularProgressIndicator(
-              color: primary400,
-              backgroundColor: Color(0xFFF4F4F4),
-            ),
-          ),
+          loading: () => const CustomProgressIndicator(),
         );
+  }
+
+  Widget archiveList(
+    List<AiRecord> records,
+    ColorScheme colorScheme,
+    WidgetRef ref,
+  ) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 24.0),
+          ...records.map((item) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: ExpansionTile(
+                  leading: IconButton(
+                    onPressed: () {
+                      if (category == ArchiveCategory.comparison) {
+                        ref
+                            .read(archiveComparisonViewmodelProvider.notifier)
+                            .pinRecord(item);
+                      } else {
+                        ref
+                            .read(archiveSummaryViewmodelProvider.notifier)
+                            .pinRecord(item);
+                      }
+                    },
+                    icon: item.isPinned
+                        ? Icon(
+                            Icons.star,
+                            color: colorScheme.onSecondaryFixed,
+                            size: 24,
+                          )
+                        : Icon(
+                            Icons.star_border,
+                            color: colorScheme.onSecondaryFixedVariant,
+                            size: 24,
+                          ),
+                  ),
+                  onExpansionChanged: (expanded) {
+                    if (category == ArchiveCategory.comparison) {
+                      ref
+                          .read(archiveComparisonViewmodelProvider.notifier)
+                          .expandRecord(item);
+                    } else {
+                      ref
+                          .read(archiveSummaryViewmodelProvider.notifier)
+                          .expandRecord(item);
+                    }
+                  },
+                  initiallyExpanded: item.isExpanded,
+                  backgroundColor: colorScheme.secondary,
+                  collapsedBackgroundColor: colorScheme.secondary,
+                  iconColor: colorScheme.onPrimary,
+                  collapsedIconColor: colorScheme.onPrimary,
+                  shape: const Border(),
+                  title: Text(
+                    (category == ArchiveCategory.summary)
+                        ? item.key
+                        : item.key.substring(8).replaceAll("-", " vs "),
+                    style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
+                  ),
+                  children: item.value.map((chat) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              chat.createdAt.toIso8601String().split("T").first,
+                              style: bodyRgSm.copyWith(color: colorScheme.onTertiary)
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: MarkdownTextRenderer(str: chat.text)
+                          ),
+                          const SizedBox(height: 12.0),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
   }
 }

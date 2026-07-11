@@ -1,8 +1,11 @@
-import 'package:finbrain/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomYearPicker extends StatefulWidget {
-  CustomYearPicker({Key? key, required this.selectedYear, required this.onYearChanged}) : super(key: key);
+  const CustomYearPicker({
+    super.key,
+    required this.selectedYear,
+    required this.onYearChanged,
+  });
 
   final int selectedYear;
   final ValueChanged onYearChanged;
@@ -23,11 +26,10 @@ class _YearPickerPageState extends State<CustomYearPicker> {
   void initState() {
     super.initState();
     _localSelected = widget.selectedYear;
-    yearList = List.generate(
-      (thisYear - 2021 + 1),
-      (index) => 2021 + index,
+    yearList = List.generate((thisYear - 2021 + 1), (index) => 2021 + index);
+    _scrollController = FixedExtentScrollController(
+      initialItem: yearList.length - 1,
     );
-    _scrollController = FixedExtentScrollController(initialItem: yearList.length - 1);
   }
 
   @override
@@ -38,6 +40,9 @@ class _YearPickerPageState extends State<CustomYearPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return SizedBox(
       height: 150,
       child: ListWheelScrollView.useDelegate(
@@ -45,7 +50,7 @@ class _YearPickerPageState extends State<CustomYearPicker> {
         controller: _scrollController,
         itemExtent: 42.0,
         physics: const BouncingScrollPhysics(
-          parent: FixedExtentScrollPhysics()
+          parent: FixedExtentScrollPhysics(),
         ),
         clipBehavior: Clip.none,
         diameterRatio: 1.5,
@@ -62,22 +67,16 @@ class _YearPickerPageState extends State<CustomYearPicker> {
             if (yearList[index] == _localSelected) {
               return SizedBox(
                 width: double.infinity,
-                child: Card(
+                child: Container(
                   key: ValueKey('Selected: ${yearList[index]}'),
                   margin: EdgeInsets.zero,
-                  color: primary100,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.all(Radius.circular(10.0)),
+                  decoration: BoxDecoration(
+                    border: BoxBorder.symmetric(horizontal: BorderSide(color: colorScheme.onTertiary))
                   ),
                   child: Center(
                     child: Text(
                       "${yearList[index]}년",
-                      style: const TextStyle(
-                        color: black,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: textTheme.titleLarge!.copyWith(color: colorScheme.onSecondary),
                     ),
                   ),
                 ),
@@ -87,11 +86,7 @@ class _YearPickerPageState extends State<CustomYearPicker> {
                 key: ValueKey('Unselected: ${yearList[index]}'),
                 child: Text(
                   "${yearList[index]}년",
-                  style: const TextStyle(
-                    color: textSecondary,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w400,
-                  ),
+                  style: textTheme.bodyLarge!.copyWith(color: colorScheme.onTertiary),
                 ),
               );
             }

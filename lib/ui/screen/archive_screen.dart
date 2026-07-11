@@ -1,5 +1,4 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/ui/screen/archive_tabview_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -8,29 +7,28 @@ class ArchiveScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final tabList = ["AI 대화 요약", "AI 비교 분석"];
     final tabView = TabBarView(
       children: const [ ArchiveTabViewScreen(category: ArchiveCategory.summary,), ArchiveTabViewScreen(category: ArchiveCategory.comparison,)],
     );
 
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: colorScheme.primary,
       appBar: AppBar(
-        backgroundColor: white,
+        backgroundColor: colorScheme.primary,
         scrolledUnderElevation: 0.0,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.arrow_back_ios_new, color: textPrimary),
+          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
         ),
         title: Text(
           "아카이브",
-          style: TextStyle(
-            color: textPrimary,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w600,
-          ),
+          style: textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary)
         ),
         titleSpacing: -6.0,
       ),
@@ -39,19 +37,14 @@ class ArchiveScreen extends StatelessWidget {
           child: Column(
             children: [
               TabBar(
-                labelColor: textPrimary,
-                labelStyle: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(color: colorScheme.onPrimary, width: 2.0),
                 ),
-                unselectedLabelStyle: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-                indicator: const UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 2),
-                ),
-                indicatorColor: textPrimary,
+                labelColor: colorScheme.onPrimary,
+                unselectedLabelColor: colorScheme.onTertiary,
+                dividerColor: colorScheme.onTertiary,
+                labelStyle: textTheme.titleMedium,
+                unselectedLabelStyle: textTheme.bodyMedium,
                 indicatorSize: TabBarIndicatorSize.tab,
                 splashFactory: NoSplash.splashFactory,
                 tabs: [
