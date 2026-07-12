@@ -23,7 +23,10 @@ export function groupItemsByName(items: IsaMp[]): GroupedIsaMp[]{
       options: [{ trm: item.trm, bnfRt: item.bnfRt}],
     });
   }
-  return Array.from(groupedMap.values());
+  const result = Array.from(groupedMap.values());
+  result.forEach((group) => group.options.reverse());
+
+  return result;
 }
 
 export function transformApiResponse(data: IsaMpApiResponse): IsaMpGroupedApiResponse {
