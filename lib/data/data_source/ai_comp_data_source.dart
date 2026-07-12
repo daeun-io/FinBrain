@@ -8,8 +8,9 @@ class AiCompDataSource {
     String uid,
     String tag,
     String text,
-    ProductCategory ctg,
-  ) async {
+    ProductCategory ctg, [
+    bool? isPinned,
+  ]) async {
     try {
       await firestore
           .collection(uid)
@@ -20,6 +21,7 @@ class AiCompDataSource {
             "category": ctg.toString(),
             "created_at": DateTime.now(),
             "comp_text": text,
+            "is_pinned": isPinned ?? false,
           });
     } catch (e) {
       print("Error saving comparison text: $e");
@@ -37,7 +39,7 @@ class AiCompDataSource {
           .collection("products")
           .doc(tag)
           .get();
-          
+
       if (docSnapshot.exists) {
         return docSnapshot.data() as Map<String, dynamic>;
       } else {

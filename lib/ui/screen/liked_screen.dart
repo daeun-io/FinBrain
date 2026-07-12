@@ -18,7 +18,7 @@ class LikedScreen extends ConsumerWidget {
     final sProductsNm = selectedProducts
         .map((e) => e.commonInfo.productName)
         .whereType<String>()
-        .join('-');
+        .join('`');
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -69,7 +69,7 @@ class LikedScreen extends ConsumerWidget {
                   right: 5,
                   bottom: 5,
                   child: AiButton(
-                    tag: "compare-$sProductsNm",
+                    tag: "compare`$sProductsNm",
                     category: ProductCategory.liked,
                   ),
                 ),

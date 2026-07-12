@@ -49,7 +49,9 @@ class _ProductItemState extends ConsumerState<ProductItem> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
+        print("==============");
+        print("product item tapped");
+        Navigator.of(context, rootNavigator: true).push(
           MaterialPageRoute(
             builder: (ctx) => ProductDetailScreen(
               productName: widget.product.commonInfo.productName!,

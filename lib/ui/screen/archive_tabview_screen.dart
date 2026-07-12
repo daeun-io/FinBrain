@@ -190,8 +190,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                   shape: const Border(),
                   title: Text(
                     (category == ArchiveCategory.summary)
-                        ? item.key
-                        : item.key.substring(8).replaceAll("-", " vs "),
+                        ? item.key.replaceAll(r'\\n', "")
+                        : item.key.substring(8).replaceAll("`", " vs ").replaceAll(r'\\n', ""),
                     style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
                   ),
                   children: item.value.map((chat) {

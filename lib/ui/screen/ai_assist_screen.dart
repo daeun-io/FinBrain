@@ -168,6 +168,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                 }
                               },
                               maxLines: null,
+                              style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
                               decoration: InputDecoration(
                                 hintText: "AI한테 질문하기",
                                 hintStyle: textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary),

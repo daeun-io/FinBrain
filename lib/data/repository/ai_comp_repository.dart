@@ -11,10 +11,11 @@ class AiCompRepository {
     String uid,
     String products,
     String text,
-    ProductCategory ctg,
-  ) async {
+    ProductCategory ctg, [
+    bool? isPinned,
+  ]) async {
     try {
-      await dataStore.saveComparisonText(uid, products, text, ctg);
+      await dataStore.saveComparisonText(uid, products, text, ctg, isPinned);
     } catch (e) {
       print("Error saving comparison text, $e");
     }
@@ -34,18 +35,20 @@ class AiCompRepository {
             AiRecord(
               key: text.$1,
               isExpanded: false,
-              isPinned: false,
+              isPinned: text.$2["is_pinned"],
               value: [
                 AiText(
                   createdAt: (text.$2["created_at"] as Timestamp).toDate(),
                   text: text.$2["comp_text"],
                 ),
               ],
-              category: getCategoryEnum[text.$2["category"] as String] ?? ProductCategory.liked
+              category:
+                  getCategoryEnum[text.$2["category"] as String] ??
+                  ProductCategory.liked,
             ),
           );
         } catch (e) {
-          print("Error mapping summaries: $e");
+          print("Error mapping comparison: $e");
           return [];
         }
       }

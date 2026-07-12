@@ -12,7 +12,6 @@ import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/themes/colors.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
@@ -68,8 +67,8 @@ class ProductDetailScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     final page = ref.watch(currentPageViewmodelProvider(category));
-    final productList = ref.watch(productViewmodelProvider(category, "$page"));
-    final likedList = ref.watch(likedProductViewmodelProvider);
+    final productList = ref.watch(fetchProductViewmodelProvider(category, "$page"));
+    final likedList = ref.watch(fetchLikedViewmodelProvider);
 
     return ((fromLikedScreen) ? likedList : productList).when(
       data: (data) {
@@ -79,15 +78,14 @@ class ProductDetailScreen extends ConsumerWidget {
                     : (data as (int, List<FinancialProduct>)).$2)
                 .where((e) => e.commonInfo.productName == productName)
                 .firstOrNull;
-
         if (product == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) {
               Navigator.of(context).pop();
             }
           });
-          return const Scaffold(
-            backgroundColor: white,
+          return Scaffold(
+            backgroundColor: colorScheme.primary,
             body: SizedBox.shrink(),
           );
         }
@@ -118,19 +116,21 @@ class ProductDetailScreen extends ConsumerWidget {
               IconButton(
                 onPressed: () {
                   ref
-                      .read(productViewmodelProvider(category, "$page").notifier)
+                      .read(
+                        productViewmodelProvider(category, "$page").notifier,
+                      )
                       .toggleLiked(product);
                 },
                 icon: product.commonInfo.isLiked
                     ? Icon(
                         Icons.favorite,
                         color: colorScheme.onPrimaryFixed,
-                        size: 28.0,
+                        size: 32.0,
                       )
                     : Icon(
                         Icons.favorite,
                         color: colorScheme.onPrimaryFixedVariant,
-                        size: 28.0,
+                        size: 32.0,
                       ),
               ),
             ],
@@ -340,8 +340,9 @@ class ProductDetailScreen extends ConsumerWidget {
           ),
         );
       },
-      error: (err, stack) => const ShowingErrorWidget(),
-      loading: () => const CustomProgressIndicator(),
+      error: (err, stack) =>
+          Scaffold(backgroundColor: colorScheme.primary, body: const ShowingErrorWidget()),
+      loading: () => Scaffold(backgroundColor: colorScheme.primary, body: const CustomProgressIndicator()),
     );
   }
 

@@ -23,7 +23,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   @override
   void initState() {
     super.initState();
-    items = widget.tag.split("-");
+    items = widget.tag.split("`");
     items.remove("compare");
     request = "$items들의 공통점과 차이점을 바탕으로 표 없이 비교 분석해줘";
 
