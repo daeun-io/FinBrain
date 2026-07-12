@@ -59,7 +59,7 @@ final class CurrentPageViewmodelProvider
 }
 
 String _$currentPageViewmodelHash() =>
-    r'69fc41514f63cdda5f84e45a8bfd846dcd8a29f4';
+    r'5b5d19a5c4768431e69bdf82d0106a672295a3db';
 
 final class CurrentPageViewmodelFamily extends $Family
     with

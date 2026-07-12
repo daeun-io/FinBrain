@@ -9,12 +9,13 @@ class FiltersRepository {
   Future<Map<String, List<(String, bool)>>> fetchFilters(
     ProductCategory ctg,
     String topFinGrpNo,
+    int baseYear
   ) async {
     final Map<String, List<(String, bool)>> filters = {};
     if (ctg == ProductCategory.isaJoin ||
         ctg == ProductCategory.isaManagement ||
         ctg == ProductCategory.isaMp) {
-      filters["기준년도"] = [(DateTime.now().year.toString(), true)];
+      filters["기준년도"] = [(baseYear.toString(), true)];
       filters["업권"] = switch (ctg) {
         ProductCategory.isaJoin => [
           ("총합", true),
@@ -73,6 +74,7 @@ class FiltersRepository {
         ("기타", true),
       ];
     }
+    print("filters from repository, $filters");
     return filters;
   }
 

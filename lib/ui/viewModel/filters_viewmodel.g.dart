@@ -54,7 +54,7 @@ final class FiltersViewmodelProvider
   }
 }
 
-String _$filtersViewmodelHash() => r'b2ae710d8aaaa7d29ab3f2ed182b141ec74b52d5';
+String _$filtersViewmodelHash() => r'9b0564a9fa701558bf83de5cda0d5ac89636d085';
 
 final class FiltersViewmodelFamily extends $Family
     with
@@ -118,7 +118,7 @@ final class DialogFiltersViewModelProvider
     extends
         $NotifierProvider<
           DialogFiltersViewModel,
-          Map<String, List<(String, bool)>>
+          AsyncValue<Map<String, List<(String, bool)>>>
         > {
   DialogFiltersViewModelProvider._({
     required DialogFiltersViewModelFamily super.from,
@@ -146,12 +146,15 @@ final class DialogFiltersViewModelProvider
   DialogFiltersViewModel create() => DialogFiltersViewModel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Map<String, List<(String, bool)>> value) {
+  Override overrideWithValue(
+    AsyncValue<Map<String, List<(String, bool)>>> value,
+  ) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<Map<String, List<(String, bool)>>>(
-        value,
-      ),
+      providerOverride:
+          $SyncValueProvider<AsyncValue<Map<String, List<(String, bool)>>>>(
+            value,
+          ),
     );
   }
 
@@ -168,15 +171,15 @@ final class DialogFiltersViewModelProvider
 }
 
 String _$dialogFiltersViewModelHash() =>
-    r'a96aa4383bd324e57901fc4a9bc05b411ee90dfd';
+    r'966403b905720aadd102d8df73f3738d0be88fc2';
 
 final class DialogFiltersViewModelFamily extends $Family
     with
         $ClassFamilyOverride<
           DialogFiltersViewModel,
-          Map<String, List<(String, bool)>>,
-          Map<String, List<(String, bool)>>,
-          Map<String, List<(String, bool)>>,
+          AsyncValue<Map<String, List<(String, bool)>>>,
+          AsyncValue<Map<String, List<(String, bool)>>>,
+          AsyncValue<Map<String, List<(String, bool)>>>,
           ProductCategory
         > {
   DialogFiltersViewModelFamily._()
@@ -196,28 +199,28 @@ final class DialogFiltersViewModelFamily extends $Family
 }
 
 abstract class _$DialogFiltersViewModel
-    extends $Notifier<Map<String, List<(String, bool)>>> {
+    extends $Notifier<AsyncValue<Map<String, List<(String, bool)>>>> {
   late final _$args = ref.$arg as ProductCategory;
   ProductCategory get ctg => _$args;
 
-  Map<String, List<(String, bool)>> build(ProductCategory ctg);
+  AsyncValue<Map<String, List<(String, bool)>>> build(ProductCategory ctg);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<
-              Map<String, List<(String, bool)>>,
-              Map<String, List<(String, bool)>>
+              AsyncValue<Map<String, List<(String, bool)>>>,
+              AsyncValue<Map<String, List<(String, bool)>>>
             >;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                Map<String, List<(String, bool)>>,
-                Map<String, List<(String, bool)>>
+                AsyncValue<Map<String, List<(String, bool)>>>,
+                AsyncValue<Map<String, List<(String, bool)>>>
               >,
-              Map<String, List<(String, bool)>>,
+              AsyncValue<Map<String, List<(String, bool)>>>,
               Object?,
               Object?
             >;
@@ -229,7 +232,11 @@ abstract class _$DialogFiltersViewModel
 final savedFiltersProvider = SavedFiltersFamily._();
 
 final class SavedFiltersProvider
-    extends $NotifierProvider<SavedFilters, Map<String, List<(String, bool)>>> {
+    extends
+        $AsyncNotifierProvider<
+          SavedFilters,
+          Map<String, List<(String, bool)>>
+        > {
   SavedFiltersProvider._({
     required SavedFiltersFamily super.from,
     required ProductCategory super.argument,
@@ -255,16 +262,6 @@ final class SavedFiltersProvider
   @override
   SavedFilters create() => SavedFilters();
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Map<String, List<(String, bool)>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Map<String, List<(String, bool)>>>(
-        value,
-      ),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is SavedFiltersProvider && other.argument == argument;
@@ -276,15 +273,15 @@ final class SavedFiltersProvider
   }
 }
 
-String _$savedFiltersHash() => r'd8f10d15a3ee584fbccd7932a80411540a7284e2';
+String _$savedFiltersHash() => r'3467b1271f76e538a7433da317dc5f68e706650e';
 
 final class SavedFiltersFamily extends $Family
     with
         $ClassFamilyOverride<
           SavedFilters,
+          AsyncValue<Map<String, List<(String, bool)>>>,
           Map<String, List<(String, bool)>>,
-          Map<String, List<(String, bool)>>,
-          Map<String, List<(String, bool)>>,
+          FutureOr<Map<String, List<(String, bool)>>>,
           ProductCategory
         > {
   SavedFiltersFamily._()
@@ -304,28 +301,28 @@ final class SavedFiltersFamily extends $Family
 }
 
 abstract class _$SavedFilters
-    extends $Notifier<Map<String, List<(String, bool)>>> {
+    extends $AsyncNotifier<Map<String, List<(String, bool)>>> {
   late final _$args = ref.$arg as ProductCategory;
   ProductCategory get ctg => _$args;
 
-  Map<String, List<(String, bool)>> build(ProductCategory ctg);
+  FutureOr<Map<String, List<(String, bool)>>> build(ProductCategory ctg);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<
-              Map<String, List<(String, bool)>>,
+              AsyncValue<Map<String, List<(String, bool)>>>,
               Map<String, List<(String, bool)>>
             >;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                Map<String, List<(String, bool)>>,
+                AsyncValue<Map<String, List<(String, bool)>>>,
                 Map<String, List<(String, bool)>>
               >,
-              Map<String, List<(String, bool)>>,
+              AsyncValue<Map<String, List<(String, bool)>>>,
               Object?,
               Object?
             >;

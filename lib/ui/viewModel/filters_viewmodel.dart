@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/repository/filters_repository.dart';
+import 'package:finbrain/ui/viewModel/selected_parameter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/selected_topFinGrpNo_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,42 +15,21 @@ final repository = FiltersRepository();
 class FiltersViewmodel extends _$FiltersViewmodel {
   @override
   Future<Map<String, List<(String, bool)>>> build(ProductCategory ctg) async {
-    final topFinGrpMap = ref.watch(selectedTopfingrpnoViewmodelProvider);
-    print("topFinGrp by selected topFingrp viewmodel: $topFinGrpMap");
-    final topFinGrpNo =
-        topFinGrpMap[switch (ctg) {
-          ProductCategory.deposit || ProductCategory.installment => "예적금",
-          ProductCategory.mortgage ||
-          ProductCategory.rent ||
-          ProductCategory.credit => "대출",
-          _ => "",
-        }] ??
-        "020000";
-    return await repository.fetchFilters(ctg, topFinGrpNo);
+    final topFinGrpMap = ref.watch(selectedTopFinGrpNoViewmodelProvider);
+    final topFinGrpNo = topFinGrpMap[ctg] ?? "020000";
+
+    final baseYearMap = ref.watch(selectedBaseYearViewmodelProvider);
+    final baseYear = baseYearMap[ctg] ?? DateTime.now().year;
+    return await repository.fetchFilters(ctg, topFinGrpNo, baseYear);
   }
 }
 
 @riverpod
 class DialogFiltersViewModel extends _$DialogFiltersViewModel {
   @override
-  Map<String, List<(String, bool)>> build(ProductCategory ctg) {
-    final currentSaved = ref.read(savedFiltersProvider(ctg));
-    if (currentSaved.isEmpty) {
-      fetchInitialFilters(ctg);
-      return {};
-    }
-    return Map<String, List<(String, bool)>>.from(currentSaved);
-  }
-
-  Future<void> fetchInitialFilters(ProductCategory ctg) async {
-    try {
-      final data = await ref.read(filtersViewmodelProvider(ctg).future);
-      if (data.isNotEmpty) {
-        state = Map<String, List<(String, bool)>>.from(data);
-      }
-    } catch (error) {
-      debugPrint("error: Failed to fetch filters, $error");
-    }
+  AsyncValue<Map<String, List<(String, bool)>>> build(ProductCategory ctg){
+    final currentSaved = ref.watch(savedFiltersProvider(ctg));
+    return AsyncValue.data(Map<String, List<(String, bool)>>.from(currentSaved.value ?? {})); 
   }
 
   Future<void> toggleSelected(
@@ -58,8 +37,9 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
     String text,
     bool selected,
   ) async {
+    final currentState = state.value ?? {};
     final updated = {
-      for (final entry in state.entries)
+      for (final entry in currentState.entries)
         if (entry.value.contains((text, selected)))
           entry.key: entry.value.map((e) {
             if (entry.key == "금융회사" || entry.key == "구분") {
@@ -72,8 +52,8 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
     };
 
     final selectedFinGrp = updated["금융회사"];
-    if (selectedFinGrp == null || selectedFinGrp == state["금융회사"]) {
-      state = updated;
+    if (selectedFinGrp == null || selectedFinGrp == currentState["금융회사"]) {
+      state = AsyncValue.data(updated);
       return;
     }
     final sFinGrpName =
@@ -81,7 +61,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
     final topFinGrpNo = getFinGroupCode[sFinGrpName] ?? "020000";
     try {
       final cmpyList = await repository.fetchCmpyNames(topFinGrpNo);
-      state = {
+      state = AsyncValue.data({
         for (final entry in updated.entries)
           if (entry.key == "회사 선택")
             entry.key: cmpyList
@@ -89,48 +69,50 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
                 .toList()
           else
             entry.key: entry.value,
-      };
+      });
       debugPrint("filter: toggle state, $state");
     } catch (error) {
       debugPrint("Failed to fetch company list, $error");
-      state = updated;
+      state = AsyncValue.data(updated);
     }
   }
 
   void selectBaseYear(String year) {
     try {
+      final currentState = state.value ?? {};
+
       final updated = {
-        for (final entry in state.entries)
+        for (final entry in currentState.entries)
           if (entry.key == "기준년도")
             entry.key: [(year, true)]
           else
             entry.key: entry.value,
       };
-      state = updated;
+      state = AsyncValue.data(updated);
     } catch (e) {
       debugPrint("Failed to change the base year, $e");
-      state = {};
+      state = AsyncValue.data({});
     }
   }
 
   Future<void> applyChanges(String pageNo) async {
-    final snapshot = Map<String, List<(String, bool)>>.from(state);
+    final snapshot = Map<String, List<(String, bool)>>.from(state.value ?? {});
     ref.read(savedFiltersProvider(ctg).notifier).save(snapshot);
+
     if (snapshot["금융회사"] != null) {
       final topFinGrpName = snapshot["금융회사"]!
           .firstWhere((e) => e.$2 == true)
           .$1;
       final topFinGrpNo = getFinGroupCode[topFinGrpName] ?? "020000";
-      ref.read(selectedTopfingrpnoViewmodelProvider.notifier).changeTopFinGrp(
-        switch (ctg) {
-          ProductCategory.deposit || ProductCategory.installment => "예적금",
-          ProductCategory.mortgage ||
-          ProductCategory.rent ||
-          ProductCategory.credit => "대출",
-          _ => "",
-        },
-        topFinGrpNo,
-      );
+      ref
+          .read(selectedTopFinGrpNoViewmodelProvider.notifier)
+          .changeTopFinGrp(ctg, topFinGrpNo);
+    }
+    if (snapshot["기준년도"] != null) {
+      final baseYear = snapshot["기준년도"]!.firstWhere((e) => e.$2 == true).$1;
+      ref
+          .read(selectedBaseYearViewmodelProvider.notifier)
+          .changeBaseYear(ctg, int.tryParse(baseYear) ?? DateTime.now().year);
     }
 
     switch (ctg) {
@@ -142,19 +124,14 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
         ref
             .read(isaManagementStatusViewModelProvider.notifier)
             .fetchIsaManagementStatus(pageNo, snapshot);
-      case ProductCategory.isaMp:
-        ref
-            .read(fetchProductViewmodelProvider(ProductCategory.isaMp, pageNo));
       default:
-        ref
-            .read(fetchProductViewmodelProvider(ctg, pageNo));
-            
+        ref.read(fetchProductViewmodelProvider(ctg, pageNo));
     }
   }
 
-  void resetChanges() {
-    final filters = ref.read(savedFiltersProvider(ctg));
-    state = filters;
+  void resetChanges() async {
+    final filters = ref.read(savedFiltersProvider(ctg)).value ?? {};
+    state = AsyncValue.data(filters);
   }
 }
 
@@ -162,7 +139,15 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
 @riverpod
 class SavedFilters extends _$SavedFilters {
   @override
-  Map<String, List<(String, bool)>> build(ProductCategory ctg) => {};
+  Future<Map<String, List<(String, bool)>>> build(ProductCategory ctg) async{
+    try {
+      final data = await ref.read(filtersViewmodelProvider(ctg).future);
+      return data;
+    } catch (error) {
+      debugPrint("error: Failed to fetch filters, $error");
+      return {};
+    }
+  }
 
-  void save(Map<String, List<(String, bool)>> filters) => state = filters;
+  void save(Map<String, List<(String, bool)>> filters) => state = AsyncValue.data(filters);
 }

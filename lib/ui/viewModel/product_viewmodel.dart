@@ -25,72 +25,90 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
     ProductCategory ctg,
     String pageNo,
   ) async {
-    final user = GoogleAuthService.getCurrentUser();
-    if (user == null) {
-      debugPrint("No user is currently signed in.");
+    try {
+      final user = GoogleAuthService.getCurrentUser();
+      if (user == null) {
+        debugPrint("No user is currently signed in.");
+        return (0, <FinancialProduct>[]);
+      }
+      final filters = ref.watch(savedFiltersProvider(ctg));
+      Map<String, List<String>> selectedFilters = {};
+      for (final entry in (filters.value ?? {}).entries) {
+        selectedFilters[entry.key] = entry.value
+            .where((e) => e.$2 == true)
+            .map((e) => e.$1)
+            .toList();
+      }
+      final topFinGrpNo =
+          getFinGroupCode[selectedFilters["금융회사"]?.first ?? "020000"] ??
+          "020000";
+      if (selectedFilters["회사 선택"] != null &&
+          selectedFilters["회사 선택"]!.isEmpty) {
+        final List<String> companies = [];
+        for (final filter in (filters.value ?? {})["회사 선택"]!) {
+          companies.add(filter.$1);
+        }
+        selectedFilters["회사 선택"] = companies;
+      }
+      print("========================");
+      print("selected filters, $selectedFilters");
+
+      final baseYear = (selectedFilters["기준년도"]?.isNotEmpty ?? false)
+          ? selectedFilters["기준년도"]!.first
+          : DateTime.now().year.toString();
+      final result = (ctg == ProductCategory.isaMp)
+          ? await repository.fetchIsaMpProductsAndCount(
+              user.uid,
+              pageNo,
+              "1000",
+              baseYear,
+            )
+          : await repository.fetchFinlifeProductsAndPageNo(
+              user.uid,
+              ctg,
+              topFinGrpNo,
+              pageNo,
+            );
+      final maxPage = result.$1;
+      final products = result.$2;
+      final filtered = (ctg == ProductCategory.isaMp)
+          ? products
+                .where(
+                  (element) =>
+                      (selectedFilters["업권"] ?? []).contains(
+                        (element as IsaMpBenefitRate).businessDomain,
+                      ) &&
+                      (selectedFilters["MP 종류"] ?? []).contains(element.mpType),
+                )
+                .toList()
+          : products
+                .where(
+                  (element) =>
+                      (selectedFilters["회사 선택"] ?? []).contains(
+                        element.commonInfo.companyName,
+                      ) &&
+                      element.commonInfo.joinWay!.any(
+                        (e) =>
+                            (selectedFilters["가입 방법"] ??
+                                    [
+                                      "영업점",
+                                      "인터넷",
+                                      "스마트폰",
+                                      "모집인",
+                                      "전화(텔레뱅킹)",
+                                      "기타",
+                                    ])
+                                .contains(e),
+                      ),
+                )
+                .toList();
+      print("filtered list, $filtered");
+      print("========================");
+      return (maxPage, filtered);
+    } catch (e) {
+      print("Error occured while fetching products, $e");
       return (0, <FinancialProduct>[]);
     }
-
-    final filters = ref.watch(filtersViewmodelProvider(ctg));
-    Map<String, List<String>> selectedFilters = {};
-    for (final entry in (filters.value ?? {}).entries) {
-      selectedFilters[entry.key] = entry.value
-          .where((e) => e.$2 == true)
-          .map((e) => e.$1)
-          .toList();
-    }
-
-    final topFinGrpNo =
-        getFinGroupCode[selectedFilters["금융회사"]?.first ?? "020000"] ?? "020000";
-    if (selectedFilters["회사 선택"] != null && selectedFilters["회사 선택"]!.isEmpty) {
-      final List<String> companies = [];
-      for (final filter in (filters.value ?? {})["회사 선택"]!) {
-        companies.add(filter.$1);
-      }
-      selectedFilters["회사 선택"] = companies;
-    }
-
-    final baseYear = (selectedFilters["기준년도"]?.isNotEmpty ?? false)
-        ? selectedFilters["기준년도"]!.first
-        : DateTime.now().year.toString();
-
-    final result = (ctg == ProductCategory.isaMp)
-        ? await repository.fetchIsaMpProductsAndCount(
-            user.uid,
-            pageNo,
-            "1000",
-            baseYear,
-          )
-        : await repository.fetchFinlifeProductsAndPageNo(
-            user.uid,
-            ctg,
-            topFinGrpNo,
-            pageNo,
-          );
-
-    final maxPage = result.$1;
-    final products = result.$2;
-
-    final filtered = (ctg == ProductCategory.isaMp)
-        ? products.where((element) {
-            return (selectedFilters["업권"] ?? []).contains(
-                  (element as IsaMpBenefitRate).businessDomain,
-                ) &&
-                (selectedFilters["MP 종류"] ?? []).contains(element.mpType);
-          }).toList()
-        : products.where((element) {
-            return (selectedFilters["회사 선택"] ?? []).contains(
-                  element.commonInfo.companyName,
-                ) &&
-                element.commonInfo.joinWay!.any(
-                  (e) =>
-                      (selectedFilters["가입 방법"] ??
-                              ["영업점", "인터넷", "스마트폰", "모집인", "전화(텔레뱅킹)", "기타"])
-                          .contains(e),
-                );
-          }).toList();
-
-    return (maxPage, filtered);
   }
 }
 
@@ -253,9 +271,11 @@ class ProductViewmodel extends _$ProductViewmodel {
       ));
     } else {
       final page = ref.read(currentPageViewmodelProvider(ctg));
-      final original = ref.read(fetchProductViewmodelProvider(ctg,"$page"));
+      final original = ref.read(fetchProductViewmodelProvider(ctg, "$page"));
       final maxPage = (original.value == null) ? 0 : original.value!.$1;
-      final products = (original.value == null) ? <FinancialProduct>[] : original.value!.$2;
+      final products = (original.value == null)
+          ? <FinancialProduct>[]
+          : original.value!.$2;
       final criteria = ref
           .read(sortOrFilterTextViewModelProvider(ctg))
           .$1
