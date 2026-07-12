@@ -1,13 +1,12 @@
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/themes/text_theme.dart';
 import 'package:finbrain/ui/screen/archive_screen.dart';
+import 'package:finbrain/ui/screen/loan_screen.dart';
+import 'package:finbrain/ui/screen/savings_screen.dart';
+import 'package:finbrain/ui/viewModel/current_ctg_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
-import 'package:finbrain/ui/screen/product_base_screen.dart';
-import 'package:finbrain/ui/screen/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,42 +23,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadData(ProductCategory.deposit);
-    });
-  }
-
-  void loadData(ProductCategory ctg) {
-    if (ctg != ProductCategory.isaJoin ||
-        ctg != ProductCategory.isaManagement ||
-        ctg != ProductCategory.isaJoin) {
-      ref
-          .read(productViewmodelProvider.notifier)
-          .fetchFinlifeProducts(ctg, "1");
-    }
-  }
-
-  ProductCategory _getCurrentCtgForIndex(int index, ProductCategory ctgInVM) {
-    switch (index) {
-      case 0:
-        if (ctgInVM == ProductCategory.deposit ||
-            ctgInVM == ProductCategory.installment ||
-            ctgInVM == ProductCategory.isaJoin) {
-          return ctgInVM;
-        }
-        return ProductCategory.deposit;
-      case 1:
-        if (ctgInVM == ProductCategory.mortgage ||
-            ctgInVM == ProductCategory.rent ||
-            ctgInVM == ProductCategory.credit) {
-          return ctgInVM;
-        }
-        return ProductCategory.mortgage;
-      case 2:
-        return ProductCategory.annuity;
-      default:
-        return ctgInVM;
-    }
   }
 
   @override
@@ -67,19 +30,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final currTxtTheme = ref.watch(textThemeViewmodelProvider);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-
-    ref.listen<ProductCategory>(currentCtgViewmodelProvider, (prev, next) {
-      if (_currentIndex != 3) {
-        loadData(next);
-      }
-    });
-
-    final pages = [
-      ProductScreen(category: ProductScreenCategory.savings),
-      ProductScreen(category: ProductScreenCategory.loan),
-      ProductBaseScreen(category: ProductCategory.annuity),
-      const LikedScreen(),
-    ];
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -103,9 +53,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             actions: [
               OutlinedButton(
                 onPressed: () {
-                  ref.read(textThemeViewmodelProvider.notifier).changeTxtTheme(
-                    (currTxtTheme == bigTextTheme) ? true : false
-                  );
+                  ref
+                      .read(textThemeViewmodelProvider.notifier)
+                      .changeTxtTheme(
+                        (currTxtTheme == bigTextTheme) ? true : false,
+                      );
                 },
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
@@ -117,7 +69,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 // todo: implement later
                 child: Text(
                   (currTxtTheme == bigTextTheme) ? "작은 글씨" : "큰 글씨",
-                  style: textTheme.titleMedium!.copyWith(color: colorScheme.onPrimary),
+                  style: textTheme.titleMedium!.copyWith(
+                    color: colorScheme.onPrimary,
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -137,7 +91,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           ),
         ),
       ),
-      body: IndexedStack(index: _currentIndex, children: pages),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [SavingsScreen(), LoanScreen(), LikedScreen()],
+      ),
       bottomNavigationBar: Container(
         height: 70,
         decoration: BoxDecoration(
@@ -156,16 +113,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               setState(() {
                 _currentIndex = value;
               });
-
-              if (value != 3) {
-                final ctg = ref.read(currentCtgViewmodelProvider);
-                final targetCtg = _getCurrentCtgForIndex(value, ctg);
-
-                ref
-                    .read(currentCtgViewmodelProvider.notifier)
-                    .setCurrentCtg(targetCtg);
-                loadData(targetCtg);
-              }
+              final ctg = ref.read(currentCtgViewmodelProvider);
+              final page = ref.read(currentPageViewmodelProvider(ctg));
+              ref.read(fetchProductViewmodelProvider(ctg, "$page"));
             },
             currentIndex: _currentIndex,
             elevation: 0,
@@ -173,8 +123,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             backgroundColor: Colors.transparent,
             selectedItemColor: colorScheme.onPrimary,
             unselectedItemColor: colorScheme.onTertiary,
-            selectedLabelStyle: bodySbMd,
-            unselectedLabelStyle: bodyRgMd,
+            selectedLabelStyle: textTheme.labelLarge,
+            unselectedLabelStyle: textTheme.labelMedium,
             type: BottomNavigationBarType.fixed,
             items: [
               const BottomNavigationBarItem(
@@ -184,10 +134,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               const BottomNavigationBarItem(
                 icon: Icon(Icons.paid, size: 28),
                 label: "대출",
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.money, size: 28),
-                label: "연금저축",
               ),
               const BottomNavigationBarItem(
                 icon: Icon(Icons.favorite, size: 28),

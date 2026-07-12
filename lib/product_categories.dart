@@ -7,7 +7,6 @@ enum ProductCategory{
   mortgage,
   rent,
   credit,
-  annuity,
   liked
 }
 

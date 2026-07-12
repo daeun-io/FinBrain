@@ -3,19 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AiConversationDataSource {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> createMessagesCollection(String uid, String productName) async {
-    try {
-      await firestore
-          .collection(uid)
-          .doc("ai_conversation")
-          .collection("products")
-          .doc(productName)
-          .collection("chat_history");
-    } catch (e) {
-      print("Error creating conversation collection: $e");
-    }
-  }
-
   Future<bool> isMessagesCollectionExists(
     String uid,
     String productName,

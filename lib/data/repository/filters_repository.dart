@@ -9,12 +9,13 @@ class FiltersRepository {
   Future<Map<String, List<(String, bool)>>> fetchFilters(
     ProductCategory ctg,
     String topFinGrpNo,
+    int baseYear
   ) async {
     final Map<String, List<(String, bool)>> filters = {};
     if (ctg == ProductCategory.isaJoin ||
         ctg == ProductCategory.isaManagement ||
         ctg == ProductCategory.isaMp) {
-      filters["기준년도"] = [(DateTime.now().year.toString(), true)];
+      filters["기준년도"] = [(baseYear.toString(), true)];
       filters["업권"] = switch (ctg) {
         ProductCategory.isaJoin => [
           ("총합", true),
@@ -55,7 +56,6 @@ class FiltersRepository {
       final List<String> finGroups = switch (ctg) {
         ProductCategory.deposit || ProductCategory.installment => ["은행", "저축은행"],
         ProductCategory.mortgage || ProductCategory.rent || ProductCategory.credit =>  ["은행", "저축은행", "여신전문", "보험"],
-        ProductCategory.annuity => ["보험", "금융투자"],
         _ => [],
       };
 
@@ -74,6 +74,7 @@ class FiltersRepository {
         ("기타", true),
       ];
     }
+    print("filters from repository, $filters");
     return filters;
   }
 

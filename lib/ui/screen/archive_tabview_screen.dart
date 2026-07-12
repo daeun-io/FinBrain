@@ -23,7 +23,6 @@ class ArchiveTabViewScreen extends ConsumerWidget {
       ProductCategory.mortgage,
       ProductCategory.rent,
       ProductCategory.credit,
-      ProductCategory.annuity,
     ];
     final compTextfilters = ref.watch(selectedCtgForCompTextViewmodelProvider);
     final summariesFilters = ref.watch(
@@ -100,7 +99,6 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                             ProductCategory.mortgage => "주택담보대출",
                             ProductCategory.rent => "전세자금대출",
                             ProductCategory.credit => "개인신용대출",
-                            ProductCategory.annuity => "연금저축",
                             ProductCategory.isaMp => "ISA",
                             _ => "",
                           },
@@ -192,8 +190,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                   shape: const Border(),
                   title: Text(
                     (category == ArchiveCategory.summary)
-                        ? item.key
-                        : item.key.substring(8).replaceAll("-", " vs "),
+                        ? item.key.replaceAll(r'\\n', "")
+                        : item.key.substring(8).replaceAll("`", " vs ").replaceAll(r'\\n', ""),
                     style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
                   ),
                   children: item.value.map((chat) {

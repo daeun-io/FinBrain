@@ -110,11 +110,14 @@ export const summarizeAndArchiveChat = onSchedule(
       }
 
       // 상품 문서 접근을 위한 객체 생성
-      batch.set(productRef, {category: category}, {merge: true});
+      batch.set(productRef, {
+        category: category,
+        is_pinned: false,
+      }, {merge: true});
       // 요약 저장
       batch.set(summaryRef, {
         summary: summaryText,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        created_at: admin.firestore.FieldValue.serverTimestamp(),
       });
       
       operationCount += 2;

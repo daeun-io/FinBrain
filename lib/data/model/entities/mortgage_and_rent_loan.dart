@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
-import 'mortage_and_rent_loan_option.dart';
+import 'mortgage_and_rent_loan_option.dart';
 
 // 주택담보대출 & 전세자금대출
-class MortageAndRentLoan extends FinancialProduct {
+class MortgageAndRentLoan extends FinancialProduct {
   // 프로퍼티명(필드명): 의미
   // commonInfo: 기본 정보
   // extraExpense(loan_inci_expn): 대출 부대비용
@@ -17,9 +17,9 @@ class MortageAndRentLoan extends FinancialProduct {
   final String? earlyRepayFee;
   final String? delayRate;
   final String? loanLimit;
-  final List<MortageAndRentLoanOption> options;
+  final List<MortgageAndRentLoanOption> options;
 
-  MortageAndRentLoan({
+  MortgageAndRentLoan({
     // commonInfo
     required ProductCategory category,
     required String? submittedMonth,
@@ -56,7 +56,7 @@ class MortageAndRentLoan extends FinancialProduct {
 
   @override
   FinancialProduct copyWith(bool isLiked) {
-    return MortageAndRentLoan(
+    return MortgageAndRentLoan(
       isLiked: isLiked,
       category: commonInfo.category,
       submittedMonth: commonInfo.submittedMonth,

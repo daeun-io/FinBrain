@@ -1,13 +1,11 @@
-import 'package:finbrain/data/model/entities/annuity_savings.dart';
-import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
+import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
+import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
 import 'package:finbrain/data/model/request/isa_search_options.dart';
 import 'package:finbrain/data/repository/liked_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -135,7 +133,7 @@ class ProductRepository {
               .cast<FinancialProduct>(),
         ProductCategory.mortgage || ProductCategory.rent =>
           rawProducts
-              .map<MortageAndRentLoan?>((e) {
+              .map<MortgageAndRentLoan?>((e) {
                 if (e == null ||
                     e["baseinfo"] == null ||
                     e["baseinfo"]["kor_co_nm"] == null ||
@@ -149,7 +147,7 @@ class ProductRepository {
                     ? e["options"]["option"]
                     : [e["options"]["option"]];
                 try {
-                  return MortageAndRentLoan(
+                  return MortgageAndRentLoan(
                     category: ctg,
                     submittedMonth: e["baseinfo"]["dcls_month"],
                     companyCode: e["baseinfo"]["fin_co_no"],
@@ -168,8 +166,8 @@ class ProductRepository {
                     delayRate: e["baseinfo"]["dly_rate"],
                     loanLimit: e["baseinfo"]["loan_lmt"],
                     options: productOptions
-                        .map<MortageAndRentLoanOption>(
-                          (e) => MortageAndRentLoanOption(
+                        .map<MortgageAndRentLoanOption>(
+                          (e) => MortgageAndRentLoanOption(
                             loanType: e["mrtg_type"],
                             loanTypeName: e["mrtg_type_nm"],
                             repayType: e["rpay_type"],
@@ -199,7 +197,7 @@ class ProductRepository {
               .nonNulls
               .toList()
               .cast<FinancialProduct>(),
-        ProductCategory.credit =>
+          _ =>
           rawProducts
               .map<CreditLoan?>((e) {
                 if (e == null ||
@@ -264,86 +262,6 @@ class ProductRepository {
                             averageGrade: double.tryParse(
                               e["crdt_grad_avg"].toString(),
                             ),
-                          ),
-                        )
-                        .toList(),
-                  );
-                } catch (error, stackTrace) {
-                  debugPrint("error: a mapping error: $error");
-                  debugPrint("error: trace the mapping error: $stackTrace");
-                  debugPrint("error: failed element: $e");
-                  return null;
-                }
-              })
-              .nonNulls
-              .toList()
-              .cast<FinancialProduct>(),
-        _ =>
-          rawProducts
-              .map<AnnuitySavings?>((e) {
-                if (e == null ||
-                    e["baseinfo"] == null ||
-                    e["baseinfo"]["kor_co_nm"] == null ||
-                    e["baseinfo"]["fin_prdt_nm"] == null ||
-                    e["options"] == null ||
-                    e["options"]["option"] == null) {
-                  debugPrint("error: product is null");
-                  return null;
-                }
-                final productOptions = (e["options"]["option"] is List)
-                    ? e["options"]["option"]
-                    : [e["options"]["option"]];
-                try {
-                  return AnnuitySavings(
-                    category: ProductCategory.annuity,
-                    submittedMonth: e["baseinfo"]["dcls_month"],
-                    companyCode: e["baseinfo"]["fin_co_no"],
-                    companyName: e["baseinfo"]["kor_co_nm"],
-                    productCode: e["baseinfo"]["fin_prdt_cd"],
-                    productName: e["baseinfo"]["fin_prdt_nm"],
-                    startDay: e["baseinfo"]["dcls_strt_day"],
-                    endDay: e["baseinfo"]["dcls_end_day"],
-                    submittedDay: e["baseinfo"]["fin_co_subm_day"],
-                    joinWay: (e["baseinfo"]["join_way"] as String).split(","),
-                    isLiked: likedProductNames.contains(
-                      e["baseinfo"]["fin_prdt_nm"],
-                    ),
-                    pensionKind: e["baseinfo"]["pnsn_kind"],
-                    pensionKindName: e["baseinfo"]["pnsn_kind_nm"],
-                    saleStartDay: e["baseinfo"]["sale_strt_day"],
-                    maintenanceCount: e["baseinfo"]["mntn_cnt"],
-                    productType: e["baseinfo"]["prdt_type"],
-                    productTypeName: e["baseinfo"]["prdt_type_nm"],
-                    averageProfit: double.tryParse(
-                      e["baseinfo"]["avg_prft_rate"].toString(),
-                    ),
-                    declaredRate: e["baseinfo"]["dcls_rate"],
-                    guaranteedRate: e["baseinfo"]["guar_rate"],
-                    pyProfitRate: double.tryParse(
-                      e["baseinfo"]["btrm_prft_rate_1"].toString(),
-                    ),
-                    ppyProfitRate: double.tryParse(
-                      e["baseinfo"]["btrm_prft_rate_2"].toString(),
-                    ),
-                    pppyProfitRate: double.tryParse(
-                      e["baseinfo"]["btrm_prft_rate_3"].toString(),
-                    ),
-                    etc: e["baseinfo"]["etc"],
-                    saleCompany: e["baseinfo"]["sale_co"].toString(),
-                    options: productOptions
-                        .map<AnnuitySavingsOption>(
-                          (e) => AnnuitySavingsOption(
-                            receiptTerm: e["pnsn_recp_trm"],
-                            receiptTermName: e["pnsn_recp_trm_nm"],
-                            entryAge: e["pnsn_entr_age"],
-                            entryAgeName: e["pnsn_entr_age_nm"],
-                            monthlyPayment: e["mon_paym_atm"],
-                            monthlyPaymentName: e["mon_paym_atm_nm"],
-                            paymentPeriod: e["paym_prd"],
-                            paymentPeriodName: e["paym_prd_nm"],
-                            startAge: e["pnsn_strt_age"],
-                            startAgeName: e["pnsn_strt_age_nm"],
-                            monthlyReceiptAmount: e["pnsn_recp_amt"],
                           ),
                         )
                         .toList(),

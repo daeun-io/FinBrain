@@ -3,6 +3,7 @@ import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/data/repository/ai_comp_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'archive_viewmodel.g.dart';
 
@@ -20,7 +21,6 @@ class SelectedCtgForSummariesViewmodel
     ProductCategory.mortgage,
     ProductCategory.rent,
     ProductCategory.credit,
-    ProductCategory.annuity,
   ];
 
   void addCtg(ProductCategory ctg) {
@@ -43,7 +43,9 @@ class AiSummariesViewmodel extends _$AiSummariesViewmodel {
         return <AiRecord>[];
       }
       final summaries = await summaryRepository.getAllSummaries(user.uid);
-      summaries.sort((a, b) => (b.isPinned ? 1 : -1).compareTo(a.isPinned ? 1 : -1));
+      summaries.sort(
+        (a, b) => (b.isPinned ? 1 : -1).compareTo(a.isPinned ? 1 : -1),
+      );
       return summaries;
     } catch (e) {
       print("Error occured in building vm, $e");
@@ -63,16 +65,32 @@ class ArchiveSummaryViewmodel extends _$ArchiveSummaryViewmodel {
     );
   }
 
-  void pinRecord(AiRecord record) {
-    state = AsyncData(
-      (state.value ?? []).map((e) {
-        if (e.key == record.key) {
-          return e.copyWith(null, !e.isPinned);
-        } else {
-          return e;
-        }
-      }).toList(),
-    );
+  Future<void> pinRecord(AiRecord record) async {
+    try {
+      final user = GoogleAuthService.getCurrentUser();
+      if (user == null) {
+        debugPrint("No user is currently signed in.");
+        return;
+      }
+      
+      await summaryRepository.updateSummaries(
+        user.uid,
+        record.key,
+        record.value,
+        record.category,
+        !record.isPinned,
+      );
+
+      ref.invalidate(aiSummariesViewmodelProvider);
+
+      final allComparison = await ref.read(aiSummariesViewmodelProvider.future);
+      final filter = ref.read(selectedCtgForSummariesViewmodelProvider);
+      state = AsyncData(
+        allComparison.where((e) => filter.contains(e.category)).toList(),
+      );
+    } catch (e) {
+      print("Error checking collection existence: $e");
+    }
   }
 
   void expandRecord(AiRecord record) {
@@ -99,7 +117,6 @@ class SelectedCtgForCompTextViewmodel
     ProductCategory.mortgage,
     ProductCategory.rent,
     ProductCategory.credit,
-    ProductCategory.annuity,
   ];
 
   void addCtg(ProductCategory ctg) {
@@ -121,9 +138,11 @@ class AiCompViewmodel extends _$AiCompViewmodel {
         print("No current user found");
         return <AiRecord>[];
       }
-      final summaries = await compRepository.getComparisonTexts(user.uid);
-      summaries.sort((a, b) => b.isPinned ? 1 : -1);
-      return summaries;
+      final comparison = await compRepository.getComparisonTexts(user.uid);
+      comparison.sort(
+        (a, b) => (b.isPinned ? 1 : -1).compareTo(a.isPinned ? 1 : -1),
+      );
+      return comparison;
     } catch (e) {
       print("Error occured in building vm, $e");
       return <AiRecord>[];
@@ -143,16 +162,32 @@ class ArchiveComparisonViewmodel extends _$ArchiveComparisonViewmodel {
     );
   }
 
-  void pinRecord(AiRecord record) {
-    state = AsyncData(
-      (state.value ?? []).map((e) {
-        if (e.key == record.key) {
-          return e.copyWith(null, !e.isPinned);
-        } else {
-          return e;
-        }
-      }).toList(),
-    );
+  Future<void> pinRecord(AiRecord record) async {
+    try {
+      final user = GoogleAuthService.getCurrentUser();
+      if (user == null) {
+        debugPrint("No user is currently signed in.");
+        return;
+      }
+
+      await compRepository.saveComparisonText(
+        user.uid,
+        record.key,
+        record.value.first.text,
+        record.category,
+        !record.isPinned,
+      );
+
+      ref.invalidate(aiCompViewmodelProvider);
+
+      final allComparison = await ref.read(aiCompViewmodelProvider.future);
+      final filter = ref.read(selectedCtgForCompTextViewmodelProvider);
+      state = AsyncData(
+        allComparison.where((e) => filter.contains(e.category)).toList(),
+      );
+    } catch (e) {
+      print("Error checking collection existence: $e");
+    }
   }
 
   void expandRecord(AiRecord record) {

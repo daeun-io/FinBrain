@@ -14,8 +14,8 @@ class MarkdownTextRenderer extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: RichText(
         text: TextSpan(
-          style: GoogleFonts.robotoMono(
-            fontSize: 14,
+          style: GoogleFonts.notoSansKr(
+            fontSize: 16,
             color: colorScheme.onSecondary,
           ),
           children: _parseMarkdownToTextSpans(str, colorScheme.onSecondary),
@@ -48,8 +48,8 @@ class MarkdownTextRenderer extends StatelessWidget {
         
         double fontSize = 14;
         if (hashCount == 1) fontSize = 22;
-        else if (hashCount == 2) fontSize = 18;
-        else if (hashCount == 3) fontSize = 16;
+        else if (hashCount == 2) fontSize = 20;
+        else if (hashCount == 3) fontSize = 18;
 
         spans.add(TextSpan(
           text: '$titleText\n',

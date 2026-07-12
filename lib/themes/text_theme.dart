@@ -13,7 +13,9 @@ final normalTextTheme = TextTheme(
   bodyMedium: bodyRgSm,
   bodySmall: bodyRgXs,
 
-  labelMedium: captionSb
+  labelLarge: bodySbSm,
+  labelMedium: bodyRgSm,
+  labelSmall: captionSb,
 );
 
 final bigTextTheme = TextTheme(
@@ -27,6 +29,8 @@ final bigTextTheme = TextTheme(
   bodyLarge: bodyRgXl,
   bodyMedium: bodyRgLg,
   bodySmall: bodyRgMd,
-  
-  labelMedium: captionSb
+
+  labelLarge: bodySbSm,
+  labelMedium: bodyRgSm,
+  labelSmall: captionSb,
 );

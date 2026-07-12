@@ -5,13 +5,10 @@ import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dar
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan.dart';
-import 'package:finbrain/data/model/entities/mortage_and_rent_loan_option.dart';
+import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
+import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
-import 'package:finbrain/data/model/entities/annuity_savings.dart';
-import 'package:finbrain/data/model/entities/annuity_savings_option.dart';
-
 import 'package:finbrain/product_categories.dart';
 
 class LikedRepository {
@@ -85,7 +82,7 @@ class LikedRepository {
           case ProductCategory.mortgage:
           case ProductCategory.rent:
             products.add(
-              MortageAndRentLoan(
+              MortgageAndRentLoan(
                 category: getCategoryEnum[map["category"]]!,
                 submittedMonth: map["submittedMonth"],
                 companyCode: map["companyCode"],
@@ -103,7 +100,7 @@ class LikedRepository {
                 loanLimit: map["loanLimit"],
                 options: map["options"]
                     .map(
-                      (e) => MortageAndRentLoanOption(
+                      (e) => MortgageAndRentLoanOption(
                         loanType: e["loanType"],
                         loanTypeName: e["loanTypeName"],
                         repayType: e["repayType"],
@@ -116,7 +113,7 @@ class LikedRepository {
                       ),
                     )
                     .toList()
-                    .cast<MortageAndRentLoanOption>(),
+                    .cast<MortgageAndRentLoanOption>(),
               ),
             );
             break;
@@ -157,60 +154,6 @@ class LikedRepository {
                     .cast<CreditLoanOption>(),
               ),
             );
-            break;
-          case ProductCategory.annuity:
-            try {
-              products.add(
-                AnnuitySavings(
-                  category: ProductCategory.annuity,
-                  submittedMonth: map["submittedMonth"],
-                  companyCode: map["companyCode"],
-                  companyName: map["companyName"],
-                  productCode: map["productCode"],
-                  productName: map["productName"],
-                  startDay: map["startDay"],
-                  endDay: map["endDay"],
-                  submittedDay: map["submittedDay"],
-                  joinWay: (map["joinWay"] as List<dynamic>).cast<String>(),
-                  isLiked: map["isLiked"],
-                  pensionKind: map["pensionKind"],
-                  pensionKindName: map["pensionKindName"],
-                  saleStartDay: map["saleStartDay"],
-                  maintenanceCount: map["maintenanceCount"],
-                  productType: map["productType"],
-                  productTypeName: map["productTypeName"],
-                  averageProfit: double.tryParse(map["averageProfit"]),
-                  declaredRate: map["declaredRate"],
-                  guaranteedRate: map["guaranteedRate"],
-                  pyProfitRate: double.tryParse(map["pyProfitRate"]),
-                  ppyProfitRate: double.tryParse(map["ppyProfitRate"]),
-                  pppyProfitRate: double.tryParse(map["pppyProfitRate"]),
-                  etc: map["etc"],
-                  saleCompany: map["saleCompany"],
-                  // 맵의 리스트
-                  options: map["options"]
-                      .map(
-                        (e) => AnnuitySavingsOption(
-                          receiptTerm: e["receiptTerm"],
-                          receiptTermName: e["receiptTermName"],
-                          entryAge: e["entryAge"],
-                          entryAgeName: e["entryAgeName"],
-                          monthlyPayment: e["monthlyPayment"],
-                          monthlyPaymentName: e["monthlyPaymentName"],
-                          paymentPeriod: e["paymentPeriod"],
-                          paymentPeriodName: e["paymentPeriodName"],
-                          startAge: e["startAge"],
-                          startAgeName: e["startAgeName"],
-                          monthlyReceiptAmount: e["monthlyReceiptAmount"],
-                        ),
-                      )
-                      .toList()
-                      .cast<AnnuitySavingsOption>(),
-                ),
-              );
-            } catch (e) {
-              print("error occured while mapping annuity data $e");
-            }
             break;
           default:
             try {
