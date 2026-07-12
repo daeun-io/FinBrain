@@ -104,7 +104,7 @@ abstract class _$AiResponseViewmodel extends $AsyncNotifier<String?> {
 final aiScreenViewmodelProvider = AiScreenViewmodelFamily._();
 
 final class AiScreenViewmodelProvider
-    extends $NotifierProvider<AiScreenViewmodel, Map<String, String>> {
+    extends $NotifierProvider<AiScreenViewmodel, List<String>> {
   AiScreenViewmodelProvider._({
     required AiScreenViewmodelFamily super.from,
     required String super.argument,
@@ -131,10 +131,10 @@ final class AiScreenViewmodelProvider
   AiScreenViewmodel create() => AiScreenViewmodel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Map<String, String> value) {
+  Override overrideWithValue(List<String> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<Map<String, String>>(value),
+      providerOverride: $SyncValueProvider<List<String>>(value),
     );
   }
 
@@ -149,15 +149,15 @@ final class AiScreenViewmodelProvider
   }
 }
 
-String _$aiScreenViewmodelHash() => r'c7d23aea82284fc0b98603e5dca90cf8f956ef37';
+String _$aiScreenViewmodelHash() => r'40bea14613c39c0a0480a2fb35f650d16d93aec2';
 
 final class AiScreenViewmodelFamily extends $Family
     with
         $ClassFamilyOverride<
           AiScreenViewmodel,
-          Map<String, String>,
-          Map<String, String>,
-          Map<String, String>,
+          List<String>,
+          List<String>,
+          List<String>,
           String
         > {
   AiScreenViewmodelFamily._()
@@ -176,20 +176,20 @@ final class AiScreenViewmodelFamily extends $Family
   String toString() => r'aiScreenViewmodelProvider';
 }
 
-abstract class _$AiScreenViewmodel extends $Notifier<Map<String, String>> {
+abstract class _$AiScreenViewmodel extends $Notifier<List<String>> {
   late final _$args = ref.$arg as String;
   String get tag => _$args;
 
-  Map<String, String> build(String tag);
+  List<String> build(String tag);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<Map<String, String>, Map<String, String>>;
+    final ref = this.ref as $Ref<List<String>, List<String>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<Map<String, String>, Map<String, String>>,
-              Map<String, String>,
+              AnyNotifier<List<String>, List<String>>,
+              List<String>,
               Object?,
               Object?
             >;

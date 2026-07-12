@@ -20,6 +20,7 @@ class AiAssistScreen extends ConsumerStatefulWidget {
 class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   final _messageController = TextEditingController();
   AiRecord? record;
+  List<(MessageBubble, MessageBubble)>? messages;
 
   @override
   void initState() {
@@ -41,7 +42,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
           .checkCollectionExistsAndCreate(widget.tag);
       print('Collection exists: $exists');
       if (exists) {
-        ref
+        messages = await ref
             .read(aiScreenViewmodelProvider(widget.tag).notifier)
             .getConversationWithPrdtNm(widget.tag);
       }
@@ -68,9 +69,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    Map<String, String> aiMessages = ref.watch(
-      aiScreenViewmodelProvider(widget.tag),
-    );
+    List<String> bubbles = ref.watch(aiScreenViewmodelProvider(widget.tag));
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -85,7 +84,9 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
         ),
         title: Text(
           "AI 어시스트",
-          style: textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary)
+          style: textTheme.headlineMedium!.copyWith(
+            color: colorScheme.onPrimary,
+          ),
         ),
         titleSpacing: -6.0,
       ),
@@ -107,26 +108,38 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                           SliverToBoxAdapter(
                             child: AiSummary(texts: record!.value),
                           ),
-                        SliverList.builder(
-                          itemCount: aiMessages.length,
-                          itemBuilder: (context, index) {
-                            final entry = aiMessages.entries.elementAt(index);
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 4.0,
-                              ),
-                              child: Column(
-                                children: [
-                                  MessageBubble(isUser: true, text: entry.key),
-                                  MessageBubble(
-                                    isUser: false,
-                                    text: entry.value,
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                        if (messages != null && messages!.isNotEmpty)
+                          SliverList.builder(
+                            itemCount: messages!.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                ),
+                                child: Column(
+                                  children: [
+                                    messages![index].$1,
+                                    messages![index].$2,
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        if (bubbles.isNotEmpty)
+                          SliverList.builder(
+                            itemCount: bubbles.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                ),
+                                child: MessageBubble(
+                                  isUser: (index % 2 == 0) ? true : false,
+                                  text: bubbles[index],
+                                ),
+                              );
+                            },
+                          ),
                       ],
                     ),
                   ),
@@ -153,25 +166,37 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                               controller: _messageController,
                               onSubmitted: (value) async {
                                 if (value.isNotEmpty) {
+                                  final request = value;
+                                  _messageController.clear();
                                   ref
                                       .read(
                                         aiScreenViewmodelProvider(
                                           widget.tag,
                                         ).notifier,
                                       )
-                                      .fetchRequestAndSaveConv(
-                                        _messageController.text,
+                                      .saveRequest(request);
+                                  ref
+                                      .read(
+                                        aiScreenViewmodelProvider(
+                                          widget.tag,
+                                        ).notifier,
+                                      )
+                                      .fetchResponseAndSaveConv(
+                                        request,
                                         widget.tag,
                                         widget.category,
                                       );
-                                  _messageController.clear();
                                 }
                               },
                               maxLines: null,
-                              style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: colorScheme.onSecondary,
+                              ),
                               decoration: InputDecoration(
                                 hintText: "AI한테 질문하기",
-                                hintStyle: textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary),
+                                hintStyle: textTheme.bodyMedium!.copyWith(
+                                  color: colorScheme.onTertiary,
+                                ),
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -186,18 +211,26 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                         IconButton(
                           onPressed: () async {
                             if (_messageController.text.isNotEmpty) {
+                              final request = _messageController.text;
+                              _messageController.clear();
                               ref
                                   .read(
                                     aiScreenViewmodelProvider(
                                       widget.tag,
                                     ).notifier,
                                   )
-                                  .fetchRequestAndSaveConv(
-                                    _messageController.text,
+                                  .saveRequest(request);
+                              ref
+                                  .read(
+                                    aiScreenViewmodelProvider(
+                                      widget.tag,
+                                    ).notifier,
+                                  )
+                                  .fetchResponseAndSaveConv(
+                                    request,
                                     widget.tag,
                                     widget.category,
                                   );
-                              _messageController.clear();
                             }
                           },
                           icon: Icon(
