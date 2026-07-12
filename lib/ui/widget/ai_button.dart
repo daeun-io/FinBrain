@@ -77,7 +77,7 @@ class AiButton extends ConsumerWidget {
             SvgPicture.asset("assets/images/ai_assist.svg"),
             Text(
               "AI 도우미",
-              style: textTheme.labelMedium!.copyWith(color: colorScheme.onSurface)
+              style: textTheme.labelSmall!.copyWith(color: colorScheme.onSurface)
             ),
           ],
         ),

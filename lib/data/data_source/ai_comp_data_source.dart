@@ -47,7 +47,7 @@ class AiCompDataSource {
         return {};
       }
     } catch (e) {
-      print("Error fetching summaries with $tag: $e");
+      print("Error fetching comparison text with $tag: $e");
       return {};
     }
   }

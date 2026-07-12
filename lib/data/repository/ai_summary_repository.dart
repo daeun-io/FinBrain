@@ -21,7 +21,7 @@ class AiSummaryRepository {
       }).toList();
       await dataSource.updateSummaries(uid, productName, aiTextAsMap, ctg.toString(), isPinned);
     } catch (e) {
-      print("Error saving comparison text, $e");
+      print("Error in updating summaries, $e");
     }
   }
 
@@ -48,7 +48,7 @@ class AiSummaryRepository {
       );
       return record;
     } catch (e) {
-      print("Error mapping conversation: $e");
+      print("Error in mapping summaries: $e");
       return AiRecord(
         key: "null",
         isExpanded: false,

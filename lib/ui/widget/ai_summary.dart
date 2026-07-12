@@ -20,7 +20,7 @@ class AiSummary extends StatelessWidget {
               context,
               e.text,
               colorScheme,
-              textTheme.titleLarge!,
+              textTheme.headlineMedium!,
             ),
           )
           .toList(),
@@ -55,10 +55,7 @@ class AiSummary extends StatelessWidget {
               borderRadius: BorderRadiusGeometry.all(Radius.circular(20.0)),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 16.0,
-              ),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
                   Align(
@@ -66,7 +63,7 @@ class AiSummary extends StatelessWidget {
                     child: Text(
                       "지난 대화 요약",
                       style: style.copyWith(
-                        color: colorScheme.onSecondary,
+                        color: colorScheme.onPrimary,
                       ),
                     ),
                   ),

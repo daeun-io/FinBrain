@@ -123,8 +123,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             backgroundColor: Colors.transparent,
             selectedItemColor: colorScheme.onPrimary,
             unselectedItemColor: colorScheme.onTertiary,
-            selectedLabelStyle: textTheme.titleMedium,
-            unselectedLabelStyle: textTheme.bodyMedium,
+            selectedLabelStyle: textTheme.labelLarge,
+            unselectedLabelStyle: textTheme.labelMedium,
             type: BottomNavigationBarType.fixed,
             items: [
               const BottomNavigationBarItem(

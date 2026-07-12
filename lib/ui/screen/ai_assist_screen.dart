@@ -25,8 +25,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   @override
   void initState() {
     super.initState();
-    _getSummaries();
     _initializeMessages();
+    _getSummaries();
   }
 
   @override
@@ -37,15 +37,9 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
 
   Future<void> _initializeMessages() async {
     try {
-      final exists = await ref
+      messages = await ref
           .read(aiScreenViewmodelProvider(widget.tag).notifier)
-          .checkCollectionExistsAndCreate(widget.tag);
-      print('Collection exists: $exists');
-      if (exists) {
-        messages = await ref
-            .read(aiScreenViewmodelProvider(widget.tag).notifier)
-            .getConversationWithPrdtNm(widget.tag);
-      }
+          .getConversationWithPrdtNm(widget.tag);
     } catch (error) {
       print('Error initializing messages: $error');
     }

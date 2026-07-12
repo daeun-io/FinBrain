@@ -86,8 +86,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     final products = ref.watch(
       productViewmodelProvider(widget.category, "$_cPage"),
@@ -154,16 +152,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           const SizedBox(height: 24.0),
           products.when(
             data: (data) {
-              if (data.$2.isEmpty) {
-                return Center(
-                  child: Text(
-                    "상품이 존재하지 않습니다",
-                    style: textTheme.bodyMedium!.copyWith(
-                      color: colorScheme.onSecondary,
-                    ),
-                  ),
-                );
-              }
               final (maxPage, items) = data;
               return Expanded(
                 child: CustomScrollView(

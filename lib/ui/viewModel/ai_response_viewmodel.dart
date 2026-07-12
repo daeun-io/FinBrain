@@ -86,23 +86,6 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
     }
   }
 
-  Future<bool> checkCollectionExistsAndCreate(String tag) async {
-    try {
-      final user = GoogleAuthService.getCurrentUser();
-      if (user == null) {
-        print("No user is currently signed in.");
-        return false;
-      }
-      return await messageRepository.checkCollectionExistsAndCreate(
-        user.uid,
-        tag,
-      );
-    } catch (error) {
-      print("Error checking collection existence: $error");
-      return false;
-    }
-  }
-
   Future<void> saveConversationInFirestore(
     String tag,
     ProductCategory ctg,

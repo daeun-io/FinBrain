@@ -1,27 +1,7 @@
 import 'package:finbrain/data/data_source/ai_convo_data_source.dart';
-import 'package:finbrain/product_categories.dart';
 
 class AiConversationRepository {
   final dataSource = AiConversationDataSource();
-
-  Future<bool> checkCollectionExistsAndCreate(
-    String uid,
-    String productName,
-  ) async {
-    try {
-      final exists = await dataSource.isMessagesCollectionExists(
-        uid,
-        productName,
-      );
-      if (!exists) {
-        await dataSource.createMessagesCollection(uid, productName);
-      }
-      return exists;
-    } catch (e) {
-      print("Error checking and creating messages collection: $e");
-      return false;
-    }
-  }
 
   Future<void> saveRequestAndResponse(
     String uid,
