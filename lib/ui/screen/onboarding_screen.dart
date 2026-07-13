@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
 import 'package:finbrain/data/google_auth_service.dart';
@@ -11,80 +12,90 @@ class OnBoardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final isLightMode = Theme.of(context).brightness == Brightness.light;
 
-    return Container(
-      color: colorScheme.primary,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // todo: add onboarding images later
-          Expanded(
-            child: PageView(
+    return SafeArea(
+      child: Container(
+        color: colorScheme.primary,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // todo: add onboarding images later
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                children: [
+                  SvgPicture.asset(
+                    (isLightMode) ? "assets/images/onboarding_light_01.svg" : "assets/images/onboarding_dark_01.svg",
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    fit: BoxFit.contain,
+                    alignment: Alignment.topCenter,
+                    semanticsLabel: "Onboading illustration 01",
+                  ),
+                  SvgPicture.asset(
+                    (isLightMode) ? "assets/images/onboarding_light_02.svg" : "assets/images/onboarding_dark_02.svg",
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    fit: BoxFit.contain,
+                    alignment: Alignment.topCenter,
+                    semanticsLabel: "Onboading illustration 02",
+                  ),
+                  SvgPicture.asset(
+                    (isLightMode) ? "assets/images/onboarding_light_03.svg" : "assets/images/onboarding_dark_03.svg",
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    fit: BoxFit.contain,
+                    alignment: Alignment.topCenter,
+                    semanticsLabel: "Onboading illustration 03",
+                  ),
+                  SvgPicture.asset(
+                    (isLightMode) ? "assets/images/onboarding_light_04.svg" : "assets/images/onboarding_dark_04.svg",
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    fit: BoxFit.contain,
+                    alignment: Alignment.topCenter,
+                    semanticsLabel: "Onboading illustration 04",
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            SmoothPageIndicator(
               controller: _pageController,
-              children: [
-                Container(
-                  color: Colors.blue,
-                  child: const Center(
-                    child: Text(
-                      'Welcome to the FinBrain!',
-                      style: TextStyle(fontSize: 24, color: Colors.white),
-                    ),
-                  ),
-                ),
-                Container(
-                  color: Colors.green,
-                  child: const Center(
-                    child: Text(
-                      'Discover new features.',
-                      style: TextStyle(fontSize: 24, color: Colors.white),
-                    ),
-                  ),
-                ),
-                Container(
-                  color: Colors.orange,
-                  child: const Center(
-                    child: Text(
-                      'Get Started Now!',
-                      style: TextStyle(fontSize: 24, color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          SmoothPageIndicator(
-            controller: _pageController,
-            count: 3, // Number of pages
-            effect: ScrollingDotsEffect(
-              spacing: 12.0,
-              dotHeight: 8,
-              dotWidth: 8,
-              activeDotColor: colorScheme.onTertiaryFixed,
-              dotColor: colorScheme.scrim,
-            ),
-          ),
-          const SizedBox(height: 40),
-          GestureDetector(
-            onTap: () {
-              _signInWithGoogle(context);
-            },
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                border: Border.all(color: colorScheme.onPrimary, width: 1),
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 32.0),
-              child: Text(
-                "FINBRAIN 시작하기",
-                style: textTheme.headlineLarge!.copyWith(color: colorScheme.onPrimary),
+              count: 4, // Number of pages
+              effect: ScrollingDotsEffect(
+                spacing: 12.0,
+                dotHeight: 8,
+                dotWidth: 8,
+                activeDotColor: colorScheme.onTertiaryFixed,
+                dotColor: colorScheme.scrim,
               ),
             ),
-          ),
-          const SizedBox(height: 60),
-        ],
+            const SizedBox(height: 28),
+            GestureDetector(
+              onTap: () {
+                _signInWithGoogle(context);
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: colorScheme.surface,
+                  border: Border.all(color: colorScheme.onPrimary, width: 1),
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 32.0),
+                child: Text(
+                  "FINBRAIN 시작하기",
+                  style: textTheme.headlineLarge!.copyWith(
+                    color: colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
       ),
     );
   }
@@ -99,6 +110,7 @@ class OnBoardingScreen extends StatelessWidget {
         context,
       ).showSnackBar(const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요')));
     } else {
+      
       Navigator.of(
         context,
       ).pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()));
