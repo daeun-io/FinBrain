@@ -34,9 +34,15 @@ class SavingsScreen extends ConsumerWidget {
         children: [
           TabBar(
             onTap: (value) {
-              ref.read(currentCtgViewmodelProvider.notifier).setCurrentCtg(categories[value]);
-              final page = ref.read(currentPageViewmodelProvider(categories[value]));
-              ref.read(fetchProductViewmodelProvider(categories[value], "$page"));
+              ref
+                  .read(currentCtgViewmodelProvider.notifier)
+                  .setCurrentCtg(categories[value]);
+              final page = ref.read(
+                currentPageViewmodelProvider(categories[value]),
+              );
+              ref.read(
+                fetchProductViewmodelProvider(categories[value], "$page"),
+              );
             },
             indicator: UnderlineTabIndicator(
               borderSide: BorderSide(color: colorScheme.onPrimary, width: 2.0),

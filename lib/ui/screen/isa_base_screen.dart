@@ -1,6 +1,8 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
+import 'package:finbrain/ui/screen/isa_guide_screen.dart';
 import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/shared_preferences_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -136,7 +138,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         });
       }
     });
-    
+
     final filters = ref.watch(filtersViewmodelProvider(widget.category));
     final baseYear =
         filters

@@ -1,5 +1,6 @@
 import 'package:finbrain/themes/text_theme.dart';
 import 'package:finbrain/ui/screen/archive_screen.dart';
+import 'package:finbrain/ui/screen/isa_guide_screen.dart';
 import 'package:finbrain/ui/screen/loan_screen.dart';
 import 'package:finbrain/ui/screen/savings_screen.dart';
 import 'package:finbrain/ui/viewModel/current_ctg_viewmodel.dart';
@@ -41,8 +42,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           child: AppBar(
             backgroundColor: colorScheme.primary,
             scrolledUnderElevation: 0.0,
-            // change later
-            leading: Image.asset(isLightMode ? "assets/images/icon_light.png" : "assets/images/icon_dark.png"),
+            leading: Image.asset(
+              isLightMode
+                  ? "assets/images/icon_light.png"
+                  : "assets/images/icon_dark.png",
+            ),
             title: Text(
               "FinBrain",
               style: textTheme.headlineMedium!.copyWith(
@@ -67,7 +71,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   ),
                   side: BorderSide(color: colorScheme.onPrimary, width: 1),
                 ),
-                // todo: implement later
                 child: Text(
                   (currTxtTheme == bigTextTheme) ? "작은 글씨" : "큰 글씨",
                   style: textTheme.titleMedium!.copyWith(
@@ -80,7 +83,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 onPressed: () {
                   Navigator.of(
                     context,
-                  ).push(MaterialPageRoute(builder: (ctx) => ArchiveScreen()));
+                  ).push(MaterialPageRoute(builder: (ctx) => IsaGuideScreen()));
+                },
+                icon: Icon(
+                  Icons.info,
+                  color: colorScheme.surfaceContainerHighest,
+                  size: 32,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => const ArchiveScreen()),
+                  );
                 },
                 icon: Icon(
                   Icons.archive_sharp,

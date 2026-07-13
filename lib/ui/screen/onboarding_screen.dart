@@ -110,6 +110,7 @@ class OnBoardingScreen extends StatelessWidget {
         context,
       ).showSnackBar(const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요')));
     } else {
+      
       Navigator.of(
         context,
       ).pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()));
