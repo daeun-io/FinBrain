@@ -30,6 +30,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final currTxtTheme = ref.watch(textThemeViewmodelProvider);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final isLightMode = Theme.of(context).brightness == Brightness.light;
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -41,7 +42,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             backgroundColor: colorScheme.primary,
             scrolledUnderElevation: 0.0,
             // change later
-            leading: Image.asset("assets/images/app_icon.png"),
+            leading: Image.asset(isLightMode ? "assets/images/icon_light.png" : "assets/images/icon_dark.png"),
             title: Text(
               "FinBrain",
               style: textTheme.headlineMedium!.copyWith(
@@ -49,7 +50,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            titleSpacing: -8,
+            titleSpacing: -4,
             actions: [
               OutlinedButton(
                 onPressed: () {
