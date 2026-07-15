@@ -58,8 +58,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
         final sortCriteria =
             (product.commonInfo.category == ProductCategory.liked)
             ? switch (product.commonInfo.category) {
-                ProductCategory.deposit => "최고 금리(높은순)",
-                ProductCategory.installment => "최고 금리(높은순)",
+                ProductCategory.deposit => "최고 금리(높은 순)",
+                ProductCategory.installment => "최고 금리(높은 순)",
                 ProductCategory.isaMp => "평균 수익률(높은 순)",
                 _ => "최저 금리(낮은 순)",
               }
@@ -187,7 +187,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                                     ),
                             "최고 금리(낮은 순)" =>
                               ((product as MortgageAndRentLoan)
-                                          .returnRates()[0] ==
+                                          .returnRates()[2] ==
                                       null)
                                   ? "미제공"
                                   : product.returnRates()[2]!.toStringAsFixed(

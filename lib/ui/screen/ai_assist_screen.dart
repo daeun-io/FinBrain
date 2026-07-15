@@ -125,10 +125,10 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                               itemCount: bubbles.length,
                               itemBuilder: (context, index) {
                                 if(bubbles[index] == "loading"){
-                                  return const Expanded(child: Padding(
+                                  return const Padding(
                                     padding: EdgeInsets.symmetric(vertical: 8),
                                     child: CustomProgressIndicator(),
-                                  ),);
+                                  );
                                 }
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(
