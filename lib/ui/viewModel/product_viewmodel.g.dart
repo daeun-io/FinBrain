@@ -55,7 +55,7 @@ final class FetchProductViewmodelProvider
 }
 
 String _$fetchProductViewmodelHash() =>
-    r'525597b3a87ab23bfeae1ed3c649e92e60992e61';
+    r'b055512ef01f8d9dae8119000c827bed63dad7fe';
 
 final class FetchProductViewmodelFamily extends $Family
     with
@@ -170,7 +170,7 @@ final class ProductViewmodelProvider
   }
 }
 
-String _$productViewmodelHash() => r'b28be89ec8a343bb2ef62ab4d88c702eee398f81';
+String _$productViewmodelHash() => r'f44bf8734a4be4cd51087b2ba8d031b96b437b13';
 
 final class ProductViewmodelFamily extends $Family
     with

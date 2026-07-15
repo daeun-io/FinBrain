@@ -117,7 +117,7 @@ class ProductDetailScreen extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(
-                        productViewmodelProvider(category, "$page").notifier,
+                        fetchProductViewmodelProvider(category, "$page").notifier,
                       )
                       .toggleLiked(product);
                 },
@@ -135,207 +135,209 @@ class ProductDetailScreen extends ConsumerWidget {
               ),
             ],
           ),
-          body: SizedBox.expand(
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 24.0,
-                        horizontal: 20.0,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ..._displayDefaultWidgetList(
-                            product,
-                            colorScheme,
-                            textTheme,
-                          ),
-                          ..._displayDynamicWidgetList(
-                            product.commonInfo.category,
-                            product,
-                            colorScheme,
-                            textTheme,
-                          ),
-                          SizedBox(height: 160.0),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 20,
-                  bottom: 100,
-                  child: AiButton(
-                    tag: product.commonInfo.productName!,
-                    category: product.commonInfo.category,
-                  ),
-                ),
-                if (product.commonInfo.category == ProductCategory.isaMp)
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: GestureDetector(
-                      onTap: () => launchPrdtUrl(
-                        ref,
-                        context,
-                        colorScheme,
-                        textTheme,
-                        product.commonInfo.companyName ?? "",
-                      ),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 20.0),
-                        decoration: BoxDecoration(
-                          color: colorScheme.secondary,
-                          border: Border.all(
-                            color: colorScheme.outline,
-                            width: 1.0,
-                          ),
+          body: SafeArea(
+            child: SizedBox.expand(
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 24.0,
+                          horizontal: 20.0,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.ads_click,
-                              color: colorScheme.onSecondary,
-                              size: 24.0,
+                            ..._displayDefaultWidgetList(
+                              product,
+                              colorScheme,
+                              textTheme,
                             ),
-                            const SizedBox(width: 4.0),
-                            Text(
-                              "공식 홈페이지로 이동",
-                              style: textTheme.titleLarge!.copyWith(
-                                color: colorScheme.onSecondary,
-                              ),
+                            ..._displayDynamicWidgetList(
+                              product.commonInfo.category,
+                              product,
+                              colorScheme,
+                              textTheme,
                             ),
+                            SizedBox(height: 160.0),
                           ],
                         ),
                       ),
                     ),
-                  )
-                else
+                  ),
                   Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (ctx) {
-                                    final options = switch (product
-                                        .commonInfo
-                                        .category) {
-                                      ProductCategory.deposit =>
-                                        (product
-                                                as DepositAndInstallmentSavings)
-                                            .options,
-                                      ProductCategory.installment =>
-                                        (product
-                                                as DepositAndInstallmentSavings)
-                                            .options,
-                                      ProductCategory.credit =>
-                                        (product as CreditLoan).options,
-                                      _ =>
-                                        (product as MortgageAndRentLoan)
-                                            .options,
-                                    };
-                                    return CalculatorScreen(
-                                      category: product.commonInfo.category,
-                                      mapOptions: ref
-                                          .read(
-                                            productDetailScreenViewmodelProvider
-                                                .notifier,
-                                          )
-                                          .mapProductOptions(
-                                            product.commonInfo.category,
-                                            options,
-                                          ),
-                                      options: options,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 20.0),
-                              decoration: BoxDecoration(
-                                color: colorScheme.secondary,
-                                border: Border.all(
-                                  color: colorScheme.outline,
-                                  width: 1.0,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.calculate_outlined,
-                                    color: colorScheme.onSecondary,
-                                    size: 24.0,
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  Text(
-                                    "금융 계산기",
-                                    style: textTheme.titleLarge!.copyWith(
-                                      color: colorScheme.onSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => launchPrdtUrl(
-                              ref,
-                              context,
-                              colorScheme,
-                              textTheme,
-                              product.commonInfo.companyName ?? "",
-                            ),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 20.0),
-                              decoration: BoxDecoration(
-                                color: colorScheme.secondary,
-                                border: Border.all(
-                                  color: colorScheme.outline,
-                                  width: 1.0,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.ads_click,
-                                    color: colorScheme.onSecondary,
-                                    size: 24.0,
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  Text(
-                                    "공식 홈페이지로 이동",
-                                    style: textTheme.titleLarge!.copyWith(
-                                      color: colorScheme.onSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    right: 20,
+                    bottom: 100,
+                    child: AiButton(
+                      tag: product.commonInfo.productName!,
+                      category: product.commonInfo.category,
                     ),
                   ),
-              ],
+                  if (product.commonInfo.category == ProductCategory.isaMp)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: GestureDetector(
+                        onTap: () => launchPrdtUrl(
+                          ref,
+                          context,
+                          colorScheme,
+                          textTheme,
+                          product.commonInfo.companyName ?? "",
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondary,
+                            border: Border.all(
+                              color: colorScheme.outline,
+                              width: 1.0,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.ads_click,
+                                color: colorScheme.onSecondary,
+                                size: 24.0,
+                              ),
+                              const SizedBox(width: 4.0),
+                              Text(
+                                "공식 홈페이지로",
+                                style: textTheme.titleLarge!.copyWith(
+                                  color: colorScheme.onSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) {
+                                      final options = switch (product
+                                          .commonInfo
+                                          .category) {
+                                        ProductCategory.deposit =>
+                                          (product
+                                                  as DepositAndInstallmentSavings)
+                                              .options,
+                                        ProductCategory.installment =>
+                                          (product
+                                                  as DepositAndInstallmentSavings)
+                                              .options,
+                                        ProductCategory.credit =>
+                                          (product as CreditLoan).options,
+                                        _ =>
+                                          (product as MortgageAndRentLoan)
+                                              .options,
+                                      };
+                                      return CalculatorScreen(
+                                        category: product.commonInfo.category,
+                                        mapOptions: ref
+                                            .read(
+                                              productDetailScreenViewmodelProvider
+                                                  .notifier,
+                                            )
+                                            .mapProductOptions(
+                                              product.commonInfo.category,
+                                              options,
+                                            ),
+                                        options: options,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 20.0),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.secondary,
+                                  border: Border.all(
+                                    color: colorScheme.outline,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.calculate_outlined,
+                                      color: colorScheme.onSecondary,
+                                      size: 24.0,
+                                    ),
+                                    const SizedBox(width: 4.0),
+                                    Text(
+                                      "금융 계산기",
+                                      style: textTheme.titleLarge!.copyWith(
+                                        color: colorScheme.onSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => launchPrdtUrl(
+                                ref,
+                                context,
+                                colorScheme,
+                                textTheme,
+                                product.commonInfo.companyName ?? "",
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 20.0),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.secondary,
+                                  border: Border.all(
+                                    color: colorScheme.outline,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.ads_click,
+                                      color: colorScheme.onSecondary,
+                                      size: 24.0,
+                                    ),
+                                    const SizedBox(width: 4.0),
+                                    Text(
+                                      "공식 홈페이지로",
+                                      style: textTheme.titleLarge!.copyWith(
+                                        color: colorScheme.onSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         );
@@ -853,12 +855,12 @@ class ProductDetailScreen extends ConsumerWidget {
       Text("상품 안내", style: bodySbLg.copyWith(color: colorScheme.onPrimary)),
       Divider(thickness: 1, color: colorScheme.onSecondary),
       textFrame(
-        "금융 상품명: ${product.commonInfo.productName}",
+        "금융 상품명: ${replace(product.commonInfo.productName!)}",
         colorScheme.onSecondary,
         textTheme.bodyMedium!,
       ),
       textFrame(
-        "금융회사: ${product.commonInfo.companyName}",
+        "금융회사: ${replace(product.commonInfo.companyName ?? "미제공")}",
         colorScheme.onSecondary,
         textTheme.bodyMedium!,
       ),

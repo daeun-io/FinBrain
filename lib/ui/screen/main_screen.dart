@@ -111,51 +111,53 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         index: _currentIndex,
         children: const [SavingsScreen(), LoanScreen(), LikedScreen()],
       ),
-      bottomNavigationBar: Container(
-        height: 70,
-        decoration: BoxDecoration(
-          color: colorScheme.secondary,
-          border: Border(
-            top: BorderSide(color: colorScheme.outline, width: 1.0),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          height: 70,
+          decoration: BoxDecoration(
+            color: colorScheme.secondary,
+            border: Border(
+              top: BorderSide(color: colorScheme.outline, width: 1.0),
+            ),
           ),
-        ),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            splashFactory: NoSplash.splashFactory,
-            highlightColor: colorScheme.onSurface,
-          ),
-          child: BottomNavigationBar(
-            onTap: (value) {
-              setState(() {
-                _currentIndex = value;
-              });
-              final ctg = ref.read(currentCtgViewmodelProvider);
-              final page = ref.read(currentPageViewmodelProvider(ctg));
-              ref.read(fetchProductViewmodelProvider(ctg, "$page"));
-            },
-            currentIndex: _currentIndex,
-            elevation: 0,
-            enableFeedback: false,
-            backgroundColor: Colors.transparent,
-            selectedItemColor: colorScheme.onPrimary,
-            unselectedItemColor: colorScheme.onTertiary,
-            selectedLabelStyle: textTheme.labelLarge,
-            unselectedLabelStyle: textTheme.labelMedium,
-            type: BottomNavigationBarType.fixed,
-            items: [
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.savings, size: 28),
-                label: "예적금",
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.paid, size: 28),
-                label: "대출",
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.favorite, size: 28),
-                label: "관심",
-              ),
-            ],
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              splashFactory: NoSplash.splashFactory,
+              highlightColor: colorScheme.onSurface,
+            ),
+            child: BottomNavigationBar(
+              onTap: (value) {
+                setState(() {
+                  _currentIndex = value;
+                });
+                final ctg = ref.read(currentCtgViewmodelProvider);
+                final page = ref.read(currentPageViewmodelProvider(ctg));
+                ref.read(fetchProductViewmodelProvider(ctg, "$page"));
+              },
+              currentIndex: _currentIndex,
+              elevation: 0,
+              enableFeedback: false,
+              backgroundColor: Colors.transparent,
+              selectedItemColor: colorScheme.onPrimary,
+              unselectedItemColor: colorScheme.onTertiary,
+              selectedLabelStyle: textTheme.labelLarge,
+              unselectedLabelStyle: textTheme.labelMedium,
+              type: BottomNavigationBarType.fixed,
+              items: [
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.savings, size: 28),
+                  label: "예적금",
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.paid, size: 28),
+                  label: "대출",
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.favorite, size: 28),
+                  label: "관심",
+                ),
+              ],
+            ),
           ),
         ),
       ),

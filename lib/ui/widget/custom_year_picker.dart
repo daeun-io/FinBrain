@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomYearPicker extends StatefulWidget {
@@ -8,7 +9,7 @@ class CustomYearPicker extends StatefulWidget {
   });
 
   final int selectedYear;
-  final ValueChanged onYearChanged;
+  final ValueChanged<int> onYearChanged;
 
   @override
   State<CustomYearPicker> createState() {
@@ -27,9 +28,9 @@ class _YearPickerPageState extends State<CustomYearPicker> {
     super.initState();
     _localSelected = widget.selectedYear;
     yearList = List.generate((thisYear - 2021 + 1), (index) => 2021 + index);
-    _scrollController = FixedExtentScrollController(
-      initialItem: yearList.length - 1,
-    );
+    int initialIndex = yearList.indexOf(_localSelected);
+    if (initialIndex == -1) initialIndex = yearList.length - 1;
+    _scrollController = FixedExtentScrollController(initialItem: initialIndex);
   }
 
   @override
@@ -44,54 +45,39 @@ class _YearPickerPageState extends State<CustomYearPicker> {
     final textTheme = Theme.of(context).textTheme;
 
     return SizedBox(
-      height: 150,
-      child: ListWheelScrollView.useDelegate(
-        key: ValueKey(widget.selectedYear),
-        controller: _scrollController,
+      height: 130,
+      child: CupertinoPicker(
+        scrollController: _scrollController,
         itemExtent: 42.0,
-        physics: const BouncingScrollPhysics(
-          parent: FixedExtentScrollPhysics(),
-        ),
-        clipBehavior: Clip.none,
         diameterRatio: 1.5,
-        perspective: 0.003,
+        selectionOverlay: Container(
+          decoration: BoxDecoration(
+            border: Border.symmetric(
+              horizontal: BorderSide(color: colorScheme.onTertiary, width: 1.0),
+            ),
+          ),
+        ),
         onSelectedItemChanged: (value) {
           setState(() {
             _localSelected = yearList[value];
           });
           widget.onYearChanged(_localSelected);
         },
-        childDelegate: ListWheelChildBuilderDelegate(
-          childCount: yearList.length,
-          builder: (context, index) {
-            if (yearList[index] == _localSelected) {
-              return SizedBox(
-                width: double.infinity,
-                child: Container(
-                  key: ValueKey('Selected: ${yearList[index]}'),
-                  margin: EdgeInsets.zero,
-                  decoration: BoxDecoration(
-                    border: BoxBorder.symmetric(horizontal: BorderSide(color: colorScheme.onTertiary))
-                  ),
-                  child: Center(
-                    child: Text(
-                      "${yearList[index]}년",
-                      style: textTheme.titleLarge!.copyWith(color: colorScheme.onSecondary),
+        children: yearList.map((year) {
+          final isSelected = year == _localSelected;
+          return Center(
+            child: Text(
+              "$year년",
+              style: (isSelected)
+                  ? textTheme.titleLarge!.copyWith(
+                      color: colorScheme.onSecondary,
+                    )
+                  : textTheme.bodyLarge!.copyWith(
+                      color: colorScheme.onTertiary,
                     ),
-                  ),
-                ),
-              );
-            } else {
-              return Center(
-                key: ValueKey('Unselected: ${yearList[index]}'),
-                child: Text(
-                  "${yearList[index]}년",
-                  style: textTheme.bodyLarge!.copyWith(color: colorScheme.onTertiary),
-                ),
-              );
-            }
-          },
-        ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

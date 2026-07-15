@@ -110,6 +110,33 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
       return (0, <FinancialProduct>[]);
     }
   }
+
+  void toggleLiked(FinancialProduct product) {
+    final currentState = state.value ?? (0, <FinancialProduct>[]);
+
+    print("currentState, ${currentState.$1}, ${currentState.$2.length}");
+
+    final isLiked = product.commonInfo.isLiked;
+    final updated = currentState.$2.map((e) {
+      if (e.commonInfo.productName == product.commonInfo.productName) {
+        return e.copyWith(!isLiked);
+      } else {
+        return e;
+      }
+    }).toList();
+
+    state = AsyncValue.data((currentState.$1, updated));
+
+    if (isLiked == true) {
+      ref
+          .read(likedProductViewmodelProvider.notifier)
+          .deleteInLikedList(product);
+    } else {
+      ref
+          .read(likedProductViewmodelProvider.notifier)
+          .addInLikedList(product.copyWith(!isLiked));
+    }
+  }
 }
 
 @riverpod
@@ -131,30 +158,6 @@ class ProductViewmodel extends _$ProductViewmodel {
         ? <FinancialProduct>[]
         : result.value!.$2;
     return sortByCriteria(criteria, ctg, maxPage, products);
-  }
-
-  bool toggleLiked(FinancialProduct product) {
-    final currentState = state.value ?? (0, <FinancialProduct>[]);
-    final isLiked = product.commonInfo.isLiked;
-    final updated = currentState.$2.map((e) {
-      if (e.commonInfo.productName == product.commonInfo.productName) {
-        return e.copyWith(!isLiked);
-      } else {
-        return e;
-      }
-    }).toList();
-    state = AsyncValue.data((currentState.$1, updated));
-
-    if (isLiked == true) {
-      ref
-          .read(likedProductViewmodelProvider.notifier)
-          .deleteInLikedList(product);
-    } else {
-      ref
-          .read(likedProductViewmodelProvider.notifier)
-          .addInLikedList(product.copyWith(!isLiked));
-    }
-    return isLiked;
   }
 
   AsyncValue<(int, List<FinancialProduct>)> sortByCriteria(

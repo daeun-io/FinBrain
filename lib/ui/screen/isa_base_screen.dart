@@ -1,8 +1,8 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
-import 'package:finbrain/ui/screen/isa_guide_screen.dart';
+import 'package:finbrain/themes/text_theme.dart';
 import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
-import 'package:finbrain/ui/viewModel/shared_preferences_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -114,6 +114,8 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
+    final currentTextTheme = ref.watch(textThemeViewmodelProvider);
+
     final joinItems = ref.watch(isaJoinStatusViewModelProvider);
     final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
     final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
@@ -195,7 +197,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                     children: [
                       // header
                       Container(
-                        height: 40.0,
+                        height: (currentTextTheme == bigTextTheme) ? 80.0 : 60.0,
                         color: colorScheme.secondary,
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -206,10 +208,13 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                     ? 3
                                     : 2,
                                 child: Center(
-                                  child: Text(
-                                    label,
-                                    style: textTheme.bodyMedium!.copyWith(
-                                      color: colorScheme.onPrimary,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      label,
+                                      style: textTheme.titleMedium!.copyWith(
+                                        color: colorScheme.onPrimary,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -237,6 +242,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                   colorScheme.surface,
                                   colorScheme.onSecondary,
                                   textTheme.bodyMedium!,
+                                  currentTextTheme
                                 );
                               }, childCount: items.length),
                             ),
@@ -274,10 +280,11 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     Color ctnColor,
     Color txtColor,
     TextStyle style,
+    TextTheme currentTheme
   ) {
     return Container(
       color: ctnColor,
-      height: 48.0,
+      height: (currentTheme == bigTextTheme) ? 80.0 : 60.0,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: [

@@ -86,7 +86,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final products = ref.watch(
       productViewmodelProvider(widget.category, "$_cPage"),
     );
@@ -166,7 +165,8 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
-                            product: items[index],
+                            productName: items[index].commonInfo.productName!,
+                            category: items[index].commonInfo.category,
                             fromLikedScreen: false,
                           ),
                         );

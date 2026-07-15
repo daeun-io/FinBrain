@@ -35,7 +35,7 @@ final class SharedPreferencesViewmodelProvider
 }
 
 String _$sharedPreferencesViewmodelHash() =>
-    r'dd610d16640ae310aef755877144e9c766484831';
+    r'7c789535fca459070c4836d4fce0527fe15d52f0';
 
 abstract class _$SharedPreferencesViewmodel extends $AsyncNotifier<bool> {
   FutureOr<bool> build();
