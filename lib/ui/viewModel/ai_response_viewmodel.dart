@@ -27,7 +27,7 @@ class AiResponseViewmodel extends _$AiResponseViewmodel {
 }
 
 @riverpod
-class AiScreenViewmodel extends _$AiScreenViewmodel {
+class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
   @override
   List<String> build(String tag) => [];
 
@@ -46,7 +46,7 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
     return product;
   }
 
-  void saveRequest(String newRequest){
+  void saveRequest(String newRequest) {
     state = [...state, newRequest];
   }
 
@@ -55,33 +55,36 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
     String tag,
     ProductCategory ctg,
   ) async {
+    final currentState = state;
+
     try {
       print("======================");
       print("tag: $tag");
 
       final product = await getProduct(tag, ctg);
       if (product == null) {
-        state = [...state, "오류가 발생했습니다. 다시 시도해주세요"];
+        state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
         return;
       }
-
+      state = [...currentState, "loading"];
+      
       final newResponse = await ref.read(
         aiResponseViewmodelProvider(newRequest, product).future,
       );
       print("ai response: $newResponse");
 
       if (newResponse == null || newResponse.isEmpty) {
-        state = [...state, "오류가 발생했습니다. 다시 시도해주세요"];
+        state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
         return;
       } else {
-        state = [...state, newResponse];
+        state = [...currentState, newResponse];
         await saveConversationInFirestore(tag, ctg, newRequest, newResponse);
         print("====================");
         return;
       }
     } catch (error) {
       print("Error fetching AI response: $error");
-      state = [...state, "오류가 발생했습니다. 다시 시도해주세요"];
+      state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
       return;
     }
   }
@@ -129,12 +132,14 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
           conversation[entry["request"]!] = entry["response"]!;
         }
       }
-      final messages = conversation.entries.map(
-        (e) => (
-          MessageBubble(isUser: true, text: e.key),
-          MessageBubble(isUser: false, text: e.value),
-        ),
-      ).toList();
+      final messages = conversation.entries
+          .map(
+            (e) => (
+              MessageBubble(isUser: true, text: e.key),
+              MessageBubble(isUser: false, text: e.value),
+            ),
+          )
+          .toList();
       return messages;
     } catch (error) {
       print("Error getting conversation: $error");
@@ -173,21 +178,28 @@ class AiScreenViewmodel extends _$AiScreenViewmodel {
 @riverpod
 class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
   @override
-  String build(String products) => "";
-
-  void askComparsion(String products) async {
+  Future<String> build(String text) async {
+    return _askComparsion(text);
+  }
+  
+  Future<String> _askComparsion(String text) async {
     try {
       final newResponse = await ref.read(
-        aiResponseViewmodelProvider(products).future,
+        aiResponseViewmodelProvider(text).future,
       );
       if (newResponse == null || newResponse.isEmpty) {
-        state = "오류가 발생했습니다. 다시 시도해주세요";
-      } else {
-        state = newResponse;
+        return "오류가 발생했습니다. 다시 시도해주세요";
       }
+      return newResponse;
     } catch (error) {
       print("Ai Comparsion: error - $error");
+      return "오류가 발생했습니다. 다시 시도해주세요";
     }
+  }
+ 
+  Future<void> refreshComparison(String text) async{
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _askComparsion(text));
   }
 
   Future<void> saveComparisonText(ProductCategory ctg) async {
@@ -196,8 +208,16 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
       if (user == null) {
         print("No current user found");
         return;
+      } else if (state.value == null) {
+        print("State is null");
+        return;
       }
-      await compRepository.saveComparisonText(user.uid, products, state, ctg);
+      await compRepository.saveComparisonText(
+        user.uid,
+        text,
+        state.value!,
+        ctg,
+      );
     } catch (e) {
       print("Error saving comparison text");
     }

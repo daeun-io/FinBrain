@@ -38,7 +38,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
         (widget.category == ProductCategory.isaJoin ||
             widget.category == ProductCategory.isaManagement ||
             widget.category == ProductCategory.isaMp)
-        ? "${widget.baseYear}년, $selectedOption"
+        ? "${widget.baseYear}년 기준, $selectedOption"
         : selectedOption;
 
     return Row(
@@ -136,7 +136,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                   });
                                   setState(() {
                                     if(widget.category == ProductCategory.isaJoin || widget.category == ProductCategory.isaManagement || widget.category == ProductCategory.isaMp){
-                                      text = "${widget.baseYear}년, ${filter.$2[index]}";
+                                      text = "${widget.baseYear}년 기준, ${filter.$2[index]}";
                                     } else {
                                       text = filter.$2[index];
                                     }

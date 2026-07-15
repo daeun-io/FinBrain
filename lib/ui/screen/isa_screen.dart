@@ -82,7 +82,7 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
                 .read(isaJoinStatusViewModelProvider.notifier)
                 .fetchIsaJoinStatus("1");
           });
-          
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             child: Column(
@@ -114,17 +114,26 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
                       Container(
                         alignment: Alignment.center,
                         height: 40,
-                        child: const Text("가입 현황"),
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text("가입 현황"),
+                        ),
                       ),
                       Container(
                         alignment: Alignment.center,
                         height: 40,
-                        child: const Text("운용 현황"),
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text("운용 현황"),
+                        ),
                       ),
                       Container(
                         alignment: Alignment.center,
                         height: 40,
-                        child: const Text("MP 수익률"),
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text("MP 수익률"),
+                        ),
                       ),
                     ],
                   ),

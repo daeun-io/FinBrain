@@ -100,35 +100,35 @@ abstract class _$AiResponseViewmodel extends $AsyncNotifier<String?> {
   }
 }
 
-@ProviderFor(AiScreenViewmodel)
-final aiScreenViewmodelProvider = AiScreenViewmodelFamily._();
+@ProviderFor(AiAssistScreenViewmodel)
+final aiAssistScreenViewmodelProvider = AiAssistScreenViewmodelFamily._();
 
-final class AiScreenViewmodelProvider
-    extends $NotifierProvider<AiScreenViewmodel, List<String>> {
-  AiScreenViewmodelProvider._({
-    required AiScreenViewmodelFamily super.from,
+final class AiAssistScreenViewmodelProvider
+    extends $NotifierProvider<AiAssistScreenViewmodel, List<String>> {
+  AiAssistScreenViewmodelProvider._({
+    required AiAssistScreenViewmodelFamily super.from,
     required String super.argument,
   }) : super(
          retry: null,
-         name: r'aiScreenViewmodelProvider',
+         name: r'aiAssistScreenViewmodelProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$aiScreenViewmodelHash();
+  String debugGetCreateSourceHash() => _$aiAssistScreenViewmodelHash();
 
   @override
   String toString() {
-    return r'aiScreenViewmodelProvider'
+    return r'aiAssistScreenViewmodelProvider'
         ''
         '($argument)';
   }
 
   @$internal
   @override
-  AiScreenViewmodel create() => AiScreenViewmodel();
+  AiAssistScreenViewmodel create() => AiAssistScreenViewmodel();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<String> value) {
@@ -140,7 +140,8 @@ final class AiScreenViewmodelProvider
 
   @override
   bool operator ==(Object other) {
-    return other is AiScreenViewmodelProvider && other.argument == argument;
+    return other is AiAssistScreenViewmodelProvider &&
+        other.argument == argument;
   }
 
   @override
@@ -149,34 +150,35 @@ final class AiScreenViewmodelProvider
   }
 }
 
-String _$aiScreenViewmodelHash() => r'c822285ba74daa1afd722c0ed12467045953a94f';
+String _$aiAssistScreenViewmodelHash() =>
+    r'5aeb289ffaf0986b28289dddc9aad2e410ec8c2b';
 
-final class AiScreenViewmodelFamily extends $Family
+final class AiAssistScreenViewmodelFamily extends $Family
     with
         $ClassFamilyOverride<
-          AiScreenViewmodel,
+          AiAssistScreenViewmodel,
           List<String>,
           List<String>,
           List<String>,
           String
         > {
-  AiScreenViewmodelFamily._()
+  AiAssistScreenViewmodelFamily._()
     : super(
         retry: null,
-        name: r'aiScreenViewmodelProvider',
+        name: r'aiAssistScreenViewmodelProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  AiScreenViewmodelProvider call(String tag) =>
-      AiScreenViewmodelProvider._(argument: tag, from: this);
+  AiAssistScreenViewmodelProvider call(String tag) =>
+      AiAssistScreenViewmodelProvider._(argument: tag, from: this);
 
   @override
-  String toString() => r'aiScreenViewmodelProvider';
+  String toString() => r'aiAssistScreenViewmodelProvider';
 }
 
-abstract class _$AiScreenViewmodel extends $Notifier<List<String>> {
+abstract class _$AiAssistScreenViewmodel extends $Notifier<List<String>> {
   late final _$args = ref.$arg as String;
   String get tag => _$args;
 
@@ -202,7 +204,7 @@ final aiComparisonScreenViewmodelProvider =
     AiComparisonScreenViewmodelFamily._();
 
 final class AiComparisonScreenViewmodelProvider
-    extends $NotifierProvider<AiComparisonScreenViewmodel, String> {
+    extends $AsyncNotifierProvider<AiComparisonScreenViewmodel, String> {
   AiComparisonScreenViewmodelProvider._({
     required AiComparisonScreenViewmodelFamily super.from,
     required String super.argument,
@@ -228,14 +230,6 @@ final class AiComparisonScreenViewmodelProvider
   @override
   AiComparisonScreenViewmodel create() => AiComparisonScreenViewmodel();
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is AiComparisonScreenViewmodelProvider &&
@@ -249,15 +243,15 @@ final class AiComparisonScreenViewmodelProvider
 }
 
 String _$aiComparisonScreenViewmodelHash() =>
-    r'b35afcfc3762a05a408f56195b9789a992a022f9';
+    r'2a671c4d4116774477dcb1abc1f95763fed020ba';
 
 final class AiComparisonScreenViewmodelFamily extends $Family
     with
         $ClassFamilyOverride<
           AiComparisonScreenViewmodel,
+          AsyncValue<String>,
           String,
-          String,
-          String,
+          FutureOr<String>,
           String
         > {
   AiComparisonScreenViewmodelFamily._()
@@ -269,27 +263,27 @@ final class AiComparisonScreenViewmodelFamily extends $Family
         isAutoDispose: true,
       );
 
-  AiComparisonScreenViewmodelProvider call(String products) =>
-      AiComparisonScreenViewmodelProvider._(argument: products, from: this);
+  AiComparisonScreenViewmodelProvider call(String text) =>
+      AiComparisonScreenViewmodelProvider._(argument: text, from: this);
 
   @override
   String toString() => r'aiComparisonScreenViewmodelProvider';
 }
 
-abstract class _$AiComparisonScreenViewmodel extends $Notifier<String> {
+abstract class _$AiComparisonScreenViewmodel extends $AsyncNotifier<String> {
   late final _$args = ref.$arg as String;
-  String get products => _$args;
+  String get text => _$args;
 
-  String build(String products);
+  FutureOr<String> build(String text);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<String, String>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<String, String>,
-              String,
+              AnyNotifier<AsyncValue<String>, String>,
+              AsyncValue<String>,
               Object?,
               Object?
             >;

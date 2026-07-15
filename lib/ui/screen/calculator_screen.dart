@@ -120,220 +120,222 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         ),
       ),
       backgroundColor: colorScheme.primary,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              text(
-                switch (widget.category) {
-                  (ProductCategory.deposit || ProductCategory.installment) =>
-                    "예치금",
-                  _ => "대출 원금",
-                },
-                colorScheme.onPrimary,
-                textTheme.bodyLarge!,
-              ),
-              const SizedBox(height: 2.0),
-              ..._displayDynamicWidgetList(
-                widget.category,
-                widget.mapOptions,
-                ref
-                    .read(calculatorScreenViewmodelProvider.notifier)
-                    .returnRate(
-                      widget.category,
-                      widget.options,
-                      _selectedValues,
-                    ),
-                colorScheme,
-                textTheme,
-              ),
-              const SizedBox(height: 32.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      _moneyController.clear();
-                      _periodController.clear();
-                      setState(() {
-                        _isSubmitted = false;
-                      });
-                    },
-                    style: TextButton.styleFrom(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12.0,
-                        horizontal: 20.0,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                text(
+                  switch (widget.category) {
+                    (ProductCategory.deposit || ProductCategory.installment) =>
+                      "예치금",
+                    _ => "대출 원금",
+                  },
+                  colorScheme.onPrimary,
+                  textTheme.bodyLarge!,
+                ),
+                const SizedBox(height: 2.0),
+                ..._displayDynamicWidgetList(
+                  widget.category,
+                  widget.mapOptions,
+                  ref
+                      .read(calculatorScreenViewmodelProvider.notifier)
+                      .returnRate(
+                        widget.category,
+                        widget.options,
+                        _selectedValues,
                       ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.secondary,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: text(
-                        "리셋",
-                        colorScheme.onPrimary,
-                        textTheme.bodyLarge!,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12.0),
-                  TextButton(
-                    onPressed: () {
-                      print("_money, $_money");
-                      print("_period, $_period");
-                      setState(() {
-                        if (_money.trim().isEmpty || _period.trim().isEmpty) {
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: colorScheme.scrim,
-                              duration: const Duration(seconds: 3),
-                              content: Text(
-                                "항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요",
-                                style: textTheme.bodySmall!.copyWith(
-                                  color: colorScheme.onSecondary,
-                                ),
-                              ),
-                            ),
-                          );
-                          return;
-                        }
-                        if (int.tryParse(_money) == null ||
-                            int.tryParse(_period) == null) {
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: colorScheme.scrim,
-                              duration: const Duration(seconds: 3),
-                              content: Text(
-                                "입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요",
-                                style: textTheme.bodySmall!.copyWith(
-                                  color: colorScheme.onSecondary,
-                                ),
-                              ),
-                            ),
-                          );
-                          return;
-                        }
-                        _isSubmitted = true;
-                      });
-                    },
-                    style: TextButton.styleFrom(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12.0,
-                        horizontal: 20.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: text(
-                        "계산",
-                        colorScheme.onSurface,
-                        textTheme.bodyLarge!,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              if (_isSubmitted)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  colorScheme,
+                  textTheme,
+                ),
+                const SizedBox(height: 32.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const SizedBox(height: 40.0),
-                    text("계산 결과", colorScheme.onPrimary, textTheme.bodyLarge!),
-                    const SizedBox(height: 16.0),
-                    _displayResult(
-                      widget.category,
-                      ref
-                          .read(calculatorScreenViewmodelProvider.notifier)
-                          .returnResult(
-                            int.parse(_money),
-                            (widget.category == ProductCategory.deposit ||
-                                    widget.category ==
-                                        ProductCategory.installment)
-                                ? ((_isPrefSelected)
-                                      ? ref
-                                            .read(
-                                              calculatorScreenViewmodelProvider
-                                                  .notifier,
-                                            )
-                                            .returnRate(
-                                              widget.category,
-                                              widget.options,
-                                              _selectedValues,
-                                            )
-                                            .lastOrNull
-                                      : ref
-                                            .read(
-                                              calculatorScreenViewmodelProvider
-                                                  .notifier,
-                                            )
-                                            .returnRate(
-                                              widget.category,
-                                              widget.options,
-                                              _selectedValues,
-                                            )
-                                            .firstOrNull)
-                                : _sliderValue,
-                            switch (widget.category) {
-                              ProductCategory.deposit => int.parse(
-                                _selectedValues[widget.mapOptions.keys.first]!
-                                    .substring(
-                                      0,
-                                      _selectedValues[widget
-                                                  .mapOptions
-                                                  .keys
-                                                  .first]!
-                                              .length -
-                                          2,
-                                    ),
-                              ),
-                              ProductCategory.installment => int.parse(
-                                _selectedValues[widget.mapOptions.keys
-                                        .toList()[1]]!
-                                    .substring(
-                                      0,
-                                      _selectedValues[widget.mapOptions.keys
-                                                  .toList()[1]]!
-                                              .length -
-                                          2,
-                                    ),
-                              ),
-                              _ => int.parse(_period),
-                            },
-                            int.tryParse(_period),
-                            switch (widget.category) {
-                              ProductCategory.deposit =>
-                                _selectedValues[widget.mapOptions.keys.last]!,
-                              ProductCategory.installment =>
-                                "${_selectedValues[widget.mapOptions.keys.last]!} ${_selectedValues[widget.mapOptions.keys.first]!}",
-                              _ =>
-                                _selectedValues[widget.mapOptions.keys.first]!,
-                            },
-                            widget.category,
-                            widget.options,
-                            _selectedValues,
-                          ),
-                      int.parse(_period),
-                      colorScheme,
-                      textTheme,
+                    TextButton(
+                      onPressed: () {
+                        _moneyController.clear();
+                        _periodController.clear();
+                        setState(() {
+                          _isSubmitted = false;
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12.0,
+                          horizontal: 20.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colorScheme.secondary,
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: text(
+                          "리셋",
+                          colorScheme.onPrimary,
+                          textTheme.bodyLarge!,
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 40.0),
+                    const SizedBox(width: 12.0),
+                    TextButton(
+                      onPressed: () {
+                        print("_money, $_money");
+                        print("_period, $_period");
+                        setState(() {
+                          if (_money.trim().isEmpty || _period.trim().isEmpty) {
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: colorScheme.scrim,
+                                duration: const Duration(seconds: 3),
+                                content: Text(
+                                  "항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요",
+                                  style: textTheme.bodySmall!.copyWith(
+                                    color: colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                          if (int.tryParse(_money) == null ||
+                              int.tryParse(_period) == null) {
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: colorScheme.scrim,
+                                duration: const Duration(seconds: 3),
+                                content: Text(
+                                  "입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요",
+                                  style: textTheme.bodySmall!.copyWith(
+                                    color: colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                          _isSubmitted = true;
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12.0,
+                          horizontal: 20.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceDim,
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: text(
+                          "계산",
+                          colorScheme.onSurface,
+                          textTheme.bodyLarge!,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-            ],
+                if (_isSubmitted)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 40.0),
+                      text("계산 결과", colorScheme.onPrimary, textTheme.bodyLarge!),
+                      const SizedBox(height: 16.0),
+                      _displayResult(
+                        widget.category,
+                        ref
+                            .read(calculatorScreenViewmodelProvider.notifier)
+                            .returnResult(
+                              int.parse(_money),
+                              (widget.category == ProductCategory.deposit ||
+                                      widget.category ==
+                                          ProductCategory.installment)
+                                  ? ((_isPrefSelected)
+                                        ? ref
+                                              .read(
+                                                calculatorScreenViewmodelProvider
+                                                    .notifier,
+                                              )
+                                              .returnRate(
+                                                widget.category,
+                                                widget.options,
+                                                _selectedValues,
+                                              )
+                                              .lastOrNull
+                                        : ref
+                                              .read(
+                                                calculatorScreenViewmodelProvider
+                                                    .notifier,
+                                              )
+                                              .returnRate(
+                                                widget.category,
+                                                widget.options,
+                                                _selectedValues,
+                                              )
+                                              .firstOrNull)
+                                  : _sliderValue,
+                              switch (widget.category) {
+                                ProductCategory.deposit => int.parse(
+                                  _selectedValues[widget.mapOptions.keys.first]!
+                                      .substring(
+                                        0,
+                                        _selectedValues[widget
+                                                    .mapOptions
+                                                    .keys
+                                                    .first]!
+                                                .length -
+                                            2,
+                                      ),
+                                ),
+                                ProductCategory.installment => int.parse(
+                                  _selectedValues[widget.mapOptions.keys
+                                          .toList()[1]]!
+                                      .substring(
+                                        0,
+                                        _selectedValues[widget.mapOptions.keys
+                                                    .toList()[1]]!
+                                                .length -
+                                            2,
+                                      ),
+                                ),
+                                _ => int.parse(_period),
+                              },
+                              int.tryParse(_period),
+                              switch (widget.category) {
+                                ProductCategory.deposit =>
+                                  _selectedValues[widget.mapOptions.keys.last]!,
+                                ProductCategory.installment =>
+                                  "${_selectedValues[widget.mapOptions.keys.last]!} ${_selectedValues[widget.mapOptions.keys.first]!}",
+                                _ =>
+                                  _selectedValues[widget.mapOptions.keys.first]!,
+                              },
+                              widget.category,
+                              widget.options,
+                              _selectedValues,
+                            ),
+                        int.parse(_period),
+                        colorScheme,
+                        textTheme,
+                      ),
+                      const SizedBox(height: 40.0),
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -461,6 +463,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           counterText: "",
           helperText: "숫자만 입력",
         ),
+        style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
         textAlign: TextAlign.right,
         keyboardType: TextInputType.number,
       ),
@@ -519,6 +522,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   helperText: "숫자만 입력",
                   counterText: "",
                 ),
+                style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
                 textAlign: TextAlign.right,
                 keyboardType: TextInputType.number,
               ),
@@ -559,7 +563,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   width: 1.0,
                 ),
                 checkColor: colorScheme.onSurface,
-                activeColor: colorScheme.surfaceContainerHighest,
+                activeColor: colorScheme.surfaceDim,
               ),
             ),
             const SizedBox(width: 4.0),

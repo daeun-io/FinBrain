@@ -36,6 +36,7 @@ class ProductDialog extends ConsumerWidget {
                 Row(
                   children: [
                     Icon(Icons.tune, color: colorScheme.onPrimary, size: 24.0),
+                    const SizedBox(width: 4.0,),
                     Text(
                       "필터",
                       style: textTheme.headlineMedium!.copyWith(
@@ -89,7 +90,7 @@ class ProductDialog extends ConsumerWidget {
                     } else {
                       return Expanded(
                         child: SingleChildScrollView(
-                          physics: const ClampingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

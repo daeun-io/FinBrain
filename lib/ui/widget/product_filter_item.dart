@@ -31,7 +31,7 @@ class ProductFilterItem extends ConsumerWidget {
       child: Card(
         color: localIsSelected
             ? colorScheme.surfaceContainerHigh
-            : colorScheme.onSurface,
+            : colorScheme.surface,
         shape: RoundedRectangleBorder(
           side: BorderSide(
             color: localIsSelected
