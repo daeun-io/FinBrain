@@ -44,7 +44,7 @@ class MarkdownTextRenderer extends StatelessWidget {
         while (hashCount < line.length && line[hashCount] == '#') {
           hashCount++;
         }
-        String titleText = line.substring(hashCount).trim();
+        String titleText = line.replaceAll("**", "").substring(hashCount).trim();
         
         double fontSize = 14;
         if (hashCount == 1) fontSize = 22;
@@ -61,6 +61,7 @@ class MarkdownTextRenderer extends StatelessWidget {
         ));
         continue;
       }
+      
       // 4. 일반 텍스트 라인 (내부 ** 굵게 처리 포함)
       spans.add(_parseInlineStyles('$line\n', color));
     }
@@ -71,7 +72,7 @@ class MarkdownTextRenderer extends StatelessWidget {
   // 한 줄 내부에서 ** 텍스트를 찾아 bold 스타일을 먹이는 인라인 파서
   TextSpan _parseInlineStyles(String line, Color color) {
     List<TextSpan> inlineSpans = [];
-    RegExp exp = RegExp(r'\*\*(.*?)\*\*'); // ** 텍스트 ** 찾는 정규식
+    RegExp exp = RegExp(r'\*\*(.*?)\*\*', dotAll: true); // ** 텍스트 ** 찾는 정규식
     int start = 0;
 
     for (var match in exp.allMatches(line)) {

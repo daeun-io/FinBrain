@@ -8,6 +8,7 @@ import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
 import 'package:finbrain/themes/text_style.dart';
+import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
@@ -19,8 +20,9 @@ import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:split_view/split_view.dart';
 
-class ProductDetailScreen extends ConsumerWidget {
+class ProductDetailScreen extends ConsumerStatefulWidget {
   const ProductDetailScreen({
     super.key,
     required this.productName,
@@ -32,6 +34,14 @@ class ProductDetailScreen extends ConsumerWidget {
   final ProductCategory category;
   final bool fromLikedScreen;
 
+  @override
+  ConsumerState<ProductDetailScreen> createState() =>
+      _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
+  bool isBtnClicked = false;
+
   void launchPrdtUrl(
     WidgetRef ref,
     BuildContext context,
@@ -41,7 +51,7 @@ class ProductDetailScreen extends ConsumerWidget {
   ) {
     ref
         .read(productDetailScreenViewmodelProvider.notifier)
-        .fetchAndOpenProductUrl(companyName, productName)
+        .fetchAndOpenProductUrl(companyName, widget.productName)
         .then((isSuccess) {
           if (!isSuccess) {
             if (!context.mounted) return;
@@ -62,21 +72,23 @@ class ProductDetailScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final page = ref.watch(currentPageViewmodelProvider(category));
-    final productList = ref.watch(fetchProductViewmodelProvider(category, "$page"));
+    final page = ref.watch(currentPageViewmodelProvider(widget.category));
+    final productList = ref.watch(
+      fetchProductViewmodelProvider(widget.category, "$page"),
+    );
     final likedList = ref.watch(fetchLikedViewmodelProvider);
 
-    return ((fromLikedScreen) ? likedList : productList).when(
+    return ((widget.fromLikedScreen) ? likedList : productList).when(
       data: (data) {
         final product =
-            ((fromLikedScreen)
+            ((widget.fromLikedScreen)
                     ? data as List<FinancialProduct>
                     : (data as (int, List<FinancialProduct>)).$2)
-                .where((e) => e.commonInfo.productName == productName)
+                .where((e) => e.commonInfo.productName == widget.productName)
                 .firstOrNull;
         if (product == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -90,261 +102,298 @@ class ProductDetailScreen extends ConsumerWidget {
           );
         }
 
-        return Scaffold(
-          backgroundColor: colorScheme.primary,
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            backgroundColor: colorScheme.tertiary,
-            scrolledUnderElevation: 0.0,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: Icon(
-                Icons.arrow_back_ios_new,
-                color: colorScheme.onPrimary,
-              ),
-            ),
-            title: Text(
-              productName.replaceAll(r'\\n', ""),
-              style: textTheme.headlineMedium!.copyWith(
-                color: colorScheme.onPrimary,
-              ),
-            ),
-            titleSpacing: -6.0,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  ref
-                      .read(
-                        fetchProductViewmodelProvider(category, "$page").notifier,
-                      )
-                      .toggleLiked(product);
-                },
-                icon: product.commonInfo.isLiked
-                    ? Icon(
-                        Icons.favorite,
-                        color: colorScheme.onPrimaryFixed,
-                        size: 32.0,
-                      )
-                    : Icon(
-                        Icons.favorite,
-                        color: colorScheme.onPrimaryFixedVariant,
-                        size: 32.0,
-                      ),
-              ),
-            ],
+        return SplitView(
+          viewMode: SplitViewMode.Horizontal,
+          controller: SplitViewController(
+            weights: (isBtnClicked) ? [0.5, 0.5] : [1.0, 0.0],
           ),
-          body: SafeArea(
-            child: SizedBox.expand(
-              child: Stack(
-                children: [
-                  SingleChildScrollView(
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 24.0,
-                          horizontal: 20.0,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ..._displayDefaultWidgetList(
-                              product,
-                              colorScheme,
-                              textTheme,
-                            ),
-                            ..._displayDynamicWidgetList(
-                              product.commonInfo.category,
-                              product,
-                              colorScheme,
-                              textTheme,
-                            ),
-                            SizedBox(height: 160.0),
-                          ],
-                        ),
-                      ),
-                    ),
+          indicator: const SplitIndicator(viewMode: SplitViewMode.Horizontal),
+          activeIndicator: SplitIndicator(
+            viewMode: SplitViewMode.Horizontal,
+            color: colorScheme.onTertiary,
+          ),
+          children: [
+            detailScreen(product, colorScheme, textTheme, page),
+            if (isBtnClicked)
+              AiAssistScreen(
+                tag: widget.productName,
+                category: product.commonInfo.category,
+              ),
+          ],
+        );
+      },
+      error: (err, stack) => Scaffold(
+        backgroundColor: colorScheme.primary,
+        body: const ShowingErrorWidget(),
+      ),
+      loading: () => Scaffold(
+        backgroundColor: colorScheme.primary,
+        body: const CustomProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget detailScreen(
+    FinancialProduct product,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+    int page,
+  ) {
+    return Scaffold(
+      backgroundColor: colorScheme.primary,
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: colorScheme.tertiary,
+        scrolledUnderElevation: 0.0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
+        ),
+        title: Text(
+          widget.productName.replaceAll(r'\\n', ""),
+          style: textTheme.headlineMedium!.copyWith(
+            color: colorScheme.onPrimary,
+          ),
+        ),
+        titleSpacing: -6.0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              ref
+                  .read(
+                    fetchProductViewmodelProvider(
+                      widget.category,
+                      "$page",
+                    ).notifier,
+                  )
+                  .toggleLiked(product);
+            },
+            icon: product.commonInfo.isLiked
+                ? Icon(
+                    Icons.favorite,
+                    color: colorScheme.onPrimaryFixed,
+                    size: 32.0,
+                  )
+                : Icon(
+                    Icons.favorite,
+                    color: colorScheme.onPrimaryFixedVariant,
+                    size: 32.0,
                   ),
-                  Positioned(
-                    right: 20,
-                    bottom: 100,
-                    child: AiButton(
-                      tag: product.commonInfo.productName!,
-                      category: product.commonInfo.category,
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SizedBox.expand(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 24.0,
+                      horizontal: 20.0,
                     ),
-                  ),
-                  if (product.commonInfo.category == ProductCategory.isaMp)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: GestureDetector(
-                        onTap: () => launchPrdtUrl(
-                          ref,
-                          context,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ..._displayDefaultWidgetList(
+                          product,
                           colorScheme,
                           textTheme,
-                          product.commonInfo.companyName ?? "",
                         ),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 20.0),
-                          decoration: BoxDecoration(
-                            color: colorScheme.secondary,
-                            border: Border.all(
-                              color: colorScheme.outline,
-                              width: 1.0,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.ads_click,
-                                color: colorScheme.onSecondary,
-                                size: 24.0,
-                              ),
-                              const SizedBox(width: 4.0),
-                              Text(
-                                "공식 홈페이지로",
-                                style: textTheme.titleLarge!.copyWith(
-                                  color: colorScheme.onSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
+                        ..._displayDynamicWidgetList(
+                          product.commonInfo.category,
+                          product,
+                          colorScheme,
+                          textTheme,
+                        ),
+                        SizedBox(height: 160.0),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 20,
+                bottom: 100,
+                child: AiButton(
+                  tag: product.commonInfo.productName!,
+                  category: product.commonInfo.category,
+                  isBtnClicked: () {
+                    final width = MediaQuery.of(context).size.width;
+                    if (width >= 600) {
+                      setState(() {
+                        isBtnClicked = !isBtnClicked;
+                      });
+                    }
+                  },
+                ),
+              ),
+              if (product.commonInfo.category == ProductCategory.isaMp)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: GestureDetector(
+                    onTap: () => launchPrdtUrl(
+                      ref,
+                      context,
+                      colorScheme,
+                      textTheme,
+                      product.commonInfo.companyName ?? "",
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 20.0),
+                      decoration: BoxDecoration(
+                        color: colorScheme.secondary,
+                        border: Border.all(
+                          color: colorScheme.outline,
+                          width: 1.0,
                         ),
                       ),
-                    )
-                  else
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) {
-                                      final options = switch (product
-                                          .commonInfo
-                                          .category) {
-                                        ProductCategory.deposit =>
-                                          (product
-                                                  as DepositAndInstallmentSavings)
-                                              .options,
-                                        ProductCategory.installment =>
-                                          (product
-                                                  as DepositAndInstallmentSavings)
-                                              .options,
-                                        ProductCategory.credit =>
-                                          (product as CreditLoan).options,
-                                        _ =>
-                                          (product as MortgageAndRentLoan)
-                                              .options,
-                                      };
-                                      return CalculatorScreen(
-                                        category: product.commonInfo.category,
-                                        mapOptions: ref
-                                            .read(
-                                              productDetailScreenViewmodelProvider
-                                                  .notifier,
-                                            )
-                                            .mapProductOptions(
-                                              product.commonInfo.category,
-                                              options,
-                                            ),
-                                        options: options,
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 20.0),
-                                decoration: BoxDecoration(
-                                  color: colorScheme.secondary,
-                                  border: Border.all(
-                                    color: colorScheme.outline,
-                                    width: 1.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.calculate_outlined,
-                                      color: colorScheme.onSecondary,
-                                      size: 24.0,
-                                    ),
-                                    const SizedBox(width: 4.0),
-                                    Text(
-                                      "금융 계산기",
-                                      style: textTheme.titleLarge!.copyWith(
-                                        color: colorScheme.onSecondary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                          Icon(
+                            Icons.ads_click,
+                            color: colorScheme.onSecondary,
+                            size: 24.0,
                           ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => launchPrdtUrl(
-                                ref,
-                                context,
-                                colorScheme,
-                                textTheme,
-                                product.commonInfo.companyName ?? "",
-                              ),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 20.0),
-                                decoration: BoxDecoration(
-                                  color: colorScheme.secondary,
-                                  border: Border.all(
-                                    color: colorScheme.outline,
-                                    width: 1.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.ads_click,
-                                      color: colorScheme.onSecondary,
-                                      size: 24.0,
-                                    ),
-                                    const SizedBox(width: 4.0),
-                                    Text(
-                                      "공식 홈페이지로",
-                                      style: textTheme.titleLarge!.copyWith(
-                                        color: colorScheme.onSecondary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                          const SizedBox(width: 4.0),
+                          Text(
+                            "공식 홈페이지로",
+                            style: textTheme.titleLarge!.copyWith(
+                              color: colorScheme.onSecondary,
                             ),
                           ),
                         ],
                       ),
                     ),
-                ],
-              ),
-            ),
+                  ),
+                )
+              else
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (ctx) {
+                                  final options = switch (product
+                                      .commonInfo
+                                      .category) {
+                                    ProductCategory.deposit =>
+                                      (product as DepositAndInstallmentSavings)
+                                          .options,
+                                    ProductCategory.installment =>
+                                      (product as DepositAndInstallmentSavings)
+                                          .options,
+                                    ProductCategory.credit =>
+                                      (product as CreditLoan).options,
+                                    _ =>
+                                      (product as MortgageAndRentLoan).options,
+                                  };
+                                  return CalculatorScreen(
+                                    category: product.commonInfo.category,
+                                    mapOptions: ref
+                                        .read(
+                                          productDetailScreenViewmodelProvider
+                                              .notifier,
+                                        )
+                                        .mapProductOptions(
+                                          product.commonInfo.category,
+                                          options,
+                                        ),
+                                    options: options,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 20.0),
+                            decoration: BoxDecoration(
+                              color: colorScheme.secondary,
+                              border: Border.all(
+                                color: colorScheme.outline,
+                                width: 1.0,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.calculate_outlined,
+                                  color: colorScheme.onSecondary,
+                                  size: 24.0,
+                                ),
+                                const SizedBox(width: 4.0),
+                                Text(
+                                  "금융 계산기",
+                                  style: textTheme.titleLarge!.copyWith(
+                                    color: colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => launchPrdtUrl(
+                            ref,
+                            context,
+                            colorScheme,
+                            textTheme,
+                            product.commonInfo.companyName ?? "",
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 20.0),
+                            decoration: BoxDecoration(
+                              color: colorScheme.secondary,
+                              border: Border.all(
+                                color: colorScheme.outline,
+                                width: 1.0,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.ads_click,
+                                  color: colorScheme.onSecondary,
+                                  size: 24.0,
+                                ),
+                                const SizedBox(width: 4.0),
+                                Text(
+                                  "공식 홈페이지로",
+                                  style: textTheme.titleLarge!.copyWith(
+                                    color: colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
           ),
-        );
-      },
-      error: (err, stack) =>
-          Scaffold(backgroundColor: colorScheme.primary, body: const ShowingErrorWidget()),
-      loading: () => Scaffold(backgroundColor: colorScheme.primary, body: const CustomProgressIndicator()),
+        ),
+      ),
     );
   }
 

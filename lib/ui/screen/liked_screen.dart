@@ -72,6 +72,7 @@ class LikedScreen extends ConsumerWidget {
                   child: AiButton(
                     tag: "compare`$sProductsNm",
                     category: ProductCategory.liked,
+                    isBtnClicked: (){},
                   ),
                 ),
               ],
