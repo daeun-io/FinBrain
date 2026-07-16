@@ -107,7 +107,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
       return (maxPage, filtered);
     } catch (e) {
       print("Error occured while fetching products, $e");
-      return (0, <FinancialProduct>[]);
+      return (-1, <FinancialProduct>[]);
     }
   }
 
@@ -148,16 +148,16 @@ class ProductViewmodel extends _$ProductViewmodel {
   ) {
     final result = ref.watch(fetchProductViewmodelProvider(ctg, pageNo));
 
+    if (result.value == null) return const AsyncValue.loading();
+    if (result.value != null && result.value!.$1 == -1) {
+      return AsyncError("데이터 로딩 중 문제가 발생했습니다.", StackTrace.current);
+    }
+    
     final criteria = ref
         .watch(sortOrFilterTextViewModelProvider(ctg))
         .$1
         .toString();
-
-    final maxPage = (result.value == null) ? 0 : result.value!.$1;
-    final products = (result.value == null)
-        ? <FinancialProduct>[]
-        : result.value!.$2;
-    return sortByCriteria(criteria, ctg, maxPage, products);
+    return sortByCriteria(criteria, ctg, result.value!.$1, result.value!.$2);
   }
 
   AsyncValue<(int, List<FinancialProduct>)> sortByCriteria(

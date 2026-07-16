@@ -14,9 +14,7 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
   @override
   Future<(int, List<IsaJoinStatus>)> build(String pageNo) async {
     try {
-      final filters = ref.watch(
-        savedFiltersProvider(ProductCategory.isaJoin),
-      );
+      final filters = ref.watch(savedFiltersProvider(ProductCategory.isaJoin));
       Map<String, List<String>> selectedFilters = {};
       for (final entry in (filters.value ?? {}).entries) {
         selectedFilters[entry.key] = entry.value
@@ -40,7 +38,7 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
       return (totalCount, filtered);
     } catch (error) {
       print("Error occurred while fetching isa join status, $error");
-      return (0, <IsaJoinStatus>[]);
+      return (-1, <IsaJoinStatus>[]);
     }
   }
 }
@@ -50,14 +48,18 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
   @override
   AsyncValue<(int, List<IsaJoinStatus>)> build(String pageNo) {
     final result = ref.watch(fetchIsaJoinStatusViewmodelProvider(pageNo));
-    final totalCount = (result.value == null) ? 0 : result.value!.$1;
-    final joinStatus = (result.value == null) ? <IsaJoinStatus>[] : result.value!.$2;
+
+    if (result.value == null) return const AsyncValue.loading();
+    if (result.value != null && result.value!.$1 == -1){
+      return AsyncValue.error("데이터를 불러오는 중 문제가 발생했습니다", StackTrace.current);
+    }
+    
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(ProductCategory.isaJoin))
         .$1
         .toString();
-
-    return sortByCriteria(criteria, totalCount, joinStatus);
+    
+    return sortByCriteria(criteria, result.value!.$1, result.value!.$2);
   }
 
   AsyncValue<(int, List<IsaJoinStatus>)> sortByCriteria(
@@ -121,7 +123,7 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
       return (totalCount, filtered);
     } catch (error) {
       print("error occurred while fetching isa management status, $error");
-      return (0, <IsaManagementStatus>[]);
+      return (-1, <IsaManagementStatus>[]);
     }
   }
 }
@@ -131,14 +133,17 @@ class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
   @override
   AsyncValue<(int, List<IsaManagementStatus>)> build(String pageNo) {
     final result = ref.watch(fetchIsaMngmStatusViewmodelProvider(pageNo));
-    final totalCount = (result.value == null) ? 0 : result.value!.$1;
-    final mngmStatus = (result.value == null) ? <IsaManagementStatus>[] : result.value!.$2;
-
+    
+    if (result.value == null) return const AsyncValue.loading();
+    if (result.value != null && result.value!.$1 == -1){
+      return AsyncValue.error("데이터 로딩 중 문제가 발생했습니다.", StackTrace.current);
+    } 
+    print("리스트 개수, ${result.value!.$2.length}");
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(ProductCategory.isaManagement))
         .$1
         .toString();
-    return sortByCriteria(criteria, totalCount, mngmStatus);
+    return sortByCriteria(criteria, result.value!.$1, result.value!.$2);
   }
 
   AsyncValue<(int, List<IsaManagementStatus>)> sortByCriteria(
