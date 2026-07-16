@@ -15,7 +15,7 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
   Future<(int, List<IsaJoinStatus>)> build(String pageNo) async {
     try {
       final filters = ref.watch(
-        filtersViewmodelProvider(ProductCategory.isaJoin),
+        savedFiltersProvider(ProductCategory.isaJoin),
       );
       Map<String, List<String>> selectedFilters = {};
       for (final entry in (filters.value ?? {}).entries) {
@@ -89,7 +89,7 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
   Future<(int, List<IsaManagementStatus>)> build(String pageNo) async {
     try {
       final filters = ref.watch(
-        filtersViewmodelProvider(ProductCategory.isaManagement),
+        savedFiltersProvider(ProductCategory.isaManagement),
       );
       Map<String, List<String>> selectedFilters = {};
       for (final entry in (filters.value ?? {}).entries) {

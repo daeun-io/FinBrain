@@ -156,9 +156,6 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
             .value ??
         "";
 
-    final items = (widget.category == ProductCategory.isaJoin)
-        ? joinItems
-        : mngmItems;
     final column = (widget.category == ProductCategory.isaJoin)
         ? joinColumn
         : mngmColumn;
@@ -187,7 +184,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
           ],
         ),
         const SizedBox(height: 24.0),
-        items.when(
+        ((widget.category == ProductCategory.isaJoin) ? joinItems : mngmItems).when(
           data: (data) {
             final (maxPage, items) = data;
             return Expanded(
@@ -237,7 +234,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                           center: _key,
                           physics: const BouncingScrollPhysics(),
                           slivers: [
-                            SliverPadding(padding: EdgeInsets.only(top: 20.0)),
+                            const SliverPadding(padding: EdgeInsets.only(top: 20.0)),
                             SliverPadding(key: _key, padding: EdgeInsets.zero),
                             SliverList(
                               delegate: SliverChildBuilderDelegate((
@@ -254,6 +251,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                 );
                               }, childCount: items.length),
                             ),
+                            const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
                           ],
                         ),
                       ),

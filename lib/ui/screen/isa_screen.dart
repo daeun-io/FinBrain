@@ -1,4 +1,5 @@
 import 'package:finbrain/ui/screen/isa_guide_screen.dart';
+import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/shared_preferences_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
@@ -29,24 +30,31 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
       if (!_controller.indexIsChanging) {
         switch (_controller.index) {
           case 0:
-            ref
-                .read(isaJoinStatusViewModelProvider.notifier)
-                .fetchIsaJoinStatus("1");
+            final page = ref.read(
+              currentPageViewmodelProvider(ProductCategory.isaJoin),
+            );
+            ref.read(fetchIsaJoinStatusViewmodelProvider("$page"));
             break;
           case 1:
-            ref
-                .read(isaManagementStatusViewModelProvider.notifier)
-                .fetchIsaManagementStatus("1");
+            final page = ref.read(
+              currentPageViewmodelProvider(ProductCategory.isaManagement),
+            );
+            ref.read(fetchIsaMngmStatusViewmodelProvider("$page"));
             break;
           default:
-            ref.read(fetchProductViewmodelProvider(ProductCategory.isaMp, "1"));
+            final page = ref.read(
+              currentPageViewmodelProvider(ProductCategory.isaMp),
+            );
+            ref.read(
+              fetchProductViewmodelProvider(ProductCategory.isaMp, "$page"),
+            );
         }
       }
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(isaJoinStatusViewModelProvider.notifier).fetchIsaJoinStatus("1");
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   ref.read(isaJoinStatusViewModelProvider.notifier).fetchIsaJoinStatus("1");
+    // });
   }
 
   @override
@@ -78,9 +86,10 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
           return Scaffold(backgroundColor: colorScheme.primary);
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ref
-                .read(isaJoinStatusViewModelProvider.notifier)
-                .fetchIsaJoinStatus("1");
+            final page = ref.read(
+              currentPageViewmodelProvider(ProductCategory.isaJoin),
+            );
+            ref.read(fetchIsaJoinStatusViewmodelProvider("$page"));
           });
 
           return Padding(
