@@ -49,12 +49,18 @@ class FinBrain extends ConsumerWidget {
         colorScheme: lightTheme.colorScheme,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: lightTheme.colorScheme.onTertiary
+        )
       ),
       darkTheme: ThemeData(
         textTheme: textTheme,
         colorScheme: darkTheme.colorScheme,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: lightTheme.colorScheme.onTertiary
+        )
       ),
       themeMode: ThemeMode.system,
       home: OnBoardingScreen(),

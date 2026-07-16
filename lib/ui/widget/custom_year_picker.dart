@@ -48,8 +48,9 @@ class _YearPickerPageState extends State<CustomYearPicker> {
       height: 130,
       child: CupertinoPicker(
         scrollController: _scrollController,
-        itemExtent: 42.0,
-        diameterRatio: 1.5,
+        itemExtent: 50.0,
+        squeeze: 0.95,
+        diameterRatio: 2.0,
         selectionOverlay: Container(
           decoration: BoxDecoration(
             border: Border.symmetric(

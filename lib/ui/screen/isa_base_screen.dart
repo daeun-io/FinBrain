@@ -11,6 +11,7 @@ import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class IsaBaseScreen extends ConsumerStatefulWidget {
   const IsaBaseScreen({super.key, required this.category});
@@ -263,11 +264,13 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   }
 
   Widget rowCell(String text, String type, Color color, TextStyle style) {
+    final formatter = NumberFormat("###,##0.##", "en_US");
+    final number = double.tryParse(text);
     return Flexible(
       flex: (type == "incAstCtg" || type == "isaForm") ? 3 : 2,
       child: Center(
         child: Text(
-          text,
+          (number == null) ? text : formatter.format(number),
           style: style.copyWith(color: color),
           textAlign: TextAlign.center,
         ),

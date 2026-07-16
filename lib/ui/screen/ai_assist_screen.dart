@@ -62,27 +62,35 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-
-    List<String> bubbles = ref.watch(aiAssistScreenViewmodelProvider(widget.tag));
+    final isPhone = MediaQuery.of(context).size.width < 600;
+    List<String> bubbles = ref.watch(
+      aiAssistScreenViewmodelProvider(widget.tag),
+    );
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
       appBar: AppBar(
         backgroundColor: colorScheme.tertiary,
         scrolledUnderElevation: 0.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
-        ),
+        leading: (isPhone)
+            ? IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: colorScheme.onPrimary,
+                ),
+              )
+            : null,
+        automaticallyImplyLeading: false,
         title: Text(
           "AI 어시스트",
           style: textTheme.headlineMedium!.copyWith(
             color: colorScheme.onPrimary,
           ),
         ),
-        titleSpacing: -6.0,
+        titleSpacing: (isPhone) ? -6.0 : 24.0,
       ),
       body: (record == null)
           ? const CustomProgressIndicator()
@@ -124,7 +132,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                             SliverList.builder(
                               itemCount: bubbles.length,
                               itemBuilder: (context, index) {
-                                if(bubbles[index] == "loading"){
+                                if (bubbles[index] == "loading") {
                                   return const Padding(
                                     padding: EdgeInsets.symmetric(vertical: 8),
                                     child: CustomProgressIndicator(),

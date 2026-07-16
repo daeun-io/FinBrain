@@ -689,47 +689,54 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     useMaterial3: false,
                     dividerColor: colorScheme.outline,
                   ),
-                  child: DataTable(
-                    headingRowColor: WidgetStatePropertyAll(
-                      colorScheme.secondary,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: MediaQuery.of(context).size.width
                     ),
-                    headingRowHeight: 40.0,
-                    dataRowColor: WidgetStatePropertyAll(colorScheme.surface),
-                    columnSpacing: 36.0,
-                    columns: [
-                      ...map.keys.map(
-                        (e) => DataColumn(
-                          label: Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                text(
-                                  e,
-                                  colorScheme.onSecondary,
-                                  textTheme.bodyLarge!,
-                                ),
-                              ],
+                    child: DataTable(
+                      headingRowColor: WidgetStatePropertyAll(
+                        colorScheme.secondary,
+                      ),
+                      headingRowHeight: 40.0,
+                      dataRowColor: WidgetStatePropertyAll(colorScheme.surface),
+                      columnSpacing: 36.0,
+                      columns: [
+                        ...map.keys.map(
+                          (e) => DataColumn(
+                            label: Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  text(
+                                    e,
+                                    colorScheme.onSecondary,
+                                    textTheme.bodyLarge!,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                    rows: [
-                      for (var i = 0; i < term!; i++)
-                        DataRow(
-                          cells: [
-                            ...map.values.map(
-                              (e) => DataCell(
-                                text(
-                                  formatter.format(e[i]),
-                                  colorScheme.onSecondary,
-                                  textTheme.bodyLarge!,
+                      ],
+                      rows: [
+                        for (var i = 0; i < term!; i++)
+                          DataRow(
+                            cells: [
+                              ...map.values.map(
+                                (e) => DataCell(
+                                  Center(
+                                    child: text(
+                                      "${formatter.format(e[i])}원",
+                                      colorScheme.onSecondary,
+                                      textTheme.bodyLarge!,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                    ],
+                            ],
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -782,7 +789,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                               padding: const EdgeInsets.all(4.0),
                               child: Center(
                                 child: text(
-                                  formatter.format(e.value),
+                                  "${formatter.format(e.value)}원",
                                   colorScheme.onSecondary,
                                   textTheme.bodyLarge!,
                                 ),
