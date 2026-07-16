@@ -1,6 +1,6 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';

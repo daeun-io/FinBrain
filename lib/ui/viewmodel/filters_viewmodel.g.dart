@@ -171,7 +171,7 @@ final class DialogFiltersViewModelProvider
 }
 
 String _$dialogFiltersViewModelHash() =>
-    r'baa2a8b8510af5682d6607afdbfe9db56435b895';
+    r'2df8ea6acdf957ce56c988ff66ed71f58fbfebb6';
 
 final class DialogFiltersViewModelFamily extends $Family
     with

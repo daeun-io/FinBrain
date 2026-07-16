@@ -1,7 +1,7 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/text_style.dart';
-import 'package:finbrain/ui/viewModel/archive_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/archive_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';

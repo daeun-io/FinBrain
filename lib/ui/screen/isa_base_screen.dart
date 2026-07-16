@@ -1,8 +1,9 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
 import 'package:finbrain/themes/text_theme.dart';
-import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
-import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -46,7 +47,8 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     final position = _controller.position;
 
     if (widget.category == ProductCategory.isaJoin) {
-      final data = ref.read(isaJoinStatusViewModelProvider);
+      final data = ref.read(isaJoinStatusViewModelProvider("$_cPage"));
+
       if (position.pixels > position.maxScrollExtent) {
         if (data.hasValue && data.value != null) {
           totalCount = data.value!.$1;
@@ -64,7 +66,8 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         }
       }
     } else {
-      final data = ref.read(isaManagementStatusViewModelProvider);
+      final data = ref.read(isaManagementStatusViewModelProvider("$_cPage"));
+
       if (position.pixels > position.maxScrollExtent) {
         if (data.hasValue && data.value != null) {
           totalCount = data.value!.$1;
@@ -79,6 +82,9 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
           setState(() {
             _isLoading = false;
           });
+          ref
+            .read(currentPageViewmodelProvider(widget.category).notifier)
+            .setCurrentPage(_cPage);
         }
       }
     }
@@ -93,19 +99,18 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         setState(() {
           _isLoading = false;
         });
+        ref
+            .read(currentPageViewmodelProvider(widget.category).notifier)
+            .setCurrentPage(_cPage);
       }
     }
   }
 
   Future<void> _fetchData() async {
     if (widget.category == ProductCategory.isaJoin) {
-      ref
-          .read(isaJoinStatusViewModelProvider.notifier)
-          .fetchIsaJoinStatus(_cPage.toString());
+      ref.read(fetchIsaJoinStatusViewmodelProvider("$_cPage"));
     } else {
-      ref
-          .read(isaManagementStatusViewModelProvider.notifier)
-          .fetchIsaManagementStatus(_cPage.toString());
+      ref.read(fetchIsaMngmStatusViewmodelProvider("$_cPage"));
     }
     await Future.delayed(const Duration(seconds: 1));
   }
@@ -117,13 +122,13 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
 
     final currentTextTheme = ref.watch(textThemeViewmodelProvider);
 
-    final joinItems = ref.watch(isaJoinStatusViewModelProvider);
+    final joinItems = ref.watch(isaJoinStatusViewModelProvider("$_cPage"));
     final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
-    final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
+    final mngmItems = ref.watch(isaManagementStatusViewModelProvider("$_cPage"));
     final mngmColumn = ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
     // Move to center after fetching data
-    ref.listen(isaJoinStatusViewModelProvider, (prev, next) {
+    ref.listen(isaJoinStatusViewModelProvider("$_cPage"), (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -132,7 +137,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         });
       }
     });
-    ref.listen(isaManagementStatusViewModelProvider, (prev, next) {
+    ref.listen(isaManagementStatusViewModelProvider("$_cPage"), (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -171,10 +176,10 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                 onSortCriteriaChanged: (criteria) {
                   (widget.category == ProductCategory.isaJoin)
                       ? ref
-                            .read(isaJoinStatusViewModelProvider.notifier)
+                            .read(isaJoinStatusViewModelProvider("$_cPage").notifier)
                             .sortByCriteria(criteria, totalCount)
                       : ref
-                            .read(isaManagementStatusViewModelProvider.notifier)
+                            .read(isaManagementStatusViewModelProvider("$_cPage").notifier)
                             .sortByCriteria(criteria, totalCount);
                 },
               ),
@@ -198,7 +203,9 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                     children: [
                       // header
                       Container(
-                        height: (currentTextTheme == bigTextTheme) ? 80.0 : 60.0,
+                        height: (currentTextTheme == bigTextTheme)
+                            ? 80.0
+                            : 60.0,
                         color: colorScheme.secondary,
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -243,7 +250,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                   colorScheme.surface,
                                   colorScheme.onSecondary,
                                   textTheme.bodyMedium!,
-                                  currentTextTheme
+                                  currentTextTheme,
                                 );
                               }, childCount: items.length),
                             ),
@@ -283,7 +290,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     Color ctnColor,
     Color txtColor,
     TextStyle style,
-    TextTheme currentTheme
+    TextTheme currentTheme,
   ) {
     return Container(
       color: ctnColor,

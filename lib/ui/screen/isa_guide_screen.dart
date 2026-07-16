@@ -1,4 +1,4 @@
-import 'package:finbrain/ui/viewModel/shared_preferences_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/shared_preferences_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';

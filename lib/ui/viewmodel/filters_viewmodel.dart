@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/repository/filters_repository.dart';
-import 'package:finbrain/ui/viewModel/selected_parameter_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/selected_parameter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
@@ -117,13 +117,9 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
 
     switch (ctg) {
       case ProductCategory.isaJoin:
-        ref
-            .read(isaJoinStatusViewModelProvider.notifier)
-            .fetchIsaJoinStatus(pageNo, snapshot);
+        ref.read(fetchIsaJoinStatusViewmodelProvider(pageNo));
       case ProductCategory.isaManagement:
-        ref
-            .read(isaManagementStatusViewModelProvider.notifier)
-            .fetchIsaManagementStatus(pageNo, snapshot);
+        ref.read(fetchIsaMngmStatusViewmodelProvider(pageNo));
       default:
         ref.read(fetchProductViewmodelProvider(ctg, pageNo));
     }
