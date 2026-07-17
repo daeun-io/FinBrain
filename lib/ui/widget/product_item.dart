@@ -16,11 +16,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductItem extends ConsumerStatefulWidget {
   const ProductItem({
     super.key,
+    required this.companyName,
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
   });
 
+  final String companyName;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
@@ -49,7 +51,11 @@ class _ProductItemState extends ConsumerState<ProductItem> {
             ((widget.fromLikedScreen)
                     ? data as List<FinancialProduct>
                     : (data as (int, List<FinancialProduct>)).$2)
-                .where((e) => e.commonInfo.productName == widget.productName)
+                .where(
+                  (e) =>
+                      e.commonInfo.productName == widget.productName &&
+                      e.commonInfo.companyName == widget.companyName,
+                )
                 .firstOrNull;
         if (product == null) return const SizedBox.shrink();
         final sortFilter = ref.watch(
@@ -287,7 +293,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
         );
       },
       error: (err, stack) => const SizedBox.shrink(),
-      loading: () => const SizedBox.shrink()
+      loading: () => const SizedBox.shrink(),
     );
   }
 }

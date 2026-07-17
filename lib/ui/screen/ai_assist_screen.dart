@@ -40,8 +40,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       messages = await ref
           .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
           .getConversationWithPrdtNm(widget.tag);
-    } catch (error) {
-      print('Error initializing messages: $error');
+    } catch (e) {
+      debugPrint("[error] failed to fetch messages(chat_history): $e");
     }
   }
 
@@ -53,8 +53,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       setState(() {
         record = result;
       });
-    } catch (error) {
-      print("Error initializing records: $error");
+    } catch (e) {
+      debugPrint("[error] failed to fetch summaries: $e");
     }
   }
 

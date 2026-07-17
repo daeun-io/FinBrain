@@ -74,7 +74,6 @@ class FiltersRepository {
         ("기타", true),
       ];
     }
-    print("filters from repository, $filters");
     return filters;
   }
 
@@ -87,16 +86,13 @@ class FiltersRepository {
       pageNo: "1",
     );
     final Map<String, dynamic> result = await dataStore.fetchCmpyNames(options);
-    print("cmpy result: $result");
+
     if (result["result"] == null) {
-      print("error: result is null");
-      return {};
+      throw Exception("[error] result of fetching companies is null");
     }
     if (result["result"]["products"] == null) {
-      print("error: product is null");
-      return {};
+      throw Exception("[error] result of fetching companies is null");
     }
-
     return result["result"]["products"] as Iterable<dynamic>;
   }
 }

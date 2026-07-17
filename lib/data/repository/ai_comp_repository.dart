@@ -3,6 +3,7 @@ import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/data_source/ai_comp_data_source.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter/widgets.dart';
 
 class AiCompRepository {
   final dataStore = AiCompDataSource();
@@ -17,7 +18,7 @@ class AiCompRepository {
     try {
       await dataStore.saveComparisonText(uid, products, text, ctg, isPinned);
     } catch (e) {
-      print("Error saving comparison text, $e");
+      throw Exception("[error] failed to save comparison text : $e");
     }
   }
 
@@ -26,7 +27,7 @@ class AiCompRepository {
       final texts = await dataStore.getComparisonTexts(uid);
       final record = <AiRecord>[];
       if (texts.isEmpty) {
-        print("comparison texts are empty");
+        debugPrint("[empty] comparison texts are empty");
         return [];
       }
       for (final text in texts) {
@@ -48,14 +49,12 @@ class AiCompRepository {
             ),
           );
         } catch (e) {
-          print("Error mapping comparison: $e");
-          return [];
+          throw Exception("[error] failed to fetch all comparison texts : $e");
         }
       }
       return record;
     } catch (e) {
-      print("error occurred while fethcing comparison text");
-      return <AiRecord>[];
+      throw Exception("[error] failed to fetch all comparison texts : $e");
     }
   }
 }

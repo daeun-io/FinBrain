@@ -19,7 +19,7 @@ class AiConversationRepository {
         response,
       );
     } catch (e) {
-      print("Error saving request and response: $e");
+      throw Exception("[error] failed to save request and response : $e");
     }
   }
 
@@ -40,8 +40,7 @@ class AiConversationRepository {
           .toList();
       return casted;
     } catch (e) {
-      print("Error getting conversation: $e");
-      return [];
+      throw Exception("[error] failed to fetch messages(chat_history) : $e");
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class AiSummaryDataSource {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -27,9 +28,8 @@ class AiSummaryDataSource {
         });
       }
       await batch.commit();
-      print("Succeed to update summaries!");
     } catch (e) {
-      print("Error occrued while updating summaries, $e");
+      throw Exception("[error] failed to update summaries : $e");
     }
   }
 
@@ -57,12 +57,11 @@ class AiSummaryDataSource {
           "summaries": summariesSnapshot.docs.map((doc) => doc.data()).toList(),
         };
       } else {
-        print("Error no document or summaries");
+        debugPrint("[empty] $productName summary list is empty");
         return {};
       }
     } catch (e) {
-      print("Error fetching summaries with $productName: $e");
-      return {};
+      throw Exception("[error] failed to fetch $productName summaries : $e");
     }
   }
 
@@ -75,7 +74,7 @@ class AiSummaryDataSource {
           .doc("ai_summary")
           .collection("products")
           .get();
-
+     
       if (docSnapshot.docs.isNotEmpty) {
         final List<(String, Map<String, dynamic>)> document = [];
         final productNames = docSnapshot.docs.map((doc) => doc.id).toList();
@@ -87,12 +86,11 @@ class AiSummaryDataSource {
         }
         return document;
       } else {
-        print("Error document is empty");
+        debugPrint("[empty] summaires list is empty");
         return [];
       }
     } catch (e) {
-      print("Error fetching all summaries: $e");
-      return [];
+      throw Exception("[error] failed to fetch all summaries : $e");
     }
   }
 }

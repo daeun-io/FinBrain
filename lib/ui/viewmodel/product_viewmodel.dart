@@ -12,7 +12,6 @@ import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_viewmodel.g.dart';
 
@@ -28,8 +27,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        debugPrint("No user is currently signed in.");
-        return (0, <FinancialProduct>[]);
+        throw Exception("[user] no user found");
       }
       final filters = ref.watch(savedFiltersProvider(ctg));
       Map<String, List<String>> selectedFilters = {};
@@ -69,8 +67,21 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
             );
       final maxPage = result.$1;
       final products = result.$2;
+      final Set<String> finalSeenKeys = {};
+      final List<FinancialProduct> distinctProducts = [];
+
+      for (var prdt in products) {
+        final company = prdt.commonInfo.companyName!.replaceAll(' ', '').trim();
+        final product = prdt.commonInfo.productName!.replaceAll(' ', '').trim();
+        final key = "${company}_${product}";
+
+        if (finalSeenKeys.add(key)) {
+          distinctProducts.add(prdt);
+        }
+      }
+      
       final filtered = (ctg == ProductCategory.isaMp)
-          ? products
+          ? distinctProducts
                 .where(
                   (element) =>
                       (selectedFilters["업권"] ?? []).contains(
@@ -79,7 +90,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
                       (selectedFilters["MP 종류"] ?? []).contains(element.mpType),
                 )
                 .toList()
-          : products
+          : distinctProducts
                 .where(
                   (element) =>
                       (selectedFilters["회사 선택"] ?? []).contains(
@@ -100,19 +111,16 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
                       ),
                 )
                 .toList();
-      print("max page in fetched viewmodel, $maxPage");
-      print("========================");
+
       return (maxPage, filtered);
     } catch (e) {
-      print("Error occured while fetching products, $e");
+      debugPrint("[error] failed to financial products : $e");
       return (-1, <FinancialProduct>[]);
     }
   }
 
   void toggleLiked(FinancialProduct product) {
     final currentState = state.value ?? (0, <FinancialProduct>[]);
-
-    print("currentState, ${currentState.$1}, ${currentState.$2.length}");
 
     final isLiked = product.commonInfo.isLiked;
     final updated = currentState.$2.map((e) {
@@ -145,17 +153,19 @@ class ProductViewmodel extends _$ProductViewmodel {
     String pageNo,
   ) {
     final result = ref.watch(fetchProductViewmodelProvider(ctg, pageNo));
-
-    if (result.value == null) return const AsyncValue.loading();
-    if (result.value != null && result.value!.$1 == -1) {
-      return AsyncError("데이터 로딩 중 문제가 발생했습니다.", StackTrace.current);
-    }
-    
     final criteria = ref
         .watch(sortOrFilterTextViewModelProvider(ctg))
         .$1
         .toString();
-    return sortByCriteria(criteria, ctg, result.value!.$1, result.value!.$2);
+
+    return result.when(
+      data: (data) => sortByCriteria(criteria, ctg, data.$1, data.$2),
+      error: (error, stackTrace) => AsyncValue.error(
+        "[error] failed to fetch financial products",
+        stackTrace,
+      ),
+      loading: () => const AsyncValue.loading(),
+    );
   }
 
   AsyncValue<(int, List<FinancialProduct>)> sortByCriteria(

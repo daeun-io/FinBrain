@@ -4,6 +4,7 @@ import 'package:finbrain/data/repository/isa_repository.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'isa_viewmodel.g.dart';
 
@@ -36,8 +37,8 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
       }).toList();
 
       return (totalCount, filtered);
-    } catch (error) {
-      print("Error occurred while fetching isa join status, $error");
+    } catch (e) {
+      debugPrint("[error] failed to fetch isa join status : $e");
       return (-1, <IsaJoinStatus>[]);
     }
   }
@@ -50,15 +51,15 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
     final result = ref.watch(fetchIsaJoinStatusViewmodelProvider(pageNo));
 
     if (result.value == null) return const AsyncValue.loading();
-    if (result.value != null && result.value!.$1 == -1){
+    if (result.value != null && result.value!.$1 == -1) {
       return AsyncValue.error("데이터를 불러오는 중 문제가 발생했습니다", StackTrace.current);
     }
-    
+
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(ProductCategory.isaJoin))
         .$1
         .toString();
-    
+
     return sortByCriteria(criteria, result.value!.$1, result.value!.$2);
   }
 
@@ -121,8 +122,8 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
       }).toList();
 
       return (totalCount, filtered);
-    } catch (error) {
-      print("error occurred while fetching isa management status, $error");
+    } catch (e) {
+      debugPrint("[error] failed to fetch isa management status : $e");
       return (-1, <IsaManagementStatus>[]);
     }
   }
@@ -133,17 +134,19 @@ class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
   @override
   AsyncValue<(int, List<IsaManagementStatus>)> build(String pageNo) {
     final result = ref.watch(fetchIsaMngmStatusViewmodelProvider(pageNo));
-    
-    if (result.value == null) return const AsyncValue.loading();
-    if (result.value != null && result.value!.$1 == -1){
-      return AsyncValue.error("데이터 로딩 중 문제가 발생했습니다.", StackTrace.current);
-    } 
-    print("리스트 개수, ${result.value!.$2.length}");
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(ProductCategory.isaManagement))
         .$1
         .toString();
-    return sortByCriteria(criteria, result.value!.$1, result.value!.$2);
+        
+    return result.when(
+      data: (data) => sortByCriteria(criteria, data.$1, data.$2),
+      error: (error, stackTrace) => AsyncValue.error(
+        "[error] failed to fetch isa management status",
+        stackTrace,
+      ),
+      loading: () => const AsyncValue.loading(),
+    );
   }
 
   AsyncValue<(int, List<IsaManagementStatus>)> sortByCriteria(

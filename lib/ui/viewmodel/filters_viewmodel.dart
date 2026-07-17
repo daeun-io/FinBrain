@@ -70,9 +70,8 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
           else
             entry.key: entry.value,
       });
-      debugPrint("filter: toggle state, $state");
-    } catch (error) {
-      debugPrint("Failed to fetch company list, $error");
+    } catch (e) {
+      debugPrint("[error] failed to fetch companies, $e");
       state = AsyncValue.data(updated);
     }
   }
@@ -90,7 +89,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
       };
       state = AsyncValue.data(updated);
     } catch (e) {
-      debugPrint("Failed to change the base year, $e");
+      debugPrint("[error] failed to change base year, $e");
       state = AsyncValue.data({});
     }
   }
@@ -139,9 +138,8 @@ class SavedFilters extends _$SavedFilters {
     try {
       final data = await ref.read(filtersViewmodelProvider(ctg).future);
       return data;
-    } catch (error) {
-      debugPrint("error: Failed to fetch filters, $error");
-      return {};
+    } catch (e) {
+      throw Exception("[error] failed to fetch $ctg filters, $e");
     }
   }
 

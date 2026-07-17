@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter/rendering.dart';
 
 class AiCompDataSource {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -24,7 +25,7 @@ class AiCompDataSource {
             "is_pinned": isPinned ?? false,
           });
     } catch (e) {
-      print("Error saving comparison text: $e");
+      throw Exception("[error] failed to save comparison text : $e");
     }
   }
 
@@ -43,12 +44,11 @@ class AiCompDataSource {
       if (docSnapshot.exists) {
         return docSnapshot.data() as Map<String, dynamic>;
       } else {
-        print("Error document is empty");
+        debugPrint("[empty] $tag comparison text is empty");
         return {};
       }
     } catch (e) {
-      print("Error fetching comparison text with $tag: $e");
-      return {};
+      throw Exception("[error] failed to fetch comparison text : $e");
     }
   }
 
@@ -73,12 +73,11 @@ class AiCompDataSource {
         }
         return document;
       } else {
-        print("Error document is empty");
+        debugPrint("[empty] all comparison texts are empty");
         return [];
       }
     } catch (e) {
-      print("error occurred while fethcing comparison text");
-      return [];
+      throw Exception("[error] failed to fetch all comparison texts : $e");
     }
   }
 }

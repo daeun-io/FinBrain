@@ -39,19 +39,19 @@ class ProductRepository {
       );
 
       if (result["result"] == null) {
-        debugPrint("error: result is null");
-        return (0, <FinancialProduct>[]);
+        throw Exception("[error] result of fetching finlife products is null");
       }
 
-      final maxPage = int.tryParse((result["result"]["max_page_no"]).toString()) ?? 0;
+      final maxPage =
+          int.tryParse((result["result"]["max_page_no"]).toString()) ?? 0;
       if (maxPage == 0) {
+        debugPrint("[empty] finlife product list is empty");
         return (0, <FinancialProduct>[]);
       }
 
       if (result["result"]["products"] == null ||
           result["result"]["products"]["product"] == null) {
-        debugPrint("error: No products found");
-        return (0, <FinancialProduct>[]);
+        throw Exception("[error] result of fetching finlife products is null");
       }
 
       final likedProducts = await likedRepository.getLikedProducts(uid);
@@ -65,67 +65,73 @@ class ProductRepository {
       final List<FinancialProduct> products = switch (ctg) {
         ProductCategory.deposit || ProductCategory.installment =>
           rawProducts
-              .map<DepositAndInstallmentSavings?>((e) {
-                if (e == null ||
-                    e["baseinfo"] == null ||
-                    e["baseinfo"]["kor_co_nm"] == null ||
-                    e["baseinfo"]["fin_prdt_nm"] == null ||
-                    e["options"] == null ||
-                    e["options"]["option"] == null) {
-                  debugPrint("error: product is null");
+              .map<DepositAndInstallmentSavings?>((element) {
+                if (element == null ||
+                    element["baseinfo"] == null ||
+                    element["baseinfo"]["kor_co_nm"] == null ||
+                    element["baseinfo"]["fin_prdt_nm"] == null ||
+                    element["options"] == null ||
+                    element["options"]["option"] == null) {
                   return null;
                 }
-                final productOptions = (e["options"]["option"] is List)
-                    ? e["options"]["option"]
-                    : [e["options"]["option"]];
+                final productOptions = (element["options"]["option"] is List)
+                    ? element["options"]["option"]
+                    : [element["options"]["option"]];
                 try {
                   return DepositAndInstallmentSavings(
                     category: ctg,
-                    submittedMonth: e["baseinfo"]["dcls_month"],
-                    companyCode: e["baseinfo"]["fin_co_no"],
-                    companyName: e["baseinfo"]["kor_co_nm"],
-                    productCode: e["baseinfo"]["fin_prdt_cd"],
-                    productName: e["baseinfo"]["fin_prdt_nm"],
-                    startDay: e["baseinfo"]["dcls_strt_day"],
-                    endDay: e["baseinfo"]["dcls_end_day"],
-                    submittedDay: e["baseinfo"]["fin_co_subm_day"],
-                    joinWay: (e["baseinfo"]["join_way"] as String).split(","),
-                    interestAfterExpiration: e["baseinfo"]["mtrt_int"],
-                    specialCondition: e["baseinfo"]["spcl_cnd"],
-                    joinDeny:
-                        switch (int.tryParse(e["baseinfo"]["join_deny"]) ?? 0) {
-                          1 => "제한 없음",
-                          2 => "서민 전용",
-                          3 => "일부 제한",
-                          _ => "제공 안 함",
-                        },
-                    joinMember: e["baseinfo"]["join_member"],
-                    etc: e["baseinfo"]["etc_note"],
-                    maxLimit: e["baseinfo"]["max_limit"],
+                    submittedMonth: element["baseinfo"]["dcls_month"]
+                        .toString(),
+                    companyCode: element["baseinfo"]["fin_co_no"].toString(),
+                    companyName: element["baseinfo"]["kor_co_nm"].toString(),
+                    productCode: element["baseinfo"]["fin_prdt_cd"].toString(),
+                    productName: element["baseinfo"]["fin_prdt_nm"].toString(),
+                    startDay: element["baseinfo"]["dcls_strt_day"].toString(),
+                    endDay: element["baseinfo"]["dcls_end_day"].toString(),
+                    submittedDay: element["baseinfo"]["fin_co_subm_day"]
+                        .toString(),
+                    joinWay: (element["baseinfo"]["join_way"].toString()).split(
+                      ",",
+                    ),
+                    interestAfterExpiration: element["baseinfo"]["mtrt_int"]
+                        .toString(),
+                    specialCondition: element["baseinfo"]["spcl_cnd"]
+                        .toString(),
+                    joinDeny: switch (int.tryParse(
+                          element["baseinfo"]["join_deny"],
+                        ) ??
+                        0) {
+                      1 => "제한 없음",
+                      2 => "서민 전용",
+                      3 => "일부 제한",
+                      _ => "제공 안 함",
+                    },
+                    joinMember: element["baseinfo"]["join_member"].toString(),
+                    etc: element["baseinfo"]["etc_note"].toString(),
+                    maxLimit: element["baseinfo"]["max_limit"].toString(),
                     options: productOptions
                         .map<DepositAndInstallmentSavingsOption>(
                           (e) => DepositAndInstallmentSavingsOption(
-                            intRateType: e["intr_rate_type"],
-                            intRateTypeName: e["intr_rate_type_nm"],
+                            intRateType: e["intr_rate_type"].toString(),
+                            intRateTypeName: e["intr_rate_type_nm"].toString(),
                             saveTerm: int.tryParse(e["save_trm"].toString()),
                             intRate: double.tryParse(e["intr_rate"].toString()),
                             maxIntRate: double.tryParse(
                               e["intr_rate2"].toString(),
                             ),
-                            reserveType: e["rsrv_type"],
-                            reserveTypeName: e["rsrv_type_nm"],
+                            reserveType: e["rsrv_type"].toString(),
+                            reserveTypeName: e["rsrv_type_nm"].toString(),
                           ),
                         )
                         .toList(),
                     isLiked: likedProductNames.contains(
-                      e["baseinfo"]["fin_prdt_nm"],
+                      element["baseinfo"]["fin_prdt_nm"],
                     ),
                   );
-                } catch (error, stackTrace) {
-                  debugPrint("error: a mapping error: $error");
-                  debugPrint("error: trace the mapping error: $stackTrace");
-                  debugPrint("error: failed element: $e");
-                  return null;
+                } catch (e) {
+                  throw Exception(
+                    "[error] failed to map deposit/installment product : $e",
+                  );
                 }
               })
               .nonNulls
@@ -133,47 +139,52 @@ class ProductRepository {
               .cast<FinancialProduct>(),
         ProductCategory.mortgage || ProductCategory.rent =>
           rawProducts
-              .map<MortgageAndRentLoan?>((e) {
-                if (e == null ||
-                    e["baseinfo"] == null ||
-                    e["baseinfo"]["kor_co_nm"] == null ||
-                    e["baseinfo"]["fin_prdt_nm"] == null ||
-                    e["options"] == null ||
-                    e["options"]["option"] == null) {
-                  debugPrint("error: product is null");
+              .map<MortgageAndRentLoan?>((element) {
+                if (element == null ||
+                    element["baseinfo"] == null ||
+                    element["baseinfo"]["kor_co_nm"] == null ||
+                    element["baseinfo"]["fin_prdt_nm"] == null ||
+                    element["options"] == null ||
+                    element["options"]["option"] == null) {
                   return null;
                 }
-                final productOptions = (e["options"]["option"] is List)
-                    ? e["options"]["option"]
-                    : [e["options"]["option"]];
+                final productOptions = (element["options"]["option"] is List)
+                    ? element["options"]["option"]
+                    : [element["options"]["option"]];
                 try {
                   return MortgageAndRentLoan(
                     category: ctg,
-                    submittedMonth: e["baseinfo"]["dcls_month"],
-                    companyCode: e["baseinfo"]["fin_co_no"],
-                    companyName: e["baseinfo"]["kor_co_nm"],
-                    productCode: e["baseinfo"]["fin_prdt_cd"],
-                    productName: e["baseinfo"]["fin_prdt_nm"],
-                    startDay: e["baseinfo"]["dcls_strt_day"],
-                    endDay: e["baseinfo"]["dcls_end_day"],
-                    submittedDay: e["baseinfo"]["fin_co_subm_day"],
-                    joinWay: (e["baseinfo"]["join_way"] as String).split(","),
-                    isLiked: likedProductNames.contains(
-                      e["baseinfo"]["fin_prdt_nm"],
+                    submittedMonth: element["baseinfo"]["dcls_month"]
+                        .toString(),
+                    companyCode: element["baseinfo"]["fin_co_no"].toString(),
+                    companyName: element["baseinfo"]["kor_co_nm"].toString(),
+                    productCode: element["baseinfo"]["fin_prdt_cd"].toString(),
+                    productName: element["baseinfo"]["fin_prdt_nm"].toString(),
+                    startDay: element["baseinfo"]["dcls_strt_day"].toString(),
+                    endDay: element["baseinfo"]["dcls_end_day"].toString(),
+                    submittedDay: element["baseinfo"]["fin_co_subm_day"]
+                        .toString(),
+                    joinWay: (element["baseinfo"]["join_way"].toString()).split(
+                      ",",
                     ),
-                    extraExpense: e["baseinfo"]["loan_inci_expn"],
-                    earlyRepayFee: e["baseinfo"]["erly_rpay_fee"],
-                    delayRate: e["baseinfo"]["dly_rate"],
-                    loanLimit: e["baseinfo"]["loan_lmt"],
+                    isLiked: likedProductNames.contains(
+                      element["baseinfo"]["fin_prdt_nm"],
+                    ),
+                    extraExpense: element["baseinfo"]["loan_inci_expn"]
+                        .toString(),
+                    earlyRepayFee: element["baseinfo"]["erly_rpay_fee"]
+                        .toString(),
+                    delayRate: element["baseinfo"]["dly_rate"].toString(),
+                    loanLimit: element["baseinfo"]["loan_lmt"].toString(),
                     options: productOptions
                         .map<MortgageAndRentLoanOption>(
                           (e) => MortgageAndRentLoanOption(
-                            loanType: e["mrtg_type"],
-                            loanTypeName: e["mrtg_type_nm"],
-                            repayType: e["rpay_type"],
-                            repayTypeName: e["rpay_type_nm"],
-                            lendRateType: e["lend_rate_type"],
-                            lendRateTypeName: e["lend_rate_type_nm"],
+                            loanType: e["mrtg_type"].toString(),
+                            loanTypeName: e["mrtg_type_nm"].toString(),
+                            repayType: e["rpay_type"].toString(),
+                            repayTypeName: e["rpay_type_nm"].toString(),
+                            lendRateType: e["lend_rate_type"].toString(),
+                            lendRateTypeName: e["lend_rate_type_nm"].toString(),
                             lendRateMin: double.tryParse(
                               e["lend_rate_min"].toString(),
                             ),
@@ -187,54 +198,60 @@ class ProductRepository {
                         )
                         .toList(),
                   );
-                } catch (error, stackTrace) {
-                  debugPrint("error: a mapping error: $error");
-                  debugPrint("error: trace the mapping error: $stackTrace");
-                  debugPrint("error: failed element: $e");
-                  return null;
+                } catch (e) {
+                  throw Exception(
+                    "[error] failed to map mortgage/rent product : $e",
+                  );
                 }
               })
               .nonNulls
               .toList()
               .cast<FinancialProduct>(),
-          _ =>
+        _ =>
           rawProducts
-              .map<CreditLoan?>((e) {
-                if (e == null ||
-                    e["baseinfo"] == null ||
-                    e["baseinfo"]["kor_co_nm"] == null ||
-                    e["baseinfo"]["fin_prdt_nm"] == null ||
-                    e["options"] == null ||
-                    e["options"]["option"] == null) {
-                  debugPrint("error: product is null");
+              .map<CreditLoan?>((element) {
+                if (element == null ||
+                    element["baseinfo"] == null ||
+                    element["baseinfo"]["kor_co_nm"] == null ||
+                    element["baseinfo"]["fin_prdt_nm"] == null ||
+                    element["options"] == null ||
+                    element["options"]["option"] == null) {
                   return null;
                 }
-                final productOptions = (e["options"]["option"] is List)
-                    ? e["options"]["option"]
-                    : [e["options"]["option"]];
+                final productOptions = (element["options"]["option"] is List)
+                    ? element["options"]["option"]
+                    : [element["options"]["option"]];
                 try {
                   return CreditLoan(
                     category: ProductCategory.credit,
-                    submittedMonth: e["baseinfo"]["dcls_month"],
-                    companyCode: e["baseinfo"]["fin_co_no"],
-                    companyName: e["baseinfo"]["kor_co_nm"],
-                    productCode: e["baseinfo"]["fin_prdt_cd"],
-                    productName: e["baseinfo"]["fin_prdt_nm"],
-                    startDay: e["baseinfo"]["dcls_strt_day"],
-                    endDay: e["baseinfo"]["dcls_end_day"],
-                    submittedDay: e["baseinfo"]["fin_co_subm_day"],
-                    joinWay: (e["baseinfo"]["join_way"] as String).split(","),
-                    isLiked: likedProductNames.contains(
-                      e["baseinfo"]["fin_prdt_nm"],
+                    submittedMonth: element["baseinfo"]["dcls_month"]
+                        .toString(),
+                    companyCode: element["baseinfo"]["fin_co_no"].toString(),
+                    companyName: element["baseinfo"]["kor_co_nm"].toString(),
+                    productCode: element["baseinfo"]["fin_prdt_cd"].toString(),
+                    productName: element["baseinfo"]["fin_prdt_nm"].toString(),
+                    startDay: element["baseinfo"]["dcls_strt_day"].toString(),
+                    endDay: element["baseinfo"]["dcls_end_day"].toString(),
+                    submittedDay: element["baseinfo"]["fin_co_subm_day"]
+                        .toString(),
+                    joinWay: (element["baseinfo"]["join_way"].toString()).split(
+                      ",",
                     ),
-                    productType: e["baseinfo"]["crdt_prdt_type"],
-                    productTypeName: e["baseinfo"]["crdt_prdt_type_nm"],
-                    cbName: e["baseinfo"]["cb_name"],
+                    isLiked: likedProductNames.contains(
+                      element["baseinfo"]["fin_prdt_nm"],
+                    ),
+                    productType: element["baseinfo"]["crdt_prdt_type"]
+                        .toString(),
+                    productTypeName: element["baseinfo"]["crdt_prdt_type_nm"]
+                        .toString(),
+                    cbName: element["baseinfo"]["cb_name"].toString(),
                     options: productOptions
                         .map<CreditLoanOption>(
                           (e) => CreditLoanOption(
-                            creditLendRateType: e["crdt_lend_rate_type"],
-                            creditLendRateTypeName: e["crdt_lend_rate_type_nm"],
+                            creditLendRateType: e["crdt_lend_rate_type"]
+                                .toString(),
+                            creditLendRateTypeName: e["crdt_lend_rate_type_nm"]
+                                .toString(),
                             gradeOver900: double.tryParse(
                               e["crdt_grad_1"].toString(),
                             ),
@@ -266,11 +283,8 @@ class ProductRepository {
                         )
                         .toList(),
                   );
-                } catch (error, stackTrace) {
-                  debugPrint("error: a mapping error: $error");
-                  debugPrint("error: trace the mapping error: $stackTrace");
-                  debugPrint("error: failed element: $e");
-                  return null;
+                } catch (e) {
+                  throw Exception("[error] failed to map credit product : $e");
                 }
               })
               .nonNulls
@@ -278,9 +292,8 @@ class ProductRepository {
               .cast<FinancialProduct>(),
       };
       return (maxPage, products);
-    } catch (error) {
-      debugPrint("error: Failed to load data $error");
-      return (0, <FinancialProduct>[]);
+    } catch (e) {
+      throw Exception("[error] failed to fetch finlife products : $e");
     } finally {
       client.close();
     }
@@ -306,76 +319,71 @@ class ProductRepository {
       final Map<String, dynamic> response = await dataStore.fetchIsaMpProducts(
         options,
       );
-      debugPrint("response: $response");
+
       if (response["response"] == null ||
           response["response"]["body"] == null) {
-        debugPrint("error: response is null");
-        return (0, <FinancialProduct>[]);
+        throw Exception("[error] result of fetching isa mp products is null");
       }
       final totalCount =
           int.tryParse(response["response"]["body"]["totalCount"].toString()) ??
           0;
       if (totalCount == 0) {
+        debugPrint("[empty] isa mp product list is empty");
         return (0, <FinancialProduct>[]);
       }
 
       final body = response["response"]["body"];
       if (body["items"] == null || body["items"]["item"] == null) {
-        debugPrint("error: item is null");
-        return (0, <FinancialProduct>[]);
+        throw Exception("[error] result of fetching isa mp products is null");
       }
 
       final likedProducts = await likedRepository.getLikedProducts(uid);
       final likedProductNames = likedProducts
           .map((e) => e.commonInfo.productName)
           .toList();
-      debugPrint("liked products: $likedProductNames");
-      
+
       final rawItems = body["items"]["item"] as Iterable<dynamic>;
 
       final items = rawItems
-          .map<IsaMpBenefitRate?>((e) {
-            if (e == null || e["cmpyNm"] == null || e["mpNm"] == null) {
+          .map<IsaMpBenefitRate?>((element) {
+            if (element == null ||
+                element["cmpyNm"] == null ||
+                element["mpNm"] == null) {
               return null;
             }
             final itemOptions =
-                ((e["options"] is! List) || e["options"].isEmpty)
+                ((element["options"] is! List) || element["options"].isEmpty)
                 ? []
-                : e["options"];
+                : element["options"];
             try {
               return IsaMpBenefitRate(
                 category: ProductCategory.isaMp,
-                companyName: e["cmpyNm"],
-                productName: e["mpNm"],
-                releaseDate: e["rlsDt"],
-                isLiked: likedProductNames.contains(e["mpNm"]),
-                baseDate: e["basDt"],
-                businessDomain: e["bzds"],
-                mpType: e["mpTp"],
+                companyName: element["cmpyNm"].toString(),
+                productName: element["mpNm"].toString(),
+                releaseDate: element["rlsDt"].toString(),
+                isLiked: likedProductNames.contains(element["mpNm"]),
+                baseDate: element["basDt"].toString(),
+                businessDomain: element["bzds"].toString(),
+                mpType: element["mpTp"].toString(),
                 options: itemOptions
                     .map<IsaMpBenefitRateOption>(
                       (e) => IsaMpBenefitRateOption(
-                        term: e["trm"],
-                        benefitRate:
-                            double.tryParse(e["bnfRt"].toString())
+                        term: e["trm"].toString(),
+                        benefitRate: double.tryParse(e["bnfRt"].toString()),
                       ),
                     )
                     .toList(),
               );
-            } catch (error, stackTrace) {
-              debugPrint("error: a mapping error: $error");
-              debugPrint("error: trace the mapping error: $stackTrace");
-              debugPrint("error: failed element: $e");
-              return null;
+            } catch (e) {
+              throw Exception("[error] failed to map isa mp products : $e");
             }
           })
           .nonNulls
           .toList()
           .cast<FinancialProduct>();
       return (totalCount, items);
-    } catch (error) {
-      debugPrint("error: Failed to load data $error");
-      return (0, <FinancialProduct>[]);
+    } catch (e) {
+      throw Exception("[error] failed to fetch isa mp products : $e");
     } finally {
       client.close();
     }

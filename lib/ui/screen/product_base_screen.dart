@@ -108,18 +108,16 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("current page, $_cPage");
-    print("max page in build func, $_maxPage");
     final products = ref.watch(
       productViewmodelProvider(widget.category, "$_cPage"),
     );
 
-    ref.listen(filtersViewmodelProvider(widget.category), (prev, next){
-      if(prev != next){
+    ref.listen(filtersViewmodelProvider(widget.category), (prev, next) {
+      if (prev != next) {
         _fetchData();
       }
     });
-    
+
     // Move to center after fetching data
     ref.listen(productViewmodelProvider(widget.category, "$_cPage"), (
       prev,
@@ -183,6 +181,9 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           products.when(
             data: (data) {
               final (maxPage, items) = data;
+              if (items.isEmpty) {
+                return const Expanded(child: NoDataFound(isProduct: true));
+              }
               return Expanded(
                 child: CustomScrollView(
                   controller: _controller,
@@ -193,14 +194,10 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                     SliverPadding(key: _key, padding: EdgeInsets.zero),
                     SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
-                        if (items.isEmpty) {
-                          return const Expanded(
-                            child: NoDataFound(isProduct: true),
-                          );
-                        }
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
+                            companyName: items[index].commonInfo.companyName!,
                             productName: items[index].commonInfo.productName!,
                             category: items[index].commonInfo.category,
                             fromLikedScreen: false,

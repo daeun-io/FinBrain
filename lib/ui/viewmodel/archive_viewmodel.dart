@@ -3,7 +3,6 @@ import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/data/repository/ai_comp_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
 import 'package:finbrain/product_categories.dart';
-import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'archive_viewmodel.g.dart';
 
@@ -39,7 +38,7 @@ class AiSummariesViewmodel extends _$AiSummariesViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        throw Exception("현재 로그인한 유저를 찾지 못했습니다");
+        throw Exception("[user] no user found");
       }
       final summaries = await summaryRepository.getAllSummaries(user.uid);
       summaries.sort(
@@ -47,7 +46,7 @@ class AiSummariesViewmodel extends _$AiSummariesViewmodel {
       );
       return summaries;
     } catch (e) {
-      throw Exception("AI 대화 요약 기록을 불러오는데 오류가 발생했습니다, $e");
+      throw Exception("[error] failed to fetch summaries : $e");
     }
   }
 }
@@ -67,8 +66,7 @@ class ArchiveSummaryViewmodel extends _$ArchiveSummaryViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        debugPrint("No user is currently signed in.");
-        return;
+        throw Exception("[user] no user found");
       }
       
       await summaryRepository.updateSummaries(
@@ -87,7 +85,7 @@ class ArchiveSummaryViewmodel extends _$ArchiveSummaryViewmodel {
         allComparison.where((e) => filter.contains(e.category)).toList(),
       );
     } catch (e) {
-      print("Error checking collection existence: $e");
+      throw Exception("[error] failed to pin summary : $e");
     }
   }
 
@@ -133,7 +131,7 @@ class AiCompViewmodel extends _$AiCompViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        throw Exception("현재 로그인한 유저를 찾지 못했습니다");
+        throw Exception("[user] no user found");
       }
       final comparison = await compRepository.getComparisonTexts(user.uid);
       comparison.sort(
@@ -141,7 +139,7 @@ class AiCompViewmodel extends _$AiCompViewmodel {
       );
       return comparison;
     } catch (e) {
-      throw Exception("AI 비교 분석 기록을 불러오는데 오류가 발생했습니다, $e");
+      throw Exception("[error] failed to fetch comparison texts : $e");
     }
   }
 }
@@ -162,8 +160,7 @@ class ArchiveComparisonViewmodel extends _$ArchiveComparisonViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        debugPrint("No user is currently signed in.");
-        return;
+        throw Exception("[user] no user found");
       }
 
       await compRepository.saveComparisonText(
@@ -182,7 +179,7 @@ class ArchiveComparisonViewmodel extends _$ArchiveComparisonViewmodel {
         allComparison.where((e) => filter.contains(e.category)).toList(),
       );
     } catch (e) {
-      print("Error checking collection existence: $e");
+      throw Exception("[error] failed to pin comparison text : $e");
     }
   }
 

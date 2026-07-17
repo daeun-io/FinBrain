@@ -59,6 +59,7 @@ class LikedScreen extends ConsumerWidget {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
+                            companyName: liked.value![index].commonInfo.companyName!,
                             productName: liked.value![index].commonInfo.productName!,
                             category: liked.value![index].commonInfo.category,
                             fromLikedScreen: true,

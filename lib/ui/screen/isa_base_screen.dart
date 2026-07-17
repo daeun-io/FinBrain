@@ -177,10 +177,6 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("current page, $_cPage");
-    print("total count, $_totalCount");
-    print("max page, $_maxPage");
-
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 

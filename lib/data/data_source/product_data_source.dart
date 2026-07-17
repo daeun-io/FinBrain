@@ -45,17 +45,22 @@ class ProductRemoteDataSource {
     try {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {
-        final String xmlBody = await CharsetConverter.decode("EUC-KR", res.bodyBytes);
+        final String xmlBody = await CharsetConverter.decode(
+          "EUC-KR",
+          res.bodyBytes,
+        );
         final formatter = Xml2Json();
         formatter.parse(xmlBody);
         final jsonStr = formatter.toParker();
         final Map<String, dynamic> jsonMap = jsonDecode(jsonStr);
         return jsonMap;
       } else {
-        throw Exception("Failed to load data, ${res.statusCode}");
+        throw Exception(
+          "[error] failed to load finlife products : ${res.statusCode}, ${res.body}",
+        );
       }
-    } catch (error) {
-      throw Exception('Error: $error');
+    } catch (e) {
+      throw Exception("[error] failed to load finlife products : $e");
     }
   }
 
@@ -68,22 +73,19 @@ class ProductRemoteDataSource {
       "mpTp": "",
       "likeCmpyNm": "",
     };
-    final uri = Uri.https(
-      firebase,
-      "/fetchAndGroupProducts",
-      queryParams,
-    );
+    final uri = Uri.https(firebase, "/fetchAndGroupProducts", queryParams);
 
     try {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {
         return jsonDecode(res.body) as Map<String, dynamic>;
-      } 
-      else {
-        throw Exception("Failed to load data, ${res.statusCode}");
+      } else {
+        throw Exception(
+          "[error] failed to load isa mp products : ${res.statusCode}, ${res.body}",
+        );
       }
-    } catch (error) {
-      throw Exception('Error: $error');
+    } catch (e) {
+      throw Exception("[error] failed to load isa mp products : $e");
     }
   }
 }

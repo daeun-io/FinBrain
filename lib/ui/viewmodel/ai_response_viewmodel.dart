@@ -9,6 +9,7 @@ import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/data/repository/ai_convo_repository.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:finbrain/data/google_auth_service.dart';
 part 'ai_response_viewmodel.g.dart';
@@ -42,7 +43,6 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
             .where((e) => (e.commonInfo.productName == tag))
             .firstOrNull ??
         likedList.where((e) => e.commonInfo.productName == tag).firstOrNull;
-    if (product == null) print("product $product");
     return product;
   }
 
@@ -58,20 +58,16 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     final currentState = state;
 
     try {
-      print("======================");
-      print("tag: $tag");
-
       final product = await getProduct(tag, ctg);
       if (product == null) {
         state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
         return;
       }
       state = [...currentState, "loading"];
-      
+
       final newResponse = await ref.read(
         aiResponseViewmodelProvider(newRequest, product).future,
       );
-      print("ai response: $newResponse");
 
       if (newResponse == null || newResponse.isEmpty) {
         state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
@@ -79,11 +75,10 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
       } else {
         state = [...currentState, newResponse];
         await saveConversationInFirestore(tag, ctg, newRequest, newResponse);
-        print("====================");
         return;
       }
-    } catch (error) {
-      print("Error fetching AI response: $error");
+    } catch (e) {
+      debugPrint("[error] failed to fetch ai response, $e");
       state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
       return;
     }
@@ -98,8 +93,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No user is currently signed in.");
-        return;
+        throw Exception("[user] no user found");
       }
       await messageRepository.saveRequestAndResponse(
         user.uid,
@@ -108,8 +102,8 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
         request,
         response,
       );
-    } catch (error) {
-      print("Error saving conversation in Firestore: $error");
+    } catch (e) {
+      throw Exception("[error] failed to save request and response : $e");
     }
   }
 
@@ -119,8 +113,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No user is currently signed in.");
-        return [];
+        throw Exception("[user] no user found");
       }
       final loaded = await messageRepository.getConversationWithPrdtNm(
         user.uid,
@@ -141,9 +134,8 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
           )
           .toList();
       return messages;
-    } catch (error) {
-      print("Error getting conversation: $error");
-      return [];
+    } catch (e) {
+      throw Exception("[error] failed to fetch messages(chat_history) : $e");
     }
   }
 
@@ -151,26 +143,12 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No user is currently signed in.");
-        return AiRecord(
-          key: "",
-          isExpanded: false,
-          isPinned: false,
-          value: [],
-          category: ProductCategory.liked,
-        );
+        throw Exception("[user] no user found");
       }
 
       return await summaryRepository.getSummariesWithPrdtNm(user.uid, tag);
     } catch (e) {
-      print("Error getting summaries: $e");
-      return AiRecord(
-        key: "",
-        isExpanded: false,
-        isPinned: false,
-        value: [],
-        category: ProductCategory.liked,
-      );
+      throw Exception("[error] failed to fetch summaries : $e");
     }
   }
 }
@@ -181,7 +159,7 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
   Future<String> build(String text) async {
     return _askComparsion(text);
   }
-  
+
   Future<String> _askComparsion(String text) async {
     try {
       final newResponse = await ref.read(
@@ -191,13 +169,13 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
         return "오류가 발생했습니다. 다시 시도해주세요";
       }
       return newResponse;
-    } catch (error) {
-      print("Ai Comparsion: error - $error");
+    } catch (e) {
+      debugPrint("[error] failed to fetch ai comparison, $e");
       return "오류가 발생했습니다. 다시 시도해주세요";
     }
   }
- 
-  Future<void> refreshComparison(String text) async{
+
+  Future<void> refreshComparison(String text) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => _askComparsion(text));
   }
@@ -206,20 +184,16 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No current user found");
-        return;
-      } else if (state.value == null) {
-        print("State is null");
-        return;
+        throw Exception("[user] no user found");
       }
-      await compRepository.saveComparisonText(
-        user.uid,
-        text,
-        state.value!,
-        ctg,
+
+      state.whenData(
+        (data) async =>
+            await compRepository.saveComparisonText(user.uid, text, data, ctg),
       );
+      
     } catch (e) {
-      print("Error saving comparison text");
+      throw Exception("[error] failed to fetch all comparison texts : $e");
     }
   }
 }

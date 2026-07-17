@@ -106,10 +106,6 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("current page, $_cPage");
-    print("total count, $_totalCount");
-    print("max page, $_maxPage");
-
     final products = ref.watch(
       productViewmodelProvider(ProductCategory.isaMp, "$_cPage"),
     );
@@ -208,6 +204,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: ProductItem(
+                          companyName: items[index].commonInfo.companyName!,
                           productName: items[index].commonInfo.productName!,
                           category: items[index].commonInfo.category,
                           fromLikedScreen: false,

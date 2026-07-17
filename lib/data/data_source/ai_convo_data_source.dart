@@ -1,27 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 
 class AiConversationDataSource {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  Future<bool> isMessagesCollectionExists(
-    String uid,
-    String productName,
-  ) async {
-    try {
-      final docSnapshot = await firestore
-          .collection(uid)
-          .doc("ai_conversation")
-          .collection("products")
-          .doc(productName)
-          .collection("chat_history")
-          .limit(1)
-          .get();
-      return docSnapshot.docs.isNotEmpty;
-    } catch (e) {
-      print("Error checking conversation collection existence: $e");
-      return false;
-    }
-  }
 
   Future<void> saveRequestAndResponse(
     String uid,
@@ -43,7 +24,7 @@ class AiConversationDataSource {
         "created_at": DateTime.now().toIso8601String(),
       });
     } catch (e) {
-      print("Error saving request and response: $e");
+      throw Exception("[error] failed to save request and response : $e");
     }
   }
 
@@ -64,11 +45,11 @@ class AiConversationDataSource {
       if (docSnapshot.docs.isNotEmpty) {
         return docSnapshot.docs.map((doc) => doc.data()).toList();
       } else {
+        debugPrint("[empty] comparison text is empty");
         return [];
       }
     } catch (e) {
-      print("Error fetching messages: $e");
-      return [];
+      throw Exception("[error] failed to fetch messages(chat_history) : $e");
     }
   }
 }

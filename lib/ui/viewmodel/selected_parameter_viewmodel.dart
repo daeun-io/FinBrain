@@ -17,14 +17,8 @@ class SelectedTopFinGrpNoViewmodel extends _$SelectedTopFinGrpNoViewmodel {
   }
 
   void changeTopFinGrp(ProductCategory ctg, String topFinGrp) {
-    print("=======================");
-    print("🔥 changeTopFinGrp 호출됨! 넘어온 카테고리: $ctg, 번호: $topFinGrp");
     if (state.keys.contains(ctg)) {
       state = {...state, ctg: topFinGrp};
-      print("✅ 상태 업데이트 완료: $state");
-    } else {
-      print("❌ 조건문 실패! state.keys에 '$ctg'가 없습니다.");
-      print("=======================");
     }
   }
 }
@@ -42,14 +36,8 @@ class SelectedBaseYearViewmodel extends _$SelectedBaseYearViewmodel {
   }
 
   void changeBaseYear(ProductCategory ctg, int baseYear) {
-    print("=======================");
-    print("🔥 changeBaseYear 호출됨! 넘어온 카테고리: $ctg, 번호: $baseYear");
     if (state.keys.contains(ctg)) {
       state = {...state, ctg: baseYear};
-      print("✅ 상태 업데이트 완료: $state");
-    } else {
-      print("❌ 조건문 실패! state.keys에 '$ctg'가 없습니다.");
-      print("=======================");
     }
   }
 }

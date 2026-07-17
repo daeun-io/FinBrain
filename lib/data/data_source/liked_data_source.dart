@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class LikedDataSource {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -15,7 +16,7 @@ class LikedDataSource {
           .doc(productData["productName"])
           .set(productData);
     } catch (e) {
-      print("Error saving liked product: $e");
+      throw Exception("[error] failed to save product as liked : $e");
     }
   }
 
@@ -28,7 +29,7 @@ class LikedDataSource {
           .doc(productName)
           .delete();
     } catch (e) {
-      print("Error deleting liked product: $e");
+      throw Exception("[error] failed to delete liked product : $e");
     }
   }
 
@@ -42,11 +43,11 @@ class LikedDataSource {
       if (docSnapshot.docs.isNotEmpty) {
         return docSnapshot.docs.map((doc) => doc.data()).toList();
       } else {
+        debugPrint("[empty] comparison text is empty");
         return [];
       }
     } catch (e) {
-      print("Error fetching liked product: $e");
-      return [];
+      throw Exception("[error] failed to fetch liked products : $e");
     }
   }
 }

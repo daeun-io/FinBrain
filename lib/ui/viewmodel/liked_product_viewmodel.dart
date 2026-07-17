@@ -16,16 +16,17 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        throw Exception("현재 로그인한 유저를 찾지 못했습니다");
+        throw Exception("[user] no user found");
       }
       final products = await repository.getLikedProducts(user.uid);
 
       if (products.isEmpty) {
+        debugPrint("[empty] product list is empty");
         return [];
       }
       return products;
     } catch (e) {
-      throw Exception("좋아요한 상품을 불러오는데 오류가 발생했습니다, $e");
+      throw Exception("[error] failed to fetch liked products, $e");
     }
   }
 }
@@ -85,8 +86,7 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        debugPrint("No user is currently signed in.");
-        return;
+        throw Exception("[user] no user found");
       }
 
       await repository.saveProductAsLiked(user.uid, product);
@@ -94,10 +94,9 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
       ref.invalidate(fetchLikedViewmodelProvider);
 
       final allProducts = await ref.read(fetchLikedViewmodelProvider.future);
-      debugPrint("liked all products: $allProducts");
       state = AsyncData(getProductsFilteredByCriteria(allProducts));
     } catch (e) {
-      print("Error checking collection existence: $e");
+      throw Exception("[error] failed to save product as liked : $e");
     }
   }
 
@@ -105,8 +104,7 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        debugPrint("No user is currently signed in.");
-        return;
+        throw Exception("[user] no user found");
       }
 
       await repository.deleteProductInFirestore(
@@ -117,10 +115,9 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
       ref.invalidate(fetchLikedViewmodelProvider);
 
       final allProducts = await ref.read(fetchLikedViewmodelProvider.future);
-      debugPrint("liked all products: $allProducts");
       state = AsyncData(getProductsFilteredByCriteria(allProducts));
     } catch (e) {
-      debugPrint("Error deleting liked product: $e");
+      throw Exception("[error] failed to delete liked product : $e");
     }
   }
 

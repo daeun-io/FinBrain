@@ -21,10 +21,10 @@ class CmpyRemoteDataSource {
       if (res.statusCode == 200) {
         return jsonDecode(res.body) as Map<String, dynamic>;
       } else {
-        throw Exception("Failed to load API, ${res.statusCode}, ${res.body}");
+        throw Exception("[error] failed to load companies : ${res.statusCode}, ${res.body}");
       }
-    } catch (error) {
-      throw Exception(error);
+    } catch (e) {
+      throw Exception("[error] failed to load companies : $e");
     }
   }
 }

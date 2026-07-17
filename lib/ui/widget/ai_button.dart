@@ -33,7 +33,6 @@ class AiButton extends ConsumerWidget {
             final num = ref
                 .read(selectedProductsViewmodelProvider.notifier)
                 .getNumOfProducts();
-            print("num of selected list, $num");
             if (num == 0) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

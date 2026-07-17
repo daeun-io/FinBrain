@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:finbrain/data/api_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -13,10 +10,10 @@ class UrlRepository {
     final client = http.Client();
     final cleanCmpy = companyName.trim();
     final cleanPrdt = productName.trim();
-    final String searchQuery = "${cleanCmpy} ${cleanPrdt} 공식 사이트";
+    final String searchQuery = "$cleanCmpy $cleanPrdt 공식 사이트";
     final String encodedQuery = Uri.encodeComponent(searchQuery);
     final String url = "https://html.duckduckgo.com/html/?q=${encodedQuery}";
-    
+
     try {
       final response = await client.get(
         Uri.parse(url),
@@ -49,19 +46,18 @@ class UrlRepository {
           } else {
             extracted = Uri.decodeComponent(extracted);
           }
-          print("success: Found URL: $extracted");
           return extracted;
         } else {
-          print("error: No result found");
+          debugPrint("[empty] no url found for $productName");
           return "No result found";
         }
       } else {
-        print("error: ${response.statusCode}, ${response.body}");
-        return "No result found";
+        throw Exception(
+          "[error] failed to fetch $productName url, ${response.statusCode}",
+        );
       }
-    } catch (error) {
-      print("error: Crawling failed: $error");
-      return "No result found";
+    } catch (e) {
+      throw Exception("[error] failed to fetch $productName url, $e");
     } finally {
       client.close();
     }
@@ -69,13 +65,13 @@ class UrlRepository {
 
   Future<bool> launchInBrowser(String urlString) async {
     if (urlString.isEmpty || urlString == "No result found") {
-      print("error: URL string is invalid or empty");
+      debugPrint("[empty] url string is invalid or empty, $urlString");
       return false;
     }
 
     final Uri? url = Uri.tryParse(urlString);
     if (url == null) {
-      print("error: Cannot parse the url string");
+      debugPrint("[error] failed to parse the url string");
       return false;
     }
 
@@ -84,12 +80,11 @@ class UrlRepository {
         await launchUrl(url, mode: LaunchMode.externalApplication);
         return true;
       } else {
-        print("error: Cannot open the url link via OS");
+        debugPrint("[error] failed to open url link via OS");
         return false;
       }
-    } catch (error) {
-      print("error: launchUrl crashed with exception, $error");
-      return false;
+    } catch (e) {
+      throw Exception("[error] failed to launch url, $e");
     }
   }
 }

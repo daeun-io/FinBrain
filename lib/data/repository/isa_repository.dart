@@ -1,5 +1,6 @@
 import 'package:finbrain/data/data_source/isa_data_source.dart';
 import 'package:finbrain/data/model/request/isa_search_options.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
@@ -30,6 +31,7 @@ class IsaRepository {
           int.tryParse(result["response"]["body"]["totalCount"].toString()) ??
           0;
       if (totalCount == 0) {
+        debugPrint("[empty] isa join status list is empty");
         return (0, <IsaJoinStatus>[]);
       }
 
@@ -58,9 +60,8 @@ class IsaRepository {
           .whereType<IsaJoinStatus>()
           .toList();
       return (totalCount, items);
-    } catch (error) {
-      print("error: Failed to load data $error");
-      return (0, <IsaJoinStatus>[]);
+    } catch (e) {
+      throw Exception("[error] failed to fetch isa join status : $e");
     } finally {
       client.close();
     }
@@ -89,6 +90,7 @@ class IsaRepository {
           int.tryParse(response["response"]["body"]["totalCount"].toString()) ??
           0;
       if (totalCount == 0) {
+        debugPrint("[empty] isa management status list is empty");
         return (0, <IsaManagementStatus>[]);
       }
 
@@ -117,9 +119,8 @@ class IsaRepository {
           .whereType<IsaManagementStatus>()
           .toList();
       return (totalCount, items);
-    } catch (error) {
-      print("error: Failed to load data, $error");
-      return (0, <IsaManagementStatus>[]);
+    } catch (e) {
+      throw Exception("[error] failed to fetch isa management status : $e");
     } finally {
       client.close();
     }

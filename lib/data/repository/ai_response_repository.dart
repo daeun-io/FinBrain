@@ -23,9 +23,9 @@ class AiResponseRepository {
     try {
       final response = await model.generateContent(prompt);
       return response.text;
-    } catch (error) {
-      print("error: Error occurred while calling ai response, $error");
-      return null;
+    } catch (e) {
+      throw Exception("[error] failed to ai response) : $e");
+
     }
   }
 }

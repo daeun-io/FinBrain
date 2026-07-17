@@ -63,7 +63,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         int? strToNum = int.tryParse(textDigits);
         if (textDigits.isNotEmpty && strToNum != null) {
           String digits = formatter.format(strToNum);
-          print("formatted digits: $digits");
           if (digits.isNotEmpty) {
             _moneyController.text = "$digits원";
           }
@@ -186,8 +185,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     const SizedBox(width: 12.0),
                     TextButton(
                       onPressed: () {
-                        print("_money, $_money");
-                        print("_period, $_period");
                         setState(() {
                           if (_money.trim().isEmpty || _period.trim().isEmpty) {
                             if (!mounted) return;

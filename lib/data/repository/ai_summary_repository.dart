@@ -3,6 +3,7 @@ import 'package:finbrain/data/data_source/ai_summary_data_source.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter/cupertino.dart';
 
 class AiSummaryRepository {
   final dataSource = AiSummaryDataSource();
@@ -15,13 +16,18 @@ class AiSummaryRepository {
     bool isPinned,
   ) async {
     try {
-      final aiTextAsMap = texts.map((e) => {
-        "created_at": e.createdAt,
-        "summary": e.text
-      }).toList();
-      await dataSource.updateSummaries(uid, productName, aiTextAsMap, ctg.toString(), isPinned);
+      final aiTextAsMap = texts
+          .map((e) => {"created_at": e.createdAt, "summary": e.text})
+          .toList();
+      await dataSource.updateSummaries(
+        uid,
+        productName,
+        aiTextAsMap,
+        ctg.toString(),
+        isPinned,
+      );
     } catch (e) {
-      print("Error in updating summaries, $e");
+      throw Exception("[error] failed to update summaries : $e");
     }
   }
 
@@ -31,7 +37,16 @@ class AiSummaryRepository {
   ) async {
     try {
       final summary = await dataSource.getSummariesWithPrdtNm(uid, productName);
-
+      if (summary.isEmpty) {
+        debugPrint("[empty] $productName summary list is empty");
+        return AiRecord(
+          key: "",
+          isExpanded: false,
+          isPinned: false,
+          value: [],
+          category: ProductCategory.liked,
+        );
+      }
       final record = AiRecord(
         key: productName,
         isExpanded: false,
@@ -48,14 +63,7 @@ class AiSummaryRepository {
       );
       return record;
     } catch (e) {
-      print("Error in mapping summaries: $e");
-      return AiRecord(
-        key: "null",
-        isExpanded: false,
-        isPinned: false,
-        value: [],
-        category: ProductCategory.liked,
-      );
+      throw Exception("[error] failed to fetch $productName summaries : $e");
     }
   }
 
@@ -65,7 +73,7 @@ class AiSummaryRepository {
       final record = <AiRecord>[];
 
       if (summaries.isEmpty) {
-        print("summaries are empty");
+        debugPrint("[empty] summaries are empty");
         return [];
       }
 
@@ -90,14 +98,12 @@ class AiSummaryRepository {
             ),
           );
         } catch (e) {
-          print("Error mapping summaries: $e");
-          return [];
+          throw Exception("[error] failed to map summary to AiRecord : $e");
         }
       }
       return record;
-    } catch (error) {
-      print("Error mapping summaries: $error");
-      return [];
+    } catch (e) {
+      throw Exception("[error] failed to fetch all summaries : $e");
     }
   }
 }
