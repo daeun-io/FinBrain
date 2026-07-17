@@ -39,8 +39,7 @@ class AiSummariesViewmodel extends _$AiSummariesViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No current user found");
-        return <AiRecord>[];
+        throw Exception("현재 로그인한 유저를 찾지 못했습니다");
       }
       final summaries = await summaryRepository.getAllSummaries(user.uid);
       summaries.sort(
@@ -48,8 +47,7 @@ class AiSummariesViewmodel extends _$AiSummariesViewmodel {
       );
       return summaries;
     } catch (e) {
-      print("Error occured in building vm, $e");
-      return <AiRecord>[];
+      throw Exception("AI 대화 요약 기록을 불러오는데 오류가 발생했습니다, $e");
     }
   }
 }
@@ -135,8 +133,7 @@ class AiCompViewmodel extends _$AiCompViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No current user found");
-        return <AiRecord>[];
+        throw Exception("현재 로그인한 유저를 찾지 못했습니다");
       }
       final comparison = await compRepository.getComparisonTexts(user.uid);
       comparison.sort(
@@ -144,8 +141,7 @@ class AiCompViewmodel extends _$AiCompViewmodel {
       );
       return comparison;
     } catch (e) {
-      print("Error occured in building vm, $e");
-      return <AiRecord>[];
+      throw Exception("AI 비교 분석 기록을 불러오는데 오류가 발생했습니다, $e");
     }
   }
 }

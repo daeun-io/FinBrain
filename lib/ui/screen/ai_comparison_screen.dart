@@ -154,7 +154,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
         },
         error: (error, stack) => Column(
           children: [
-            const ShowingErrorWidget(),
+            const Expanded(child: ShowingErrorWidget()),
             const SizedBox(width: 16.0),
             TextButton(
               onPressed: () {

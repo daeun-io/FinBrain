@@ -30,7 +30,25 @@ class AiButton extends ConsumerWidget {
         heroTag: tag,
         onPressed: () {
           if (tag.contains("compare")) {
-            if (!ref
+            final num = ref
+                .read(selectedProductsViewmodelProvider.notifier)
+                .getNumOfProducts();
+            print("num of selected list, $num");
+            if (num == 0) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: colorScheme.scrim,
+                  duration: Duration(seconds: 3),
+                  content: Text(
+                    "선택하신 상품이 없습니다! 상품을 선택해주세요",
+                    style: textTheme.bodySmall!.copyWith(
+                      color: colorScheme.onSecondary,
+                    ),
+                  ),
+                ),
+              );
+            }
+            else if (!ref
                 .read(selectedProductsViewmodelProvider.notifier)
                 .allCategoriesSame()) {
               ScaffoldMessenger.of(context).showSnackBar(

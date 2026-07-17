@@ -117,7 +117,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
     List<Object> options,
     Map<String, String> selectedValues,
   ) {
-    final monthlyRate = (rate! / 100) / 12;
+    final monthlyRate = (rate ?? 0 / 100) / 12;
     switch (category) {
       case ProductCategory.deposit:
         final interest = (type == "단리")

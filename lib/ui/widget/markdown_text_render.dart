@@ -82,7 +82,7 @@ class MarkdownTextRenderer extends StatelessWidget {
       }
       // ** 내부 텍스트 굵게 추가
       inlineSpans.add(TextSpan(
-        text: match.group(1),
+        text: (match.group(1) ?? "").replaceAll(r'\n', ''),
         style: TextStyle(fontWeight: FontWeight.bold, color: color),
       ));
       start = match.end;

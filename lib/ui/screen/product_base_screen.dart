@@ -1,4 +1,5 @@
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -64,8 +65,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       } else {
         _isLoading = false;
       }
-    }
-    if (position.pixels <= position.minScrollExtent + 10) {
+    } else if (position.pixels <= position.minScrollExtent + 10) {
       _isLoading = true;
       if (_cPage > 1) {
         setState(() {
@@ -91,8 +91,9 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       fetchProductViewmodelProvider(widget.category, "$_cPage").future,
     );
     if (data.$1 == -1) {
+      _cPage++;
       final pData = await ref.read(
-        fetchProductViewmodelProvider(widget.category, "${_cPage - 1}").future,
+        fetchProductViewmodelProvider(widget.category, "$_cPage").future,
       );
       _maxPage = pData.$1;
     } else {
@@ -100,17 +101,25 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
     }
     ref
         .read(currentPageViewmodelProvider(widget.category).notifier)
-        .setCurrentPage((data.$1 == -1) ? _cPage - 1 : _cPage);
-    
+        .setCurrentPage(_cPage);
+
     await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
+    print("current page, $_cPage");
+    print("max page in build func, $_maxPage");
     final products = ref.watch(
       productViewmodelProvider(widget.category, "$_cPage"),
     );
 
+    ref.listen(filtersViewmodelProvider(widget.category), (prev, next){
+      if(prev != next){
+        _fetchData();
+      }
+    });
+    
     // Move to center after fetching data
     ref.listen(productViewmodelProvider(widget.category, "$_cPage"), (
       prev,
@@ -174,9 +183,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           products.when(
             data: (data) {
               final (maxPage, items) = data;
-              if (items.isEmpty) {
-                return const Expanded(child: NoDataFound(isProduct: true,));
-              }
               return Expanded(
                 child: CustomScrollView(
                   controller: _controller,
@@ -187,6 +193,11 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                     SliverPadding(key: _key, padding: EdgeInsets.zero),
                     SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
+                        if (items.isEmpty) {
+                          return const Expanded(
+                            child: NoDataFound(isProduct: true),
+                          );
+                        }
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
@@ -202,7 +213,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                 ),
               );
             },
-            error: (err, stack) => const ShowingErrorWidget(),
+            error: (err, stack) => const Expanded(child: ShowingErrorWidget()),
             loading: () => const Expanded(child: CustomProgressIndicator()),
           ),
         ],

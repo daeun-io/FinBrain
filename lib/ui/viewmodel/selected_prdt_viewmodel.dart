@@ -18,6 +18,10 @@ class SelectedProductsViewmodel extends _$SelectedProductsViewmodel{
 
   void resetSelectedList() => state = [];
 
+  int getNumOfProducts(){
+    return state.length;
+  }
+  
   bool allCategoriesSame(){
     for(int i = 0; i < state.length - 1; i++){
       if(state[i].commonInfo.category != state[i+1].commonInfo.category){
@@ -28,6 +32,7 @@ class SelectedProductsViewmodel extends _$SelectedProductsViewmodel{
   }
 
   ProductCategory? getCategory(){
+    if(state.isEmpty) return null;
     final isCtgSame = allCategoriesSame();
     if(isCtgSame){
       return state.first.commonInfo.category;

@@ -50,8 +50,6 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
         }
         selectedFilters["회사 선택"] = companies;
       }
-      print("========================");
-      print("selected filters, $selectedFilters");
 
       final baseYear = (selectedFilters["기준년도"]?.isNotEmpty ?? false)
           ? selectedFilters["기준년도"]!.first
@@ -102,7 +100,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
                       ),
                 )
                 .toList();
-      print("filtered list, $filtered");
+      print("max page in fetched viewmodel, $maxPage");
       print("========================");
       return (maxPage, filtered);
     } catch (e) {

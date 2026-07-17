@@ -28,7 +28,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
-  late int _cPage ;
+  late int _cPage;
   int _totalCount = 0;
   int _maxPage = 0;
 
@@ -51,7 +51,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     final position = _controller.position;
 
     if (widget.category == ProductCategory.isaJoin) {
-      if (position.pixels > position.maxScrollExtent - 10) {
+      if (position.pixels >= position.maxScrollExtent - 10) {
         _isLoading = true;
         if (_cPage < _maxPage) {
           setState(() {
@@ -69,9 +69,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         } else {
           _isLoading = false;
         }
-      }
-
-      if (position.pixels < position.minScrollExtent + 10) {
+      } else if (position.pixels <= position.minScrollExtent + 10) {
         _isLoading = true;
         if (_cPage > 1) {
           setState(() {
@@ -91,7 +89,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         }
       }
     } else {
-      if (position.pixels > position.maxScrollExtent - 10) {
+      if (position.pixels >= position.maxScrollExtent - 10) {
         _isLoading = true;
         if (_cPage < _maxPage) {
           setState(() {
@@ -110,24 +108,24 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
           _isLoading = false;
         }
       }
-    }
 
-    if (position.pixels < position.minScrollExtent + 10) {
-      if (_cPage > 1) {
-        setState(() {
-          _cPage--;
-        });
-        try {
-          await _fetchData();
-        } finally {
-          if (mounted) {
-            setState(() {
-              _isLoading = false;
-            });
+      else if (position.pixels <= position.minScrollExtent + 10) {
+        if (_cPage > 1) {
+          setState(() {
+            _cPage--;
+          });
+          try {
+            await _fetchData();
+          } finally {
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+            }
           }
+        } else {
+          _isLoading = false;
         }
-      } else {
-        _isLoading = false;
       }
     }
   }
@@ -138,8 +136,26 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
       );
       if (data.$1 == -1) {
+        _cPage++;
         final pData = await ref.read(
-          fetchIsaJoinStatusViewmodelProvider("${_cPage - 1}").future,
+          fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
+        );
+        _totalCount = pData.$1;
+      } else {
+        _totalCount = data.$1;
+      }
+      _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
+      ref
+          .read(currentPageViewmodelProvider(ProductCategory.isaJoin).notifier)
+          .setCurrentPage(_cPage);
+    } else {
+      final data = await ref.read(
+        fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
+      );
+      if (data.$1 == -1) {
+        _cPage++;
+        final pData = await ref.read(
+          fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
         );
         _totalCount = pData.$1;
         _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
@@ -148,31 +164,23 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
       }
       ref
-        .read(currentPageViewmodelProvider(ProductCategory.isaJoin).notifier)
-        .setCurrentPage((data.$1 == -1) ? _cPage - 1 : _cPage);
-    } else {
-      final data = await ref.read(
-        fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
-      );
-      if (data.$1 == -1) {
-        final pData = await ref.read(
-          fetchIsaMngmStatusViewmodelProvider("${_cPage - 1}").future,
-        );_totalCount = pData.$1;
-        _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-      } else {
-        _totalCount = data.$1;
-        _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-      }
-      ref
-        .read(currentPageViewmodelProvider(ProductCategory.isaManagement).notifier)
-        .setCurrentPage((data.$1 == -1) ? _cPage - 1 : _cPage);
+          .read(
+            currentPageViewmodelProvider(
+              ProductCategory.isaManagement,
+            ).notifier,
+          )
+          .setCurrentPage(_cPage);
     }
-    
+
     await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
+    print("current page, $_cPage");
+    print("total count, $_totalCount");
+    print("max page, $_maxPage");
+
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
@@ -185,6 +193,12 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     );
     final mngmColumn = ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
+    ref.listen(filtersViewmodelProvider(widget.category), (prev, next){
+      if(prev != next){
+        _fetchData();
+      }
+    });
+    
     // Move to center after fetching data
     ref.listen(isaJoinStatusViewModelProvider("$_cPage"), (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
@@ -255,7 +269,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
               data: (data) {
                 final (maxPage, items) = data;
                 if (items.isEmpty) {
-                  return const Expanded(child: NoDataFound(isProduct: false,));
+                  return const Expanded(child: NoDataFound(isProduct: false));
                 }
                 return Expanded(
                   child: SingleChildScrollView(
@@ -341,7 +355,8 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                   ),
                 );
               },
-              error: (err, stack) => const ShowingErrorWidget(),
+              error: (err, stack) =>
+                  const Expanded(child: ShowingErrorWidget()),
               loading: () => const Expanded(child: CustomProgressIndicator()),
             ),
       ],

@@ -142,7 +142,7 @@ class ProductDialog extends ConsumerWidget {
                       );
                     }
                   },
-                  error: (error, stack) => const ShowingErrorWidget(),
+                  error: (error, stack) => const Expanded(child: ShowingErrorWidget()),
                   loading: () =>
                       const Expanded(child: CustomProgressIndicator()),
                 ),

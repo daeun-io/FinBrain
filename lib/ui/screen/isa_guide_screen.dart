@@ -26,7 +26,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final isLightMode = Theme.of(context).brightness == Brightness.light;
-    final isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
     final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     String path = "";

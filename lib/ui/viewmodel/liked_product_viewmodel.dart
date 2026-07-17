@@ -16,8 +16,7 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        debugPrint("No user is currently signed in.");
-        return [];
+        throw Exception("현재 로그인한 유저를 찾지 못했습니다");
       }
       final products = await repository.getLikedProducts(user.uid);
 
@@ -26,8 +25,7 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
       }
       return products;
     } catch (e) {
-      debugPrint("Error fetching data in liked_products $e");
-      return [];
+      throw Exception("좋아요한 상품을 불러오는데 오류가 발생했습니다, $e");
     }
   }
 }
@@ -127,14 +125,15 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
   }
 
   void filterByKeyword(String keyword) {
+    final products = getProductsFilteredByCriteria();
     if (keyword.isNotEmpty) {
       state = AsyncData(
-        (state.value ?? [])
+        products
             .where((e) => e.commonInfo.productName!.contains(keyword))
             .toList(),
       );
     } else {
-      state = AsyncData(getProductsFilteredByCriteria());
+      state = AsyncData(products);
     }
   }
 }

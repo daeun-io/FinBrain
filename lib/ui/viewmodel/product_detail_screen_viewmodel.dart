@@ -29,22 +29,23 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
           ),
         );
         values.add(
-          List.of(options.map((e) => e.intRateTypeName!).toSet().toList()),
+          List.of(options.map((e) => e.intRateTypeName!).whereType<String>().toSet().toList()),
         );
       case ProductCategory.installment:
         values.add(
           List.of(
             (options as List<DepositAndInstallmentSavingsOption>)
                 .map((e) => e.reserveTypeName!)
+                .whereType<String>()
                 .toSet()
                 .toList(),
           ),
         );
         values.add(
-          List.of(options.map((e) => "${e.saveTerm}개월").toSet().toList()),
+          List.of(options.map((e) => "${e.saveTerm}개월").whereType<String>().toSet().toList()),
         );
         values.add(
-          List.of(options.map((e) => e.intRateTypeName!).toSet().toList()),
+          List.of(options.map((e) => e.intRateTypeName!).whereType<String>().toSet().toList()),
         );
       default:
         values.add(["원리금균등상환방식", "원금균등상환방식", "만기일시상환방식"]);
@@ -56,12 +57,19 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
     return map;
   }
 
-  Future<bool> fetchAndOpenProductUrl(String companyName, String productName) async{
-    final repository = UrlRepository();
-    final urlString = await repository.fetchAndOpenProductUrl(
-      companyName,
-      productName,
-    );
-    return await repository.launchInBrowser(urlString);
+  Future<bool> fetchAndOpenProductUrl(
+    String companyName,
+    String productName,
+  ) async {
+    try {
+      final repository = UrlRepository();
+      final urlString = await repository.fetchAndOpenProductUrl(
+        companyName,
+        productName,
+      );
+      return await repository.launchInBrowser(urlString);
+    } catch (error) {
+      return false;
+    }
   }
 }
