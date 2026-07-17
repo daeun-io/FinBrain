@@ -20,10 +20,12 @@ class _ProductFilterState extends State<ProductFilter> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minWidth: MediaQuery.of(context).size.width * 0.25,
-        maxWidth: MediaQuery.of(context).size.width * 0.25,
+    return 
+    ConstrainedBox(
+      constraints: 
+      BoxConstraints(
+        minWidth: 0,
+        maxWidth: 100,
       ),
       child: TextButton(
         style: TextButton.styleFrom(padding: EdgeInsets.zero),

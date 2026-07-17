@@ -13,6 +13,19 @@ class OnBoardingScreen extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final isLightMode = Theme.of(context).brightness == Brightness.light;
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+    String path = "";
+    if((!isTablet || isPortrait) && isLightMode){
+      path = "assets/images/onboarding_light_portrait";
+    } else if((!isTablet || isPortrait) && !isLightMode){
+      path = "assets/images/onboarding_dark_portrait";
+    } else if(!isPortrait && isLightMode){
+      path = "assets/images/onboarding_light_landscape";
+    } else {
+      path = "assets/images/onboarding_dark_landscape";
+    }
 
     return SafeArea(
       child: Container(
@@ -20,13 +33,12 @@ class OnBoardingScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // todo: add onboarding images later
             Expanded(
               child: PageView(
                 controller: _pageController,
                 children: [
                   SvgPicture.asset(
-                    (isLightMode) ? "assets/images/onboarding_light_01.svg" : "assets/images/onboarding_dark_01.svg",
+                    "${path}_01.svg",
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.8,
                     fit: BoxFit.contain,
@@ -34,7 +46,7 @@ class OnBoardingScreen extends StatelessWidget {
                     semanticsLabel: "Onboading illustration 01",
                   ),
                   SvgPicture.asset(
-                    (isLightMode) ? "assets/images/onboarding_light_02.svg" : "assets/images/onboarding_dark_02.svg",
+                    "${path}_02.svg",
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.8,
                     fit: BoxFit.contain,
@@ -42,7 +54,7 @@ class OnBoardingScreen extends StatelessWidget {
                     semanticsLabel: "Onboading illustration 02",
                   ),
                   SvgPicture.asset(
-                    (isLightMode) ? "assets/images/onboarding_light_03.svg" : "assets/images/onboarding_dark_03.svg",
+                    "${path}_03.svg",
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.8,
                     fit: BoxFit.contain,
@@ -50,7 +62,7 @@ class OnBoardingScreen extends StatelessWidget {
                     semanticsLabel: "Onboading illustration 03",
                   ),
                   SvgPicture.asset(
-                    (isLightMode) ? "assets/images/onboarding_light_04.svg" : "assets/images/onboarding_dark_04.svg",
+                    "${path}_04.svg",
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.8,
                     fit: BoxFit.contain,

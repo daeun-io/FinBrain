@@ -63,7 +63,7 @@ class AiSummary extends StatelessWidget {
                     child: Text(
                       "지난 대화 요약",
                       style: style.copyWith(
-                        color: colorScheme.onPrimary,
+                        color: colorScheme.onSecondary,
                       ),
                     ),
                   ),

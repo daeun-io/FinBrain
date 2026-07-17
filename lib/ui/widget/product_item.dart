@@ -3,8 +3,8 @@ import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dar
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
-import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
-import 'package:finbrain/ui/viewModel/liked_product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';

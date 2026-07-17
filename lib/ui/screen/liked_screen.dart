@@ -35,6 +35,7 @@ class LikedScreen extends ConsumerWidget {
                   .read(likedProductViewmodelProvider.notifier)
                   .filterByKeyword(value);
             },
+            fromLikedScreen: true,
           ),
           const SizedBox(height: 32.0),
           SortOrFilterText(
@@ -72,6 +73,7 @@ class LikedScreen extends ConsumerWidget {
                   child: AiButton(
                     tag: "compare`$sProductsNm",
                     category: ProductCategory.liked,
+                    isBtnClicked: (){},
                   ),
                 ),
               ],

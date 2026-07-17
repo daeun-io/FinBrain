@@ -1,4 +1,4 @@
-import 'package:finbrain/ui/viewModel/shared_preferences_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/shared_preferences_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,6 +26,19 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final isLightMode = Theme.of(context).brightness == Brightness.light;
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+    String path = "";
+    if((!isTablet || isPortrait) && isLightMode){
+      path = "assets/images/isa_guide_light_portrait";
+    } else if((!isTablet || isPortrait) && !isLightMode){
+      path = "assets/images/isa_guide_dark_portrait";
+    } else if(!isPortrait && isLightMode){
+      path = "assets/images/isa_guide_light_landscape";
+    } else {
+      path = "assets/images/isa_guide_dark_landscape";
+    }
 
     return SafeArea(
       child: Container(
@@ -41,9 +54,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
               },
               children: [
                 SvgPicture.asset(
-                  (isLightMode)
-                      ? "assets/images/isa_guide_light_01.svg"
-                      : "assets/images/isa_guide_dark_01.svg",
+                  "${path}_01.svg",
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.8,
                   fit: BoxFit.contain,
@@ -51,9 +62,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
                   semanticsLabel: "Onboading illustration 01",
                 ),
                 SvgPicture.asset(
-                  (isLightMode)
-                      ? "assets/images/isa_guide_light_02.svg"
-                      : "assets/images/isa_guide_dark_02.svg",
+                  "${path}_02.svg",
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.8,
                   fit: BoxFit.contain,
@@ -61,9 +70,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
                   semanticsLabel: "Onboading illustration 02",
                 ),
                 SvgPicture.asset(
-                  (isLightMode)
-                      ? "assets/images/isa_guide_light_03.svg"
-                      : "assets/images/isa_guide_dark_03.svg",
+                  "${path}_03.svg",
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.8,
                   fit: BoxFit.contain,
@@ -71,9 +78,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
                   semanticsLabel: "Onboading illustration 03",
                 ),
                 SvgPicture.asset(
-                  (isLightMode)
-                      ? "assets/images/isa_guide_light_04.svg"
-                      : "assets/images/isa_guide_dark_04.svg",
+                  "${path}_04.svg",
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.8,
                   fit: BoxFit.contain,

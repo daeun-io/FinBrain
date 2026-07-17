@@ -1,16 +1,19 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
 import 'package:finbrain/themes/text_theme.dart';
-import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
-import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/no_data_found.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class IsaBaseScreen extends ConsumerStatefulWidget {
   const IsaBaseScreen({super.key, required this.category});
@@ -25,12 +28,15 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
-  int _cPage = 1;
-  int totalCount = 100;
+  late int _cPage;
+  int _totalCount = 0;
+  int _maxPage = 0;
 
   @override
   void initState() {
     super.initState();
+    _cPage = ref.read(currentPageViewmodelProvider(widget.category));
+    _fetchData();
     _controller.addListener(_onScroll);
   }
 
@@ -45,84 +51,156 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     final position = _controller.position;
 
     if (widget.category == ProductCategory.isaJoin) {
-      final data = ref.read(isaJoinStatusViewModelProvider);
-      if (position.pixels > position.maxScrollExtent) {
-        if (data.hasValue && data.value != null) {
-          totalCount = data.value!.$1;
-        }
-        final maxPage = totalCount ~/ (100 * _cPage) + 1;
-        if (_cPage < maxPage) {
+      if (position.pixels >= position.maxScrollExtent - 10) {
+        _isLoading = true;
+        if (_cPage < _maxPage) {
           setState(() {
-            _isLoading = true;
             _cPage++;
           });
-          await _fetchData();
+          try {
+            await _fetchData();
+          } finally {
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+            }
+          }
+        } else {
+          _isLoading = false;
+        }
+      } else if (position.pixels <= position.minScrollExtent + 10) {
+        _isLoading = true;
+        if (_cPage > 1) {
           setState(() {
-            _isLoading = false;
+            _cPage--;
           });
+          try {
+            await _fetchData();
+          } finally {
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+            }
+          }
+        } else {
+          _isLoading = false;
         }
       }
     } else {
-      final data = ref.read(isaManagementStatusViewModelProvider);
-      if (position.pixels > position.maxScrollExtent) {
-        if (data.hasValue && data.value != null) {
-          totalCount = data.value!.$1;
-        }
-        final maxPage = totalCount ~/ (100 * _cPage) + 1;
-        if (_cPage < maxPage) {
+      if (position.pixels >= position.maxScrollExtent - 10) {
+        _isLoading = true;
+        if (_cPage < _maxPage) {
           setState(() {
-            _isLoading = true;
             _cPage++;
           });
-          await _fetchData();
-          setState(() {
-            _isLoading = false;
-          });
+          try {
+            await _fetchData();
+          } finally {
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+            }
+          }
+        } else {
+          _isLoading = false;
         }
       }
-    }
 
-    if (position.pixels < position.minScrollExtent) {
-      if (_cPage > 1) {
-        setState(() {
-          _isLoading = true;
-          _cPage--;
-        });
-        await _fetchData();
-        setState(() {
+      else if (position.pixels <= position.minScrollExtent + 10) {
+        if (_cPage > 1) {
+          setState(() {
+            _cPage--;
+          });
+          try {
+            await _fetchData();
+          } finally {
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+            }
+          }
+        } else {
           _isLoading = false;
-        });
+        }
       }
     }
   }
 
   Future<void> _fetchData() async {
     if (widget.category == ProductCategory.isaJoin) {
+      final data = await ref.read(
+        fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
+      );
+      if (data.$1 == -1) {
+        _cPage++;
+        final pData = await ref.read(
+          fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
+        );
+        _totalCount = pData.$1;
+      } else {
+        _totalCount = data.$1;
+      }
+      _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
       ref
-          .read(isaJoinStatusViewModelProvider.notifier)
-          .fetchIsaJoinStatus(_cPage.toString());
+          .read(currentPageViewmodelProvider(ProductCategory.isaJoin).notifier)
+          .setCurrentPage(_cPage);
     } else {
+      final data = await ref.read(
+        fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
+      );
+      if (data.$1 == -1) {
+        _cPage++;
+        final pData = await ref.read(
+          fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
+        );
+        _totalCount = pData.$1;
+        _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
+      } else {
+        _totalCount = data.$1;
+        _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
+      }
       ref
-          .read(isaManagementStatusViewModelProvider.notifier)
-          .fetchIsaManagementStatus(_cPage.toString());
+          .read(
+            currentPageViewmodelProvider(
+              ProductCategory.isaManagement,
+            ).notifier,
+          )
+          .setCurrentPage(_cPage);
     }
+
     await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
+    print("current page, $_cPage");
+    print("total count, $_totalCount");
+    print("max page, $_maxPage");
+
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
     final currentTextTheme = ref.watch(textThemeViewmodelProvider);
 
-    final joinItems = ref.watch(isaJoinStatusViewModelProvider);
+    final joinItems = ref.watch(isaJoinStatusViewModelProvider("$_cPage"));
     final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
-    final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
+    final mngmItems = ref.watch(
+      isaManagementStatusViewModelProvider("$_cPage"),
+    );
     final mngmColumn = ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
+    ref.listen(filtersViewmodelProvider(widget.category), (prev, next){
+      if(prev != next){
+        _fetchData();
+      }
+    });
+    
     // Move to center after fetching data
-    ref.listen(isaJoinStatusViewModelProvider, (prev, next) {
+    ref.listen(isaJoinStatusViewModelProvider("$_cPage"), (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -131,7 +209,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         });
       }
     });
-    ref.listen(isaManagementStatusViewModelProvider, (prev, next) {
+    ref.listen(isaManagementStatusViewModelProvider("$_cPage"), (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -150,9 +228,6 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
             .value ??
         "";
 
-    final items = (widget.category == ProductCategory.isaJoin)
-        ? joinItems
-        : mngmItems;
     final column = (widget.category == ProductCategory.isaJoin)
         ? joinColumn
         : mngmColumn;
@@ -170,104 +245,132 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                 onSortCriteriaChanged: (criteria) {
                   (widget.category == ProductCategory.isaJoin)
                       ? ref
-                            .read(isaJoinStatusViewModelProvider.notifier)
-                            .sortByCriteria(criteria, totalCount)
+                            .read(
+                              isaJoinStatusViewModelProvider(
+                                "$_cPage",
+                              ).notifier,
+                            )
+                            .sortByCriteria(criteria, _totalCount)
                       : ref
-                            .read(isaManagementStatusViewModelProvider.notifier)
-                            .sortByCriteria(criteria, totalCount);
+                            .read(
+                              isaManagementStatusViewModelProvider(
+                                "$_cPage",
+                              ).notifier,
+                            )
+                            .sortByCriteria(criteria, _totalCount);
                 },
               ),
             ),
           ],
         ),
         const SizedBox(height: 24.0),
-        items.when(
-          data: (data) {
-            final (maxPage, items) = data;
-            return Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: colorScheme.outline),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // header
-                      Container(
-                        height: (currentTextTheme == bigTextTheme) ? 80.0 : 60.0,
-                        color: colorScheme.secondary,
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            for (final label in column)
-                              Flexible(
-                                flex: (label == "ISA 종류" || label == "편입자산 구분")
-                                    ? 3
-                                    : 2,
-                                child: Center(
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      label,
-                                      style: textTheme.titleMedium!.copyWith(
-                                        color: colorScheme.onPrimary,
+        ((widget.category == ProductCategory.isaJoin) ? joinItems : mngmItems)
+            .when(
+              data: (data) {
+                final (maxPage, items) = data;
+                if (items.isEmpty) {
+                  return const Expanded(child: NoDataFound(isProduct: false));
+                }
+                return Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: colorScheme.outline),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // header
+                          Container(
+                            height: (currentTextTheme == bigTextTheme)
+                                ? 80.0
+                                : 60.0,
+                            color: colorScheme.secondary,
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                for (final label in column)
+                                  Flexible(
+                                    flex:
+                                        (label == "ISA 종류" ||
+                                            label == "편입자산 구분")
+                                        ? 3
+                                        : 2,
+                                    child: Center(
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          label,
+                                          style: textTheme.titleMedium!
+                                              .copyWith(
+                                                color: colorScheme.onPrimary,
+                                              ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      // rows
-                      Expanded(
-                        child: CustomScrollView(
-                          controller: _controller,
-                          center: _key,
-                          physics: const BouncingScrollPhysics(),
-                          slivers: [
-                            SliverPadding(padding: EdgeInsets.only(top: 20.0)),
-                            SliverPadding(key: _key, padding: EdgeInsets.zero),
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate((
-                                context,
-                                index,
-                              ) {
-                                final item = items[index];
-                                return _buildTableRow(
-                                  item,
-                                  colorScheme.surface,
-                                  colorScheme.onSecondary,
-                                  textTheme.bodyMedium!,
-                                  currentTextTheme
-                                );
-                              }, childCount: items.length),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          // rows
+                          Expanded(
+                            child: CustomScrollView(
+                              controller: _controller,
+                              center: _key,
+                              physics: const BouncingScrollPhysics(),
+                              slivers: [
+                                const SliverPadding(
+                                  padding: EdgeInsets.only(top: 20.0),
+                                ),
+                                SliverPadding(
+                                  key: _key,
+                                  padding: EdgeInsets.zero,
+                                ),
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate((
+                                    context,
+                                    index,
+                                  ) {
+                                    final item = items[index];
+                                    return _buildTableRow(
+                                      item,
+                                      colorScheme.surface,
+                                      colorScheme.onSecondary,
+                                      textTheme.bodyMedium!,
+                                      currentTextTheme,
+                                    );
+                                  }, childCount: items.length),
+                                ),
+                                const SliverPadding(
+                                  padding: EdgeInsets.only(bottom: 20.0),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
-          error: (err, stack) => const ShowingErrorWidget(),
-          loading: () => const CustomProgressIndicator(),
-        ),
+                );
+              },
+              error: (err, stack) =>
+                  const Expanded(child: ShowingErrorWidget()),
+              loading: () => const Expanded(child: CustomProgressIndicator()),
+            ),
       ],
     );
   }
 
   Widget rowCell(String text, String type, Color color, TextStyle style) {
+    final formatter = NumberFormat("###,##0.##", "en_US");
+    final number = double.tryParse(text);
     return Flexible(
       flex: (type == "incAstCtg" || type == "isaForm") ? 3 : 2,
       child: Center(
         child: Text(
-          text,
+          (number == null) ? text : formatter.format(number),
           style: style.copyWith(color: color),
           textAlign: TextAlign.center,
         ),
@@ -280,7 +383,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     Color ctnColor,
     Color txtColor,
     TextStyle style,
-    TextTheme currentTheme
+    TextTheme currentTheme,
   ) {
     return Container(
       color: ctnColor,

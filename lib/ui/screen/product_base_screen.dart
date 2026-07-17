@@ -1,7 +1,9 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/ui/viewModel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/no_data_found.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
@@ -23,12 +25,14 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
-  int _cPage = 1;
-  int _maxPage = 1;
+  late int _cPage;
+  int _maxPage = 0;
 
   @override
   void initState() {
     super.initState();
+    _cPage = ref.read(currentPageViewmodelProvider(widget.category));
+    _fetchData();
     _controller.addListener(_onScroll);
   }
 
@@ -40,56 +44,82 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
 
   void _onScroll() async {
     if (_isLoading) return;
+
     final position = _controller.position;
-    if (position.pixels > position.maxScrollExtent) {
-      final data = ref.read(
-        productViewmodelProvider(widget.category, "$_cPage"),
-      );
-      if (data.hasValue && data.value != null) {
-        _maxPage = data.value!.$1;
-      }
+    if (position.pixels >= position.maxScrollExtent - 10) {
+      _isLoading = true;
+
       if (_cPage < _maxPage) {
         setState(() {
-          _isLoading = true;
           _cPage++;
         });
-        await _fetchData();
-        setState(() {
-          _isLoading = false;
-        });
-        ref
-            .read(currentPageViewmodelProvider(widget.category).notifier)
-            .setCurrentPage(_cPage);
+        try {
+          await _fetchData();
+        } finally {
+          if (mounted) {
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        }
+      } else {
+        _isLoading = false;
       }
-    }
-    if (position.pixels < position.minScrollExtent) {
+    } else if (position.pixels <= position.minScrollExtent + 10) {
+      _isLoading = true;
       if (_cPage > 1) {
         setState(() {
-          _isLoading = true;
           _cPage--;
         });
-        await _fetchData();
-        setState(() {
-          _isLoading = false;
-        });
-        ref
-            .read(currentPageViewmodelProvider(widget.category).notifier)
-            .setCurrentPage(_cPage);
+        try {
+          await _fetchData();
+        } finally {
+          if (mounted) {
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        }
+      } else {
+        _isLoading = false;
       }
     }
   }
 
   Future<void> _fetchData() async {
-    ref.read(fetchProductViewmodelProvider(widget.category, "$_cPage"));
+    final data = await ref.read(
+      fetchProductViewmodelProvider(widget.category, "$_cPage").future,
+    );
+    if (data.$1 == -1) {
+      _cPage++;
+      final pData = await ref.read(
+        fetchProductViewmodelProvider(widget.category, "$_cPage").future,
+      );
+      _maxPage = pData.$1;
+    } else {
+      _maxPage = data.$1;
+    }
+    ref
+        .read(currentPageViewmodelProvider(widget.category).notifier)
+        .setCurrentPage(_cPage);
+
     await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
+    print("current page, $_cPage");
+    print("max page in build func, $_maxPage");
     final products = ref.watch(
       productViewmodelProvider(widget.category, "$_cPage"),
     );
 
+    ref.listen(filtersViewmodelProvider(widget.category), (prev, next){
+      if(prev != next){
+        _fetchData();
+      }
+    });
+    
     // Move to center after fetching data
     ref.listen(productViewmodelProvider(widget.category, "$_cPage"), (
       prev,
@@ -124,6 +154,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                   )
                   .filterByKeyword(value);
             },
+            fromLikedScreen: false,
           ),
           const SizedBox(height: 24.0),
           Row(
@@ -158,10 +189,15 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                   center: _key,
                   physics: const BouncingScrollPhysics(),
                   slivers: [
-                    SliverPadding(padding: EdgeInsets.only(top: 20.0)),
+                    const SliverPadding(padding: EdgeInsets.only(top: 20.0)),
                     SliverPadding(key: _key, padding: EdgeInsets.zero),
                     SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
+                        if (items.isEmpty) {
+                          return const Expanded(
+                            child: NoDataFound(isProduct: true),
+                          );
+                        }
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
@@ -172,12 +208,13 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                         );
                       }, childCount: items.length),
                     ),
+                    const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
                   ],
                 ),
               );
             },
-            error: (err, stack) => const ShowingErrorWidget(),
-            loading: () => const CustomProgressIndicator(),
+            error: (err, stack) => const Expanded(child: ShowingErrorWidget()),
+            loading: () => const Expanded(child: CustomProgressIndicator()),
           ),
         ],
       ),
