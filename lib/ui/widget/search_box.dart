@@ -4,9 +4,11 @@ class SearchBox extends StatefulWidget {
   const SearchBox({
     super.key,
     required this.searchItem,
+    required this.fromLikedScreen,
   });
 
   final Function(String) searchItem;
+  final bool fromLikedScreen;
 
   @override
   State<SearchBox> createState() => _SearchBoxState();
@@ -42,7 +44,7 @@ class _SearchBoxState extends State<SearchBox> {
         textStyle: WidgetStatePropertyAll(
           textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary)
         ),
-        hintText: "상품명 검색",
+        hintText: (widget.fromLikedScreen) ? "상품명 검색" :"현재 불러온 상품에서 검색",
         hintStyle: WidgetStatePropertyAll(
           textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary)
         ),

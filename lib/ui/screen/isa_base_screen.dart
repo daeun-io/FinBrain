@@ -255,7 +255,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
               data: (data) {
                 final (maxPage, items) = data;
                 if (items.isEmpty) {
-                  return const Expanded(child: NoDataFound());
+                  return const Expanded(child: NoDataFound(isProduct: false,));
                 }
                 return Expanded(
                   child: SingleChildScrollView(

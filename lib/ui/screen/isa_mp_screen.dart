@@ -127,6 +127,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                 )
                 .filterByKeyword(value);
           },
+          fromLikedScreen: false,
         ),
         const SizedBox(height: 24.0),
         Row(

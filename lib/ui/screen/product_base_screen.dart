@@ -145,6 +145,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                   )
                   .filterByKeyword(value);
             },
+            fromLikedScreen: false,
           ),
           const SizedBox(height: 24.0),
           Row(
@@ -174,7 +175,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
             data: (data) {
               final (maxPage, items) = data;
               if (items.isEmpty) {
-                return const Expanded(child: NoDataFound());
+                return const Expanded(child: NoDataFound(isProduct: true,));
               }
               return Expanded(
                 child: CustomScrollView(
