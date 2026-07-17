@@ -111,22 +111,38 @@ flutter:
   - assets/images/splash_dark.png
   - assets/images/icon_light.png
   - assets/images/icon_dark.png
-  - assets/images/onboarding_light_01.svg
-  - assets/images/onboarding_light_02.svg
-  - assets/images/onboarding_light_03.svg
-  - assets/images/onboarding_light_04.svg
-  - assets/images/onboarding_dark_01.svg
-  - assets/images/onboarding_dark_02.svg
-  - assets/images/onboarding_dark_03.svg
-  - assets/images/onboarding_dark_04.svg
-  - assets/images/isa_guide_light_01.svg
-  - assets/images/isa_guide_light_02.svg
-  - assets/images/isa_guide_light_03.svg
-  - assets/images/isa_guide_light_04.svg
-  - assets/images/isa_guide_dark_01.svg
-  - assets/images/isa_guide_dark_02.svg
-  - assets/images/isa_guide_dark_03.svg
-  - assets/images/isa_guide_dark_04.svg
+  - assets/images/onboarding_light_portrait_01.svg
+  - assets/images/onboarding_light_portrait_02.svg
+  - assets/images/onboarding_light_portrait_03.svg
+  - assets/images/onboarding_light_portrait_04.svg
+  - assets/images/onboarding_dark_portrait_01.svg
+  - assets/images/onboarding_dark_portrait_02.svg
+  - assets/images/onboarding_dark_portrait_03.svg
+  - assets/images/onboarding_dark_portrait_04.svg
+  - assets/images/onboarding_light_landscape_01.svg
+  - assets/images/onboarding_light_landscape_02.svg
+  - assets/images/onboarding_light_landscape_03.svg
+  - assets/images/onboarding_light_landscape_04.svg
+  - assets/images/onboarding_dark_landscape_01.svg
+  - assets/images/onboarding_dark_landscape_02.svg
+  - assets/images/onboarding_dark_landscape_03.svg
+  - assets/images/onboarding_dark_landscape_04.svg
+  - assets/images/isa_guide_light_portrait_01.svg
+  - assets/images/isa_guide_light_portrait_02.svg
+  - assets/images/isa_guide_light_portrait_03.svg
+  - assets/images/isa_guide_light_portrait_04.svg
+  - assets/images/isa_guide_dark_portrait_01.svg
+  - assets/images/isa_guide_dark_portrait_02.svg
+  - assets/images/isa_guide_dark_portrait_03.svg
+  - assets/images/isa_guide_dark_portrait_04.svg
+  - assets/images/isa_guide_light_landscape_01.svg
+  - assets/images/isa_guide_light_landscape_02.svg
+  - assets/images/isa_guide_light_landscape_03.svg
+  - assets/images/isa_guide_light_landscape_04.svg
+  - assets/images/isa_guide_dark_landscape_01.svg
+  - assets/images/isa_guide_dark_landscape_02.svg
+  - assets/images/isa_guide_dark_landscape_03.svg
+  - assets/images/isa_guide_dark_landscape_04.svg
   - assets/icon/app_icon.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
