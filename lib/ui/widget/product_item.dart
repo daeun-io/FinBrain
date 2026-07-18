@@ -39,9 +39,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final page = ref.watch(currentPageViewmodelProvider(widget.category));
     final productList = ref.watch(
-      fetchProductViewmodelProvider(widget.category, "$page"),
+      productViewmodelProvider(widget.category),
     );
     final likedList = ref.watch(fetchLikedViewmodelProvider);
 
@@ -147,41 +146,54 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                       const SizedBox(height: 6.0),
                       Text(
                         switch (product.commonInfo.category) {
-                          ProductCategory.deposit =>
-                            (sortCriteria == "최고 금리(높은 순)")
-                                ? (product as DepositAndInstallmentSavings)
-                                      .returnHighestRateValue()
-                                      .$1
-                                      .toStringAsFixed(2)
-                                : (product as DepositAndInstallmentSavings)
-                                      .returnHighestRateValue()
-                                      .$2
-                                      .toStringAsFixed(2),
+                          ProductCategory.deposit ||
                           ProductCategory.installment =>
                             (sortCriteria == "최고 금리(높은 순)")
-                                ? (product as DepositAndInstallmentSavings)
+                                ? ((product as DepositAndInstallmentSavings)
+                                              .returnHighestRateValue()
+                                              .$1 ==
+                                          null)
+                                      ? "미제공"
+                                      : product
+                                            .returnHighestRateValue()
+                                            .$1!
+                                            .toStringAsFixed(2)
+                                : ((product as DepositAndInstallmentSavings)
+                                          .returnHighestRateValue()
+                                          .$2 ==
+                                      null)
+                                ? "미제공"
+                                : product
                                       .returnHighestRateValue()
-                                      .$1
-                                      .toStringAsFixed(2)
-                                : (product as DepositAndInstallmentSavings)
-                                      .returnHighestRateValue()
-                                      .$2
+                                      .$2!
                                       .toStringAsFixed(2),
                           ProductCategory.credit => switch (sortCriteria) {
                             "최저 금리(낮은 순)" =>
-                              (product as CreditLoan)
-                                  .returnRates()[0]
-                                  .toStringAsFixed(2),
+                              ((product as CreditLoan)
+                                          .returnRates()[0] ==
+                                      null)
+                                  ? "미제공"
+                                  : product.returnRates()[0]!.toStringAsFixed(
+                                      2,
+                                    ),
                             "최고 금리(낮은 순)" =>
-                              (product as CreditLoan)
-                                  .returnRates()[2]
-                                  .toStringAsFixed(2),
+                              ((product as CreditLoan)
+                                          .returnRates()[2] ==
+                                      null)
+                                  ? "미제공"
+                                  : product.returnRates()[2]!.toStringAsFixed(
+                                      2,
+                                    ),
                             _ =>
-                              (product as CreditLoan)
-                                  .returnRates()[1]
-                                  .toStringAsFixed(2),
+                              ((product as CreditLoan)
+                                          .returnRates()[1] ==
+                                      null)
+                                  ? "미제공"
+                                  : product.returnRates()[1]!.toStringAsFixed(
+                                      2,
+                                    ),
                           },
-                          ProductCategory.mortgage => switch (sortCriteria) {
+                          ProductCategory.mortgage || ProductCategory.rent => switch (sortCriteria) {
                             "최저 금리(낮은 순)" =>
                               ((product as MortgageAndRentLoan)
                                           .returnRates()[0] ==
@@ -193,32 +205,6 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                             "최고 금리(낮은 순)" =>
                               ((product as MortgageAndRentLoan)
                                           .returnRates()[2] ==
-                                      null)
-                                  ? "미제공"
-                                  : product.returnRates()[2]!.toStringAsFixed(
-                                      2,
-                                    ),
-                            _ =>
-                              ((product as MortgageAndRentLoan)
-                                          .returnRates()[1] ==
-                                      null)
-                                  ? "미제공"
-                                  : product.returnRates()[1]!.toStringAsFixed(
-                                      2,
-                                    ),
-                          },
-                          ProductCategory.rent => switch (sortCriteria) {
-                            "최저 금리(낮은 순)" =>
-                              ((product as MortgageAndRentLoan)
-                                          .returnRates()[0] ==
-                                      null)
-                                  ? "미제공"
-                                  : product.returnRates()[0]!.toStringAsFixed(
-                                      2,
-                                    ),
-                            "최고 금리(낮은 순)" =>
-                              ((product as MortgageAndRentLoan)
-                                          .returnRates()[0] ==
                                       null)
                                   ? "미제공"
                                   : product.returnRates()[2]!.toStringAsFixed(

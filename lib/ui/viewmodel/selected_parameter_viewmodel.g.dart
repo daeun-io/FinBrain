@@ -47,7 +47,7 @@ final class SelectedTopFinGrpNoViewmodelProvider
 }
 
 String _$selectedTopFinGrpNoViewmodelHash() =>
-    r'6d0f28561899cb716eacddcc7a36946bf7830753';
+    r'354e6a8842760d7b20918efa7dd03f006d92a873';
 
 abstract class _$SelectedTopFinGrpNoViewmodel
     extends $Notifier<Map<ProductCategory, String>> {
@@ -110,7 +110,7 @@ final class SelectedBaseYearViewmodelProvider
 }
 
 String _$selectedBaseYearViewmodelHash() =>
-    r'f30080c5813ca6fa427f906db13da4c51f39a3ec';
+    r'28f620864bd600fdfe7e2095192b88824f430ba9';
 
 abstract class _$SelectedBaseYearViewmodel
     extends $Notifier<Map<ProductCategory, int>> {

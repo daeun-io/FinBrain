@@ -21,7 +21,7 @@ class SavingsScreen extends ConsumerWidget {
       ProductCategory.installment,
       ProductCategory.isaJoin,
     ];
-    final tabView = const [
+    final tabView = [
       ProductBaseScreen(category: ProductCategory.deposit),
       ProductBaseScreen(category: ProductCategory.installment),
       IsaScreen(),

@@ -1,5 +1,4 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -25,14 +24,11 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
-  late int _cPage;
   int _maxPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _cPage = ref.read(currentPageViewmodelProvider(widget.category));
-    _fetchData();
     _controller.addListener(_onScroll);
   }
 
@@ -45,81 +41,66 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   void _onScroll() async {
     if (_isLoading) return;
 
+    final cPage = ref.read(currentPageViewmodelProvider(widget.category));
     final position = _controller.position;
     if (position.pixels >= position.maxScrollExtent - 10) {
-      _isLoading = true;
-
-      if (_cPage < _maxPage) {
-        setState(() {
-          _cPage++;
-        });
-        try {
-          await _fetchData();
-        } finally {
-          if (mounted) {
-            setState(() {
-              _isLoading = false;
-            });
-          }
-        }
+      if (cPage < _maxPage) {
+        _isLoading = true;
+        ref
+            .read(currentPageViewmodelProvider(widget.category).notifier)
+            .setCurrentPage(cPage + 1);
+        _isLoading = false;
       } else {
         _isLoading = false;
       }
     } else if (position.pixels <= position.minScrollExtent + 10) {
-      _isLoading = true;
-      if (_cPage > 1) {
-        setState(() {
-          _cPage--;
-        });
-        try {
-          await _fetchData();
-        } finally {
-          if (mounted) {
-            setState(() {
-              _isLoading = false;
-            });
-          }
-        }
+      if (cPage > 1) {
+        _isLoading = true;
+        ref
+            .read(currentPageViewmodelProvider(widget.category).notifier)
+            .setCurrentPage(cPage - 1);
+        _isLoading = false;
       } else {
         _isLoading = false;
       }
     }
   }
 
-  Future<void> _fetchData() async {
-    final data = await ref.read(
-      fetchProductViewmodelProvider(widget.category, "$_cPage").future,
-    );
-    if (data.$1 == -1) {
-      _cPage++;
-      final pData = await ref.read(
-        fetchProductViewmodelProvider(widget.category, "$_cPage").future,
-      );
-      _maxPage = pData.$1;
-    } else {
-      _maxPage = data.$1;
-    }
-    ref
-        .read(currentPageViewmodelProvider(widget.category).notifier)
-        .setCurrentPage(_cPage);
+  // Future<void> _fetchData() async {
+  //   final data = await ref.read(
+  //     fetchProductViewmodelProvider(widget.category, "$_cPage").future,
+  //   );
+  //   if (data.$1 == -1) {
+  //     _cPage++;
+  //     final pData = await ref.read(
+  //       fetchProductViewmodelProvider(widget.category, "$_cPage").future,
+  //     );
+  //     _maxPage = pData.$1;
+  //   } else {
+  //     _maxPage = data.$1;
+  //   }
+  //   ref
+  //       .read(currentPageViewmodelProvider(widget.category).notifier)
+  //       .setCurrentPage(_cPage);
 
-    await Future.delayed(const Duration(seconds: 1));
-  }
+  //   await Future.delayed(const Duration(seconds: 1));
+  // }
 
   @override
   Widget build(BuildContext context) {
-    final products = ref.watch(
-      productViewmodelProvider(widget.category, "$_cPage"),
+    final cPage = ref.watch(currentPageViewmodelProvider(widget.category));
+    final productState = ref.watch(
+      productViewmodelProvider(widget.category),
     );
-
-    ref.listen(filtersViewmodelProvider(widget.category), (prev, next) {
-      if (prev != next) {
-        _fetchData();
-      }
-    });
+    // ref.listen(savedFiltersProvider(widget.category), (prev, next) {
+    //   if (prev != next) {
+    //     // _fetchData();
+    //     ref.invalidate(productViewmodelProvider(widget.category, "$_cPage"));
+    //   }
+    // });
 
     // Move to center after fetching data
-    ref.listen(productViewmodelProvider(widget.category, "$_cPage"), (
+    ref.listen(productViewmodelProvider(widget.category), (
       prev,
       next,
     ) {
@@ -147,7 +128,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                   .read(
                     productViewmodelProvider(
                       widget.category,
-                      "$_cPage",
                     ).notifier,
                   )
                   .filterByKeyword(value);
@@ -168,7 +148,6 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                         .read(
                           productViewmodelProvider(
                             ProductCategory.isaMp,
-                            "$_cPage",
                           ).notifier,
                         )
                         .sortByCriteria(criteria, widget.category, _maxPage);
@@ -178,32 +157,44 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
             ],
           ),
           const SizedBox(height: 24.0),
-          products.when(
+          productState.when(
             data: (data) {
               final (maxPage, items) = data;
-              if (items.isEmpty) {
-                return const Expanded(child: NoDataFound(isProduct: true));
-              }
+              _maxPage = maxPage;
+              print("max page, $_maxPage");
+              print("current page, $cPage");
               return Expanded(
                 child: CustomScrollView(
                   controller: _controller,
                   center: _key,
-                  physics: const BouncingScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     const SliverPadding(padding: EdgeInsets.only(top: 20.0)),
                     SliverPadding(key: _key, padding: EdgeInsets.zero),
                     SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
+                        if (items.isEmpty) {
+                          return Container(
+                            height: MediaQuery.of(context).size.height * 0.45,
+                            alignment: Alignment.center,
+                            child: NoDataFound(
+                              ctg: widget.category,
+                              isProduct: true,
+                              isLastPage: (cPage == maxPage),
+                            ),
+                          );
+                        }
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
+                            key: ValueKey(items[index].commonInfo.productCode!),
                             productCode: items[index].commonInfo.productCode!,
                             productName: items[index].commonInfo.productName!,
                             category: items[index].commonInfo.category,
                             fromLikedScreen: false,
                           ),
                         );
-                      }, childCount: items.length),
+                      }, childCount: items.isEmpty ? 1 : items.length),
                     ),
                     const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
                   ],

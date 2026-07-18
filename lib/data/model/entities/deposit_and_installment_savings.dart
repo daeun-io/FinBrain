@@ -119,9 +119,9 @@ class DepositAndInstallmentSavings extends FinancialProduct {
     };
   }
 
-  (double, double) returnHighestRateValue() {
-    final maxRate = options.map((e) => e.maxIntRate).whereType<double>().max;
-    final baseRate = options.map((e) => e.intRate).whereType<double>().max;
+  (double?, double?) returnHighestRateValue() {
+    final maxRate = options.map((e) => e.maxIntRate).whereType<double>().maxOrNull;
+    final baseRate = options.map((e) => e.intRate).whereType<double>().maxOrNull;
     return (maxRate, baseRate);
   }
 }

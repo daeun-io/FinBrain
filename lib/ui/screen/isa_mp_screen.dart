@@ -23,15 +23,13 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
-  late int _cPage;
-  int _totalCount = 0;
+  //late int _cPage;
+  // int _totalCount = 0;
   int _maxPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _cPage = ref.read(currentPageViewmodelProvider(ProductCategory.isaMp));
-    _fetchData();
     _controller.addListener(_onScroll);
   }
 
@@ -43,85 +41,42 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
 
   void _onScroll() async {
     if (_isLoading) return;
+
+    final cPage = ref.read(currentPageViewmodelProvider(ProductCategory.isaMp));
     final position = _controller.position;
     if (position.pixels >= position.maxScrollExtent - 10) {
-      _isLoading = true;
-
-      if (_cPage < _maxPage) {
-        setState(() {
-          _cPage++;
-        });
-        try {
-          await _fetchData();
-        } finally {
-          if (mounted) {
-            setState(() {
-              _isLoading = false;
-            });
-          }
-        }
+      if (cPage < _maxPage) {
+        _isLoading = true;
+        ref
+            .read(currentPageViewmodelProvider(ProductCategory.isaMp).notifier)
+            .setCurrentPage(cPage + 1);
+        _isLoading = false;
       } else {
         _isLoading = false;
       }
     } else if (position.pixels <= position.minScrollExtent + 10) {
-      if (_cPage > 1) {
+      if (cPage > 1) {
         _isLoading = true;
-        setState(() {
-          _cPage--;
-        });
-        try {
-          await _fetchData();
-        } finally {
-          if (mounted) {
-            setState(() {
-              _isLoading = false;
-            });
-          }
-        }
+        ref
+            .read(currentPageViewmodelProvider(ProductCategory.isaMp).notifier)
+            .setCurrentPage(cPage - 1);
+        _isLoading = false;
       } else {
         _isLoading = false;
       }
     }
   }
 
-  Future<void> _fetchData() async {
-    final data = await ref.read(
-      fetchProductViewmodelProvider(ProductCategory.isaMp, "$_cPage").future,
-    );
-    if (data.$1 == -1) {
-      _cPage++;
-      final pData = await ref.read(
-        fetchProductViewmodelProvider(ProductCategory.isaMp, "$_cPage").future,
-      );
-      _totalCount = pData.$1;
-    } else {
-      _totalCount = data.$1;
-    }
-    _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-    ref
-        .read(currentPageViewmodelProvider(ProductCategory.isaMp).notifier)
-        .setCurrentPage(_cPage);
-    await Future.delayed(const Duration(seconds: 1));
-  }
-
   @override
   Widget build(BuildContext context) {
-    final products = ref.watch(
-      productViewmodelProvider(ProductCategory.isaMp, "$_cPage"),
+    final cPage = ref.watch(
+      currentPageViewmodelProvider(ProductCategory.isaMp),
     );
+    final products = ref.watch(productViewmodelProvider(ProductCategory.isaMp));
     final filters = ref.watch(filtersViewmodelProvider(ProductCategory.isaMp));
 
-    ref.listen(filtersViewmodelProvider(ProductCategory.isaMp), (prev, next){
-      if(prev != next){
-        _fetchData();
-      }
-    });
-
     // Move to center after fetching data
-    ref.listen(productViewmodelProvider(ProductCategory.isaMp, "$_cPage"), (
-      prev,
-      next,
-    ) {
+    ref.listen(productViewmodelProvider(ProductCategory.isaMp), (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -145,12 +100,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         SearchBox(
           searchItem: (value) {
             ref
-                .read(
-                  productViewmodelProvider(
-                    ProductCategory.isaMp,
-                    "$_cPage",
-                  ).notifier,
-                )
+                .read(productViewmodelProvider(ProductCategory.isaMp).notifier)
                 .filterByKeyword(value);
           },
           fromLikedScreen: false,
@@ -169,7 +119,6 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                       .read(
                         productViewmodelProvider(
                           ProductCategory.isaMp,
-                          "$_cPage",
                         ).notifier,
                       )
                       .sortByCriteria(
@@ -185,7 +134,10 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         const SizedBox(height: 24.0),
         products.when(
           data: (data) {
-            final (maxPage, items) = data;
+            final (totalCount, items) = data;
+            _maxPage = (totalCount == 0) ? 1 : (totalCount - 1) ~/ 100 + 1;
+            print("max page in isa mp, $_maxPage");
+            print("current page in isa mp, $cPage");
             return Expanded(
               child: CustomScrollView(
                 controller: _controller,
@@ -197,14 +149,21 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                   SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       if (items.isEmpty) {
-                        return const Expanded(
-                          child: NoDataFound(isProduct: true),
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.45,
+                          alignment: Alignment.center,
+                          child: NoDataFound(
+                            ctg: ProductCategory.isaMp,
+                            isProduct: true,
+                            isLastPage: (cPage == _maxPage),
+                          ),
                         );
                       }
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: ProductItem(
-                          productCode: items[index].commonInfo.productCode ?? "isaMp",
+                          productCode:
+                              items[index].commonInfo.productCode ?? "isaMp",
                           productName: items[index].commonInfo.productName!,
                           category: items[index].commonInfo.category,
                           fromLikedScreen: false,

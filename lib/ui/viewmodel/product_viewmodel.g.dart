@@ -55,7 +55,7 @@ final class FetchProductViewmodelProvider
 }
 
 String _$fetchProductViewmodelHash() =>
-    r'b055512ef01f8d9dae8119000c827bed63dad7fe';
+    r'7217f615e173d716fa1ab549ddad66e8988606ff';
 
 final class FetchProductViewmodelFamily extends $Family
     with
@@ -127,7 +127,7 @@ final class ProductViewmodelProvider
         > {
   ProductViewmodelProvider._({
     required ProductViewmodelFamily super.from,
-    required (ProductCategory, String) super.argument,
+    required ProductCategory super.argument,
   }) : super(
          retry: null,
          name: r'productViewmodelProvider',
@@ -143,7 +143,7 @@ final class ProductViewmodelProvider
   String toString() {
     return r'productViewmodelProvider'
         ''
-        '$argument';
+        '($argument)';
   }
 
   @$internal
@@ -170,7 +170,7 @@ final class ProductViewmodelProvider
   }
 }
 
-String _$productViewmodelHash() => r'f44bf8734a4be4cd51087b2ba8d031b96b437b13';
+String _$productViewmodelHash() => r'b3c55ef66b961b56cec4819de716bcb34535179d';
 
 final class ProductViewmodelFamily extends $Family
     with
@@ -179,7 +179,7 @@ final class ProductViewmodelFamily extends $Family
           AsyncValue<(int, List<FinancialProduct>)>,
           AsyncValue<(int, List<FinancialProduct>)>,
           AsyncValue<(int, List<FinancialProduct>)>,
-          (ProductCategory, String)
+          ProductCategory
         > {
   ProductViewmodelFamily._()
     : super(
@@ -190,8 +190,8 @@ final class ProductViewmodelFamily extends $Family
         isAutoDispose: true,
       );
 
-  ProductViewmodelProvider call(ProductCategory ctg, String pageNo) =>
-      ProductViewmodelProvider._(argument: (ctg, pageNo), from: this);
+  ProductViewmodelProvider call(ProductCategory ctg) =>
+      ProductViewmodelProvider._(argument: ctg, from: this);
 
   @override
   String toString() => r'productViewmodelProvider';
@@ -199,14 +199,10 @@ final class ProductViewmodelFamily extends $Family
 
 abstract class _$ProductViewmodel
     extends $Notifier<AsyncValue<(int, List<FinancialProduct>)>> {
-  late final _$args = ref.$arg as (ProductCategory, String);
-  ProductCategory get ctg => _$args.$1;
-  String get pageNo => _$args.$2;
+  late final _$args = ref.$arg as ProductCategory;
+  ProductCategory get ctg => _$args;
 
-  AsyncValue<(int, List<FinancialProduct>)> build(
-    ProductCategory ctg,
-    String pageNo,
-  );
+  AsyncValue<(int, List<FinancialProduct>)> build(ProductCategory ctg);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
@@ -227,6 +223,6 @@ abstract class _$ProductViewmodel
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

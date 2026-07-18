@@ -57,7 +57,7 @@ final class FetchIsaJoinStatusViewmodelProvider
 }
 
 String _$fetchIsaJoinStatusViewmodelHash() =>
-    r'ea12d3f8790fe012e0d177fef60a23f44838406a';
+    r'6c591de67a46be83b31e2b8d0a2961ea4aa34260';
 
 final class FetchIsaJoinStatusViewmodelFamily extends $Family
     with
@@ -115,7 +115,7 @@ abstract class _$FetchIsaJoinStatusViewmodel
 }
 
 @ProviderFor(IsaJoinStatusViewModel)
-final isaJoinStatusViewModelProvider = IsaJoinStatusViewModelFamily._();
+final isaJoinStatusViewModelProvider = IsaJoinStatusViewModelProvider._();
 
 final class IsaJoinStatusViewModelProvider
     extends
@@ -123,26 +123,19 @@ final class IsaJoinStatusViewModelProvider
           IsaJoinStatusViewModel,
           AsyncValue<(int, List<IsaJoinStatus>)>
         > {
-  IsaJoinStatusViewModelProvider._({
-    required IsaJoinStatusViewModelFamily super.from,
-    required String super.argument,
-  }) : super(
-         retry: null,
-         name: r'isaJoinStatusViewModelProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  IsaJoinStatusViewModelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isaJoinStatusViewModelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$isaJoinStatusViewModelHash();
-
-  @override
-  String toString() {
-    return r'isaJoinStatusViewModelProvider'
-        ''
-        '($argument)';
-  }
 
   @$internal
   @override
@@ -156,53 +149,14 @@ final class IsaJoinStatusViewModelProvider
           $SyncValueProvider<AsyncValue<(int, List<IsaJoinStatus>)>>(value),
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    return other is IsaJoinStatusViewModelProvider &&
-        other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
 }
 
 String _$isaJoinStatusViewModelHash() =>
-    r'0d1ce882ad3a1bac510c13a3f98166de76e3a639';
-
-final class IsaJoinStatusViewModelFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          IsaJoinStatusViewModel,
-          AsyncValue<(int, List<IsaJoinStatus>)>,
-          AsyncValue<(int, List<IsaJoinStatus>)>,
-          AsyncValue<(int, List<IsaJoinStatus>)>,
-          String
-        > {
-  IsaJoinStatusViewModelFamily._()
-    : super(
-        retry: null,
-        name: r'isaJoinStatusViewModelProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  IsaJoinStatusViewModelProvider call(String pageNo) =>
-      IsaJoinStatusViewModelProvider._(argument: pageNo, from: this);
-
-  @override
-  String toString() => r'isaJoinStatusViewModelProvider';
-}
+    r'bd814c26ab9309da47a0a28d59601a430cae06f1';
 
 abstract class _$IsaJoinStatusViewModel
     extends $Notifier<AsyncValue<(int, List<IsaJoinStatus>)>> {
-  late final _$args = ref.$arg as String;
-  String get pageNo => _$args;
-
-  AsyncValue<(int, List<IsaJoinStatus>)> build(String pageNo);
+  AsyncValue<(int, List<IsaJoinStatus>)> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
@@ -223,7 +177,7 @@ abstract class _$IsaJoinStatusViewModel
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -275,7 +229,7 @@ final class FetchIsaMngmStatusViewmodelProvider
 }
 
 String _$fetchIsaMngmStatusViewmodelHash() =>
-    r'444cdd63f23652ddab7bbba44d8b7cbf41b46da1';
+    r'f2558a481472996b1a2d811a6507d69eddd79a98';
 
 final class FetchIsaMngmStatusViewmodelFamily extends $Family
     with
@@ -334,7 +288,7 @@ abstract class _$FetchIsaMngmStatusViewmodel
 
 @ProviderFor(IsaManagementStatusViewModel)
 final isaManagementStatusViewModelProvider =
-    IsaManagementStatusViewModelFamily._();
+    IsaManagementStatusViewModelProvider._();
 
 final class IsaManagementStatusViewModelProvider
     extends
@@ -342,26 +296,19 @@ final class IsaManagementStatusViewModelProvider
           IsaManagementStatusViewModel,
           AsyncValue<(int, List<IsaManagementStatus>)>
         > {
-  IsaManagementStatusViewModelProvider._({
-    required IsaManagementStatusViewModelFamily super.from,
-    required String super.argument,
-  }) : super(
-         retry: null,
-         name: r'isaManagementStatusViewModelProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  IsaManagementStatusViewModelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isaManagementStatusViewModelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$isaManagementStatusViewModelHash();
-
-  @override
-  String toString() {
-    return r'isaManagementStatusViewModelProvider'
-        ''
-        '($argument)';
-  }
 
   @$internal
   @override
@@ -379,53 +326,14 @@ final class IsaManagementStatusViewModelProvider
           ),
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    return other is IsaManagementStatusViewModelProvider &&
-        other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
 }
 
 String _$isaManagementStatusViewModelHash() =>
-    r'6cd65869a843a86e38e006fd841d24da06550703';
-
-final class IsaManagementStatusViewModelFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          IsaManagementStatusViewModel,
-          AsyncValue<(int, List<IsaManagementStatus>)>,
-          AsyncValue<(int, List<IsaManagementStatus>)>,
-          AsyncValue<(int, List<IsaManagementStatus>)>,
-          String
-        > {
-  IsaManagementStatusViewModelFamily._()
-    : super(
-        retry: null,
-        name: r'isaManagementStatusViewModelProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  IsaManagementStatusViewModelProvider call(String pageNo) =>
-      IsaManagementStatusViewModelProvider._(argument: pageNo, from: this);
-
-  @override
-  String toString() => r'isaManagementStatusViewModelProvider';
-}
+    r'c0b29cdff5404f5ac7c7eb8c1d19d332ef34aa2d';
 
 abstract class _$IsaManagementStatusViewModel
     extends $Notifier<AsyncValue<(int, List<IsaManagementStatus>)>> {
-  late final _$args = ref.$arg as String;
-  String get pageNo => _$args;
-
-  AsyncValue<(int, List<IsaManagementStatus>)> build(String pageNo);
+  AsyncValue<(int, List<IsaManagementStatus>)> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
@@ -446,6 +354,6 @@ abstract class _$IsaManagementStatusViewModel
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, build);
   }
 }

@@ -36,7 +36,6 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   void initState() {
     super.initState();
     _cPage = ref.read(currentPageViewmodelProvider(widget.category));
-    _fetchData();
     _controller.addListener(_onScroll);
   }
 
@@ -48,81 +47,64 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
 
   void _onScroll() async {
     if (_isLoading) return;
+    final cJoinPage = ref.read(
+      currentPageViewmodelProvider(ProductCategory.isaJoin),
+    );
+    final cMngmPage = ref.read(currentPageViewmodelProvider(ProductCategory.isaManagement));
     final position = _controller.position;
 
     if (widget.category == ProductCategory.isaJoin) {
-      if (position.pixels >= position.maxScrollExtent - 10) {
-        _isLoading = true;
-        if (_cPage < _maxPage) {
-          setState(() {
-            _cPage++;
-          });
-          try {
-            await _fetchData();
-          } finally {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          }
+      if (position.pixels >= position.maxScrollExtent) {
+        if (cJoinPage < _maxPage) {
+          _isLoading = true;
+          ref
+              .read(
+                currentPageViewmodelProvider(ProductCategory.isaJoin).notifier,
+              )
+              .setCurrentPage(cJoinPage + 1);
+          _isLoading = false;
         } else {
           _isLoading = false;
         }
-      } else if (position.pixels <= position.minScrollExtent + 10) {
-        _isLoading = true;
-        if (_cPage > 1) {
-          setState(() {
-            _cPage--;
-          });
-          try {
-            await _fetchData();
-          } finally {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          }
+      } else if (position.pixels <= position.minScrollExtent) {
+        if (cJoinPage > 1) {
+          _isLoading = true;
+          ref
+              .read(
+                currentPageViewmodelProvider(ProductCategory.isaJoin).notifier,
+              )
+              .setCurrentPage(cJoinPage - 1);
+          _isLoading = false;
         } else {
           _isLoading = false;
         }
       }
     } else {
-      if (position.pixels >= position.maxScrollExtent - 10) {
-        _isLoading = true;
-        if (_cPage < _maxPage) {
-          setState(() {
-            _cPage++;
-          });
-          try {
-            await _fetchData();
-          } finally {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          }
+      if (position.pixels >= position.maxScrollExtent) {
+        if (cMngmPage < _maxPage) {
+          _isLoading = true;
+          ref
+              .read(
+                currentPageViewmodelProvider(
+                  ProductCategory.isaManagement,
+                ).notifier,
+              )
+              .setCurrentPage(cMngmPage + 1);
+          _isLoading = false;
         } else {
           _isLoading = false;
         }
-      }
-
-      else if (position.pixels <= position.minScrollExtent + 10) {
-        if (_cPage > 1) {
-          setState(() {
-            _cPage--;
-          });
-          try {
-            await _fetchData();
-          } finally {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          }
+      } else if (position.pixels <= position.minScrollExtent) {
+        if (cMngmPage > 1) {
+          _isLoading = true;
+          ref
+              .read(
+                currentPageViewmodelProvider(
+                  ProductCategory.isaManagement,
+                ).notifier,
+              )
+              .setCurrentPage(cMngmPage - 1);
+          _isLoading = false;
         } else {
           _isLoading = false;
         }
@@ -130,50 +112,50 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     }
   }
 
-  Future<void> _fetchData() async {
-    if (widget.category == ProductCategory.isaJoin) {
-      final data = await ref.read(
-        fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
-      );
-      if (data.$1 == -1) {
-        _cPage++;
-        final pData = await ref.read(
-          fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
-        );
-        _totalCount = pData.$1;
-      } else {
-        _totalCount = data.$1;
-      }
-      _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-      ref
-          .read(currentPageViewmodelProvider(ProductCategory.isaJoin).notifier)
-          .setCurrentPage(_cPage);
-    } else {
-      final data = await ref.read(
-        fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
-      );
-      if (data.$1 == -1) {
-        _cPage++;
-        final pData = await ref.read(
-          fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
-        );
-        _totalCount = pData.$1;
-        _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-      } else {
-        _totalCount = data.$1;
-        _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-      }
-      ref
-          .read(
-            currentPageViewmodelProvider(
-              ProductCategory.isaManagement,
-            ).notifier,
-          )
-          .setCurrentPage(_cPage);
-    }
+  // Future<void> _fetchData() async {
+  //   if (widget.category == ProductCategory.isaJoin) {
+  //     final data = await ref.read(
+  //       fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
+  //     );
+  //     if (data.$1 == -1) {
+  //       _cPage++;
+  //       final pData = await ref.read(
+  //         fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
+  //       );
+  //       _totalCount = pData.$1;
+  //     } else {
+  //       _totalCount = data.$1;
+  //     }
+  //     _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
+  //     ref
+  //         .read(currentPageViewmodelProvider(ProductCategory.isaJoin).notifier)
+  //         .setCurrentPage(_cPage);
+  //   } else {
+  //     final data = await ref.read(
+  //       fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
+  //     );
+  //     if (data.$1 == -1) {
+  //       _cPage++;
+  //       final pData = await ref.read(
+  //         fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
+  //       );
+  //       _totalCount = pData.$1;
+  //       _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
+  //     } else {
+  //       _totalCount = data.$1;
+  //       _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
+  //     }
+  //     ref
+  //         .read(
+  //           currentPageViewmodelProvider(
+  //             ProductCategory.isaManagement,
+  //           ).notifier,
+  //         )
+  //         .setCurrentPage(_cPage);
+  //   }
 
-    await Future.delayed(const Duration(seconds: 1));
-  }
+  //   await Future.delayed(const Duration(seconds: 1));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -182,21 +164,26 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
 
     final currentTextTheme = ref.watch(textThemeViewmodelProvider);
 
-    final joinItems = ref.watch(isaJoinStatusViewModelProvider("$_cPage"));
+    final joinItems = ref.watch(isaJoinStatusViewModelProvider);
     final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
-    final mngmItems = ref.watch(
-      isaManagementStatusViewModelProvider("$_cPage"),
-    );
+    final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
     final mngmColumn = ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
-    ref.listen(filtersViewmodelProvider(widget.category), (prev, next){
-      if(prev != next){
-        _fetchData();
-      }
-    });
-    
+    final joinPage = ref.watch(
+      currentPageViewmodelProvider(ProductCategory.isaJoin),
+    );
+    final mngmPage = ref.watch(
+      currentPageViewmodelProvider(ProductCategory.isaManagement),
+    );
+
+    // ref.listen(filtersViewmodelProvider(widget.category), (prev, next) {
+    //   if (prev != next) {
+    //     _fetchData();
+    //   }
+    // });
+
     // Move to center after fetching data
-    ref.listen(isaJoinStatusViewModelProvider("$_cPage"), (prev, next) {
+    ref.listen(isaJoinStatusViewModelProvider, (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -205,7 +192,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         });
       }
     });
-    ref.listen(isaManagementStatusViewModelProvider("$_cPage"), (prev, next) {
+    ref.listen(isaManagementStatusViewModelProvider, (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -241,18 +228,10 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                 onSortCriteriaChanged: (criteria) {
                   (widget.category == ProductCategory.isaJoin)
                       ? ref
-                            .read(
-                              isaJoinStatusViewModelProvider(
-                                "$_cPage",
-                              ).notifier,
-                            )
+                            .read(isaJoinStatusViewModelProvider.notifier)
                             .sortByCriteria(criteria, _totalCount)
                       : ref
-                            .read(
-                              isaManagementStatusViewModelProvider(
-                                "$_cPage",
-                              ).notifier,
-                            )
+                            .read(isaManagementStatusViewModelProvider.notifier)
                             .sortByCriteria(criteria, _totalCount);
                 },
               ),
@@ -263,9 +242,22 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         ((widget.category == ProductCategory.isaJoin) ? joinItems : mngmItems)
             .when(
               data: (data) {
-                final (maxPage, items) = data;
+                final (totalCount, items) = data;
+                _totalCount = totalCount;
+                _maxPage = (totalCount == 0)
+                    ? 1
+                    : (totalCount - 1) ~/ 200 + 1;
+                print("max page in isa base, $_maxPage");
+                print("current page in isa base, ${(widget.category == ProductCategory.isaJoin) ? joinPage : mngmPage}");
+                print("total count in isa base, $_totalCount");
                 if (items.isEmpty) {
-                  return const Expanded(child: NoDataFound(isProduct: false));
+                  return Expanded(
+                    child: NoDataFound(
+                      ctg: widget.category,
+                      isProduct: false,
+                      isLastPage: (_cPage == _maxPage),
+                    ),
+                  );
                 }
                 return Expanded(
                   child: SingleChildScrollView(
@@ -318,7 +310,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                               physics: const BouncingScrollPhysics(),
                               slivers: [
                                 const SliverPadding(
-                                  padding: EdgeInsets.only(top: 20.0),
+                                  padding: EdgeInsets.only(top: 40.0),
                                 ),
                                 SliverPadding(
                                   key: _key,
@@ -340,7 +332,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                   }, childCount: items.length),
                                 ),
                                 const SliverPadding(
-                                  padding: EdgeInsets.only(bottom: 20.0),
+                                  padding: EdgeInsets.only(bottom: 40.0),
                                 ),
                               ],
                             ),

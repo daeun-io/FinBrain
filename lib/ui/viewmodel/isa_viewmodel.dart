@@ -1,6 +1,7 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
 import 'package:finbrain/data/repository/isa_repository.dart';
+import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
@@ -27,7 +28,7 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
           ? selectedFilters["기준년도"]!.first
           : DateTime.now().year.toString();
 
-      final result = await repository.fetchJoinStatus(pageNo, "100", baseYear);
+      final result = await repository.fetchJoinStatus(pageNo, "200", baseYear);
 
       final totalCount = result.$1;
       final status = result.$2;
@@ -38,8 +39,9 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
 
       return (totalCount, filtered);
     } catch (e) {
-      debugPrint("[error] failed to fetch isa join status : $e");
-      return (-1, <IsaJoinStatus>[]);
+      throw Exception("[error] failed to isa join status : $e");
+      // debugPrint("[error] failed to fetch isa join status : $e");
+      // return (-1, <IsaJoinStatus>[]);
     }
   }
 }
@@ -47,20 +49,37 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
 @riverpod
 class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
   @override
-  AsyncValue<(int, List<IsaJoinStatus>)> build(String pageNo) {
-    final result = ref.watch(fetchIsaJoinStatusViewmodelProvider(pageNo));
-
-    if (result.value == null) return const AsyncValue.loading();
-    if (result.value != null && result.value!.$1 == -1) {
-      return AsyncValue.error("데이터를 불러오는 중 문제가 발생했습니다", StackTrace.current);
-    }
-
+  AsyncValue<(int, List<IsaJoinStatus>)> build() {
+    final cPage = ref.watch(currentPageViewmodelProvider(ProductCategory.isaJoin));
+    final result = ref.watch(fetchIsaJoinStatusViewmodelProvider("$cPage"));
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(ProductCategory.isaJoin))
         .$1
         .toString();
 
-    return sortByCriteria(criteria, result.value!.$1, result.value!.$2);
+    return result.when(
+      data: (data) {
+        final sorted = List<IsaJoinStatus>.from(data.$2);
+        sorted.sort((a, b) {
+          switch (criteria) {
+            case "회사 수(오름차순)":
+              return a.companyCount!.compareTo(b.companyCount!);
+            case "회사 수(내림차순)":
+              return b.companyCount!.compareTo(a.companyCount!);
+            case "가입자 수(내림차순)":
+              return a.joinMemberCount!.compareTo(b.joinMemberCount!);
+            default:
+              return b.joinMemberCount!.compareTo(a.joinMemberCount!);
+          }
+        });
+        return AsyncValue.data((data.$1, sorted));
+      },
+      loading: () => const AsyncValue.loading(),
+      error: (error, stackTrace) => AsyncValue.error(
+        "[error] failed to fetch isa join status, $error",
+        stackTrace,
+      ),
+    );
   }
 
   AsyncValue<(int, List<IsaJoinStatus>)> sortByCriteria(
@@ -108,7 +127,7 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
 
       final result = await repository.fetchManagementStatus(
         pageNo,
-        "100",
+        "200",
         baseYear,
         (selectedFilters["구분"]?.first ?? "비중"),
       );
@@ -132,13 +151,14 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
 @riverpod
 class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
   @override
-  AsyncValue<(int, List<IsaManagementStatus>)> build(String pageNo) {
-    final result = ref.watch(fetchIsaMngmStatusViewmodelProvider(pageNo));
+  AsyncValue<(int, List<IsaManagementStatus>)> build() {
+    final cPage = ref.watch(currentPageViewmodelProvider(ProductCategory.isaManagement));
+    final result = ref.watch(fetchIsaMngmStatusViewmodelProvider("$cPage"));
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(ProductCategory.isaManagement))
         .$1
         .toString();
-        
+
     return result.when(
       data: (data) => sortByCriteria(criteria, data.$1, data.$2),
       error: (error, stackTrace) => AsyncValue.error(
