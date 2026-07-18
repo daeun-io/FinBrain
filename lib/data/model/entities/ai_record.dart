@@ -4,6 +4,7 @@ class AiRecord {
   final String key;
   final List<AiText> value;
   final ProductCategory category;
+  final String name;
   bool isExpanded;
   bool isPinned;
   
@@ -13,6 +14,7 @@ class AiRecord {
     required this.isPinned,
     required this.value,
     required this.category,
+    required this.name,
   });
 
   AiRecord copyWith([bool? expanded, bool? pinned]) {
@@ -22,6 +24,7 @@ class AiRecord {
       isPinned: pinned ?? isPinned,
       value: value,
       category: category,
+      name: name,
     );
   }
 }

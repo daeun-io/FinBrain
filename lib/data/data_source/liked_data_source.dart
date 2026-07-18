@@ -13,20 +13,24 @@ class LikedDataSource {
           .collection(uid)
           .doc("liked_products")
           .collection("products")
-          .doc(productData["productName"])
+          .doc(
+            (productData["category"] == "ProductCategory.isaMp")
+                ? productData["productName"]
+                : productData["productCode"],
+          )
           .set(productData);
     } catch (e) {
       throw Exception("[error] failed to save product as liked : $e");
     }
   }
 
-  Future<void> deleteProductInFirestore(String uid, String productName) async {
+  Future<void> deleteProductInFirestore(String uid, String nmOrCd) async {
     try {
       await firestore
           .collection(uid)
           .doc("liked_products")
           .collection("products")
-          .doc(productName)
+          .doc(nmOrCd)
           .delete();
     } catch (e) {
       throw Exception("[error] failed to delete liked product : $e");

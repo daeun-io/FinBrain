@@ -54,11 +54,12 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     String newRequest,
     String tag,
     ProductCategory ctg,
+    String name,
   ) async {
     final currentState = state;
 
     try {
-      final product = await getProduct(tag, ctg);
+      final product = await getProduct(name, ctg);
       if (product == null) {
         state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
         return;
@@ -74,7 +75,13 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
         return;
       } else {
         state = [...currentState, newResponse];
-        await saveConversationInFirestore(tag, ctg, newRequest, newResponse);
+        await saveConversationInFirestore(
+          tag,
+          ctg,
+          name,
+          newRequest,
+          newResponse,
+        );
         return;
       }
     } catch (e) {
@@ -87,6 +94,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
   Future<void> saveConversationInFirestore(
     String tag,
     ProductCategory ctg,
+    String name,
     String request,
     String response,
   ) async {
@@ -99,6 +107,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
         user.uid,
         tag,
         ctg.toString(),
+        name,
         request,
         response,
       );
@@ -107,7 +116,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     }
   }
 
-  Future<List<(MessageBubble, MessageBubble)>> getConversationWithPrdtNm(
+  Future<List<(MessageBubble, MessageBubble)>> getConversationWithPrdtNmOrCd(
     String tag,
   ) async {
     try {
@@ -115,7 +124,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
       if (user == null) {
         throw Exception("[user] no user found");
       }
-      final loaded = await messageRepository.getConversationWithPrdtNm(
+      final loaded = await messageRepository.getConversationWithPrdtNmOrCd(
         user.uid,
         tag,
       );
@@ -139,14 +148,14 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     }
   }
 
-  Future<AiRecord> getSummariesWithPrdtNm(String tag) async {
+  Future<AiRecord> getSummariesWithPrdtNmOrCd(String tag) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
         throw Exception("[user] no user found");
       }
 
-      return await summaryRepository.getSummariesWithPrdtNm(user.uid, tag);
+      return await summaryRepository.getSummariesWithPrdtNmOrCd(user.uid, tag);
     } catch (e) {
       throw Exception("[error] failed to fetch summaries : $e");
     }
@@ -180,20 +189,31 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
     state = await AsyncValue.guard(() => _askComparsion(text));
   }
 
-  Future<void> saveComparisonText(ProductCategory ctg) async {
+  Future<void> saveComparisonText(
+    String names,
+    String prdtNamesOrCodes,
+    ProductCategory ctg,
+  ) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
         throw Exception("[user] no user found");
+      } else if (state.value == null) {
+        debugPrint(
+          "[null] failed to save comparison texts, state.value is null",
+        );
+        return;
       }
 
-      state.whenData(
-        (data) async =>
-            await compRepository.saveComparisonText(user.uid, text, data, ctg),
+      await compRepository.saveComparisonText(
+        user.uid,
+        prdtNamesOrCodes,
+        state.value!,
+        ctg,
+        names,
       );
-      
     } catch (e) {
-      throw Exception("[error] failed to fetch all comparison texts : $e");
+      throw Exception("[error] failed to save comparison texts : $e");
     }
   }
 }

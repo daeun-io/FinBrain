@@ -8,10 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AiAssistScreen extends ConsumerStatefulWidget {
-  const AiAssistScreen({super.key, required this.tag, required this.category});
+  const AiAssistScreen({super.key, required this.tag, required this.category, required this.name});
 
   final String tag;
   final ProductCategory category;
+  final String name;
 
   @override
   ConsumerState<AiAssistScreen> createState() => _AiAssistScreenState();
@@ -39,7 +40,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     try {
       messages = await ref
           .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
-          .getConversationWithPrdtNm(widget.tag);
+          .getConversationWithPrdtNmOrCd(widget.tag);
     } catch (e) {
       debugPrint("[error] failed to fetch messages(chat_history): $e");
     }
@@ -49,7 +50,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     try {
       final result = await ref
           .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
-          .getSummariesWithPrdtNm(widget.tag);
+          .getSummariesWithPrdtNmOrCd(widget.tag);
       setState(() {
         record = result;
       });
@@ -194,6 +195,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                           request,
                                           widget.tag,
                                           widget.category,
+                                          widget.name,
                                         );
                                   }
                                 },
@@ -239,6 +241,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                       request,
                                       widget.tag,
                                       widget.category,
+                                      widget.name,
                                     );
                               }
                             },

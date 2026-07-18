@@ -74,6 +74,7 @@ class ArchiveSummaryViewmodel extends _$ArchiveSummaryViewmodel {
         record.key,
         record.value,
         record.category,
+        record.name,
         !record.isPinned,
       );
 
@@ -168,6 +169,7 @@ class ArchiveComparisonViewmodel extends _$ArchiveComparisonViewmodel {
         record.key,
         record.value.first.text,
         record.category,
+        record.name,
         !record.isPinned,
       );
 

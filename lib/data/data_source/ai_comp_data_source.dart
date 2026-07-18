@@ -9,7 +9,8 @@ class AiCompDataSource {
     String uid,
     String tag,
     String text,
-    ProductCategory ctg, [
+    ProductCategory ctg,
+    String prdtNames, [
     bool? isPinned,
   ]) async {
     try {
@@ -23,8 +24,10 @@ class AiCompDataSource {
             "created_at": DateTime.now(),
             "comp_text": text,
             "is_pinned": isPinned ?? false,
+            "prdt_names": prdtNames,
           });
     } catch (e) {
+      debugPrint("[error] failed to save comparison text : $e");
       throw Exception("[error] failed to save comparison text : $e");
     }
   }

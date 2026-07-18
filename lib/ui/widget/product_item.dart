@@ -16,13 +16,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductItem extends ConsumerStatefulWidget {
   const ProductItem({
     super.key,
-    required this.companyName,
+    required this.productCode,
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
   });
 
-  final String companyName;
+  final String productCode;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
@@ -52,9 +52,9 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     ? data as List<FinancialProduct>
                     : (data as (int, List<FinancialProduct>)).$2)
                 .where(
-                  (e) =>
-                      e.commonInfo.productName == widget.productName &&
-                      e.commonInfo.companyName == widget.companyName,
+                  (e) => (widget.category == ProductCategory.isaMp)
+                      ? e.commonInfo.productName == widget.productName
+                      : e.commonInfo.productCode == widget.productCode,
                 )
                 .firstOrNull;
         if (product == null) return const SizedBox.shrink();
@@ -73,11 +73,10 @@ class _ProductItemState extends ConsumerState<ProductItem> {
 
         return GestureDetector(
           onTap: () {
-            print("==============");
-            print("product item tapped");
             Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
                 builder: (ctx) => ProductDetailScreen(
+                  productCode: product.commonInfo.productCode ?? "isaMp",
                   productName: product.commonInfo.productName!,
                   category: product.commonInfo.category,
                   fromLikedScreen: widget.fromLikedScreen,

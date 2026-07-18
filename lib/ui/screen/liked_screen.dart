@@ -15,7 +15,16 @@ class LikedScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final liked = ref.watch(likedProductViewmodelProvider);
     final selectedProducts = ref.watch(selectedProductsViewmodelProvider);
-    final sProductsNm = selectedProducts
+    final prdtCodes = selectedProducts
+        .map(
+          (e) => (e.commonInfo.category == ProductCategory.isaMp)
+              ? e.commonInfo.productName
+              : e.commonInfo.productCode,
+        )
+        .whereType<String>()
+        .join('`');
+
+    final prdtNames = selectedProducts
         .map((e) => e.commonInfo.productName)
         .whereType<String>()
         .join('`');
@@ -59,8 +68,10 @@ class LikedScreen extends ConsumerWidget {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: ProductItem(
-                            companyName: liked.value![index].commonInfo.companyName!,
-                            productName: liked.value![index].commonInfo.productName!,
+                            productCode:
+                                liked.value![index].commonInfo.productCode ?? "isaMp",
+                            productName:
+                                liked.value![index].commonInfo.productName!,
                             category: liked.value![index].commonInfo.category,
                             fromLikedScreen: true,
                           ),
@@ -72,9 +83,10 @@ class LikedScreen extends ConsumerWidget {
                   right: 5,
                   bottom: 5,
                   child: AiButton(
-                    tag: "compare`$sProductsNm",
+                    tag: "compare`$prdtCodes",
+                    name: prdtNames,
                     category: ProductCategory.liked,
-                    isBtnClicked: (){},
+                    isBtnClicked: () {},
                   ),
                 ),
               ],

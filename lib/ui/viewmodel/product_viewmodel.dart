@@ -79,7 +79,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
           distinctProducts.add(prdt);
         }
       }
-      
+
       final filtered = (ctg == ProductCategory.isaMp)
           ? distinctProducts
                 .where(
@@ -120,28 +120,29 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
   }
 
   void toggleLiked(FinancialProduct product) {
-    final currentState = state.value ?? (0, <FinancialProduct>[]);
+    state.whenData((data) {
+      final isLiked = product.commonInfo.isLiked;
+      final updated = data.$2.map((e) {
+        if ((product.commonInfo.category == ProductCategory.isaMp)
+            ? e.commonInfo.productName == product.commonInfo.productName
+            : e.commonInfo.productCode == product.commonInfo.productCode) {
+          return e.copyWith(!isLiked);
+        } else {
+          return e;
+        }
+      }).whereType<FinancialProduct>().toList();
+      state = AsyncValue.data((data.$1, updated));
 
-    final isLiked = product.commonInfo.isLiked;
-    final updated = currentState.$2.map((e) {
-      if (e.commonInfo.productName == product.commonInfo.productName) {
-        return e.copyWith(!isLiked);
+      if (isLiked == true) {
+        ref
+            .read(likedProductViewmodelProvider.notifier)
+            .deleteInLikedList(product);
       } else {
-        return e;
+        ref
+            .read(likedProductViewmodelProvider.notifier)
+            .addInLikedList(product.copyWith(!isLiked));
       }
-    }).toList();
-
-    state = AsyncValue.data((currentState.$1, updated));
-
-    if (isLiked == true) {
-      ref
-          .read(likedProductViewmodelProvider.notifier)
-          .deleteInLikedList(product);
-    } else {
-      ref
-          .read(likedProductViewmodelProvider.notifier)
-          .addInLikedList(product.copyWith(!isLiked));
-    }
+    });
   }
 }
 

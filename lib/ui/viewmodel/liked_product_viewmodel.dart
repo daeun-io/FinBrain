@@ -109,7 +109,9 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
 
       await repository.deleteProductInFirestore(
         user.uid,
-        product.commonInfo.productName!,
+        (product.commonInfo.category == ProductCategory.isaMp)
+            ? product.commonInfo.productName!
+            : product.commonInfo.productCode!,
       );
 
       ref.invalidate(fetchLikedViewmodelProvider);

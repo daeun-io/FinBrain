@@ -10,9 +10,10 @@ class AiSummaryRepository {
 
   Future<void> updateSummaries(
     String uid,
-    String productName,
+    String productNameOrCd,
     List<AiText> texts,
     ProductCategory ctg,
+    String productName,
     bool isPinned,
   ) async {
     try {
@@ -21,9 +22,10 @@ class AiSummaryRepository {
           .toList();
       await dataSource.updateSummaries(
         uid,
-        productName,
+        productNameOrCd,
         aiTextAsMap,
         ctg.toString(),
+        productName,
         isPinned,
       );
     } catch (e) {
@@ -31,26 +33,27 @@ class AiSummaryRepository {
     }
   }
 
-  Future<AiRecord> getSummariesWithPrdtNm(
+  Future<AiRecord> getSummariesWithPrdtNmOrCd(
     String uid,
-    String productName,
+    String productNameOrCd,
   ) async {
     try {
-      final summary = await dataSource.getSummariesWithPrdtNm(uid, productName);
+      final summary = await dataSource.getSummariesWithPrdtNmOrCd(uid, productNameOrCd);
       if (summary.isEmpty) {
-        debugPrint("[empty] $productName summary list is empty");
+        debugPrint("[empty] $productNameOrCd summary list is empty");
         return AiRecord(
           key: "",
           isExpanded: false,
           isPinned: false,
           value: [],
           category: ProductCategory.liked,
+          name: "",
         );
       }
       final record = AiRecord(
-        key: productName,
+        key: productNameOrCd, // change later
         isExpanded: false,
-        isPinned: false,
+        isPinned: summary["is_pinned"],
         value: (summary["summaries"] as List)
             .map<AiText>(
               (e) => AiText(
@@ -60,10 +63,11 @@ class AiSummaryRepository {
             )
             .toList(),
         category: getCategoryEnum[summary["category"]] ?? ProductCategory.liked,
+        name: summary["prdt_name"]
       );
       return record;
     } catch (e) {
-      throw Exception("[error] failed to fetch $productName summaries : $e");
+      throw Exception("[error] failed to fetch $productNameOrCd summaries : $e");
     }
   }
 
@@ -95,6 +99,7 @@ class AiSummaryRepository {
               category:
                   getCategoryEnum[summary.$2["category"]] ??
                   ProductCategory.liked,
+              name: summary.$2["prdt_name"],
             ),
           );
         } catch (e) {

@@ -22,9 +22,9 @@ class LikedRepository {
     }
   }
 
-  Future<void> deleteProductInFirestore(String uid, String productName) async {
+  Future<void> deleteProductInFirestore(String uid, String nmOrCd) async {
     try {
-      await dataSource.deleteProductInFirestore(uid, productName);
+      await dataSource.deleteProductInFirestore(uid, nmOrCd);
     } catch (e) {
       throw Exception("[error] failed to delete liked product : $e");
     }

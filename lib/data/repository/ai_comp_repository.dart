@@ -12,11 +12,12 @@ class AiCompRepository {
     String uid,
     String products,
     String text,
-    ProductCategory ctg, [
+    ProductCategory ctg,
+    String prdtNames, [
     bool? isPinned,
   ]) async {
     try {
-      await dataStore.saveComparisonText(uid, products, text, ctg, isPinned);
+      await dataStore.saveComparisonText(uid, products, text, ctg, prdtNames, isPinned);
     } catch (e) {
       throw Exception("[error] failed to save comparison text : $e");
     }
@@ -46,6 +47,7 @@ class AiCompRepository {
               category:
                   getCategoryEnum[text.$2["category"] as String] ??
                   ProductCategory.liked,
+              name: text.$2["prdt_names"],
             ),
           );
         } catch (e) {

@@ -5,16 +5,18 @@ class AiConversationRepository {
 
   Future<void> saveRequestAndResponse(
     String uid,
-    String productName,
+    String productNameOrCode,
     String ctg,
+    String productName,
     String request,
     String response,
   ) async {
     try {
       await dataSource.saveRequestAndResponse(
         uid,
-        productName,
+        productNameOrCode,
         ctg,
+        productName,
         request,
         response,
       );
@@ -23,14 +25,14 @@ class AiConversationRepository {
     }
   }
 
-  Future<List<Map<String, String>>> getConversationWithPrdtNm(
+  Future<List<Map<String, String>>> getConversationWithPrdtNmOrCd(
     String uid,
-    String productName,
+    String productNameOrCode,
   ) async {
     try {
-      final conversation = await dataSource.getConversationWithPrdtNm(
+      final conversation = await dataSource.getConversationWithPrdtNmOrCd(
         uid,
-        productName,
+        productNameOrCode,
       );
 
       final casted = conversation

@@ -6,9 +6,10 @@ class AiSummaryDataSource {
 
   Future<void> updateSummaries(
     String uid,
-    String productName,
+    String productNameOrCd,
     List<Map<String, dynamic>> texts,
     String category,
+    String productName,
     bool isPinned,
   ) async {
     try {
@@ -17,9 +18,9 @@ class AiSummaryDataSource {
           .collection(uid)
           .doc("ai_summary")
           .collection("products")
-          .doc(productName);
+          .doc(productNameOrCd);
       final summariesRef = docRef.collection("chat_summary");
-      await docRef.set({"category": category, "is_pinned": isPinned});
+      await docRef.set({"category": category, "is_pinned": isPinned, "prdt_name": productName});
       for (final text in texts) {
         final newDocRef = summariesRef.doc();
         batch.set(newDocRef, {
@@ -33,16 +34,16 @@ class AiSummaryDataSource {
     }
   }
 
-  Future<Map<String, dynamic>> getSummariesWithPrdtNm(
+  Future<Map<String, dynamic>> getSummariesWithPrdtNmOrCd(
     String uid,
-    String productName,
+    String productNameOrCd,
   ) async {
     try {
       final docRef = firestore
           .collection(uid)
           .doc("ai_summary")
           .collection("products")
-          .doc(productName);
+          .doc(productNameOrCd);
 
       final docSnapshot = await docRef.get();
       final summariesSnapshot = await docRef
@@ -54,14 +55,15 @@ class AiSummaryDataSource {
         return {
           "category": docSnapshot["category"],
           "is_pinned": docSnapshot["is_pinned"],
+          "prdt_name": docSnapshot["prdt_name"],
           "summaries": summariesSnapshot.docs.map((doc) => doc.data()).toList(),
         };
       } else {
-        debugPrint("[empty] $productName summary list is empty");
+        debugPrint("[empty] $productNameOrCd summary list is empty");
         return {};
       }
     } catch (e) {
-      throw Exception("[error] failed to fetch $productName summaries : $e");
+      throw Exception("[error] failed to fetch $productNameOrCd summaries : $e");
     }
   }
 
@@ -77,11 +79,11 @@ class AiSummaryDataSource {
      
       if (docSnapshot.docs.isNotEmpty) {
         final List<(String, Map<String, dynamic>)> document = [];
-        final productNames = docSnapshot.docs.map((doc) => doc.id).toList();
-        for (final name in productNames) {
-          final snapshot = await getSummariesWithPrdtNm(uid, name);
+        final productNamesOrCds = docSnapshot.docs.map((doc) => doc.id).toList();
+        for (final nmOrCd in productNamesOrCds) {
+          final snapshot = await getSummariesWithPrdtNmOrCd(uid, nmOrCd);
           if (snapshot.isNotEmpty) {
-            document.add((name, snapshot));
+            document.add((nmOrCd, snapshot));
           }
         }
         return document;

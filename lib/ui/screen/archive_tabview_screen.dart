@@ -4,6 +4,7 @@ import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/archive_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
+import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -123,9 +124,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
             ),
           ),
           error: (error, stackTrace) {
-            print("Error occured in archive screen, $error");
-            print("stack trace: $stackTrace");
-            return Center(child: Text("오류가 발생했습니다!\n다시 시도해주세요"));
+            return const ShowingErrorWidget();
           },
           loading: () => const CustomProgressIndicator(),
         );
@@ -190,8 +189,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                   shape: const Border(),
                   title: Text(
                     (category == ArchiveCategory.summary)
-                        ? item.key.replaceAll(r'\\n', "")
-                        : item.key.substring(8).replaceAll("`", " vs ").replaceAll(r'\\n', ""),
+                        ? item.name.replaceAll(r'\\n', "")
+                        : item.name.replaceAll("`", " vs ").replaceAll(r'\\n', ""),
                     style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
                   ),
                   children: item.value.map((chat) {

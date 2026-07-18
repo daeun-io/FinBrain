@@ -25,11 +25,13 @@ import 'package:split_view/split_view.dart';
 class ProductDetailScreen extends ConsumerStatefulWidget {
   const ProductDetailScreen({
     super.key,
+    required this.productCode,
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
   });
 
+  final String productCode;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
@@ -88,7 +90,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             ((widget.fromLikedScreen)
                     ? data as List<FinancialProduct>
                     : (data as (int, List<FinancialProduct>)).$2)
-                .where((e) => e.commonInfo.productName == widget.productName)
+                .where(
+                  (e) => (widget.category == ProductCategory.isaMp)
+                      ? e.commonInfo.productName == widget.productName
+                      : e.commonInfo.productCode == widget.productCode,
+                )
                 .firstOrNull;
         if (product == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -116,8 +122,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             detailScreen(product, colorScheme, textTheme, page),
             if (isBtnClicked)
               AiAssistScreen(
-                tag: widget.productName,
+                tag: (widget.category == ProductCategory.isaMp) ? widget.productName : widget.productCode,
                 category: product.commonInfo.category,
+                name : widget.productName
               ),
           ],
         );
@@ -221,7 +228,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 right: 20,
                 bottom: 100,
                 child: AiButton(
-                  tag: product.commonInfo.productName!,
+                  tag: (widget.category == ProductCategory.isaMp)
+                      ? product.commonInfo.productName!
+                      : product.commonInfo.productCode!,
+                  name: product.commonInfo.productName!,
                   category: product.commonInfo.category,
                   isBtnClicked: () {
                     final width = MediaQuery.of(context).size.width;

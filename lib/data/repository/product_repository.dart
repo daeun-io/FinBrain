@@ -70,6 +70,7 @@ class ProductRepository {
                     element["baseinfo"] == null ||
                     element["baseinfo"]["kor_co_nm"] == null ||
                     element["baseinfo"]["fin_prdt_nm"] == null ||
+                    element["baseinfo"]["fin_prdt_cd"] == null ||
                     element["options"] == null ||
                     element["options"]["option"] == null) {
                   return null;
@@ -144,6 +145,7 @@ class ProductRepository {
                     element["baseinfo"] == null ||
                     element["baseinfo"]["kor_co_nm"] == null ||
                     element["baseinfo"]["fin_prdt_nm"] == null ||
+                    element["baseinfo"]["fin_prdt_cd"] == null ||
                     element["options"] == null ||
                     element["options"]["option"] == null) {
                   return null;
@@ -214,6 +216,7 @@ class ProductRepository {
                     element["baseinfo"] == null ||
                     element["baseinfo"]["kor_co_nm"] == null ||
                     element["baseinfo"]["fin_prdt_nm"] == null ||
+                    element["baseinfo"]["fin_prdt_cd"] == null ||
                     element["options"] == null ||
                     element["options"]["option"] == null) {
                   return null;

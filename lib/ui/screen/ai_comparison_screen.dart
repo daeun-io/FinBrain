@@ -8,9 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AiComparisonScreen extends ConsumerStatefulWidget {
-  const AiComparisonScreen({super.key, required this.tag, required this.ctg});
+  const AiComparisonScreen({
+    super.key,
+    required this.tag,
+    required this.name,
+    required this.ctg,
+  });
 
   final String tag;
+  final String name;
   final ProductCategory ctg;
 
   @override
@@ -19,20 +25,14 @@ class AiComparisonScreen extends ConsumerStatefulWidget {
 
 class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   late List<String> items;
+
   late String request;
 
   @override
   void initState() {
     super.initState();
-    items = widget.tag.split("`");
-    items.remove("compare");
+    items = widget.name.split("`");
     request = "$items들의 공통점과 차이점을 바탕으로 표 없이 비교 분석해줘";
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   ref
-    //       .read(aiComparisonScreenViewmodelProvider(widget.tag).notifier)
-    //       .askComparsion(request);
-    // });
   }
 
   @override
@@ -41,7 +41,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
     final textTheme = Theme.of(context).textTheme;
 
     final text = ref.watch(aiComparisonScreenViewmodelProvider(request));
-    
+
     return Scaffold(
       backgroundColor: colorScheme.primary,
       appBar: AppBar(
@@ -107,20 +107,22 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                         ),
                         const SizedBox(width: 16.0),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             ref
                                 .read(
                                   selectedProductsViewmodelProvider.notifier,
                                 )
                                 .resetSelectedList();
-                            ref
+                           await ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
-                                    widget.tag,
+                                    request,
                                   ).notifier,
                                 )
-                                .saveComparisonText(widget.ctg);
-                            Navigator.of(context).pop();
+                                .saveComparisonText(widget.name, widget.tag, widget.ctg);
+                            if(context.mounted){
+                              Navigator.of(context).pop();
+                            }
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -183,5 +185,4 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
       ),
     );
   }
-
 }

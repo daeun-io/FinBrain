@@ -6,8 +6,9 @@ class AiConversationDataSource {
 
   Future<void> saveRequestAndResponse(
     String uid,
-    String productName,
+    String productNameOrCode,
     String ctg,
+    String productName,
     String request,
     String response,
   ) async {
@@ -16,8 +17,8 @@ class AiConversationDataSource {
           .collection(uid)
           .doc("ai_conversation")
           .collection("products")
-          .doc(productName);
-      await docRef.set({"category": ctg});
+          .doc(productNameOrCode);
+      await docRef.set({"category": ctg, "prdt_name": productName});
       await docRef.collection("chat_history").add({
         "request": request,
         "response": response,
@@ -28,16 +29,16 @@ class AiConversationDataSource {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getConversationWithPrdtNm(
+  Future<List<Map<String, dynamic>>> getConversationWithPrdtNmOrCd(
     String uid,
-    String productName,
+    String productNameOrCode,
   ) async {
     try {
       final docSnapshot = await firestore
           .collection(uid)
           .doc("ai_conversation")
           .collection("products")
-          .doc(productName)
+          .doc(productNameOrCode)
           .collection("chat_history")
           .orderBy("created_at", descending: false)
           .get();

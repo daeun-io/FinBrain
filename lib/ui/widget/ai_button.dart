@@ -10,11 +10,13 @@ class AiButton extends ConsumerWidget {
   const AiButton({
     super.key,
     required this.tag,
+    required this.name,
     required this.category,
     required this.isBtnClicked,
   });
 
   final String tag;
+  final String name;
   final ProductCategory category;
   final void Function() isBtnClicked;
 
@@ -83,7 +85,7 @@ class AiButton extends ConsumerWidget {
                         ),
                       );
                     }
-                    return AiComparisonScreen(tag: tag, ctg: ctg!);
+                    return AiComparisonScreen(tag: tag, name: name, ctg: ctg!);
                   },
                 ),
               );
@@ -94,20 +96,12 @@ class AiButton extends ConsumerWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (ctx) =>
-                      AiAssistScreen(tag: tag, category: category),
+                      AiAssistScreen(tag: tag, category: category, name: name),
                 ),
               );
             } else {
               isBtnClicked();
             }
-            // final sheetWidth = screenWidth < 600
-            //     ? screenWidth
-            //     : screenWidth * 0.5;
-            // SideSheet.right(
-            //   width: sheetWidth,
-            //   context: context,
-            //   body: AiAssistScreen(tag: tag, category: category),
-            // );
           }
         },
         backgroundColor: colorScheme.surfaceDim,
