@@ -264,18 +264,9 @@ class ProductViewmodel extends _$ProductViewmodel {
               );
           }
         });
-        if(ctg == ProductCategory.deposit || ctg == ProductCategory.installment){
-          print("====================");
-          for(final product in sorted){
-            print("제품명: ${product.commonInfo.productName}, 정렬 기준: ${(product as DepositAndInstallmentSavings).returnHighestRateValue()}");
-          }
-        }
         return AsyncValue.data((data.$1, sorted));
       },
       error: (error, stackTrace){
-        // final pPage = int.parse(pageNo) - 1;
-        // debugPrint("[error] failed to fetch financial products, $error, $stackTrace");
-        // ref.read(currentPageViewmodelProvider(ctg).notifier).setCurrentPage(pPage);
         return AsyncValue.error("[error] failed to fetch financial products, $error", stackTrace);
       },
       loading: () => const AsyncValue.loading(),
@@ -477,15 +468,6 @@ class ProductViewmodel extends _$ProductViewmodel {
         }),
       )),
     };
-    for (var product in sorted.value!.$2) {
-      if (product.commonInfo.category == ProductCategory.deposit ||
-          product.commonInfo.category == ProductCategory.installment) {
-        print(
-          "제품명: ${product.commonInfo.productName} | 정렬 기준 : ${(product as DepositAndInstallmentSavings).returnHighestRateValue()}",
-        );
-      }
-    }
-    print("=======================");
     state = sorted;
     return sorted;
   }

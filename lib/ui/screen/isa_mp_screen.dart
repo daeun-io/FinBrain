@@ -23,8 +23,6 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
   bool _isLoading = false;
-  //late int _cPage;
-  // int _totalCount = 0;
   int _maxPage = 0;
 
   @override
@@ -44,7 +42,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
 
     final cPage = ref.read(currentPageViewmodelProvider(ProductCategory.isaMp));
     final position = _controller.position;
-    if (position.pixels >= position.maxScrollExtent - 10) {
+    if (position.pixels >= position.maxScrollExtent) {
       if (cPage < _maxPage) {
         _isLoading = true;
         ref
@@ -136,8 +134,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
           data: (data) {
             final (totalCount, items) = data;
             _maxPage = (totalCount == 0) ? 1 : (totalCount - 1) ~/ 100 + 1;
-            print("max page in isa mp, $_maxPage");
-            print("current page in isa mp, $cPage");
+
             return Expanded(
               child: CustomScrollView(
                 controller: _controller,
@@ -171,7 +168,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                       );
                     }, childCount: items.length),
                   ),
-                  SliverPadding(padding: EdgeInsets.only(top: 20.0)),
+                  SliverPadding(padding: EdgeInsets.only(bottom: 60.0)),
                 ],
               ),
             );

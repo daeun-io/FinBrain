@@ -14,14 +14,15 @@ class OnBoardingScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final isLightMode = Theme.of(context).brightness == Brightness.light;
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
-    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
     String path = "";
-    if((!isTablet || isPortrait) && isLightMode){
+    if ((!isTablet || isPortrait) && isLightMode) {
       path = "assets/images/onboarding_light_portrait";
-    } else if((!isTablet || isPortrait) && !isLightMode){
+    } else if ((!isTablet || isPortrait) && !isLightMode) {
       path = "assets/images/onboarding_dark_portrait";
-    } else if(!isPortrait && isLightMode){
+    } else if (!isPortrait && isLightMode) {
       path = "assets/images/onboarding_light_landscape";
     } else {
       path = "assets/images/onboarding_dark_landscape";
@@ -118,14 +119,17 @@ class OnBoardingScreen extends StatelessWidget {
     final userCredential = await GoogleAuthService().signInWithGoogle();
 
     if (userCredential == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요')));
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요')));
+      }
     } else {
-      
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()));
+      if (context.mounted) {
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()));
+      }
     }
   }
 }

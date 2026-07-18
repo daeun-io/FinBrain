@@ -37,32 +37,14 @@ class AiButton extends ConsumerWidget {
                 .getNumOfProducts();
             if (num == 0) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: colorScheme.scrim,
-                  duration: Duration(seconds: 3),
-                  content: Text(
-                    "선택하신 상품이 없습니다! 상품을 선택해주세요",
-                    style: textTheme.bodySmall!.copyWith(
-                      color: colorScheme.onSecondary,
-                    ),
-                  ),
-                ),
+                snackbar(context, "선택하신 상품이 없습니다! 상품을 선택해주세요")
               );
             }
             else if (!ref
                 .read(selectedProductsViewmodelProvider.notifier)
                 .allCategoriesSame()) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: colorScheme.scrim,
-                  duration: Duration(seconds: 3),
-                  content: Text(
-                    "선택하신 상품들의 카테고리가 다릅니다!\n동일 카테고리의 상품을 비교해주세요",
-                    style: textTheme.bodySmall!.copyWith(
-                      color: colorScheme.onSecondary,
-                    ),
-                  ),
-                ),
+                snackbar(context, "선택하신 상품들의 카테고리가 다릅니다!\n동일 카테고리의 상품을 비교해주세요")
               );
             } else {
               Navigator.of(context).push(
@@ -73,16 +55,7 @@ class AiButton extends ConsumerWidget {
                         .getCategory();
                     if (ctg == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: colorScheme.scrim,
-                          duration: Duration(seconds: 3),
-                          content: Text(
-                            "선택하신 상품의 카테고리가 존재하지 않습니다.\n다시 시도해주세요",
-                            style: textTheme.bodySmall!.copyWith(
-                              color: colorScheme.onSecondary,
-                            ),
-                          ),
-                        ),
+                        snackbar(context, "선택하신 상품의 카테고리가 존재하지 않습니다.\n다시 시도해주세요"),
                       );
                     }
                     return AiComparisonScreen(tag: tag, name: name, ctg: ctg!);
@@ -120,6 +93,20 @@ class AiButton extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  SnackBar snackbar(BuildContext context, String text) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return SnackBar(
+      backgroundColor: colorScheme.scrim,
+      duration: const Duration(seconds: 3),
+      content: Text(
+        text,
+        style: textTheme.bodySmall!.copyWith(color: colorScheme.onSecondary),
       ),
     );
   }

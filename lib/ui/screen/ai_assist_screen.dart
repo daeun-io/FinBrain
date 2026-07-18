@@ -2,13 +2,19 @@ import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
+import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AiAssistScreen extends ConsumerStatefulWidget {
-  const AiAssistScreen({super.key, required this.tag, required this.category, required this.name});
+  const AiAssistScreen({
+    super.key,
+    required this.tag,
+    required this.category,
+    required this.name,
+  });
 
   final String tag;
   final ProductCategory category;
@@ -63,35 +69,16 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final isPhone = MediaQuery.of(context).size.width < 600;
+    
     List<String> bubbles = ref.watch(
       aiAssistScreenViewmodelProvider(widget.tag),
     );
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
-      appBar: AppBar(
-        backgroundColor: colorScheme.tertiary,
-        scrolledUnderElevation: 0.0,
-        leading: (isPhone)
-            ? IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios_new,
-                  color: colorScheme.onPrimary,
-                ),
-              )
-            : null,
-        automaticallyImplyLeading: false,
-        title: Text(
-          "AI 어시스트",
-          style: textTheme.headlineMedium!.copyWith(
-            color: colorScheme.onPrimary,
-          ),
-        ),
-        titleSpacing: (isPhone) ? -6.0 : 24.0,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: CustomAppbar(screen: "ai_assist", title: "AI 어시스트"),
       ),
       body: (record == null)
           ? const CustomProgressIndicator()

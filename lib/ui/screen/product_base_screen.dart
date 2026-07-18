@@ -43,7 +43,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
 
     final cPage = ref.read(currentPageViewmodelProvider(widget.category));
     final position = _controller.position;
-    if (position.pixels >= position.maxScrollExtent - 10) {
+    if (position.pixels >= position.maxScrollExtent) {
       if (cPage < _maxPage) {
         _isLoading = true;
         ref
@@ -66,38 +66,12 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
     }
   }
 
-  // Future<void> _fetchData() async {
-  //   final data = await ref.read(
-  //     fetchProductViewmodelProvider(widget.category, "$_cPage").future,
-  //   );
-  //   if (data.$1 == -1) {
-  //     _cPage++;
-  //     final pData = await ref.read(
-  //       fetchProductViewmodelProvider(widget.category, "$_cPage").future,
-  //     );
-  //     _maxPage = pData.$1;
-  //   } else {
-  //     _maxPage = data.$1;
-  //   }
-  //   ref
-  //       .read(currentPageViewmodelProvider(widget.category).notifier)
-  //       .setCurrentPage(_cPage);
-
-  //   await Future.delayed(const Duration(seconds: 1));
-  // }
-
   @override
   Widget build(BuildContext context) {
     final cPage = ref.watch(currentPageViewmodelProvider(widget.category));
     final productState = ref.watch(
       productViewmodelProvider(widget.category),
     );
-    // ref.listen(savedFiltersProvider(widget.category), (prev, next) {
-    //   if (prev != next) {
-    //     // _fetchData();
-    //     ref.invalidate(productViewmodelProvider(widget.category, "$_cPage"));
-    //   }
-    // });
 
     // Move to center after fetching data
     ref.listen(productViewmodelProvider(widget.category), (
@@ -161,8 +135,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
             data: (data) {
               final (maxPage, items) = data;
               _maxPage = maxPage;
-              print("max page, $_maxPage");
-              print("current page, $cPage");
+              
               return Expanded(
                 child: CustomScrollView(
                   controller: _controller,
@@ -196,7 +169,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                         );
                       }, childCount: items.isEmpty ? 1 : items.length),
                     ),
-                    const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
+                    const SliverPadding(padding: EdgeInsets.only(bottom: 60.0)),
                   ],
                 ),
               );

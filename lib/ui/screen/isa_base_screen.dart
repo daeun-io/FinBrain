@@ -50,7 +50,9 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     final cJoinPage = ref.read(
       currentPageViewmodelProvider(ProductCategory.isaJoin),
     );
-    final cMngmPage = ref.read(currentPageViewmodelProvider(ProductCategory.isaManagement));
+    final cMngmPage = ref.read(
+      currentPageViewmodelProvider(ProductCategory.isaManagement),
+    );
     final position = _controller.position;
 
     if (widget.category == ProductCategory.isaJoin) {
@@ -112,75 +114,16 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     }
   }
 
-  // Future<void> _fetchData() async {
-  //   if (widget.category == ProductCategory.isaJoin) {
-  //     final data = await ref.read(
-  //       fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
-  //     );
-  //     if (data.$1 == -1) {
-  //       _cPage++;
-  //       final pData = await ref.read(
-  //         fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
-  //       );
-  //       _totalCount = pData.$1;
-  //     } else {
-  //       _totalCount = data.$1;
-  //     }
-  //     _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-  //     ref
-  //         .read(currentPageViewmodelProvider(ProductCategory.isaJoin).notifier)
-  //         .setCurrentPage(_cPage);
-  //   } else {
-  //     final data = await ref.read(
-  //       fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
-  //     );
-  //     if (data.$1 == -1) {
-  //       _cPage++;
-  //       final pData = await ref.read(
-  //         fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
-  //       );
-  //       _totalCount = pData.$1;
-  //       _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-  //     } else {
-  //       _totalCount = data.$1;
-  //       _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-  //     }
-  //     ref
-  //         .read(
-  //           currentPageViewmodelProvider(
-  //             ProductCategory.isaManagement,
-  //           ).notifier,
-  //         )
-  //         .setCurrentPage(_cPage);
-  //   }
-
-  //   await Future.delayed(const Duration(seconds: 1));
-  // }
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-
     final currentTextTheme = ref.watch(textThemeViewmodelProvider);
 
     final joinItems = ref.watch(isaJoinStatusViewModelProvider);
     final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
     final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
     final mngmColumn = ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
-
-    final joinPage = ref.watch(
-      currentPageViewmodelProvider(ProductCategory.isaJoin),
-    );
-    final mngmPage = ref.watch(
-      currentPageViewmodelProvider(ProductCategory.isaManagement),
-    );
-
-    // ref.listen(filtersViewmodelProvider(widget.category), (prev, next) {
-    //   if (prev != next) {
-    //     _fetchData();
-    //   }
-    // });
 
     // Move to center after fetching data
     ref.listen(isaJoinStatusViewModelProvider, (prev, next) {
@@ -210,10 +153,10 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
             )
             .value ??
         "";
-
     final column = (widget.category == ProductCategory.isaJoin)
         ? joinColumn
         : mngmColumn;
+
     return Column(
       children: [
         const SizedBox(height: 24.0),
@@ -244,12 +187,8 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
               data: (data) {
                 final (totalCount, items) = data;
                 _totalCount = totalCount;
-                _maxPage = (totalCount == 0)
-                    ? 1
-                    : (totalCount - 1) ~/ 200 + 1;
-                print("max page in isa base, $_maxPage");
-                print("current page in isa base, ${(widget.category == ProductCategory.isaJoin) ? joinPage : mngmPage}");
-                print("total count in isa base, $_totalCount");
+                _maxPage = (totalCount == 0) ? 1 : (totalCount - 1) ~/ 200 + 1;
+
                 if (items.isEmpty) {
                   return Expanded(
                     child: NoDataFound(
@@ -270,37 +209,13 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // header
-                          Container(
-                            height: (currentTextTheme == bigTextTheme)
-                                ? 80.0
-                                : 60.0,
-                            color: colorScheme.secondary,
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                for (final label in column)
-                                  Flexible(
-                                    flex:
-                                        (label == "ISA 종류" ||
-                                            label == "편입자산 구분")
-                                        ? 3
-                                        : 2,
-                                    child: Center(
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          label,
-                                          style: textTheme.titleMedium!
-                                              .copyWith(
-                                                color: colorScheme.onPrimary,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
+                          header(
+                            column,
+                            colorScheme.secondary,
+                            textTheme.titleMedium!.copyWith(
+                              color: colorScheme.onPrimary,
                             ),
+                            currentTextTheme,
                           ),
                           // rows
                           Expanded(
@@ -348,6 +263,33 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
               loading: () => const Expanded(child: CustomProgressIndicator()),
             ),
       ],
+    );
+  }
+
+  Widget header(
+    List<String> column,
+    Color bgColor,
+    TextStyle style,
+    TextTheme currentTextTheme,
+  ) {
+    return Container(
+      height: (currentTextTheme == bigTextTheme) ? 80.0 : 60.0,
+      color: bgColor,
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          for (final label in column)
+            Flexible(
+              flex: (label == "ISA 종류" || label == "편입자산 구분") ? 3 : 2,
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(label, style: style),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 

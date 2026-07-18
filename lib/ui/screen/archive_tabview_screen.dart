@@ -49,68 +49,14 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                   child: Row(
                     spacing: 8.0,
                     children: filterCtg.map((e) {
-                      return FilterChip(
-                        onSelected: (selected) {
-                          if (selected) {
-                            if (category == ArchiveCategory.comparison) {
-                              ref
-                                  .read(
-                                    selectedCtgForCompTextViewmodelProvider
-                                        .notifier,
-                                  )
-                                  .addCtg(e);
-                            } else {
-                              ref
-                                  .read(
-                                    selectedCtgForSummariesViewmodelProvider
-                                        .notifier,
-                                  )
-                                  .addCtg(e);
-                            }
-                          } else {
-                            if (category == ArchiveCategory.comparison) {
-                              ref
-                                  .read(
-                                    selectedCtgForCompTextViewmodelProvider
-                                        .notifier,
-                                  )
-                                  .deleteCtg(e);
-                            } else {
-                              ref
-                                  .read(
-                                    selectedCtgForSummariesViewmodelProvider
-                                        .notifier,
-                                  )
-                                  .deleteCtg(e);
-                            }
-                          }
-                        },
-                        selected:
-                            ((category == ArchiveCategory.comparison)
-                                    ? compTextfilters
-                                    : summariesFilters)
-                                .contains(e),
-                        selectedColor: colorScheme.surfaceContainerHigh,
-                        backgroundColor: colorScheme.secondary,
-                        checkmarkColor: colorScheme.onSurface,
-                        label: Text(
-                          switch (e) {
-                            ProductCategory.deposit => "정기예금",
-                            ProductCategory.installment => "적금",
-                            ProductCategory.mortgage => "주택담보대출",
-                            ProductCategory.rent => "전세자금대출",
-                            ProductCategory.credit => "개인신용대출",
-                            ProductCategory.isaMp => "ISA",
-                            _ => "",
-                          },
-                          style:
-                              (((category == ArchiveCategory.comparison)
-                                      ? compTextfilters
-                                      : summariesFilters)
-                                  .contains(e))
-                              ? textTheme.bodyMedium!.copyWith(color: colorScheme.onSurface)
-                              : textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)
-                        ),
+                      return categoryFilterChip(
+                        ref,
+                        e,
+                        (category == ArchiveCategory.comparison)
+                            ? compTextfilters
+                            : summariesFilters,
+                        colorScheme,
+                        textTheme,
                       );
                     }).toList(),
                   ),
@@ -128,6 +74,58 @@ class ArchiveTabViewScreen extends ConsumerWidget {
           },
           loading: () => const CustomProgressIndicator(),
         );
+  }
+  
+  FilterChip categoryFilterChip(
+    WidgetRef ref,
+    ProductCategory ctg,
+    List<ProductCategory> filters,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
+    return FilterChip(
+      onSelected: (selected) {
+        if (selected) {
+          if (category == ArchiveCategory.comparison) {
+            ref
+                .read(selectedCtgForCompTextViewmodelProvider.notifier)
+                .addCtg(ctg);
+          } else {
+            ref
+                .read(selectedCtgForSummariesViewmodelProvider.notifier)
+                .addCtg(ctg);
+          }
+        } else {
+          if (category == ArchiveCategory.comparison) {
+            ref
+                .read(selectedCtgForCompTextViewmodelProvider.notifier)
+                .deleteCtg(ctg);
+          } else {
+            ref
+                .read(selectedCtgForSummariesViewmodelProvider.notifier)
+                .deleteCtg(ctg);
+          }
+        }
+      },
+      selected: filters.contains(ctg),
+      selectedColor: colorScheme.surfaceContainerHigh,
+      backgroundColor: colorScheme.secondary,
+      checkmarkColor: colorScheme.onSurface,
+      label: Text(
+        switch (ctg) {
+          ProductCategory.deposit => "정기예금",
+          ProductCategory.installment => "적금",
+          ProductCategory.mortgage => "주택담보대출",
+          ProductCategory.rent => "전세자금대출",
+          ProductCategory.credit => "개인신용대출",
+          ProductCategory.isaMp => "ISA",
+          _ => "",
+        },
+        style: (filters.contains(ctg))
+            ? textTheme.bodyMedium!.copyWith(color: colorScheme.onSurface)
+            : textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+      ),
+    );
   }
 
   Widget archiveList(
@@ -190,25 +188,32 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                   title: Text(
                     (category == ArchiveCategory.summary)
                         ? item.name.replaceAll(r'\\n', "")
-                        : item.name.replaceAll("`", " vs ").replaceAll(r'\\n', ""),
+                        : item.name
+                              .replaceAll("`", " vs ")
+                              .replaceAll(r'\\n', ""),
                     style: bodyRgMd.copyWith(color: colorScheme.onSecondary),
                   ),
                   children: item.value.map((chat) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 16.0,
+                      ),
                       child: Column(
                         children: [
                           Align(
                             alignment: Alignment.center,
                             child: Text(
                               chat.createdAt.toIso8601String().split("T").first,
-                              style: bodyRgSm.copyWith(color: colorScheme.onTertiary)
+                              style: bodyRgSm.copyWith(
+                                color: colorScheme.onTertiary,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 8.0),
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: MarkdownTextRenderer(str: chat.text)
+                            child: MarkdownTextRenderer(str: chat.text),
                           ),
                           const SizedBox(height: 12.0),
                         ],
@@ -223,4 +228,6 @@ class ArchiveTabViewScreen extends ConsumerWidget {
       ),
     );
   }
+
+  
 }

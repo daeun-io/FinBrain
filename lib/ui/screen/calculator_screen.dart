@@ -1,5 +1,6 @@
 import 'package:finbrain/ui/viewmodel/calculator_screen_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -108,15 +109,9 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: colorScheme.primary,
-        scrolledUnderElevation: 0.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
-        ),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: CustomAppbar(screen: "calculator", title: ""),
       ),
       backgroundColor: colorScheme.primary,
       body: SafeArea(
@@ -146,111 +141,19 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                         widget.options,
                         _selectedValues,
                       ),
-                  colorScheme,
-                  textTheme,
                 ),
                 const SizedBox(height: 32.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        _moneyController.clear();
-                        _periodController.clear();
-                        setState(() {
-                          _isSubmitted = false;
-                        });
-                      },
-                      style: TextButton.styleFrom(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        minimumSize: Size.zero,
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 20.0,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colorScheme.secondary,
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        ),
-                        child: text(
-                          "리셋",
-                          colorScheme.onPrimary,
-                          textTheme.bodyLarge!,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12.0),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          if (_money.trim().isEmpty || _period.trim().isEmpty) {
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: colorScheme.scrim,
-                                duration: const Duration(seconds: 3),
-                                content: Text(
-                                  "항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요",
-                                  style: textTheme.bodySmall!.copyWith(
-                                    color: colorScheme.onSecondary,
-                                  ),
-                                ),
-                              ),
-                            );
-                            return;
-                          }
-                          if (int.tryParse(_money) == null ||
-                              int.tryParse(_period) == null) {
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: colorScheme.scrim,
-                                duration: const Duration(seconds: 3),
-                                content: Text(
-                                  "입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요",
-                                  style: textTheme.bodySmall!.copyWith(
-                                    color: colorScheme.onSecondary,
-                                  ),
-                                ),
-                              ),
-                            );
-                            return;
-                          }
-                          _isSubmitted = true;
-                        });
-                      },
-                      style: TextButton.styleFrom(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        minimumSize: Size.zero,
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 20.0,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceDim,
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        ),
-                        child: text(
-                          "계산",
-                          colorScheme.onSurface,
-                          textTheme.bodyLarge!,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                buttons(),
                 if (_isSubmitted)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 40.0),
-                      text("계산 결과", colorScheme.onPrimary, textTheme.bodyLarge!),
+                      text(
+                        "계산 결과",
+                        colorScheme.onPrimary,
+                        textTheme.bodyLarge!,
+                      ),
                       const SizedBox(height: 16.0),
                       _displayResult(
                         widget.category,
@@ -318,7 +221,10 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                                 ProductCategory.installment =>
                                   "${_selectedValues[widget.mapOptions.keys.last]!} ${_selectedValues[widget.mapOptions.keys.first]!}",
                                 _ =>
-                                  _selectedValues[widget.mapOptions.keys.first]!,
+                                  _selectedValues[widget
+                                      .mapOptions
+                                      .keys
+                                      .first]!,
                               },
                               widget.category,
                               widget.options,
@@ -339,130 +245,29 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     );
   }
 
-  Widget text(String text, Color color, TextStyle style) {
-    return Text(text, style: style.copyWith(color: color));
-  }
-
-  Widget captionText(String text, Color color, TextStyle style) {
-    return Text(text, style: style.copyWith(color: color));
-  }
-
-  Widget dropdownCard(
-    String key,
-    List<dynamic> items,
-    ColorScheme colorScheme,
-    TextTheme textTheme,
-  ) {
-    return Card(
-      color: colorScheme.primary,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: colorScheme.surfaceContainerHighest,
-          width: 1.0,
-        ),
-      ),
-      child: ButtonTheme(
-        alignedDropdown: true,
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton(
-            isExpanded: true,
-            onTap: () {
-              if (_isSubmitted == true) {
-                setState(() {
-                  _isSubmitted = false;
-                });
-              }
-            },
-            dropdownColor: colorScheme.primary,
-            value: _selectedValues[key],
-            items: [
-              for (final item in items)
-                DropdownMenuItem(
-                  value: item,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: text(
-                      item,
-                      colorScheme.onSecondary,
-                      textTheme.bodyLarge!,
-                    ),
-                  ),
-                ),
-            ],
-            onChanged: items.length == 1
-                ? null
-                : (value) {
-                    setState(() {
-                      if (value != null) {
-                        _selectedValues[key] = value.toString();
-                      }
-                    });
-                  },
-          ),
-        ),
-      ),
-    );
-  }
-
-  TableRow tableRow(
-    String item,
-    String value,
-    Color headerColor,
-    Color bodyColor,
-    Color txtColor,
-    TextStyle style,
-  ) {
-    return TableRow(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-          color: headerColor,
-          child: text(item, txtColor, style),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-          color: bodyColor,
-          child: text(value, txtColor, style),
-        ),
-      ],
-    );
-  }
-
   List<Widget> _displayDynamicWidgetList(
     ProductCategory category,
     Map<String, List<String>> mapOptions,
     List<double> rates,
-    ColorScheme colorScheme,
-    TextTheme textTheme,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     final keys = mapOptions.keys.toList();
     return [
-      TextField(
-        controller: _moneyController,
-        focusNode: _moneyFocusNode,
-        onSubmitted: (value) => setState(() {
+      textField(
+        _moneyController,
+        _moneyFocusNode,
+        (value) => setState(() {
           _money = value;
         }),
-        onTap: () {
+        () {
           if (_isSubmitted == true) {
             setState(() {
               _isSubmitted = false;
             });
           }
         },
-        decoration: InputDecoration(
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: colorScheme.surfaceContainerHighest),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: colorScheme.surfaceContainerHighest),
-          ),
-          counterText: "",
-          helperText: "숫자만 입력",
-        ),
-        style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
-        textAlign: TextAlign.right,
-        keyboardType: TextInputType.number,
       ),
       const SizedBox(height: 28.0),
       text(
@@ -492,36 +297,19 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             ),
             const SizedBox(width: 8.0),
             Expanded(
-              child: TextField(
-                controller: _periodController,
-                focusNode: _periodFocusNode,
-                onSubmitted: (value) => setState(() {
+              child: textField(
+                _periodController,
+                _periodFocusNode,
+                (value) => setState(() {
                   _period = value;
                 }),
-                onTap: () {
+                () {
                   if (_isSubmitted == true) {
                     setState(() {
                       _isSubmitted = false;
                     });
                   }
                 },
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: colorScheme.surfaceContainerHighest,
-                    ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: colorScheme.surfaceContainerHighest,
-                    ),
-                  ),
-                  helperText: "숫자만 입력",
-                  counterText: "",
-                ),
-                style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
-                textAlign: TextAlign.right,
-                keyboardType: TextInputType.number,
               ),
             ),
           ],
@@ -566,8 +354,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             const SizedBox(width: 4.0),
             captionText(
               "우대 금리 적용",
-              colorScheme.onSecondary,
-              textTheme.bodySmall!,
             ),
           ],
         ),
@@ -688,7 +474,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   ),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
-                      minWidth: MediaQuery.of(context).size.width
+                      minWidth: MediaQuery.of(context).size.width,
                     ),
                     child: DataTable(
                       headingRowColor: WidgetStatePropertyAll(
@@ -740,8 +526,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               const SizedBox(height: 12.0),
               captionText(
                 "*본 계산 결과는 매월 30일로 가정해 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
-                colorScheme.onTertiary,
-                textTheme.bodySmall!,
               ),
             ],
           )
@@ -802,10 +586,219 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               const SizedBox(height: 12.0),
               captionText(
                 "*본 계산 결과는 월을 기준으로 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
-                colorScheme.onTertiary,
-                textTheme.bodySmall!,
               ),
             ],
           );
+  }
+
+  Widget buttons() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          onPressed: () {
+            _moneyController.clear();
+            _periodController.clear();
+            setState(() {
+              _isSubmitted = false;
+            });
+          },
+          style: TextButton.styleFrom(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            minimumSize: Size.zero,
+            padding: EdgeInsets.zero,
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 12.0,
+              horizontal: 20.0,
+            ),
+            decoration: BoxDecoration(
+              color: colorScheme.secondary,
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: text("리셋", colorScheme.onPrimary, textTheme.bodyLarge!),
+          ),
+        ),
+        const SizedBox(width: 12.0),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              if (_money.trim().isEmpty || _period.trim().isEmpty) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(snackbar("항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요"));
+                return;
+              }
+              if (int.tryParse(_money) == null ||
+                  int.tryParse(_period) == null) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(snackbar("입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요"));
+                return;
+              }
+              _isSubmitted = true;
+            });
+          },
+          style: TextButton.styleFrom(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            minimumSize: Size.zero,
+            padding: EdgeInsets.zero,
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 12.0,
+              horizontal: 20.0,
+            ),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceDim,
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: text("계산", colorScheme.onSurface, textTheme.bodyLarge!),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // TableRow tableRow(
+  //   String item,
+  //   String value,
+  //   Color headerColor,
+  //   Color bodyColor,
+  //   Color txtColor,
+  //   TextStyle style,
+  // ) {
+  //   return TableRow(
+  //     children: [
+  //       Container(
+  //         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+  //         color: headerColor,
+  //         child: text(item, txtColor, style),
+  //       ),
+  //       Container(
+  //         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+  //         color: bodyColor,
+  //         child: text(value, txtColor, style),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  Widget dropdownCard(
+    String key,
+    List<dynamic> items,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
+    return Card(
+      color: colorScheme.primary,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: colorScheme.surfaceContainerHighest,
+          width: 1.0,
+        ),
+      ),
+      child: ButtonTheme(
+        alignedDropdown: true,
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+            isExpanded: true,
+            onTap: () {
+              if (_isSubmitted == true) {
+                setState(() {
+                  _isSubmitted = false;
+                });
+              }
+            },
+            dropdownColor: colorScheme.primary,
+            value: _selectedValues[key],
+            items: [
+              for (final item in items)
+                DropdownMenuItem(
+                  value: item,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: text(
+                      item,
+                      colorScheme.onSecondary,
+                      textTheme.bodyLarge!,
+                    ),
+                  ),
+                ),
+            ],
+            onChanged: items.length == 1
+                ? null
+                : (value) {
+                    setState(() {
+                      if (value != null) {
+                        _selectedValues[key] = value.toString();
+                      }
+                    });
+                  },
+          ),
+        ),
+      ),
+    );
+  }
+
+  TextField textField(
+    TextEditingController controller,
+    FocusNode fNode,
+    void Function(String) submitFunc,
+    void Function() tapFunc,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return TextField(
+      controller: controller,
+      focusNode: fNode,
+      onSubmitted: submitFunc,
+      onTap: tapFunc,
+      decoration: InputDecoration(
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: colorScheme.surfaceContainerHighest),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: colorScheme.surfaceContainerHighest),
+        ),
+        counterText: "",
+        helperText: "숫자만 입력",
+      ),
+      style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+      textAlign: TextAlign.right,
+      keyboardType: TextInputType.number,
+    );
+  }
+
+  SnackBar snackbar(String text) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return SnackBar(
+      backgroundColor: colorScheme.scrim,
+      duration: const Duration(seconds: 3),
+      content: Text(
+        text,
+        style: textTheme.bodySmall!.copyWith(color: colorScheme.onSecondary),
+      ),
+    );
+  }
+
+  Widget text(String text, Color color, TextStyle style) {
+    return Text(text, style: style.copyWith(color: color));
+  }
+
+  Widget captionText(String text) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+   
+    return Text(text, style: textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary));
   }
 }

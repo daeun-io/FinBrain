@@ -1,7 +1,9 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/product_base_screen.dart';
 import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/widget/custom_tapbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,8 +12,6 @@ class LoanScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     final tabList = const ["주택담보대출", "전세자금대출", "개인신용대출"];
     final categories = const [
@@ -25,35 +25,20 @@ class LoanScreen extends ConsumerWidget {
       ProductBaseScreen(category: ProductCategory.credit),
     ];
 
+     void tapFunction(value) {
+      ref
+          .read(currentCtgViewmodelProvider.notifier)
+          .setCurrentCtg(categories[value]);
+      final page = ref.read(currentPageViewmodelProvider(categories[value]));
+      ref.read(fetchProductViewmodelProvider(categories[value], "$page"));
+    }
+
     return DefaultTabController(
       length: 3,
       initialIndex: 0,
       child: Column(
         children: [
-          TabBar(
-            onTap: (value){
-               final page = ref.read(currentPageViewmodelProvider(categories[value]));
-               ref.read(fetchProductViewmodelProvider(categories[value], "$page"));
-            },   
-            indicator: UnderlineTabIndicator(
-              borderSide: BorderSide(color: colorScheme.onPrimary, width: 2.0),
-            ),
-            labelColor: colorScheme.onPrimary,
-            unselectedLabelColor: colorScheme.onTertiary,
-            dividerColor: colorScheme.onTertiary,
-            labelStyle: textTheme.titleMedium,
-            unselectedLabelStyle: textTheme.bodyMedium,
-            indicatorSize: TabBarIndicatorSize.tab,
-            splashFactory: NoSplash.splashFactory,
-            tabs: [
-              for (final item in tabList)
-                Container(
-                  alignment: Alignment.center,
-                  height: 60,
-                  child: Text(item),
-                ),
-            ],
-          ),
+          CustomTapbar(tabList: tabList, isIsaScreen: false, onTapFunc: tapFunction,),
           Expanded(child: TabBarView(children: tabView)),
         ],
       ),

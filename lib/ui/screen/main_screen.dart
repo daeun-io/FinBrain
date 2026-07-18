@@ -1,13 +1,10 @@
-import 'package:finbrain/themes/text_theme.dart';
-import 'package:finbrain/ui/screen/archive_screen.dart';
-import 'package:finbrain/ui/screen/isa_guide_screen.dart';
 import 'package:finbrain/ui/screen/loan_screen.dart';
 import 'package:finbrain/ui/screen/savings_screen.dart';
 import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
+import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,10 +25,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currTxtTheme = ref.watch(textThemeViewmodelProvider);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final isLightMode = Theme.of(context).brightness == Brightness.light;
+
+    final bottomView = const [SavingsScreen(), LoanScreen(), LikedScreen()];
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -39,77 +36,12 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         preferredSize: const Size.fromHeight(70.0),
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0),
-          child: AppBar(
-            backgroundColor: colorScheme.primary,
-            scrolledUnderElevation: 0.0,
-            leading: Image.asset(
-              isLightMode
-                  ? "assets/images/icon_light.png"
-                  : "assets/images/icon_dark.png",
-            ),
-            title: Text(
-              "FinBrain",
-              style: textTheme.headlineMedium!.copyWith(
-                color: colorScheme.onPrimary,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            titleSpacing: -4,
-            actions: [
-              OutlinedButton(
-                onPressed: () {
-                  ref
-                      .read(textThemeViewmodelProvider.notifier)
-                      .changeTxtTheme(
-                        (currTxtTheme == bigTextTheme) ? true : false,
-                      );
-                },
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4.0,
-                    horizontal: 12.0,
-                  ),
-                  side: BorderSide(color: colorScheme.onPrimary, width: 1),
-                ),
-                child: Text(
-                  (currTxtTheme == bigTextTheme) ? "작은 글씨" : "큰 글씨",
-                  style: textTheme.titleMedium!.copyWith(
-                    color: colorScheme.onPrimary,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(
-                    context,
-                  ).push(MaterialPageRoute(builder: (ctx) => IsaGuideScreen()));
-                },
-                icon: Icon(
-                  Icons.info,
-                  color: colorScheme.surfaceContainerHighest,
-                  size: 32,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => const ArchiveScreen()),
-                  );
-                },
-                icon: Icon(
-                  Icons.archive_sharp,
-                  color: colorScheme.surfaceContainerHighest,
-                  size: 32,
-                ),
-              ),
-            ],
-          ),
+          child: const CustomAppbar(screen: "main", title: "FinBrain")
         ),
       ),
       body: IndexedStack(
         index: _currentIndex,
-        children: const [SavingsScreen(), LoanScreen(), LikedScreen()],
+        children: bottomView,
       ),
       bottomNavigationBar: SafeArea(
         child: Container(

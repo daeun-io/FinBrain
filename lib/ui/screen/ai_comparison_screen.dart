@@ -1,6 +1,7 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
+import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
@@ -44,22 +45,9 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
-      appBar: AppBar(
-        backgroundColor: colorScheme.tertiary,
-        scrolledUnderElevation: 0.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
-        ),
-        title: Text(
-          "AI 비교 분석",
-          style: textTheme.headlineMedium!.copyWith(
-            color: colorScheme.onPrimary,
-          ),
-        ),
-        titleSpacing: -6.0,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: CustomAppbar(screen: "ai_comp", title: "AI 비교 분석"),
       ),
       body: text.when(
         data: (data) {

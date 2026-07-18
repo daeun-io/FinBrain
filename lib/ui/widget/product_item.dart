@@ -39,9 +39,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final productList = ref.watch(
-      productViewmodelProvider(widget.category),
-    );
+    final productList = ref.watch(productViewmodelProvider(widget.category));
     final likedList = ref.watch(fetchLikedViewmodelProvider);
 
     return ((widget.fromLikedScreen) ? likedList : productList).when(
@@ -169,31 +167,26 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                                       .toStringAsFixed(2),
                           ProductCategory.credit => switch (sortCriteria) {
                             "최저 금리(낮은 순)" =>
-                              ((product as CreditLoan)
-                                          .returnRates()[0] ==
-                                      null)
+                              ((product as CreditLoan).returnRates()[0] == null)
                                   ? "미제공"
                                   : product.returnRates()[0]!.toStringAsFixed(
                                       2,
                                     ),
                             "최고 금리(낮은 순)" =>
-                              ((product as CreditLoan)
-                                          .returnRates()[2] ==
-                                      null)
+                              ((product as CreditLoan).returnRates()[2] == null)
                                   ? "미제공"
                                   : product.returnRates()[2]!.toStringAsFixed(
                                       2,
                                     ),
                             _ =>
-                              ((product as CreditLoan)
-                                          .returnRates()[1] ==
-                                      null)
+                              ((product as CreditLoan).returnRates()[1] == null)
                                   ? "미제공"
                                   : product.returnRates()[1]!.toStringAsFixed(
                                       2,
                                     ),
                           },
-                          ProductCategory.mortgage || ProductCategory.rent => switch (sortCriteria) {
+                          ProductCategory.mortgage ||
+                          ProductCategory.rent => switch (sortCriteria) {
                             "최저 금리(낮은 순)" =>
                               ((product as MortgageAndRentLoan)
                                           .returnRates()[0] ==
