@@ -1,4 +1,5 @@
 import 'package:finbrain/ui/viewmodel/shared_preferences_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,7 +27,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
     // 모드 및 기기에 따라 동적으로 이미지 불러오기
     // Fetch image dynamically based on mode and device
     final isLightMode = Theme.of(context).brightness == Brightness.light;
@@ -62,6 +63,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
                 guideImage("${path}_02.svg", 2),
                 guideImage("${path}_03.svg", 3),
                 guideImage("${path}_04.svg", 4),
+                guideImage("${path}_05.svg", 5),
               ],
             ),
             Align(
@@ -70,7 +72,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
                 padding: const EdgeInsets.only(bottom: 20),
                 child: SmoothPageIndicator(
                   controller: _pageController,
-                  count: 4, // Number of pages
+                  count: 5, // Number of pages
                   effect: ScrollingDotsEffect(
                     spacing: 12.0,
                     dotHeight: 8,
@@ -83,7 +85,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
             ),
             // 마지막 페이지면 이동 버튼 디스플레이
             // Display navigation button when last page
-            if (_currentPage == 3)
+            if (_currentPage == 4)
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(

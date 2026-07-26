@@ -7,7 +7,6 @@ import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
-import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
@@ -15,6 +14,7 @@ import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -32,10 +32,10 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
     required this.fromLikedScreen,
   });
 
-  final String productCode;             // 상품 코드(product code)
-  final String productName;             // 상품명(product name)
-  final ProductCategory category;       // 상품 카테고리(product category)
-  final bool fromLikedScreen;           // 관심 스크린에서 호출됐는지 여부(whether is called from liked screen)
+  final String productCode;
+  final String productName;
+  final ProductCategory category;
+  final bool fromLikedScreen;
 
   @override
   ConsumerState<ProductDetailScreen> createState() =>
@@ -79,7 +79,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     // 상품 리스트 불러오기
     // Fetch product list
@@ -190,11 +190,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // 금융 상품명, 금융 회사
+                        // company and product name
                         ..._displayDefaultWidgetList(
                           product,
                           colorScheme,
                           textTheme,
                         ),
+                        // 그 외
+                        // others
                         ..._displayDynamicWidgetList(
                           product.commonInfo.category,
                           product,
@@ -234,7 +238,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child: navToWebsite(product),
+                  child: navToWebsite(textTheme, product),
                 )
               else
                 Positioned(
@@ -244,8 +248,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(child: navToCalculator(product)),
-                      Expanded(child: navToWebsite(product)),
+                      Expanded(child: navToCalculator(textTheme, product)),
+                      Expanded(child: navToWebsite(textTheme, product)),
                     ],
                   ),
                 ),
@@ -256,9 +260,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
-  Widget navToCalculator(FinancialProduct product) {
+  Widget navToCalculator(TextTheme textTheme, FinancialProduct product) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     return GestureDetector(
       onTap: () {
@@ -292,6 +295,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           color: colorScheme.secondary,
           border: Border.all(color: colorScheme.outline, width: 1.0),
         ),
+        height: 80.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -313,9 +317,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
-  Widget navToWebsite(FinancialProduct product) {
+  Widget navToWebsite(TextTheme textTheme, FinancialProduct product) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     return GestureDetector(
       onTap: () => launchPrdtUrl(
@@ -331,15 +334,18 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           color: colorScheme.secondary,
           border: Border.all(color: colorScheme.outline, width: 1.0),
         ),
+        height: 80.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.ads_click, color: colorScheme.onSecondary, size: 24.0),
+            Icon(Icons.ads_click, color: colorScheme.onSecondary, size: 20.0),
             const SizedBox(width: 4.0),
-            Text(
-              "공식 홈페이지로",
-              style: textTheme.titleLarge!.copyWith(
-                color: colorScheme.onSecondary,
+            Flexible(
+              child: Text(
+                "공식 상품 홈페이지로",
+                style: textTheme.titleLarge!.copyWith(
+                  color: colorScheme.onSecondary,
+                ),
               ),
             ),
           ],
@@ -353,11 +359,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     ColorScheme colorScheme,
     TextTheme textTheme,
   ) {
+    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary);
     return [
-      Text("상품 안내", style: bodySbLg.copyWith(color: colorScheme.onPrimary)),
+      Text("상품 안내", style: textTheme.headlineSmall!.copyWith(color: colorScheme.onPrimary)),
       Divider(thickness: 1, color: colorScheme.onSecondary),
-      textFrame("금융 상품명: ${replace(product.commonInfo.productName!)}"),
-      textFrame("금융회사: ${replace(product.commonInfo.companyName ?? "미제공")}"),
+      textFrame("금융 상품명: ${replace(product.commonInfo.productName!)}", defaultTxtStyle),
+      textFrame("금융회사: ${replace(product.commonInfo.companyName ?? "미제공")}", defaultTxtStyle),
     ];
   }
 
@@ -367,44 +374,61 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     ColorScheme colorScheme,
     TextTheme textTheme,
   ) {
+    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary);
     return [
       if (category != ProductCategory.isaMp)
         textFrame(
           "가입 방법: ${(product.commonInfo.joinWay == null || product.commonInfo.joinWay!.isEmpty) ? "미제공" : product.commonInfo.joinWay!.join(",")}",
+          defaultTxtStyle
         ),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
         textFrame(
           "가입 제한: ${((product as DepositAndInstallmentSavings).joinDeny == null || product.joinDeny == "null") ? "미제공" : replace(product.joinDeny!)}",
+          defaultTxtStyle
         ),
         textFrame(
           "가입 대상: ${(product.joinMember == null || product.joinMember == "null") ? "미제공" : replace(product.joinMember!)}",
+          defaultTxtStyle
         ),
       ] else if (category == ProductCategory.isaMp) ...[
         textFrame(
           "업권: ${((product as IsaMpBenefitRate).businessDomain == null || product.businessDomain == "null") ? "미제공" : replace(product.businessDomain!)}",
+          defaultTxtStyle
         ),
         textFrame(
           "mp유형: ${(product.mpType == null || product.mpType == "null") ? "미제공" : replace(product.mpType!)}",
+          defaultTxtStyle
         ),
       ] else
         ...[],
       textFrame(
         "공시 제출일: ${(product.commonInfo.submittedDay == null) ? "미제공" : addSlash(product.commonInfo.submittedDay!)}",
+        defaultTxtStyle
       ),
+      if (category == ProductCategory.mortgage ||
+          category == ProductCategory.rent ||
+          category == ProductCategory.credit) ...[
+        const SizedBox(height: 12.0),
+        textFrame(
+          "*본인의 최대 대출 금액 및 한도의 경우 해당 회사에 문의하세요",
+          textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary),
+        ),
+      ],
       const SizedBox(height: 24.0),
       Text(switch (category) {
         ProductCategory.credit => "대출 금리 안내",
         ProductCategory.isaMp => "수익률",
         _ => "상품 세부사항",
-      }, style: bodySbLg.copyWith(color: colorScheme.onPrimary)),
+      }, style: textTheme.headlineSmall!.copyWith(color: colorScheme.onPrimary)),
       Divider(thickness: 1, color: colorScheme.onSecondary),
       const SizedBox(height: 14.0),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
-        textFrame("금리"),
+        textFrame("금리", defaultTxtStyle),
         const SizedBox(height: 14.0),
         dataTableFrame(
+          ref,
           category,
           (category == ProductCategory.deposit)
               ? const ["금리 유형", "기간(개월)", "기본 금리", "최고 우대 금리"]
@@ -414,20 +438,24 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         const SizedBox(height: 14.0),
         textFrame(
           "만기 후 이자율:\n${(product.interestAfterExpiration == null || product.interestAfterExpiration == "null") ? "미제공" : replace(product.interestAfterExpiration!)}",
+          defaultTxtStyle
         ),
         const SizedBox(height: 14.0),
         textFrame(
           "우대 조건:\n${(product.specialCondition == null || product.specialCondition == "null") ? "미제공" : replace(product.specialCondition!)}",
+          defaultTxtStyle
         ),
         const SizedBox(height: 14.0),
         textFrame(
           "기타 유의 사항:\n${(product.etc == null || product.etc == "null") ? "미제공" : replace(product.etc!)}",
+          defaultTxtStyle
         ),
       ] else if (category == ProductCategory.mortgage ||
           category == ProductCategory.rent) ...[
-        textFrame("금리"),
+        textFrame("금리", defaultTxtStyle),
         const SizedBox(height: 14.0),
         dataTableFrame(
+          ref,
           category,
           (category == ProductCategory.mortgage)
               ? const [
@@ -444,18 +472,22 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         const SizedBox(height: 14.0),
         textFrame(
           "대출 부대 비용:\n${(product.extraExpense == null || product.extraExpense == "null") ? "미제공" : replace(product.extraExpense!)}",
+          defaultTxtStyle
         ),
         const SizedBox(height: 14.0),
         textFrame(
           "중도 상환 수수료:\n${(product.earlyRepayFee == null || product.earlyRepayFee == "null") ? "미제공" : replace(product.earlyRepayFee!)}",
+          defaultTxtStyle
         ),
         const SizedBox(height: 14.0),
         textFrame(
           "연체 이자율:\n${(product.delayRate == null || product.delayRate == "null") ? "미제공" : replace(product.delayRate!)}",
+          defaultTxtStyle
         ),
         const SizedBox(height: 14.0),
         textFrame(
           "대출 한도: ${(product.loanLimit == null || product.loanLimit == "null") ? "미제공" : replace(product.loanLimit!)}",
+          defaultTxtStyle
         ),
       ] else if (category == ProductCategory.credit)
         tableFrame(
@@ -482,121 +514,116 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     ColorScheme colorScheme,
     TextTheme textTheme,
   ) {
+    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary);
+    // 개인시용대출(credit loan)
     if (category == ProductCategory.credit) {
       return Column(
         children: [
           for (final option in options as List<CreditLoanOption>)
             if (option.creditLendRateTypeName != null) ...[
-              textFrame(option.creditLendRateTypeName!),
+              textFrame(option.creditLendRateTypeName!, defaultTxtStyle),
               const SizedBox(height: 8.0),
               Table(
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                 border: TableBorder.all(color: colorScheme.outline),
                 children: [
-                  ("신용 등급", "대출 금리"),
-                  (
-                    "900점 초과",
-                    (option.gradeOver900 == null)
-                        ? "미제공"
-                        : option.gradeOver900.toString(),
-                  ),
-                  (
-                    "801~900점",
-                    (option.grade801900 == null)
-                        ? "미제공"
-                        : option.grade801900.toString(),
-                  ),
-                  (
-                    "701~800점",
-                    (option.grade701800 == null)
-                        ? "미제공"
-                        : option.grade701800.toString(),
-                  ),
-                  (
-                    "601~700점",
-                    (option.grade601700 == null)
-                        ? "미제공"
-                        : option.grade601700.toString(),
-                  ),
-                  (
-                    "501~600점",
-                    (option.grade501600 == null)
-                        ? "미제공"
-                        : option.grade501600.toString(),
-                  ),
-                  (
-                    "401~500점",
-                    (option.grade401500 == null)
-                        ? "미제공"
-                        : option.grade401500.toString(),
-                  ),
-                  (
-                    "301~400점",
-                    (option.grade301400 == null)
-                        ? "미제공"
-                        : option.grade301400.toString(),
-                  ),
-                  (
-                    "300점 이하",
-                    (option.gradeUnder300 == null)
-                        ? "미제공"
-                        : option.gradeUnder300.toString(),
-                  ),
-                  (
-                    "평균 금리",
-                    (option.averageGrade == null)
-                        ? "미제공"
-                        : option.averageGrade.toString(),
-                  ),
-                ].map((e) => tableRow(e)).toList(),
+                  tableRow(("신용 등급", "금리"), true, textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)),
+                  ...[
+                    (
+                      "900점 초과",
+                      (option.gradeOver900 == null)
+                          ? "미제공"
+                          : option.gradeOver900.toString(),
+                    ),
+                    (
+                      "801~900점",
+                      (option.grade801900 == null)
+                          ? "미제공"
+                          : option.grade801900.toString(),
+                    ),
+                    (
+                      "701~800점",
+                      (option.grade701800 == null)
+                          ? "미제공"
+                          : option.grade701800.toString(),
+                    ),
+                    (
+                      "601~700점",
+                      (option.grade601700 == null)
+                          ? "미제공"
+                          : option.grade601700.toString(),
+                    ),
+                    (
+                      "501~600점",
+                      (option.grade501600 == null)
+                          ? "미제공"
+                          : option.grade501600.toString(),
+                    ),
+                    (
+                      "401~500점",
+                      (option.grade401500 == null)
+                          ? "미제공"
+                          : option.grade401500.toString(),
+                    ),
+                    (
+                      "301~400점",
+                      (option.grade301400 == null)
+                          ? "미제공"
+                          : option.grade301400.toString(),
+                    ),
+                    (
+                      "300점 이하",
+                      (option.gradeUnder300 == null)
+                          ? "미제공"
+                          : option.gradeUnder300.toString(),
+                    ),
+                    (
+                      "평균 금리",
+                      (option.averageGrade == null)
+                          ? "미제공"
+                          : option.averageGrade.toString(),
+                    ),
+                  ].map((e) => tableRow(e, false, textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary))),
+                ],
               ),
               const SizedBox(height: 28.0),
             ],
         ],
       );
+      // ISA
     } else {
       return Table(
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         border: TableBorder.all(color: colorScheme.outline),
         children: [
-          TableRow(
-            decoration: BoxDecoration(
-              color: colorScheme.secondary,
-              border: BoxBorder.all(color: colorScheme.outline),
-            ),
-            children: [tableCellFrame("기간"), tableCellFrame("수익률")],
-          ),
+          tableRow(("기간", "수익률"), true, textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)),
           for (final option in options as List<IsaMpBenefitRateOption>) ...[
             if (option.term != null && option.benefitRate != null)
-              TableRow(
-                children: [
-                  tableCellFrame(option.term!),
-                  tableCellFrame(
-                    (option.benefitRate == null)
-                        ? "미제공"
-                        : option.benefitRate.toString(),
-                  ),
-                ],
-              ),
+              tableRow((
+                option.term!,
+                (option.benefitRate == null)
+                    ? "미제공"
+                    : option.benefitRate.toString(),
+              ), false, textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)),
           ],
         ],
       );
     }
   }
 
-  TableRow tableRow((String, String) values) {
+  TableRow tableRow((String, String) values, bool isHeader, TextStyle style) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return TableRow(
       decoration: BoxDecoration(
-        color: colorScheme.secondary,
+        color: (isHeader) ? colorScheme.secondary : colorScheme.surface,
         border: BoxBorder.all(color: colorScheme.outline),
       ),
-      children: [tableCellFrame(values.$1), tableCellFrame(values.$2)],
+      children: [tableCellFrame(values.$1, style), tableCellFrame(values.$2, style)],
     );
   }
 
-  Widget tableCellFrame(String text, [TextStyle? textStyle]) {
+  Widget tableCellFrame(String text, TextStyle? textStyle) {
     return TableCell(
       verticalAlignment: TableCellVerticalAlignment.middle,
       child: Padding(
@@ -606,25 +633,24 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
-  Widget textFrame(String text, [TextStyle? textStyle]) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
+  Widget textFrame(String text, TextStyle? textStyle) {
     return Text(
       text,
-      style:
-          textStyle ??
-          textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+      style: textStyle,
     );
   }
+
   // 예적금 및 주택담보대출, 전세자금대출 금리 표
   // Savings, mortgage and rent loan interest table
   Widget dataTableFrame(
+    WidgetRef ref,
     ProductCategory category,
     List<String> columns,
     List<dynamic> options,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
+    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -644,7 +670,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 label: Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [dataTableCellText(column)],
+                    children: [dataTableCellText(column, defaultTxtStyle)],
                   ),
                 ),
               ),
@@ -662,7 +688,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   (option.maxIntRate == null)
                       ? "미제공"
                       : option.maxIntRate.toString(),
-                ]),
+                ],
+                defaultTxtStyle),
             if (category == ProductCategory.installment)
               for (final option
                   in options as List<DepositAndInstallmentSavingsOption>)
@@ -676,7 +703,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   (option.maxIntRate == null)
                       ? "미제공"
                       : option.maxIntRate.toString(),
-                ]),
+                ],
+                defaultTxtStyle
+                ),
             if (category == ProductCategory.mortgage)
               for (final option in options as List<MortgageAndRentLoanOption>)
                 dataTableRow([
@@ -692,7 +721,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   (option.lendRateAvg == null)
                       ? "미제공"
                       : option.lendRateAvg.toString(),
-                ]),
+                ],
+                defaultTxtStyle),
             if (category == ProductCategory.rent)
               for (final option in options as List<MortgageAndRentLoanOption>)
                 dataTableRow([
@@ -707,30 +737,26 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   (option.lendRateAvg == null)
                       ? "미제공"
                       : option.lendRateAvg.toString(),
-                ]),
+                ],
+                defaultTxtStyle),
           ],
         ),
       ),
     );
   }
 
-  DataRow dataTableRow(List<String> values) {
+  DataRow dataTableRow(List<String> values, TextStyle style) {
     return DataRow(
-      cells: values.map((e) => DataCell(dataTableCellText(e))).toList(),
+      cells: values.map((e) => DataCell(dataTableCellText(e, style))).toList(),
     );
   }
 
-  Widget dataTableCellText(String text, [TextStyle? textStyle]) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
+  Widget dataTableCellText(String text, TextStyle? textStyle) {
     return Center(
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style:
-            textStyle ??
-            textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+        style: textStyle
       ),
     );
   }

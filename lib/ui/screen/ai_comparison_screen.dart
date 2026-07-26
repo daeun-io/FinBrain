@@ -1,6 +1,7 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
@@ -44,7 +45,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     // 프롬프트 전달
     // Send AI prompt

@@ -1,10 +1,12 @@
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/product_filter_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // 필터 다이얼로그 속 필터 조건
 // Filter condition in dialog
-class ProductFilterCondition extends StatelessWidget {
+class ProductFilterCondition extends ConsumerWidget {
   const ProductFilterCondition({
     super.key,
     required this.category,
@@ -17,9 +19,9 @@ class ProductFilterCondition extends StatelessWidget {
   final List<(String, bool)> filterList;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

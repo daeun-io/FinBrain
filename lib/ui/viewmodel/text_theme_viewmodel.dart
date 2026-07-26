@@ -9,11 +9,11 @@ class TextThemeViewmodel extends _$TextThemeViewmodel{
   @override
   TextTheme build() => normalTextTheme;
 
-  void changeTxtTheme(bool isBigTxtMode){
-    if(isBigTxtMode){
-      state = normalTextTheme;
-    } else {
+  void changeTxtTheme(){
+    if(state == normalTextTheme){
       state = bigTextTheme;
+    } else {
+      state = normalTextTheme;
     }
   }
 }

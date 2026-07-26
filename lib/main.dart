@@ -52,6 +52,7 @@ class FinBrain extends ConsumerWidget {
 
     return MaterialApp(
       title: "FinBrain",
+      key: ValueKey(textTheme),
       // 라이트 모드(light mode)
       theme: ThemeData(
         textTheme: textTheme,

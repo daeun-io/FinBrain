@@ -1,9 +1,11 @@
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // 연도 선택 피커
 // Year Picker
-class CustomYearPicker extends StatefulWidget {
+class CustomYearPicker extends ConsumerStatefulWidget {
   const CustomYearPicker({
     super.key,
     required this.selectedYear,
@@ -17,12 +19,12 @@ class CustomYearPicker extends StatefulWidget {
   // Funciton to be executed when selected year is changed   
   final ValueChanged<int> onYearChanged;
   @override
-  State<CustomYearPicker> createState() {
+  ConsumerState<CustomYearPicker> createState() {
     return _YearPickerPageState();
   }
 }
 
-class _YearPickerPageState extends State<CustomYearPicker> {
+class _YearPickerPageState extends ConsumerState<CustomYearPicker> {
   final thisYear = DateTime.now().year;
   // 피커에서 선택된 년도
   // Selected year in picker
@@ -55,7 +57,7 @@ class _YearPickerPageState extends State<CustomYearPicker> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return SizedBox(
       height: 130,

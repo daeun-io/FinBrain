@@ -1,16 +1,18 @@
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // AI 도우미 스크린 유저 요청(프롬프트)
 // AI request(prompt) in assist screen
-class AiRequest extends StatelessWidget {
+class AiRequest extends ConsumerWidget {
   const AiRequest({super.key, required this.text});
   
   final String text;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return ConstrainedBox(
       constraints: BoxConstraints(

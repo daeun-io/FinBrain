@@ -1,18 +1,20 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // AI 도우미 스크린 대화 요약
 // AI summaries in assist screen
-class AiSummary extends StatelessWidget {
+class AiSummary extends ConsumerWidget {
   const AiSummary({super.key, required this.texts});
 
   final List<AiText> texts;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,

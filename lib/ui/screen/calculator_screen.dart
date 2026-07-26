@@ -1,3 +1,4 @@
+import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/calculator_screen_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
@@ -118,7 +119,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -156,10 +157,11 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                         widget.options,
                         _selectedValues,
                       ),
+                  textTheme
                 ),
                 const SizedBox(height: 32.0),
                 // 리셋 및 계산 버튼(reset and calculate button)
-                buttons(),
+                buttons(textTheme),
                 // 계산 결과(calculated result)
                 if (_isSubmitted)
                   Column(
@@ -173,11 +175,15 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                       ),
                       const SizedBox(height: 16.0),
                       _displayResult(
+                        // 상품 카테고리(product category)
                         widget.category,
+                        // 계산 결과(result)
                         ref
                             .read(calculatorScreenViewmodelProvider.notifier)
                             .returnResult(
+                              // principal
                               int.parse(_money),
+                              // rate(interest)
                               (widget.category == ProductCategory.deposit ||
                                       widget.category ==
                                           ProductCategory.installment)
@@ -205,6 +211,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                                               )
                                               .firstOrNull)
                                   : _sliderValue,
+                              // term(period)
                               switch (widget.category) {
                                 ProductCategory.deposit => int.parse(
                                   _selectedValues[widget.mapOptions.keys.first]!
@@ -231,7 +238,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                                 ),
                                 _ => int.parse(_period),
                               },
-                              int.tryParse(_period),
+                              // interest type
                               switch (widget.category) {
                                 ProductCategory.deposit =>
                                   _selectedValues[widget.mapOptions.keys.last]!,
@@ -266,9 +273,9 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     ProductCategory category,
     Map<String, List<String>> mapOptions,
     List<double> rates,
+    TextTheme textTheme,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     final keys = mapOptions.keys.toList();
     return [
@@ -380,6 +387,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             const SizedBox(width: 4.0),
             captionText(
               "우대 금리 적용",
+              textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary),
             ),
           ],
         ),
@@ -533,11 +541,13 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                         for (var i = 0; i < term!; i++)
                           DataRow(
                             cells: [
-                              ...map.values.map(
+                              ...map.entries.map(
                                 (e) => DataCell(
                                   Center(
                                     child: text(
-                                      "${formatter.format(e[i])}원",
+                                      (e.key == "회차")
+                                        ? e.value[i].toString()
+                                        : "${formatter.format(e.value[i])}원",
                                       colorScheme.onSecondary,
                                       textTheme.bodyLarge!,
                                     ),
@@ -554,6 +564,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               const SizedBox(height: 12.0),
               captionText(
                 "*본 계산 결과는 매월 30일로 가정해 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
+                textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary)
               ),
             ],
           )
@@ -615,16 +626,18 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               const SizedBox(height: 12.0),
               captionText(
                 "*본 계산 결과는 월을 기준으로 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
+                textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary)
               ),
             ],
           );
   }
 
   // 리셋 및 계산 버튼(reset and calculate button)
-  Widget buttons() {
+  Widget buttons(
+    TextTheme textTheme,
+  ) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
+    final snackBarText = textTheme.bodySmall!.copyWith(color: colorScheme.onSecondary);
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -661,7 +674,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                 if (!mounted) return;
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(snackbar("항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요"));
+                ).showSnackBar(snackbar("항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요", snackBarText));
                 return;
               }
               if (int.tryParse(_money) == null ||
@@ -669,7 +682,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                 if (!mounted) return;
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(snackbar("입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요"));
+                ).showSnackBar(snackbar("입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요", snackBarText));
                 return;
               }
               _isSubmitted = true;
@@ -695,30 +708,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       ],
     );
   }
-
-  // TableRow tableRow(
-  //   String item,
-  //   String value,
-  //   Color headerColor,
-  //   Color bodyColor,
-  //   Color txtColor,
-  //   TextStyle style,
-  // ) {
-  //   return TableRow(
-  //     children: [
-  //       Container(
-  //         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-  //         color: headerColor,
-  //         child: text(item, txtColor, style),
-  //       ),
-  //       Container(
-  //         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-  //         color: bodyColor,
-  //         child: text(value, txtColor, style),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget dropdownCard(
     String key,
@@ -780,7 +769,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   TextField textField(
     TextEditingController controller,
     FocusNode fNode,
-    void Function(String) submitFunc,
+    void Function(String) onChangedFunc,
     void Function() tapFunc,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -789,7 +778,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     return TextField(
       controller: controller,
       focusNode: fNode,
-      onSubmitted: submitFunc,
+      onChanged: onChangedFunc,
       onTap: tapFunc,
       decoration: InputDecoration(
         enabledBorder: UnderlineInputBorder(
@@ -807,16 +796,15 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     );
   }
 
-  SnackBar snackbar(String text) {
+  SnackBar snackbar(String text, TextStyle style) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     return SnackBar(
       backgroundColor: colorScheme.scrim,
       duration: const Duration(seconds: 3),
       content: Text(
         text,
-        style: textTheme.bodySmall!.copyWith(color: colorScheme.onSecondary),
+        style: style,
       ),
     );
   }
@@ -825,10 +813,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     return Text(text, style: style.copyWith(color: color));
   }
 
-  Widget captionText(String text) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-   
-    return Text(text, style: textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary));
+  Widget captionText(String text, TextStyle style) {
+    return Text(text, style: style);
   }
 }

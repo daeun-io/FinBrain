@@ -134,8 +134,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final currentTextTheme = ref.watch(textThemeViewmodelProvider);
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     // 데이터와 헤더 칼럼(data and header column)
     final joinItems = ref.watch(isaJoinStatusViewModelProvider);
@@ -241,7 +240,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                             textTheme.titleMedium!.copyWith(
                               color: colorScheme.onPrimary,
                             ),
-                            currentTextTheme,
+                            textTheme,
                           ),
                           // 데이터 행(data row)
                           Expanded(
@@ -268,7 +267,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                       colorScheme.surface,
                                       colorScheme.onSecondary,
                                       textTheme.bodyMedium!,
-                                      currentTextTheme,
+                                      textTheme,
                                     );
                                   }, childCount: items.length),
                                 ),

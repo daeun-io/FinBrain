@@ -119,7 +119,6 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
     int principal,
     double? rate,
     int term,
-    int? savedTerm,
     String type,
     ProductCategory category,
     List<Object> options,
@@ -127,7 +126,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
   ) {
     // 연 이자를 월 이자로 변경
     // change yearly interst to monthly interest
-    final monthlyRate = (rate ?? 0 / 100) / 12;
+    final monthlyRate = ((rate ?? 0) / 100) / 12;
     switch (category) {
       case ProductCategory.deposit:
         final interest = (type == "단리")
@@ -146,12 +145,12 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
         final monthlyDeposit = principal;
         final totalPrincipal = monthlyDeposit * term;
         if (type.contains("단리")) {
-          interest = monthlyDeposit * monthlyRate * (term * (term + 1) / 2);
+          interest = monthlyDeposit * monthlyRate * (term * (term + 1)) / 2;
         } else {
           final totalAmount =
               monthlyDeposit *
               (1 + monthlyRate) *
-              (pow(1 + monthlyRate, term) - 1) /
+              (pow(1 + monthlyRate, term).toDouble() - 1) /
               monthlyRate;
           interest = totalAmount - totalPrincipal;
         }
