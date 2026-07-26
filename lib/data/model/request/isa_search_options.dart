@@ -1,3 +1,5 @@
+// ISA 다모아 API 쿼리 패러미터
+// Query parameters for searching isa api
 class IsaSearchOptions {
   final String serviceKey;
   final String resultType;

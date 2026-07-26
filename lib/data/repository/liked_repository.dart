@@ -14,28 +14,36 @@ import 'package:finbrain/product_categories.dart';
 class LikedRepository {
   final dataSource = LikedDataSource();
 
+  // 금융 상품 관심 리스트에 저장하기
+  // Save given financial product in liked list
   Future<void> saveProductAsLiked(String uid, FinancialProduct product) async {
     try {
       await dataSource.saveProductAsLiked(uid, product.toMap());
     } catch (e) {
-      print("Error saving liked product: $e");
+      throw Exception("[error] failed to save product as liked : $e");
     }
   }
 
-  Future<void> deleteProductInFirestore(String uid, String productName) async {
+  // 금융 상품 관심 리스트에서 삭제하기
+  // Delete given financial product in liked list
+  Future<void> deleteProductInFirestore(String uid, String nmOrCd) async {
     try {
-      await dataSource.deleteProductInFirestore(uid, productName);
+      await dataSource.deleteProductInFirestore(uid, nmOrCd);
     } catch (e) {
-      print("Error deleting liked product: $e");
+      throw Exception("[error] failed to delete liked product : $e");
     }
   }
 
+  // 관심 상품 목록 리스트 불러오기
+  // get all financial products in liked list
   Future<List<FinancialProduct>> getLikedProducts(String uid) async {
     try {
       final listOfMap = await dataSource.getLikedProducts(uid);
       final products = [];
       for (final map in listOfMap) {
         if (getCategoryEnum[map["category"]] == null) continue;
+        // 카테고리에 맞는 클래스로 변환
+        // convert data based on category
         switch (getCategoryEnum[map["category"]]) {
           case ProductCategory.deposit:
           case ProductCategory.installment:
@@ -77,83 +85,95 @@ class LikedRepository {
               );
               break;
             } catch (e) {
-              print("error occured while mapping map to data $e");
+              throw Exception(
+                "[error] failed to map deposit/installment product : $e",
+              );
             }
           case ProductCategory.mortgage:
           case ProductCategory.rent:
-            products.add(
-              MortgageAndRentLoan(
-                category: getCategoryEnum[map["category"]]!,
-                submittedMonth: map["submittedMonth"],
-                companyCode: map["companyCode"],
-                companyName: map["companyName"],
-                productCode: map["productCode"],
-                productName: map["productName"],
-                startDay: map["startDay"],
-                endDay: map["endDay"],
-                submittedDay: map["submittedDay"],
-                joinWay: (map["joinWay"] as List<dynamic>).cast<String>(),
-                isLiked: map["isLiked"],
-                extraExpense: map["extraExpense"],
-                earlyRepayFee: map["earlyRepayFee"],
-                delayRate: map["delayRate"],
-                loanLimit: map["loanLimit"],
-                options: map["options"]
-                    .map(
-                      (e) => MortgageAndRentLoanOption(
-                        loanType: e["loanType"],
-                        loanTypeName: e["loanTypeName"],
-                        repayType: e["repayType"],
-                        repayTypeName: e["repayTypeName"],
-                        lendRateType: e["lendRateType"],
-                        lendRateTypeName: e["lendRateTypeName"],
-                        lendRateMin: e["lendRateMin"],
-                        lendRateMax: e["lendRateMax"],
-                        lendRateAvg: e["lendRateAvg"],
-                      ),
-                    )
-                    .toList()
-                    .cast<MortgageAndRentLoanOption>(),
-              ),
-            );
+            try {
+              products.add(
+                MortgageAndRentLoan(
+                  category: getCategoryEnum[map["category"]]!,
+                  submittedMonth: map["submittedMonth"],
+                  companyCode: map["companyCode"],
+                  companyName: map["companyName"],
+                  productCode: map["productCode"],
+                  productName: map["productName"],
+                  startDay: map["startDay"],
+                  endDay: map["endDay"],
+                  submittedDay: map["submittedDay"],
+                  joinWay: (map["joinWay"] as List<dynamic>).cast<String>(),
+                  isLiked: map["isLiked"],
+                  extraExpense: map["extraExpense"],
+                  earlyRepayFee: map["earlyRepayFee"],
+                  delayRate: map["delayRate"],
+                  loanLimit: map["loanLimit"],
+                  options: map["options"]
+                      .map(
+                        (e) => MortgageAndRentLoanOption(
+                          loanType: e["loanType"],
+                          loanTypeName: e["loanTypeName"],
+                          repayType: e["repayType"],
+                          repayTypeName: e["repayTypeName"],
+                          lendRateType: e["lendRateType"],
+                          lendRateTypeName: e["lendRateTypeName"],
+                          lendRateMin: e["lendRateMin"],
+                          lendRateMax: e["lendRateMax"],
+                          lendRateAvg: e["lendRateAvg"],
+                        ),
+                      )
+                      .toList()
+                      .cast<MortgageAndRentLoanOption>(),
+                ),
+              );
+            } catch (e) {
+              throw Exception(
+                "[error] failed to map mortgage/rent product : $e",
+              );
+            }
             break;
           case ProductCategory.credit:
-            products.add(
-              CreditLoan(
-                category: ProductCategory.credit,
-                submittedMonth: map["submittedMonth"],
-                companyCode: map["companyCode"],
-                companyName: map["companyName"],
-                productCode: map["productCode"],
-                productName: map["productName"],
-                startDay: map["startDay"],
-                endDay: map["endDay"],
-                submittedDay: map["submittedDay"],
-                joinWay: (map["joinWay"] as List<dynamic>).cast<String>(),
-                isLiked: map["isLiked"],
-                productType: map["productType"],
-                productTypeName: map["productTypeName"],
-                cbName: map["cbName"],
-                options: map["options"]
-                    .map(
-                      (e) => CreditLoanOption(
-                        creditLendRateType: e["creditLendRateType"],
-                        creditLendRateTypeName: e["creditLendRateTypeName"],
-                        gradeOver900: e["gradeOver900"],
-                        grade801900: e["grade801900"],
-                        grade701800: e["grade701800"],
-                        grade601700: e["grade601700"],
-                        grade501600: e["grade501600"],
-                        grade401500: e["grade401500"],
-                        grade301400: e["grade301400"],
-                        gradeUnder300: e["gradeUnder300"],
-                        averageGrade: e["averageGrade"],
-                      ),
-                    )
-                    .toList()
-                    .cast<CreditLoanOption>(),
-              ),
-            );
+            try {
+              products.add(
+                CreditLoan(
+                  category: ProductCategory.credit,
+                  submittedMonth: map["submittedMonth"],
+                  companyCode: map["companyCode"],
+                  companyName: map["companyName"],
+                  productCode: map["productCode"],
+                  productName: map["productName"],
+                  startDay: map["startDay"],
+                  endDay: map["endDay"],
+                  submittedDay: map["submittedDay"],
+                  joinWay: (map["joinWay"] as List<dynamic>).cast<String>(),
+                  isLiked: map["isLiked"],
+                  productType: map["productType"],
+                  productTypeName: map["productTypeName"],
+                  cbName: map["cbName"],
+                  options: map["options"]
+                      .map(
+                        (e) => CreditLoanOption(
+                          creditLendRateType: e["creditLendRateType"],
+                          creditLendRateTypeName: e["creditLendRateTypeName"],
+                          gradeOver900: e["gradeOver900"],
+                          grade801900: e["grade801900"],
+                          grade701800: e["grade701800"],
+                          grade601700: e["grade601700"],
+                          grade501600: e["grade501600"],
+                          grade401500: e["grade401500"],
+                          grade301400: e["grade301400"],
+                          gradeUnder300: e["gradeUnder300"],
+                          averageGrade: e["averageGrade"],
+                        ),
+                      )
+                      .toList()
+                      .cast<CreditLoanOption>(),
+                ),
+              );
+            } catch (e) {
+              throw Exception("[error] failed to map credit product : $e");
+            }
             break;
           default:
             try {
@@ -179,14 +199,13 @@ class LikedRepository {
                 ),
               );
             } catch (e) {
-              print("error occured while mapping isa data $e");
+              throw Exception("[error] failed to map isa mp product : $e");
             }
         }
       }
       return products.cast<FinancialProduct>();
     } catch (e) {
-      print("Error fetching liked product: $e");
-      return [];
+      throw Exception("[error] failed to fetch liked products : $e");
     }
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+// AI 도우미 스크린 유저 요청(프롬프트)
+// AI request(prompt) in assist screen
 class AiRequest extends StatelessWidget {
   const AiRequest({super.key, required this.text});
-
+  
   final String text;
 
   @override

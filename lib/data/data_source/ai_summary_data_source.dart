@@ -1,24 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class AiSummaryDataSource {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  // AI 대화 내용 고정 여부 업데이트
+  // Update whether summary is pinned or not
   Future<void> updateSummaries(
     String uid,
-    String productName,
+    String productNameOrCd,
     List<Map<String, dynamic>> texts,
     String category,
+    String productName,
     bool isPinned,
   ) async {
     try {
       final batch = firestore.batch();
+
       final docRef = firestore
           .collection(uid)
           .doc("ai_summary")
           .collection("products")
-          .doc(productName);
+          .doc(productNameOrCd);
       final summariesRef = docRef.collection("chat_summary");
-      await docRef.set({"category": category, "is_pinned": isPinned});
+      
+      batch.set(
+        docRef, 
+        {"category": category, "is_pinned": isPinned, "prdt_name": productName}
+      );
+      
       for (final text in texts) {
         final newDocRef = summariesRef.doc();
         batch.set(newDocRef, {
@@ -27,22 +37,23 @@ class AiSummaryDataSource {
         });
       }
       await batch.commit();
-      print("Succeed to update summaries!");
     } catch (e) {
-      print("Error occrued while updating summaries, $e");
+      throw Exception("[error] failed to update summaries : $e");
     }
   }
 
-  Future<Map<String, dynamic>> getSummariesWithPrdtNm(
+  // 상품 코드나 이름으로 AI 대화 요약본 가져오기
+  // Get Ai conversation summary with product code or name
+  Future<Map<String, dynamic>> getSummariesWithPrdtNmOrCd(
     String uid,
-    String productName,
+    String productNameOrCd,
   ) async {
     try {
       final docRef = firestore
           .collection(uid)
           .doc("ai_summary")
           .collection("products")
-          .doc(productName);
+          .doc(productNameOrCd);
 
       final docSnapshot = await docRef.get();
       final summariesSnapshot = await docRef
@@ -54,18 +65,20 @@ class AiSummaryDataSource {
         return {
           "category": docSnapshot["category"],
           "is_pinned": docSnapshot["is_pinned"],
+          "prdt_name": docSnapshot["prdt_name"],
           "summaries": summariesSnapshot.docs.map((doc) => doc.data()).toList(),
         };
       } else {
-        print("Error no document or summaries");
+        debugPrint("[empty] $productNameOrCd summary list is empty");
         return {};
       }
     } catch (e) {
-      print("Error fetching summaries with $productName: $e");
-      return {};
+      throw Exception("[error] failed to fetch $productNameOrCd summaries : $e");
     }
   }
 
+  // 모든 AI 대화 요약 가져오기
+  // Get all AI conversation summaries
   Future<List<(String, Map<String, dynamic>)>> getAllSummaries(
     String uid,
   ) async {
@@ -75,24 +88,23 @@ class AiSummaryDataSource {
           .doc("ai_summary")
           .collection("products")
           .get();
-
+     
       if (docSnapshot.docs.isNotEmpty) {
         final List<(String, Map<String, dynamic>)> document = [];
-        final productNames = docSnapshot.docs.map((doc) => doc.id).toList();
-        for (final name in productNames) {
-          final snapshot = await getSummariesWithPrdtNm(uid, name);
+        final productNamesOrCds = docSnapshot.docs.map((doc) => doc.id).toList();
+        for (final nmOrCd in productNamesOrCds) {
+          final snapshot = await getSummariesWithPrdtNmOrCd(uid, nmOrCd);
           if (snapshot.isNotEmpty) {
-            document.add((name, snapshot));
+            document.add((nmOrCd, snapshot));
           }
         }
         return document;
       } else {
-        print("Error document is empty");
+        debugPrint("[empty] summaires list is empty");
         return [];
       }
     } catch (e) {
-      print("Error fetching all summaries: $e");
-      return [];
+      throw Exception("[error] failed to fetch all summaries : $e");
     }
   }
 }

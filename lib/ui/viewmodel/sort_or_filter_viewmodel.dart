@@ -2,8 +2,12 @@ import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'sort_or_filter_viewmodel.g.dart';
 
+// 정렬/필터 바텀시트 뷰모델
+// Sort/filter bottom sheet viewmodel
 @riverpod
 class SortOrFilterTextViewModel extends _$SortOrFilterTextViewModel {
+  // 상품 카테고리 별 기준 생성
+  // Set criteria by product category
   @override
   (Object, List<String>) build(ProductCategory category) {
     final optionList = switch (category) {
@@ -31,6 +35,8 @@ class SortOrFilterTextViewModel extends _$SortOrFilterTextViewModel {
       ],
     };
 
+    // 관심 상품만 선택 기준을 리스트로 설정
+    // Use list to save selected criteria in liked product
     if (category == ProductCategory.liked) {
       return ([optionList[0]], optionList);
     } else {

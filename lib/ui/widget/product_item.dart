@@ -13,14 +13,17 @@ import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 상품 아이템
 class ProductItem extends ConsumerStatefulWidget {
   const ProductItem({
     super.key,
+    required this.productCode,
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
   });
 
+  final String productCode;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
@@ -37,19 +40,22 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final page = ref.watch(currentPageViewmodelProvider(widget.category));
-    final productList = ref.watch(
-      fetchProductViewmodelProvider(widget.category, "$page"),
-    );
+    final productList = ref.watch(productViewmodelProvider(widget.category));
     final likedList = ref.watch(fetchLikedViewmodelProvider);
 
+    // 부모 스크린에 따라 관찰하기
+    // Watch data based on parent screen
     return ((widget.fromLikedScreen) ? likedList : productList).when(
       data: (data) {
         final product =
             ((widget.fromLikedScreen)
                     ? data as List<FinancialProduct>
                     : (data as (int, List<FinancialProduct>)).$2)
-                .where((e) => e.commonInfo.productName == widget.productName)
+                .where(
+                  (e) => (widget.category == ProductCategory.isaMp)
+                      ? e.commonInfo.productName == widget.productName
+                      : e.commonInfo.productCode == widget.productCode,
+                )
                 .firstOrNull;
         if (product == null) return const SizedBox.shrink();
         final sortFilter = ref.watch(
@@ -67,11 +73,10 @@ class _ProductItemState extends ConsumerState<ProductItem> {
 
         return GestureDetector(
           onTap: () {
-            print("==============");
-            print("product item tapped");
             Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
                 builder: (ctx) => ProductDetailScreen(
+                  productCode: product.commonInfo.productCode ?? "isaMp",
                   productName: product.commonInfo.productName!,
                   category: product.commonInfo.category,
                   fromLikedScreen: widget.fromLikedScreen,
@@ -79,6 +84,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
               ),
             );
           },
+          // 관심 상품을 꾹 누르면 비교 상품 리스트에 추가/삭제
+          // Add/Delete when liked product is long pressed
           onLongPress: () {
             setState(() {
               if (product.commonInfo.isLiked) {
@@ -110,6 +117,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // 상품명(product name)
                         Text(
                           product.commonInfo.productName!.replaceAll(
                             r'\\n',
@@ -120,6 +128,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                           ),
                         ),
                         const SizedBox(height: 6.0),
+                        // 회사명(company name)
                         Text(
                           product.commonInfo.companyName!,
                           style: textTheme.bodySmall!.copyWith(
@@ -133,6 +142,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      // 정렬 기준(sort criteria)
                       Text(
                         sortCriteria.split('(').first,
                         style: textTheme.titleSmall!.copyWith(
@@ -140,68 +150,52 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                         ),
                       ),
                       const SizedBox(height: 6.0),
+                      // 정렬 기준에 따른 값
+                      // Value based on sort criteria
                       Text(
                         switch (product.commonInfo.category) {
-                          ProductCategory.deposit =>
-                            (sortCriteria == "최고 금리(높은 순)")
-                                ? (product as DepositAndInstallmentSavings)
-                                      .returnHighestRateValue()
-                                      .$1
-                                      .toStringAsFixed(2)
-                                : (product as DepositAndInstallmentSavings)
-                                      .returnHighestRateValue()
-                                      .$2
-                                      .toStringAsFixed(2),
+                          ProductCategory.deposit ||
                           ProductCategory.installment =>
                             (sortCriteria == "최고 금리(높은 순)")
-                                ? (product as DepositAndInstallmentSavings)
+                                ? ((product as DepositAndInstallmentSavings)
+                                              .returnHighestRateValue()
+                                              .$1 ==
+                                          null)
+                                      ? "미제공"
+                                      : product
+                                            .returnHighestRateValue()
+                                            .$1!
+                                            .toStringAsFixed(2)
+                                : ((product as DepositAndInstallmentSavings)
+                                          .returnHighestRateValue()
+                                          .$2 ==
+                                      null)
+                                ? "미제공"
+                                : product
                                       .returnHighestRateValue()
-                                      .$1
-                                      .toStringAsFixed(2)
-                                : (product as DepositAndInstallmentSavings)
-                                      .returnHighestRateValue()
-                                      .$2
+                                      .$2!
                                       .toStringAsFixed(2),
                           ProductCategory.credit => switch (sortCriteria) {
                             "최저 금리(낮은 순)" =>
-                              (product as CreditLoan)
-                                  .returnRates()[0]
-                                  .toStringAsFixed(2),
-                            "최고 금리(낮은 순)" =>
-                              (product as CreditLoan)
-                                  .returnRates()[2]
-                                  .toStringAsFixed(2),
-                            _ =>
-                              (product as CreditLoan)
-                                  .returnRates()[1]
-                                  .toStringAsFixed(2),
-                          },
-                          ProductCategory.mortgage => switch (sortCriteria) {
-                            "최저 금리(낮은 순)" =>
-                              ((product as MortgageAndRentLoan)
-                                          .returnRates()[0] ==
-                                      null)
+                              ((product as CreditLoan).returnRates()[0] == null)
                                   ? "미제공"
                                   : product.returnRates()[0]!.toStringAsFixed(
                                       2,
                                     ),
                             "최고 금리(낮은 순)" =>
-                              ((product as MortgageAndRentLoan)
-                                          .returnRates()[2] ==
-                                      null)
+                              ((product as CreditLoan).returnRates()[2] == null)
                                   ? "미제공"
                                   : product.returnRates()[2]!.toStringAsFixed(
                                       2,
                                     ),
                             _ =>
-                              ((product as MortgageAndRentLoan)
-                                          .returnRates()[1] ==
-                                      null)
+                              ((product as CreditLoan).returnRates()[1] == null)
                                   ? "미제공"
                                   : product.returnRates()[1]!.toStringAsFixed(
                                       2,
                                     ),
                           },
+                          ProductCategory.mortgage ||
                           ProductCategory.rent => switch (sortCriteria) {
                             "최저 금리(낮은 순)" =>
                               ((product as MortgageAndRentLoan)
@@ -213,7 +207,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                                     ),
                             "최고 금리(낮은 순)" =>
                               ((product as MortgageAndRentLoan)
-                                          .returnRates()[0] ==
+                                          .returnRates()[2] ==
                                       null)
                                   ? "미제공"
                                   : product.returnRates()[2]!.toStringAsFixed(
@@ -248,6 +242,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     ],
                   ),
                   const SizedBox(width: 3.0),
+                  // 관심 버튼
+                  // liked button
                   IconButton(
                     onPressed: () {
                       final page = ref.read(
@@ -287,7 +283,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
         );
       },
       error: (err, stack) => const SizedBox.shrink(),
-      loading: () => const SizedBox.shrink()
+      loading: () => const SizedBox.shrink(),
     );
   }
 }

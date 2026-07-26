@@ -109,9 +109,17 @@ export const summarizeAndArchiveChat = onSchedule(
         category = docs[0].data().category || "";
       }
 
+      let prdtNm = "";
+      if (sourceProductDoc.exists && sourceProductDoc.data()?.prdt_name) {
+        prdtNm = sourceProductDoc.data()?.prdt_name;
+      } else {
+        prdtNm = docs[0].data().prdt_name || "";
+      }
+
       // 상품 문서 접근을 위한 객체 생성
       batch.set(productRef, {
         category: category,
+        prdt_name: prdtNm,
         is_pinned: false,
       }, {merge: true});
       // 요약 저장

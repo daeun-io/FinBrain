@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// 마크다운 텍스트 변환
 class MarkdownTextRenderer extends StatelessWidget {
-  final String str;
+  final String str;         // AI 생성 텍스트(AI text)
 
   const MarkdownTextRenderer({super.key, required this.str});
 
@@ -25,12 +26,14 @@ class MarkdownTextRenderer extends StatelessWidget {
   }
 
   // 마크다운 스트링을 분석하여 TextSpan 리스트로 변환하는 핵심 함수
+  // Anaylze markdown string and return as TextSpan list
   List<TextSpan> _parseMarkdownToTextSpans(String rawText, Color color) {
     List<TextSpan> spans = [];
     List<String> lines = rawText.split('\n');
 
     for (var line in lines) {
       // 1. 구분선 처리 (---)
+      // 1. Dividing Line Processing
       if (line.trim() == '---') {
         spans.add(const TextSpan(
           text: '',
@@ -39,6 +42,7 @@ class MarkdownTextRenderer extends StatelessWidget {
       }
 
       // 2. 제목 처리 (#, ##, ###)
+      // 2. Title Processing (#, ##, ###)
       if (line.startsWith('#')) {
         int hashCount = 0;
         while (hashCount < line.length && line[hashCount] == '#') {
@@ -62,7 +66,8 @@ class MarkdownTextRenderer extends StatelessWidget {
         continue;
       }
       
-      // 4. 일반 텍스트 라인 (내부 ** 굵게 처리 포함)
+      // 3. 일반 텍스트 라인 (내부 ** 굵게 처리 포함)
+      // 3. Normal text line(Change text weight to bold)
       spans.add(_parseInlineStyles('$line\n', color));
     }
 
@@ -70,6 +75,7 @@ class MarkdownTextRenderer extends StatelessWidget {
   }
 
   // 한 줄 내부에서 ** 텍스트를 찾아 bold 스타일을 먹이는 인라인 파서
+  // Inline parser finding **text and change text weight to bold
   TextSpan _parseInlineStyles(String line, Color color) {
     List<TextSpan> inlineSpans = [];
     RegExp exp = RegExp(r'\*\*(.*?)\*\*', dotAll: true); // ** 텍스트 ** 찾는 정규식

@@ -1,17 +1,26 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
+import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// AI 비교분석 스크린
+// Displaying comparison text screen
 class AiComparisonScreen extends ConsumerStatefulWidget {
-  const AiComparisonScreen({super.key, required this.tag, required this.ctg});
+  const AiComparisonScreen({
+    super.key,
+    required this.tag, 
+    required this.name,
+    required this.ctg,
+  });
 
-  final String tag;
-  final ProductCategory ctg;
+  final String tag;             // 상품 코드나 이름 묶음(collection of product codes or names)
+  final String name;            // 상품 이름 묶음(collection of product names)
+  final ProductCategory ctg;    // 상품 카테고리(product category)
 
   @override
   ConsumerState<AiComparisonScreen> createState() => _AiComparisonScreenState();
@@ -19,20 +28,17 @@ class AiComparisonScreen extends ConsumerStatefulWidget {
 
 class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   late List<String> items;
+
   late String request;
 
   @override
   void initState() {
     super.initState();
-    items = widget.tag.split("`");
-    items.remove("compare");
+    // 상품 이름을 분리
+    // Separate name collection
+    items = widget.name.split("`");
+    // AI 프롬프트(AI prompt)
     request = "$items들의 공통점과 차이점을 바탕으로 표 없이 비교 분석해줘";
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   ref
-    //       .read(aiComparisonScreenViewmodelProvider(widget.tag).notifier)
-    //       .askComparsion(request);
-    // });
   }
 
   @override
@@ -40,26 +46,15 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
+    // 프롬프트 전달
+    // Send AI prompt
     final text = ref.watch(aiComparisonScreenViewmodelProvider(request));
-    
+
     return Scaffold(
       backgroundColor: colorScheme.primary,
-      appBar: AppBar(
-        backgroundColor: colorScheme.tertiary,
-        scrolledUnderElevation: 0.0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onPrimary),
-        ),
-        title: Text(
-          "AI 비교 분석",
-          style: textTheme.headlineMedium!.copyWith(
-            color: colorScheme.onPrimary,
-          ),
-        ),
-        titleSpacing: -6.0,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: CustomAppbar(screen: "ai_comp", title: "AI 비교 분석"),
       ),
       body: text.when(
         data: (data) {
@@ -74,6 +69,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const SizedBox(height: 16.0),
+                    // AI 응답
+                    // AI Comparison texts(response)
                     Align(
                       alignment: Alignment.centerLeft,
                       child: MarkdownTextRenderer(str: data),
@@ -82,6 +79,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                       children: [
                         TextButton(
                           onPressed: () {
+                            // 재생성(refresh)
                             ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
@@ -107,20 +105,26 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                         ),
                         const SizedBox(width: 16.0),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            // 비교 대상 초기화
+                            // Reset the comparison target list
                             ref
                                 .read(
                                   selectedProductsViewmodelProvider.notifier,
                                 )
                                 .resetSelectedList();
-                            ref
+                            // 서버에 응답 저장
+                            // Save AI response in firestore
+                           await ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
-                                    widget.tag,
+                                    request,
                                   ).notifier,
                                 )
-                                .saveComparisonText(widget.ctg);
-                            Navigator.of(context).pop();
+                                .saveComparisonText(widget.name, widget.tag, widget.ctg);
+                            if(context.mounted){
+                              Navigator.of(context).pop();
+                            }
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -158,6 +162,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
             const SizedBox(width: 16.0),
             TextButton(
               onPressed: () {
+                // 오류 발생 시 재시도
+                // Try again to fetch response when error occurred
                 ref
                     .read(
                       aiComparisonScreenViewmodelProvider(widget.tag).notifier,
@@ -183,5 +189,4 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
       ),
     );
   }
-
 }

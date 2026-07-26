@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
+// 라이트 모드 색상
+// Light mode colors
 final ThemeData lightTheme = ThemeData(
   colorScheme: const ColorScheme.light(
     // background
@@ -43,6 +45,8 @@ final ThemeData lightTheme = ThemeData(
   ),
 );
 
+// 다크 모드 색상
+// Dark mode colors
 final ThemeData darkTheme = ThemeData(
   colorScheme: const ColorScheme.dark(
     // background

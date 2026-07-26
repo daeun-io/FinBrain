@@ -11,6 +11,8 @@ class ProductRemoteDataSource {
   final http.Client _client;
   ProductRemoteDataSource(this._client);
 
+  // 주어진 업권에 따라 금융한눈에 상품 불러오기
+  // Get financial products based on give category
   Future<Map<String, dynamic>> fetchFinlifeProducts(
     ProductCategory ctg,
     FinlifeSearchOptions options,
@@ -45,20 +47,31 @@ class ProductRemoteDataSource {
     try {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {
-        final String xmlBody = await CharsetConverter.decode("EUC-KR", res.bodyBytes);
+        // 받은 xml 텍스트 안 깨지도록 변환
+        // Fix character encoding issues to prevent garbled text
+        final String xmlBody = await CharsetConverter.decode(
+          "EUC-KR",
+          res.bodyBytes,
+        );
+
         final formatter = Xml2Json();
+
         formatter.parse(xmlBody);
         final jsonStr = formatter.toParker();
         final Map<String, dynamic> jsonMap = jsonDecode(jsonStr);
         return jsonMap;
       } else {
-        throw Exception("Failed to load data, ${res.statusCode}");
+        throw Exception(
+          "[error] failed to load finlife products : ${res.statusCode}, ${res.body}",
+        );
       }
-    } catch (error) {
-      throw Exception('Error: $error');
+    } catch (e) {
+      throw Exception("[error] failed to load finlife products : $e");
     }
   }
 
+  // 필터링 조건 없이 모든 ISA 상품 불러오기
+  // Get ISA products without filters
   Future<Map<String, dynamic>> fetchIsaMpProducts(
     IsaSearchOptions options,
   ) async {
@@ -68,22 +81,19 @@ class ProductRemoteDataSource {
       "mpTp": "",
       "likeCmpyNm": "",
     };
-    final uri = Uri.https(
-      firebase,
-      "/fetchAndGroupProducts",
-      queryParams,
-    );
+    final uri = Uri.https(firebase, "/fetchAndGroupProducts", queryParams);
 
     try {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {
         return jsonDecode(res.body) as Map<String, dynamic>;
-      } 
-      else {
-        throw Exception("Failed to load data, ${res.statusCode}");
+      } else {
+        throw Exception(
+          "[error] failed to load isa mp products : ${res.statusCode}, ${res.body}",
+        );
       }
-    } catch (error) {
-      throw Exception('Error: $error');
+    } catch (e) {
+      throw Exception("[error] failed to load isa mp products : $e");
     }
   }
 }

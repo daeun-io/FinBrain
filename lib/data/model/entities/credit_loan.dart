@@ -109,12 +109,12 @@ class CreditLoan extends FinancialProduct {
     };
   }
 
-  List<double> returnRates() {
+  List<double?> returnRates() {
     final foundOption = options
         .where((e) => e.creditLendRateTypeName == "대출금리")
         .firstOrNull;
 
-    if (foundOption == null) return [];
+    if (foundOption == null) return [null, null, null];
     final rates = [
       foundOption.gradeOver900,
       foundOption.grade801900,
@@ -127,8 +127,8 @@ class CreditLoan extends FinancialProduct {
     ].whereType<double>();
 
     final avgRates = foundOption.averageGrade;
-    final min = rates.minOrNull ?? double.infinity;
-    final max = rates.minOrNull ?? double.infinity;
+    final min = rates.minOrNull;
+    final max = rates.maxOrNull;
     final avg = (avgRates != null) ? avgRates : rates.average;
     return [min, avg, max];
   }

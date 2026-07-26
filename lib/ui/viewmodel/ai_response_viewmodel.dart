@@ -9,28 +9,40 @@ import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/data/repository/ai_convo_repository.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:finbrain/data/google_auth_service.dart';
 part 'ai_response_viewmodel.g.dart';
 
-final responseRepository = AiResponseRepository();
+// AI 응답 관련 레포지토리(AI response repository)
+final responseRepository = AiResponseRepository(); 
+// AI 대화 내역 관련 레포지토리(AI chat history repository)
 final messageRepository = AiConversationRepository();
+// AI 대화 요약 내역 관련 레포지토리(AI summary repository) 
 final summaryRepository = AiSummaryRepository();
+// AI 비교 분석 관련 레포지토리(AI comparison text repository)
 final compRepository = AiCompRepository();
 
+// AI 응답 뷰모델
 @riverpod
 class AiResponseViewmodel extends _$AiResponseViewmodel {
+  // 주어진 프롬프트에 대한 응답을 호출
+  // Get response about given prompt
   @override
   Future<String?> build(String text, [FinancialProduct? product]) async {
     return await responseRepository.fetchAIResponse(text, product);
   }
 }
 
+// AI 어시스트 스크린 뷰모델
+// AI assist screen viewmodel
 @riverpod
 class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
   @override
   List<String> build(String tag) => [];
 
+  // 상품 코드 및 이름를 통해 상품 불러오기
+  // Get product with given product code or name
   Future<FinancialProduct?> getProduct(String tag, ProductCategory ctg) async {
     final page = ref.read(currentPageViewmodelProvider(ctg));
     final productList = await ref.read(
@@ -42,87 +54,109 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
             .where((e) => (e.commonInfo.productName == tag))
             .firstOrNull ??
         likedList.where((e) => e.commonInfo.productName == tag).firstOrNull;
-    if (product == null) print("product $product");
     return product;
   }
 
+  // 프롬프트를 화면에 바로 보이기 위해 로컬에 저장하기
+  // Save prompt(request) in local to show in screen directly
   void saveRequest(String newRequest) {
     state = [...state, newRequest];
   }
 
+  // AI 응답 호출하고 요청-응답 서버에 저장하기
+  // Fetch AI response about request and save them
   Future<void> fetchResponseAndSaveConv(
     String newRequest,
     String tag,
     ProductCategory ctg,
+    String name,
   ) async {
+    // 다양한 상황을 다루기 위해 저장
+    // Save state to handle multiple situation
     final currentState = state;
 
     try {
-      print("======================");
-      print("tag: $tag");
-
-      final product = await getProduct(tag, ctg);
+      final product = await getProduct(name, ctg);
+      // 상품이 없다면 로컬에 오류 메시지 띄우기
+      // if no product found, display error message
       if (product == null) {
         state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
         return;
       }
+      // 화면에 로딩 인디케이터를 띄우기 위해 로딩 상태 설정
+      // Set loading state to display indicator
       state = [...currentState, "loading"];
-      
+      // AI 응답 불러오기
+      // Fetch AI response
       final newResponse = await ref.read(
         aiResponseViewmodelProvider(newRequest, product).future,
       );
-      print("ai response: $newResponse");
-
+      
+      // 응답이 없다면 에러 메시지 띄우기
+      // if response is empty, display error message
       if (newResponse == null || newResponse.isEmpty) {
         state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
         return;
       } else {
+        // 응답을 로컬 및 서버에 저장
+        // save response in local and server
         state = [...currentState, newResponse];
-        await saveConversationInFirestore(tag, ctg, newRequest, newResponse);
-        print("====================");
+        await saveConversationInFirestore(
+          tag,
+          ctg,
+          name,
+          newRequest,
+          newResponse,
+        );
         return;
       }
-    } catch (error) {
-      print("Error fetching AI response: $error");
+    } catch (e) {
+      // 오류 발생 시 에러 메시지 출력
+      // Show error message when error occurs
+      debugPrint("[error] failed to fetch ai response, $e");
       state = [...currentState, "오류가 발생했습니다. 다시 시도해주세요"];
       return;
     }
   }
 
+  // 상품에 대한 AI 대화 내용 서버에 저장하기
+  // Save AI conversation in firestore
   Future<void> saveConversationInFirestore(
     String tag,
     ProductCategory ctg,
+    String name,
     String request,
     String response,
   ) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No user is currently signed in.");
-        return;
+        throw Exception("[user] no user found");
       }
       await messageRepository.saveRequestAndResponse(
         user.uid,
         tag,
         ctg.toString(),
+        name,
         request,
         response,
       );
-    } catch (error) {
-      print("Error saving conversation in Firestore: $error");
+    } catch (e) {
+      throw Exception("[error] failed to save request and response : $e");
     }
   }
 
-  Future<List<(MessageBubble, MessageBubble)>> getConversationWithPrdtNm(
+  // 상품 코드나 이름으로 대화 가져오기
+  // Fetch AI conversation about product with its code or name
+  Future<List<(MessageBubble, MessageBubble)>> getConversationWithPrdtNmOrCd(
     String tag,
   ) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No user is currently signed in.");
-        return [];
+        throw Exception("[user] no user found");
       }
-      final loaded = await messageRepository.getConversationWithPrdtNm(
+      final loaded = await messageRepository.getConversationWithPrdtNmOrCd(
         user.uid,
         tag,
       );
@@ -141,47 +175,37 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
           )
           .toList();
       return messages;
-    } catch (error) {
-      print("Error getting conversation: $error");
-      return [];
+    } catch (e) {
+      throw Exception("[error] failed to fetch messages(chat_history) : $e");
     }
   }
 
-  Future<AiRecord> getSummariesWithPrdtNm(String tag) async {
+  // 상품 코드나 이름으로 AI 대화 요약본 가져오기
+  // Get Ai conversation summary with product code or name
+  Future<AiRecord> getSummariesWithPrdtNmOrCd(String tag) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No user is currently signed in.");
-        return AiRecord(
-          key: "",
-          isExpanded: false,
-          isPinned: false,
-          value: [],
-          category: ProductCategory.liked,
-        );
+        throw Exception("[user] no user found");
       }
 
-      return await summaryRepository.getSummariesWithPrdtNm(user.uid, tag);
+      return await summaryRepository.getSummariesWithPrdtNmOrCd(user.uid, tag);
     } catch (e) {
-      print("Error getting summaries: $e");
-      return AiRecord(
-        key: "",
-        isExpanded: false,
-        isPinned: false,
-        value: [],
-        category: ProductCategory.liked,
-      );
+      throw Exception("[error] failed to fetch summaries : $e");
     }
   }
 }
 
+// AI 비교 분석 스크린 뷰모델
 @riverpod
 class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
   @override
   Future<String> build(String text) async {
     return _askComparsion(text);
   }
-  
+
+  // AI 비교분석 응답 요청
+  // Request comparison among selected products
   Future<String> _askComparsion(String text) async {
     try {
       final newResponse = await ref.read(
@@ -191,35 +215,46 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
         return "오류가 발생했습니다. 다시 시도해주세요";
       }
       return newResponse;
-    } catch (error) {
-      print("Ai Comparsion: error - $error");
+    } catch (e) {
+      debugPrint("[error] failed to fetch ai comparison, $e");
       return "오류가 발생했습니다. 다시 시도해주세요";
     }
   }
- 
-  Future<void> refreshComparison(String text) async{
+
+  // 비교 분석 재요청
+  // Re-request the comparison
+  Future<void> refreshComparison(String text) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => _askComparsion(text));
   }
 
-  Future<void> saveComparisonText(ProductCategory ctg) async {
+  // 저장소에 비교 글 저장하기
+  // Save a single comparison text in firestore
+  Future<void> saveComparisonText(
+    String names,
+    String prdtNamesOrCodes,
+    ProductCategory ctg,
+  ) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
-        print("No current user found");
-        return;
+        throw Exception("[user] no user found");
       } else if (state.value == null) {
-        print("State is null");
+        debugPrint(
+          "[null] failed to save comparison texts, state.value is null",
+        );
         return;
       }
+
       await compRepository.saveComparisonText(
         user.uid,
-        text,
+        prdtNamesOrCodes,
         state.value!,
         ctg,
+        names,
       );
     } catch (e) {
-      print("Error saving comparison text");
+      throw Exception("[error] failed to save comparison texts : $e");
     }
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// 커스텀 검색창
+// Custon search bar
 class SearchBox extends StatefulWidget {
   const SearchBox({
     super.key,
@@ -7,7 +9,7 @@ class SearchBox extends StatefulWidget {
     required this.fromLikedScreen,
   });
 
-  final Function(String) searchItem;
+  final Function(String) searchItem;          // 필터링 함수(filter funciton)
   final bool fromLikedScreen;
 
   @override
@@ -25,7 +27,11 @@ class _SearchBoxState extends State<SearchBox> {
         minWidth: MediaQuery.of(context).size.width
       ),
       child: SearchBar(
+        // 입력 완료되면 필터링 함수 실행
+        // Run filter function when submitted
         onSubmitted: ((value) => widget.searchItem(value)),
+        // 입력이 초기화되면 원래 상태로 돌리기
+        // Back to original state when input is empty
         onChanged: (value) {
           if (value.isEmpty) widget.searchItem(value);
         },
@@ -44,7 +50,7 @@ class _SearchBoxState extends State<SearchBox> {
         textStyle: WidgetStatePropertyAll(
           textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary)
         ),
-        hintText: (widget.fromLikedScreen) ? "상품명 검색" :"현재 불러온 상품에서 검색",
+        hintText: (widget.fromLikedScreen) ? "상품명 검색" : "현재 불러온 상품에서 검색",
         hintStyle: WidgetStatePropertyAll(
           textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary)
         ),

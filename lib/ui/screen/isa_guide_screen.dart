@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+// ISA 설명 스크린
+// ISA explanation screen
 class IsaGuideScreen extends ConsumerStatefulWidget {
   const IsaGuideScreen({super.key});
 
@@ -25,16 +27,19 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    // 모드 및 기기에 따라 동적으로 이미지 불러오기
+    // Fetch image dynamically based on mode and device
     final isLightMode = Theme.of(context).brightness == Brightness.light;
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
-    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
     String path = "";
-    if((!isTablet || isPortrait) && isLightMode){
+    if ((!isTablet || isPortrait) && isLightMode) {
       path = "assets/images/isa_guide_light_portrait";
-    } else if((!isTablet || isPortrait) && !isLightMode){
+    } else if ((!isTablet || isPortrait) && !isLightMode) {
       path = "assets/images/isa_guide_dark_portrait";
-    } else if(!isPortrait && isLightMode){
+    } else if (!isPortrait && isLightMode) {
       path = "assets/images/isa_guide_light_landscape";
     } else {
       path = "assets/images/isa_guide_dark_landscape";
@@ -53,38 +58,10 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
                 });
               },
               children: [
-                SvgPicture.asset(
-                  "${path}_01.svg",
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  fit: BoxFit.contain,
-                  alignment: Alignment.topCenter,
-                  semanticsLabel: "Onboading illustration 01",
-                ),
-                SvgPicture.asset(
-                  "${path}_02.svg",
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  fit: BoxFit.contain,
-                  alignment: Alignment.topCenter,
-                  semanticsLabel: "Onboading illustration 02",
-                ),
-                SvgPicture.asset(
-                  "${path}_03.svg",
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  fit: BoxFit.contain,
-                  alignment: Alignment.topCenter,
-                  semanticsLabel: "Onboading illustration 03",
-                ),
-                SvgPicture.asset(
-                  "${path}_04.svg",
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  fit: BoxFit.contain,
-                  alignment: Alignment.topCenter,
-                  semanticsLabel: "Onboading illustration 04",
-                ),
+                guideImage("${path}_01.svg", 1),
+                guideImage("${path}_02.svg", 2),
+                guideImage("${path}_03.svg", 3),
+                guideImage("${path}_04.svg", 4),
               ],
             ),
             Align(
@@ -104,6 +81,8 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
                 ),
               ),
             ),
+            // 마지막 페이지면 이동 버튼 디스플레이
+            // Display navigation button when last page
             if (_currentPage == 3)
               Align(
                 alignment: Alignment.bottomCenter,
@@ -114,7 +93,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
                       await ref
                           .read(sharedPreferencesViewmodelProvider.notifier)
                           .setIsFirstRunToFalse();
-                      if(context.mounted){
+                      if (context.mounted) {
                         Navigator.of(context).pop();
                       }
                     },
@@ -141,6 +120,17 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget guideImage(String path, int num) {
+    return SvgPicture.asset(
+      path,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.8,
+      fit: BoxFit.contain,
+      alignment: Alignment.topCenter,
+      semanticsLabel: "Isa guide screen $num",
     );
   }
 }

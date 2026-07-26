@@ -15,10 +15,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+// ISA 가입 및 운용 현황 스크린
+// ISA join and management status screen 
 class IsaBaseScreen extends ConsumerStatefulWidget {
   const IsaBaseScreen({super.key, required this.category});
 
-  final ProductCategory category;
+  final ProductCategory category;     // 상품 카테고리(product category)
 
   @override
   ConsumerState<IsaBaseScreen> createState() => _IsaBaseScreenState();
@@ -27,16 +29,17 @@ class IsaBaseScreen extends ConsumerStatefulWidget {
 class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
-  bool _isLoading = false;
-  late int _cPage;
-  int _totalCount = 0;
-  int _maxPage = 0;
+  bool _isLoading = false;            // 데이터 로딩 여부(loading data state)
+  late int _cPage;                    // 현재 페이지(current page)
+  int _totalCount = 0;                // 데이터 전체 개수(product total count)
+  int _maxPage = 0;                   // API 데이터 최대 페이지(api data max page)
 
   @override
   void initState() {
     super.initState();
+    // 현재 페이지 불러오기
+    // Fetch current page
     _cPage = ref.read(currentPageViewmodelProvider(widget.category));
-    _fetchData();
     _controller.addListener(_onScroll);
   }
 
@@ -47,160 +50,102 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   }
 
   void _onScroll() async {
+    // 데이터 로딩 중이면 함수 중단
+    // Stop calling function when data is loading
     if (_isLoading) return;
+    // 현재 페이지 불러오기
+    // Fetch current page
+    final cJoinPage = ref.read(
+      currentPageViewmodelProvider(ProductCategory.isaJoin),
+    );
+    final cMngmPage = ref.read(
+      currentPageViewmodelProvider(ProductCategory.isaManagement),
+    );
+    // 현재 스크롤 위치(current scroll position)
     final position = _controller.position;
 
     if (widget.category == ProductCategory.isaJoin) {
-      if (position.pixels >= position.maxScrollExtent - 10) {
-        _isLoading = true;
-        if (_cPage < _maxPage) {
-          setState(() {
-            _cPage++;
-          });
-          try {
-            await _fetchData();
-          } finally {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          }
+      // 최하단 스크롤 위치에 도달하면 다음 페이지 불러오기(가입 현황)
+      // Fetch next page when reached bottom of the list(join status)
+      if (position.pixels >= position.maxScrollExtent) {
+        if (cJoinPage < _maxPage) {
+          _isLoading = true;
+          ref
+              .read(
+                currentPageViewmodelProvider(ProductCategory.isaJoin).notifier,
+              )
+              .setCurrentPage(cJoinPage + 1);
+          _isLoading = false;
         } else {
           _isLoading = false;
         }
-      } else if (position.pixels <= position.minScrollExtent + 10) {
-        _isLoading = true;
-        if (_cPage > 1) {
-          setState(() {
-            _cPage--;
-          });
-          try {
-            await _fetchData();
-          } finally {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          }
+        // 최상단 위치에 도달하면 다음 페이지 불러오기(가입 현황)
+        // Fetch previous page when reached top of the list(join status)
+      } else if (position.pixels <= position.minScrollExtent) {
+        if (cJoinPage > 1) {
+          _isLoading = true;
+          ref
+              .read(
+                currentPageViewmodelProvider(ProductCategory.isaJoin).notifier,
+              )
+              .setCurrentPage(cJoinPage - 1);
+          _isLoading = false;
         } else {
           _isLoading = false;
         }
       }
     } else {
-      if (position.pixels >= position.maxScrollExtent - 10) {
-        _isLoading = true;
-        if (_cPage < _maxPage) {
-          setState(() {
-            _cPage++;
-          });
-          try {
-            await _fetchData();
-          } finally {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          }
+      // 최하단 스크롤 위치에 도달하면 다음 페이지 불러오기(운용 현황)
+      // Fetch next page when reached bottom of the list(management status)
+      if (position.pixels >= position.maxScrollExtent) {
+        if (cMngmPage < _maxPage) {
+          _isLoading = true;
+          ref
+              .read(
+                currentPageViewmodelProvider(
+                  ProductCategory.isaManagement,
+                ).notifier,
+              )
+              .setCurrentPage(cMngmPage + 1);
+          _isLoading = false;
         } else {
           _isLoading = false;
         }
-      }
-
-      else if (position.pixels <= position.minScrollExtent + 10) {
-        if (_cPage > 1) {
-          setState(() {
-            _cPage--;
-          });
-          try {
-            await _fetchData();
-          } finally {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          }
+      // 최상단 위치에 도달하면 다음 페이지 불러오기(운용 현황)
+      // Fetch previous page when reached top of the list(management status)
+      } else if (position.pixels <= position.minScrollExtent) {
+        if (cMngmPage > 1) {
+          _isLoading = true;
+          ref
+              .read(
+                currentPageViewmodelProvider(
+                  ProductCategory.isaManagement,
+                ).notifier,
+              )
+              .setCurrentPage(cMngmPage - 1);
+          _isLoading = false;
         } else {
           _isLoading = false;
         }
       }
     }
-  }
-
-  Future<void> _fetchData() async {
-    if (widget.category == ProductCategory.isaJoin) {
-      final data = await ref.read(
-        fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
-      );
-      if (data.$1 == -1) {
-        _cPage++;
-        final pData = await ref.read(
-          fetchIsaJoinStatusViewmodelProvider("$_cPage").future,
-        );
-        _totalCount = pData.$1;
-      } else {
-        _totalCount = data.$1;
-      }
-      _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-      ref
-          .read(currentPageViewmodelProvider(ProductCategory.isaJoin).notifier)
-          .setCurrentPage(_cPage);
-    } else {
-      final data = await ref.read(
-        fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
-      );
-      if (data.$1 == -1) {
-        _cPage++;
-        final pData = await ref.read(
-          fetchIsaMngmStatusViewmodelProvider("$_cPage").future,
-        );
-        _totalCount = pData.$1;
-        _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-      } else {
-        _totalCount = data.$1;
-        _maxPage = (_totalCount == 0) ? 1 : (_totalCount - 1) ~/ 100 + 1;
-      }
-      ref
-          .read(
-            currentPageViewmodelProvider(
-              ProductCategory.isaManagement,
-            ).notifier,
-          )
-          .setCurrentPage(_cPage);
-    }
-
-    await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
-    print("current page, $_cPage");
-    print("total count, $_totalCount");
-    print("max page, $_maxPage");
-
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-
     final currentTextTheme = ref.watch(textThemeViewmodelProvider);
 
-    final joinItems = ref.watch(isaJoinStatusViewModelProvider("$_cPage"));
+    // 데이터와 헤더 칼럼(data and header column)
+    final joinItems = ref.watch(isaJoinStatusViewModelProvider);
     final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
-    final mngmItems = ref.watch(
-      isaManagementStatusViewModelProvider("$_cPage"),
-    );
+    final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
     final mngmColumn = ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
-    ref.listen(filtersViewmodelProvider(widget.category), (prev, next){
-      if(prev != next){
-        _fetchData();
-      }
-    });
-    
-    // Move to center after fetching data
-    ref.listen(isaJoinStatusViewModelProvider("$_cPage"), (prev, next) {
+    // 데이터 불러오면 상단으로 이동
+    // Move to top after fetching data
+    ref.listen(isaJoinStatusViewModelProvider, (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -209,7 +154,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         });
       }
     });
-    ref.listen(isaManagementStatusViewModelProvider("$_cPage"), (prev, next) {
+    ref.listen(isaManagementStatusViewModelProvider, (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -219,6 +164,8 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       }
     });
 
+    // ISA 가입 및 운용 현황 필터 불러오기
+    // Fetch current ISA filter of isa join/management filter
     final filters = ref.watch(filtersViewmodelProvider(widget.category));
     final baseYear =
         filters
@@ -227,17 +174,19 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
             )
             .value ??
         "";
-
     final column = (widget.category == ProductCategory.isaJoin)
         ? joinColumn
         : mngmColumn;
+
     return Column(
       children: [
         const SizedBox(height: 24.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // 필터 버튼(filter button)
             ProductFilter(category: widget.category),
+            // 정렬 바텀시트(sorting bottom sheet)
             Expanded(
               child: SortOrFilterText(
                 category: widget.category,
@@ -245,18 +194,10 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                 onSortCriteriaChanged: (criteria) {
                   (widget.category == ProductCategory.isaJoin)
                       ? ref
-                            .read(
-                              isaJoinStatusViewModelProvider(
-                                "$_cPage",
-                              ).notifier,
-                            )
+                            .read(isaJoinStatusViewModelProvider.notifier)
                             .sortByCriteria(criteria, _totalCount)
                       : ref
-                            .read(
-                              isaManagementStatusViewModelProvider(
-                                "$_cPage",
-                              ).notifier,
-                            )
+                            .read(isaManagementStatusViewModelProvider.notifier)
                             .sortByCriteria(criteria, _totalCount);
                 },
               ),
@@ -267,9 +208,20 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         ((widget.category == ProductCategory.isaJoin) ? joinItems : mngmItems)
             .when(
               data: (data) {
-                final (maxPage, items) = data;
+                final (totalCount, items) = data;
+                // 최대 개수 불러와 최대 페이지 계산
+                // Fetch total count and calculate maximum page
+                _totalCount = totalCount;
+                _maxPage = (totalCount == 0) ? 1 : (totalCount - 1) ~/ 200 + 1;
+
                 if (items.isEmpty) {
-                  return const Expanded(child: NoDataFound(isProduct: false));
+                  return Expanded(
+                    child: NoDataFound(
+                      ctg: widget.category,
+                      isProduct: false,
+                      isLastPage: (_cPage == _maxPage),
+                    ),
+                  );
                 }
                 return Expanded(
                   child: SingleChildScrollView(
@@ -282,39 +234,16 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // header
-                          Container(
-                            height: (currentTextTheme == bigTextTheme)
-                                ? 80.0
-                                : 60.0,
-                            color: colorScheme.secondary,
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                for (final label in column)
-                                  Flexible(
-                                    flex:
-                                        (label == "ISA 종류" ||
-                                            label == "편입자산 구분")
-                                        ? 3
-                                        : 2,
-                                    child: Center(
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          label,
-                                          style: textTheme.titleMedium!
-                                              .copyWith(
-                                                color: colorScheme.onPrimary,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
+                          // 헤더 칼럼(header column)
+                          header(
+                            column,
+                            colorScheme.secondary,
+                            textTheme.titleMedium!.copyWith(
+                              color: colorScheme.onPrimary,
                             ),
+                            currentTextTheme,
                           ),
-                          // rows
+                          // 데이터 행(data row)
                           Expanded(
                             child: CustomScrollView(
                               controller: _controller,
@@ -322,7 +251,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                               physics: const BouncingScrollPhysics(),
                               slivers: [
                                 const SliverPadding(
-                                  padding: EdgeInsets.only(top: 20.0),
+                                  padding: EdgeInsets.only(top: 40.0),
                                 ),
                                 SliverPadding(
                                   key: _key,
@@ -344,7 +273,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                   }, childCount: items.length),
                                 ),
                                 const SliverPadding(
-                                  padding: EdgeInsets.only(bottom: 20.0),
+                                  padding: EdgeInsets.only(bottom: 40.0),
                                 ),
                               ],
                             ),
@@ -360,6 +289,33 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
               loading: () => const Expanded(child: CustomProgressIndicator()),
             ),
       ],
+    );
+  }
+
+  Widget header(
+    List<String> column,
+    Color bgColor,
+    TextStyle style,
+    TextTheme currentTextTheme,
+  ) {
+    return Container(
+      height: (currentTextTheme == bigTextTheme) ? 80.0 : 60.0,
+      color: bgColor,
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          for (final label in column)
+            Flexible(
+              flex: (label == "ISA 종류" || label == "편입자산 구분") ? 3 : 2,
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(label, style: style),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 

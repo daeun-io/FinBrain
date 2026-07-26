@@ -3,34 +3,40 @@ import 'package:finbrain/data/data_source/ai_convo_data_source.dart';
 class AiConversationRepository {
   final dataSource = AiConversationDataSource();
 
+  // 상품에 대한 AI 대화 내용 서버에 저장하기
+  // Save AI conversation in firestore
   Future<void> saveRequestAndResponse(
     String uid,
-    String productName,
+    String productNameOrCode,
     String ctg,
+    String productName,
     String request,
     String response,
   ) async {
     try {
       await dataSource.saveRequestAndResponse(
         uid,
-        productName,
+        productNameOrCode,
         ctg,
+        productName,
         request,
         response,
       );
     } catch (e) {
-      print("Error saving request and response: $e");
+      throw Exception("[error] failed to save request and response : $e");
     }
   }
 
-  Future<List<Map<String, String>>> getConversationWithPrdtNm(
+  // 상품 코드나 이름으로 대화 가져오기
+  // Fetch AI conversation about product with its code or name
+  Future<List<Map<String, String>>> getConversationWithPrdtNmOrCd(
     String uid,
-    String productName,
+    String productNameOrCode,
   ) async {
     try {
-      final conversation = await dataSource.getConversationWithPrdtNm(
+      final conversation = await dataSource.getConversationWithPrdtNmOrCd(
         uid,
-        productName,
+        productNameOrCode,
       );
 
       final casted = conversation
@@ -40,8 +46,7 @@ class AiConversationRepository {
           .toList();
       return casted;
     } catch (e) {
-      print("Error getting conversation: $e");
-      return [];
+      throw Exception("[error] failed to fetch messages(chat_history) : $e");
     }
   }
 }

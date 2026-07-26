@@ -12,16 +12,19 @@ class OnBoardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    // 모드 및 기기에 따라 동적으로 이미지 불러오기
+    // Fetch image dynamically based on mode and device
     final isLightMode = Theme.of(context).brightness == Brightness.light;
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
-    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
     String path = "";
-    if((!isTablet || isPortrait) && isLightMode){
+    if ((!isTablet || isPortrait) && isLightMode) {
       path = "assets/images/onboarding_light_portrait";
-    } else if((!isTablet || isPortrait) && !isLightMode){
+    } else if ((!isTablet || isPortrait) && !isLightMode) {
       path = "assets/images/onboarding_dark_portrait";
-    } else if(!isPortrait && isLightMode){
+    } else if (!isPortrait && isLightMode) {
       path = "assets/images/onboarding_light_landscape";
     } else {
       path = "assets/images/onboarding_dark_landscape";
@@ -37,38 +40,10 @@ class OnBoardingScreen extends StatelessWidget {
               child: PageView(
                 controller: _pageController,
                 children: [
-                  SvgPicture.asset(
-                    "${path}_01.svg",
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    fit: BoxFit.contain,
-                    alignment: Alignment.topCenter,
-                    semanticsLabel: "Onboading illustration 01",
-                  ),
-                  SvgPicture.asset(
-                    "${path}_02.svg",
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    fit: BoxFit.contain,
-                    alignment: Alignment.topCenter,
-                    semanticsLabel: "Onboading illustration 02",
-                  ),
-                  SvgPicture.asset(
-                    "${path}_03.svg",
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    fit: BoxFit.contain,
-                    alignment: Alignment.topCenter,
-                    semanticsLabel: "Onboading illustration 03",
-                  ),
-                  SvgPicture.asset(
-                    "${path}_04.svg",
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    fit: BoxFit.contain,
-                    alignment: Alignment.topCenter,
-                    semanticsLabel: "Onboading illustration 04",
-                  ),
+                  onBoardingImage(context, "${path}_01.svg", 1),
+                  onBoardingImage(context, "${path}_02.svg", 2),
+                  onBoardingImage(context, "${path}_03.svg", 3),
+                  onBoardingImage(context, "${path}_04.svg", 4),
                 ],
               ),
             ),
@@ -112,20 +87,35 @@ class OnBoardingScreen extends StatelessWidget {
     );
   }
 
+  Widget onBoardingImage(BuildContext context, String path, int num) {
+    return SvgPicture.asset(
+      path,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.8,
+      fit: BoxFit.contain,
+      alignment: Alignment.topCenter,
+      semanticsLabel: "Onboarding illustration $num",
+    );
+  }
+
+  // 구글 로그인하기(google social login)
   void _signInWithGoogle(BuildContext context) async {
     if (!context.mounted) return;
 
     final userCredential = await GoogleAuthService().signInWithGoogle();
 
     if (userCredential == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요')));
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요')));
+      }
     } else {
-      
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()));
+      if (context.mounted) {
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()));
+      }
     }
   }
 }

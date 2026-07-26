@@ -1,3 +1,5 @@
+// 금융한눈에 API 쿼리 패러미터
+// Query parameters for finlife api
 class FinlifeSearchOptions {
   final String auth;
   final String topFinGrpNo;

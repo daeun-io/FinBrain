@@ -3,6 +3,8 @@ import 'package:finbrain/product_categories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 정렬 및 필터링 바텀 시트
+// Sort/Filter bottom sheet
 class SortOrFilterText extends ConsumerStatefulWidget {
   const SortOrFilterText({
     super.key,
@@ -14,6 +16,7 @@ class SortOrFilterText extends ConsumerStatefulWidget {
   final ProductCategory category;
   final String baseYear;
   final Function(String) onSortCriteriaChanged;
+
   @override
   ConsumerState<SortOrFilterText> createState() => _FilterTextState();
 }
@@ -24,26 +27,37 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
+    // 정렬/필터링 기준 관찰
+    // Watch sorting/filtering criteria
     final filter = ref.watch(
       sortOrFilterTextViewModelProvider(widget.category),
     );
+    // 화면에 보일 정렬 기준 텍스트
+    // Sorting/Filtering text shown in screen
     String selectedOption = switch (widget.category) {
       ProductCategory.liked => (filter.$1 as List<String>).join(", "),
       _ => filter.$1.toString(),
     };
-    List<String> selectedOptions = (widget.category == ProductCategory.liked)
-        ? filter.$1 as List<String>
-        : [];
     String text =
+        // ISA 데이터의 경우 기준 년도 명시
+        // Show base year when ISA data
         (widget.category == ProductCategory.isaJoin ||
             widget.category == ProductCategory.isaManagement ||
             widget.category == ProductCategory.isaMp)
         ? "${widget.baseYear}년 기준, $selectedOption"
         : selectedOption;
 
+    // 좋아요 화면 선택된 옵션
+    // Seleted option in liked screen
+    List<String> selectedOptions = (widget.category == ProductCategory.liked)
+        ? filter.$1 as List<String>
+        : [];
+  
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        // 정렬/필터링 기준 텍스트
+        // Sorting/filtering criteria text
         Flexible(
           child: Text(
             text,
@@ -56,6 +70,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
         ),
         IconButton(
           onPressed: () {
+            // 바텀 시트(bottom sheet)
             showModalBottomSheet(
               context: context,
               backgroundColor: colorScheme.surfaceContainer,
@@ -73,6 +88,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                       itemBuilder: (context, index) {
                         return Row(
                           children: [
+                            // 정렬/필터링 기준(sorting/filtering criteria)
                             Text(
                               filter.$2[index],
                               style: textTheme.bodyMedium!.copyWith(
@@ -80,9 +96,14 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                               ),
                             ),
                             const Spacer(),
+                            // 관심 상품 화면이면 체크버튼, 나머지는 라디오 버튼
+                            // If liked screen display check button,
+                            // else display radio button
                             if (widget.category == ProductCategory.liked)
                               IconButton(
                                 onPressed: () {
+                                  // 필터링 리스트에 추가 및 삭제
+                                  // Add or delete in filter list
                                   setModalState(() {
                                     if (index == 0) {
                                       selectedOptions = [filter.$2[0]];
@@ -104,9 +125,13 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                       text = "$text $option,";
                                     }
                                     if (text.isNotEmpty) {
+                                      // 텍스트가 있으면 정렬 함수 호출
+                                      // Call sorting function when criteria is not empty
                                       widget.onSortCriteriaChanged(text);
                                     }
                                   });
+                                  // 정렬/필터링 기준 변경
+                                  // Update sorting/filtering criteria
                                   ref
                                       .read(
                                         sortOrFilterTextViewModelProvider(
@@ -140,12 +165,16 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                     } else {
                                       text = filter.$2[index];
                                     }
+                                    // 텍스트가 있으면 정렬 함수 호출
+                                    // Call sorting function when criteria is not empty
                                     if (selectedOption.isNotEmpty) {
                                       widget.onSortCriteriaChanged(
                                         selectedOption,
                                       );
                                     }
                                   });
+                                  // 정렬/필터링 기준 변경
+                                  // Update sorting/filtering criteria
                                   ref
                                       .read(
                                         sortOrFilterTextViewModelProvider(

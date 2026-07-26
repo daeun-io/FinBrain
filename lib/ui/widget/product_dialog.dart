@@ -7,6 +7,8 @@ import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 데이터 필터링 다이얼로그
+// Data filter dialog
 class ProductDialog extends ConsumerWidget {
   const ProductDialog({super.key, required this.category});
   final ProductCategory category;
@@ -16,6 +18,8 @@ class ProductDialog extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
+    // 카테고리에 맞는 데이터 필터 불러오기
+    // Fetch data filter by category
     final filters = ref.watch(dialogFiltersViewModelProvider(category));
 
     return Consumer(
@@ -44,6 +48,7 @@ class ProductDialog extends ConsumerWidget {
                       ),
                     ),
                     const Spacer(),
+                    // 초기화 버튼(reset button)
                     TextButton(
                       onPressed: () {
                         ref
@@ -94,6 +99,8 @@ class ProductDialog extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // ISA 데이터면 연도 피커 제공
+                              // Year picker when ISA data
                               if (category == ProductCategory.isaJoin ||
                                   category == ProductCategory.isaManagement ||
                                   category == ProductCategory.isaMp)
@@ -126,6 +133,8 @@ class ProductDialog extends ConsumerWidget {
                                     const SizedBox(height: 8.0),
                                   ],
                                 ),
+                              // 나머지 항목 디스플레이
+                              // Display the other filter category
                               ...data.entries.map((e) {
                                 if (e.key == "기준년도") {
                                   return SizedBox(height: 8.0);
@@ -146,6 +155,8 @@ class ProductDialog extends ConsumerWidget {
                   loading: () =>
                       const Expanded(child: CustomProgressIndicator()),
                 ),
+                // 필터 적용 버튼
+                // Apply filter button
                 Row(
                   children: [
                     Expanded(
