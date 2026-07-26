@@ -9,13 +9,19 @@ import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'isa_viewmodel.g.dart';
 
+// ISA 다모아 데이터 레포지토리
+// Repository for ISA join and management status
 final repository = IsaRepository();
 
+// ISA 가입 현황 가져오는 뷰모델
+// Fetching ISA join status viewmodel
 @riverpod
 class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
   @override
   Future<(int, List<IsaJoinStatus>)> build(String pageNo) async {
     try {
+      // 저장한 필터 관찰하기
+      // Watch saved filter
       final filters = ref.watch(savedFiltersProvider(ProductCategory.isaJoin));
       Map<String, List<String>> selectedFilters = {};
       for (final entry in (filters.value ?? {}).entries) {
@@ -28,10 +34,14 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
           ? selectedFilters["기준년도"]!.first
           : DateTime.now().year.toString();
 
+      // ISA 가입 현황 데이터 호출하기
+      // Fetch ISA join status
       final result = await repository.fetchJoinStatus(pageNo, "200", baseYear);
 
       final totalCount = result.$1;
       final status = result.$2;
+      // 필터 적용하기
+      // Apply filter to data
       final filtered = status.where((element) {
         return (selectedFilters["업권"] ?? []).contains(element.category) &&
             (selectedFilters["ISA 형태"] ?? []).contains(element.isaForm);
@@ -46,17 +56,25 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
   }
 }
 
+// 화면에 ISA 가입 현황 보이는 뷰모델
+// Displaying ISA join status in screen
 @riverpod
 class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
   @override
   AsyncValue<(int, List<IsaJoinStatus>)> build() {
+    // 데이터 뷰모델 관찰하기
+    // Watch fetching isa join status viewmodel
     final cPage = ref.watch(currentPageViewmodelProvider(ProductCategory.isaJoin));
     final result = ref.watch(fetchIsaJoinStatusViewmodelProvider("$cPage"));
+    // 정렬 기준 읽기
+    // Read sort criteria
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(ProductCategory.isaJoin))
         .$1
         .toString();
 
+    // 정렬 기준 적용하기
+    // Apply sorting criteria to data
     return result.when(
       data: (data) {
         final sorted = List<IsaJoinStatus>.from(data.$2);
@@ -82,6 +100,8 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
     );
   }
 
+  // 데이터 정렬하는 함수
+  // Function that sorts ISA join status
   AsyncValue<(int, List<IsaJoinStatus>)> sortByCriteria(
     String criteria,
     int totalCount, [
@@ -105,11 +125,15 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
   }
 }
 
+// ISA 운용 현황 가져오는 뷰모델
+// Fetching ISA management status viewmodel
 @riverpod
 class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
   @override
   Future<(int, List<IsaManagementStatus>)> build(String pageNo) async {
     try {
+      // 저장한 필터 관찰하기
+      // Watch saved filter
       final filters = ref.watch(
         savedFiltersProvider(ProductCategory.isaManagement),
       );
@@ -125,6 +149,8 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
           ? selectedFilters["기준년도"]!.first
           : DateTime.now().year.toString();
 
+      // ISA 운용 현황 데이터 호출하기
+      // Fetch ISA management status
       final result = await repository.fetchManagementStatus(
         pageNo,
         "200",
@@ -134,6 +160,8 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
 
       final totalCount = result.$1;
       final status = result.$2;
+      // 필터 적용하기
+      // Apply filter to data
       final filtered = status.where((element) {
         return (selectedFilters["업권"] ?? []).contains(element.businessDomain) &&
             (selectedFilters["ISA 형태"] ?? []).contains(element.isaForm) &&
@@ -148,17 +176,25 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
   }
 }
 
+// 화면에 ISA 운용 현황 보이는 뷰모델
+// Displaying ISA management status in screen
 @riverpod
 class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
   @override
   AsyncValue<(int, List<IsaManagementStatus>)> build() {
+    // 데이터 뷰모델 관찰하기
+    // Watch fetching isa join status viewmodel
     final cPage = ref.watch(currentPageViewmodelProvider(ProductCategory.isaManagement));
     final result = ref.watch(fetchIsaMngmStatusViewmodelProvider("$cPage"));
+    // 정렬 기준 읽기
+    // Read sort criteria
     final criteria = ref
         .read(sortOrFilterTextViewModelProvider(ProductCategory.isaManagement))
         .$1
         .toString();
-
+    
+    // 정렬 기준 적용하기
+    // Apply sorting criteria to data
     return result.when(
       data: (data) => sortByCriteria(criteria, data.$1, data.$2),
       error: (error, stackTrace) => AsyncValue.error(
@@ -169,6 +205,8 @@ class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
     );
   }
 
+  // 데이터 정렬하는 함수
+  // Function that sorts ISA management status
   AsyncValue<(int, List<IsaManagementStatus>)> sortByCriteria(
     String criteria,
     int totalCount, [

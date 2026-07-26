@@ -13,6 +13,7 @@ import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 상품 아이템
 class ProductItem extends ConsumerStatefulWidget {
   const ProductItem({
     super.key,
@@ -42,6 +43,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     final productList = ref.watch(productViewmodelProvider(widget.category));
     final likedList = ref.watch(fetchLikedViewmodelProvider);
 
+    // 부모 스크린에 따라 관찰하기
+    // Watch data based on parent screen
     return ((widget.fromLikedScreen) ? likedList : productList).when(
       data: (data) {
         final product =
@@ -81,6 +84,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
               ),
             );
           },
+          // 관심 상품을 꾹 누르면 비교 상품 리스트에 추가/삭제
+          // Add/Delete when liked product is long pressed
           onLongPress: () {
             setState(() {
               if (product.commonInfo.isLiked) {
@@ -112,6 +117,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // 상품명(product name)
                         Text(
                           product.commonInfo.productName!.replaceAll(
                             r'\\n',
@@ -122,6 +128,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                           ),
                         ),
                         const SizedBox(height: 6.0),
+                        // 회사명(company name)
                         Text(
                           product.commonInfo.companyName!,
                           style: textTheme.bodySmall!.copyWith(
@@ -135,6 +142,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      // 정렬 기준(sort criteria)
                       Text(
                         sortCriteria.split('(').first,
                         style: textTheme.titleSmall!.copyWith(
@@ -142,6 +150,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                         ),
                       ),
                       const SizedBox(height: 6.0),
+                      // 정렬 기준에 따른 값
+                      // Value based on sort criteria
                       Text(
                         switch (product.commonInfo.category) {
                           ProductCategory.deposit ||
@@ -232,6 +242,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     ],
                   ),
                   const SizedBox(width: 3.0),
+                  // 관심 버튼
+                  // liked button
                   IconButton(
                     onPressed: () {
                       final page = ref.read(

@@ -8,6 +8,8 @@ import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// AI 어시스트 스크린(AI 채팅)
+// AI assist screen(chat window)
 class AiAssistScreen extends ConsumerStatefulWidget {
   const AiAssistScreen({
     super.key,
@@ -16,9 +18,9 @@ class AiAssistScreen extends ConsumerStatefulWidget {
     required this.name,
   });
 
-  final String tag;
-  final ProductCategory category;
-  final String name;
+  final String tag;                 // 상품 코드나 이름(product code or name)
+  final ProductCategory category;   // 상품 카테고리(product category)
+  final String name;                // 상품 이름(product name)
 
   @override
   ConsumerState<AiAssistScreen> createState() => _AiAssistScreenState();
@@ -26,8 +28,8 @@ class AiAssistScreen extends ConsumerStatefulWidget {
 
 class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   final _messageController = TextEditingController();
-  AiRecord? record;
-  List<(MessageBubble, MessageBubble)>? messages;
+  AiRecord? record;                                 // AI 요약(AI summaries)
+  List<(MessageBubble, MessageBubble)>? messages;   // 대화 내역(chat history in firestore)
 
   @override
   void initState() {
@@ -44,6 +46,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
 
   Future<void> _initializeMessages() async {
     try {
+      // 서버에 저장된 이전 대화 가져오기
+      // Fetch chat histories from firestore
       messages = await ref
           .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
           .getConversationWithPrdtNmOrCd(widget.tag);
@@ -54,6 +58,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
 
   Future<void> _getSummaries() async {
     try {
+      // AI 요약 가져오기
+      // Fetch AI summaries from firestore
       final result = await ref
           .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
           .getSummariesWithPrdtNmOrCd(widget.tag);
@@ -70,6 +76,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     
+    // 현재 나누고 있는 대화
+    // Current chats
     List<String> bubbles = ref.watch(
       aiAssistScreenViewmodelProvider(widget.tag),
     );
@@ -95,10 +103,14 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                       ),
                       child: CustomScrollView(
                         slivers: [
+                          // AI 요약 최상단에
+                          // Show AI summaries at the top
                           if (record!.key.isNotEmpty)
                             SliverToBoxAdapter(
                               child: AiSummary(texts: record!.value),
                             ),
+                          // 기존 대화 내역
+                          // Show existing chats
                           if (messages != null && messages!.isNotEmpty)
                             SliverList.builder(
                               itemCount: messages!.length,
@@ -116,6 +128,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                 );
                               },
                             ),
+                          // 현재 나누고 있는 대화
+                          // Show current chats
                           if (bubbles.isNotEmpty)
                             SliverList.builder(
                               itemCount: bubbles.length,
@@ -141,6 +155,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                       ),
                     ),
                   ),
+                  // 대화 입력창
+                  // Chat input
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
@@ -165,6 +181,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                   if (value.isNotEmpty) {
                                     final request = value;
                                     _messageController.clear();
+                                    // 입력 저장하고 대화 불러오기
+                                    // Fetch AI response based on input and save in firestore
                                     ref
                                         .read(
                                           aiAssistScreenViewmodelProvider(

@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+// ISA 설명 스크린
+// ISA explanation screen
 class IsaGuideScreen extends ConsumerStatefulWidget {
   const IsaGuideScreen({super.key});
 
@@ -25,6 +27,8 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    // 모드 및 기기에 따라 동적으로 이미지 불러오기
+    // Fetch image dynamically based on mode and device
     final isLightMode = Theme.of(context).brightness == Brightness.light;
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
     final isPortrait =
@@ -77,6 +81,8 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
                 ),
               ),
             ),
+            // 마지막 페이지면 이동 버튼 디스플레이
+            // Display navigation button when last page
             if (_currentPage == 3)
               Align(
                 alignment: Alignment.bottomCenter,
@@ -124,7 +130,7 @@ class _IsaGuideScreenState extends ConsumerState<IsaGuideScreen> {
       height: MediaQuery.of(context).size.height * 0.8,
       fit: BoxFit.contain,
       alignment: Alignment.topCenter,
-      semanticsLabel: "Onboading illustration $num",
+      semanticsLabel: "Isa guide screen $num",
     );
   }
 }

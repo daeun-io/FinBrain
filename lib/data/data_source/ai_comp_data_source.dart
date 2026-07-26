@@ -5,6 +5,8 @@ import 'package:flutter/rendering.dart';
 class AiCompDataSource {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  // 저장소에 비교 글 저장하기
+  // Save a single comparison text in firestore
   Future<void> saveComparisonText(
     String uid,
     String tag,
@@ -32,6 +34,8 @@ class AiCompDataSource {
     }
   }
 
+  // 상품 코드나 이름들로 비교 글 가져오기
+  // Get a comparison text with product codes or names
   Future<Map<String, dynamic>> getComparisonTextWithTag(
     String uid,
     String tag,
@@ -55,6 +59,8 @@ class AiCompDataSource {
     }
   }
 
+  // 모든 비교 글 가져오기
+  // Get all comparison texts
   Future<List<(String, Map<String, dynamic>)>> getComparisonTexts(
     String uid,
   ) async {

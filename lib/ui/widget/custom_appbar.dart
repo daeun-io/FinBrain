@@ -7,6 +7,8 @@ import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 애플리케이션 특화 앱바
+// Application specialized app bar
 class CustomAppbar extends ConsumerWidget {
   const CustomAppbar({
     super.key,
@@ -16,8 +18,8 @@ class CustomAppbar extends ConsumerWidget {
     this.page,
   });
 
-  final String screen;
-  final String title;
+  final String screen;      // 호출하는 화면 이름(screen name)
+  final String title;       // 앱 바 타이틀(app bar title)
 
   final int? page;
   final FinancialProduct? product;
@@ -32,6 +34,8 @@ class CustomAppbar extends ConsumerWidget {
     final isLightMode = Theme.of(context).brightness == Brightness.light;
 
     return AppBar(
+      // 스크린에 따라 배경색 변경
+      // Change background color based on screen
       backgroundColor: ["archive", "main", "calculator"].contains(screen)
           ? colorScheme.primary
           : colorScheme.tertiary,
@@ -43,6 +47,8 @@ class CustomAppbar extends ConsumerWidget {
               ? "assets/images/icon_light.png"
               : "assets/images/icon_dark.png",
         ),
+        // 기기에 따라 백버튼 추가/삭제
+        // Display back button based on device
         "ai_assist" =>
           (isPhone) ? backButton(context, colorScheme.onPrimary) : null,
         _ => backButton(context, colorScheme.onPrimary),
@@ -63,6 +69,8 @@ class CustomAppbar extends ConsumerWidget {
       },
       actions: switch (screen) {
         "main" => [
+          // 글자 모드 변경 버튼
+          // Change text theme button
           OutlinedButton(
             onPressed: () {
               ref
@@ -86,6 +94,8 @@ class CustomAppbar extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 8),
+          // ISA 가이드 스크린으로 이동하는 버튼
+          // Navigate to guide screen button
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -98,6 +108,8 @@ class CustomAppbar extends ConsumerWidget {
               size: 32,
             ),
           ),
+          // 저장소 스크린으로 이동하는 버튼
+          // Navigate to archive screen button
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -112,6 +124,8 @@ class CustomAppbar extends ConsumerWidget {
           ),
         ],
         "detail" => [
+          // 관심 상품 선택/미선택 아이콘
+          // Toggle product as liked/unliked button
           IconButton(
             onPressed: () {
               ref

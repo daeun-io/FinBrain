@@ -11,6 +11,8 @@ import 'firebase_options.dart';
 Future main() async {
   WidgetsBinding binding =  WidgetsFlutterBinding.ensureInitialized();
 
+  // 기기에 따라 방향 설정
+  // Set orientation by device
   final view = binding.platformDispatcher.views.first;
   final size = view.physicalSize / view.devicePixelRatio;
   final isPhone = size.shortestSide < 600;
@@ -28,8 +30,12 @@ Future main() async {
     ]);
   }
 
+  // API 키 로드
+  // Load api key
   await dotenv.load(fileName: "assets/keys.env");
 
+  // Firestore 초기화
+  // Initialize firestore
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   
   runApp(const ProviderScope(child: FinBrain()));
@@ -40,10 +46,13 @@ class FinBrain extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 텍스트 테마 관찰해 동적으로 적용
+    // Watch text theme and apply it dynamically
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return MaterialApp(
       title: "FinBrain",
+      // 라이트 모드(light mode)
       theme: ThemeData(
         textTheme: textTheme,
         colorScheme: lightTheme.colorScheme,
@@ -53,6 +62,7 @@ class FinBrain extends ConsumerWidget {
           cursorColor: lightTheme.colorScheme.onTertiary
         )
       ),
+      // 다크 모드(dark mode)
       darkTheme: ThemeData(
         textTheme: textTheme,
         colorScheme: darkTheme.colorScheme,

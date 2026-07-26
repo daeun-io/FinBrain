@@ -3,10 +3,15 @@ import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 데이터 미발견 시 위젯
+// Widget when data is not found
 class NoDataFound extends ConsumerWidget {
   const NoDataFound({
     super.key,
-    required this.ctg,
+    // 데이터 카테고리(product category)
+    required this.ctg,           
+    // 금융 상품인가 여부: ISA 가입 및 운용 데이터면 false
+    // Is financial product: if data are ISA join/management status, then false
     required this.isProduct,
     required this.isLastPage,
   });
@@ -32,6 +37,8 @@ class NoDataFound extends ConsumerWidget {
                     context,
                     "아직 불러오지 않은 상품이 있을 수 있으니, 화면을 아래로 스크롤해 더 많은 상품을 확인해주세요",
                   ),
+                // 마지막 페이지에 도달하면 첫 페이지로 이동하는 로직 제공
+                // Move to the first page when reached to the last
                 if (isLastPage && cPage != 1) ...[
                   text(context, "현재가 마지막 페이지입니다. 다시 첫 페이지로 돌아가시겠습니까?"),
                   const SizedBox(height: 24.0),
@@ -65,6 +72,8 @@ class NoDataFound extends ConsumerWidget {
     );
   }
 
+  // 첫 페이지 이동 버튼(예/아니요)
+  // Move to the first page button(yes/no)
   ElevatedButton button(
     BuildContext context,
     String btnTxt,

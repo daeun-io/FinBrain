@@ -2,6 +2,8 @@ import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
 
+// AI 도우미 스크린 대화 요약
+// AI summaries in assist screen
 class AiSummary extends StatelessWidget {
   const AiSummary({super.key, required this.texts});
 

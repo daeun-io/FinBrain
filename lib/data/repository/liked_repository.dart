@@ -14,6 +14,8 @@ import 'package:finbrain/product_categories.dart';
 class LikedRepository {
   final dataSource = LikedDataSource();
 
+  // 금융 상품 관심 리스트에 저장하기
+  // Save given financial product in liked list
   Future<void> saveProductAsLiked(String uid, FinancialProduct product) async {
     try {
       await dataSource.saveProductAsLiked(uid, product.toMap());
@@ -22,6 +24,8 @@ class LikedRepository {
     }
   }
 
+  // 금융 상품 관심 리스트에서 삭제하기
+  // Delete given financial product in liked list
   Future<void> deleteProductInFirestore(String uid, String nmOrCd) async {
     try {
       await dataSource.deleteProductInFirestore(uid, nmOrCd);
@@ -30,12 +34,16 @@ class LikedRepository {
     }
   }
 
+  // 관심 상품 목록 리스트 불러오기
+  // get all financial products in liked list
   Future<List<FinancialProduct>> getLikedProducts(String uid) async {
     try {
       final listOfMap = await dataSource.getLikedProducts(uid);
       final products = [];
       for (final map in listOfMap) {
         if (getCategoryEnum[map["category"]] == null) continue;
+        // 카테고리에 맞는 클래스로 변환
+        // convert data based on category
         switch (getCategoryEnum[map["category"]]) {
           case ProductCategory.deposit:
           case ProductCategory.installment:

@@ -14,8 +14,12 @@ import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_viewmodel.g.dart';
 
+// 금융 상품 레포지토리
+// Financial product repository
 final repository = ProductRepository();
 
+// 지정한 카테고리에 해당하는 상품 불러오는 뷰모델
+// Fetching product based on given category viewmodel
 @riverpod
 class FetchProductViewmodel extends _$FetchProductViewmodel {
   @override
@@ -28,6 +32,8 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
       if (user == null) {
         throw Exception("[user] no user found");
       }
+      // 저장한 필터 관찰하기
+      // Watch saved filter
       final filters = ref.watch(savedFiltersProvider(ctg));
       Map<String, List<String>> selectedFilters = {};
       for (final entry in (filters.value ?? {}).entries) {
@@ -66,6 +72,8 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
             );
       final maxPage = result.$1;
       final products = result.$2;
+      // 회사명과 상품명이 중복되는 데이터 제거하기
+      // Delete duplicated data where company and product name is same
       final Set<String> finalSeenKeys = {};
       final List<FinancialProduct> distinctProducts = [];
 
@@ -79,6 +87,8 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
         }
       }
 
+      // 필터 적용하기
+      // Apply filter to data
       final filtered = (ctg == ProductCategory.isaMp)
           ? distinctProducts
                 .where(
@@ -114,14 +124,18 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
       return (maxPage, filtered);
     } catch (e) {
       throw Exception("[error] failed to financial products : $e");
-      // debugPrint("[error] failed to financial products : $e");
-      // return (-1, <FinancialProduct>[]);
     }
   }
 
+  // 관심 표시/미표시 하기
+  // Toggle liked/unliked
   void toggleLiked(FinancialProduct product) {
     state.whenData((data) {
+      // 현재 관심 상태 가져오기
+      // Fetch current liked status of product
       final isLiked = product.commonInfo.isLiked;
+      // 전체 리스트 업데이트하기
+      // Update current list
       final updated = data.$2
           .map((e) {
             if ((product.commonInfo.category == ProductCategory.isaMp)
@@ -136,6 +150,8 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
           .toList();
       state = AsyncValue.data((data.$1, updated));
 
+      // 관심 상품 서버에 반영하기
+      // Apply new liked product list in server
       if (isLiked == true) {
         ref
             .read(likedProductViewmodelProvider.notifier)
@@ -149,12 +165,16 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
   }
 }
 
+// 화면에 금융 상품 보이는 뷰모델
+// Displaying financial products in screen
 @riverpod
 class ProductViewmodel extends _$ProductViewmodel {
   @override
   AsyncValue<(int, List<FinancialProduct>)> build(
     ProductCategory ctg,
   ) {
+    // 데이터 및 기준 관찰하기
+    // Watch data and sorting criteria
     final cPage = ref.watch(currentPageViewmodelProvider(ctg));
     final criteria = ref
         .watch(sortOrFilterTextViewModelProvider(ctg))
@@ -162,6 +182,8 @@ class ProductViewmodel extends _$ProductViewmodel {
         .toString();
     final result = ref.watch(fetchProductViewmodelProvider(ctg, "$cPage"));
 
+    // 데이터 필터링하기
+    // Filter financial products
     return result.when(
       data: (data) {
         final sorted = List<FinancialProduct>.from(data.$2);
@@ -198,7 +220,7 @@ class ProductViewmodel extends _$ProductViewmodel {
 
             case ProductCategory.mortgage:
             case ProductCategory.rent:
-              int index = 1; // 기본값
+              int index = 1; // 기본값(default value)
 
               if (criteria == "최저 금리(낮은 순)") {
                 index = 0;
@@ -273,6 +295,8 @@ class ProductViewmodel extends _$ProductViewmodel {
     );
   }
 
+  // 데이터 정렬하기
+  // Sort data by criteria
   AsyncValue<(int, List<FinancialProduct>)> sortByCriteria(
     String criteria,
     ProductCategory category,
@@ -472,7 +496,11 @@ class ProductViewmodel extends _$ProductViewmodel {
     return sorted;
   }
 
+  // 검색창을 통해 키워드로 필터링하기
+  // Filter by keyword using search bar
   void filterByKeyword(String keyword) {
+    // 키워드가 있으면 필터링 적용
+    // Apply filter when there's keyword
     if (keyword.isNotEmpty) {
       final currentState = state.value ?? (0, <FinancialProduct>[]);
       state = AsyncValue.data((
@@ -481,6 +509,8 @@ class ProductViewmodel extends _$ProductViewmodel {
             .where((e) => e.commonInfo.productName!.contains(keyword))
             .toList(),
       ));
+    // 키워드가 없으면 원본 데이터 불러오기
+    // If no keyword, fetch original data
     } else {
       final page = ref.read(currentPageViewmodelProvider(ctg));
       final original = ref.read(fetchProductViewmodelProvider(ctg, "$page"));

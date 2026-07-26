@@ -8,12 +8,14 @@ import 'package:finbrain/ui/widget/custom_tapbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 예적금 상품 스크린
 class SavingsScreen extends ConsumerWidget {
   const SavingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    
+    // 예적금 상품 탭 리스트
+    // Savings product tab list
     final tabList = const ["정기예금", "적금", "ISA"];
     final categories = const [
       ProductCategory.deposit,
@@ -25,7 +27,9 @@ class SavingsScreen extends ConsumerWidget {
       ProductBaseScreen(category: ProductCategory.installment),
       IsaScreen(),
     ];
-
+    
+    // 탭 선택에 따라 데이터 불러오기
+    // Fetch data based on tab index
     void tapFunction(value) {
       ref
           .read(currentCtgViewmodelProvider.notifier)

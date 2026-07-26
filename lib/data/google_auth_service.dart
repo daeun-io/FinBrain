@@ -2,13 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+// 구글 인증 서비스
 class GoogleAuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
   static bool isInitialized = false;
 
   static Future<void> initSignIn() async {
-    // for Android
+    // 안드로이드를 위해 구글 로그인 초기화
+    // Initialize google login for Android
     if (!isInitialized) {
       await _googleSignIn.initialize(
         serverClientId: "1026903577783-nh1ce57ft4mdu5q4nki5tn56j1s877r4.apps.googleusercontent.com",
@@ -17,6 +19,8 @@ class GoogleAuthService {
     isInitialized = true;
   }
 
+  // 구글 로그인
+  // Google social login
   Future<UserCredential?> signInWithGoogle() async {
     try {
       await initSignIn();
@@ -30,6 +34,8 @@ class GoogleAuthService {
 
       final accessToken = authorization?.accessToken;
       if(accessToken == null){
+        // 다시 한 번 더 시도
+        // Try once again
         final authorization2 = await authorizationClient.authorizationForScopes(['email', 'profile']);
 
         if(authorization2?.accessToken == null){
@@ -60,6 +66,7 @@ class GoogleAuthService {
     }
   }
 
+  // 구글 로그아웃
   static Future<void> signOut() async {
     try {
       await _googleSignIn.signOut();
@@ -70,6 +77,7 @@ class GoogleAuthService {
     }
   }
 
+  // 현재 접속한 유저 구하기
   static User? getCurrentUser() {
     return _auth.currentUser;
   }

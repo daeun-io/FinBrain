@@ -13,9 +13,9 @@ class CalculatorScreen extends ConsumerStatefulWidget {
     required this.options,
   });
 
-  final ProductCategory category;
-  final Map<String, List<String>> mapOptions;
-  final List<Object> options;
+  final ProductCategory category;               // 상품 카테고리(product category)
+  final Map<String, List<String>> mapOptions;   // 상품별 계산기를 위한 필드(field for categories)
+  final List<Object> options;                   // 상품 옵션(financial product option)
 
   @override
   ConsumerState<CalculatorScreen> createState() => _CalculatorScreenState();
@@ -40,22 +40,32 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   void initState() {
     super.initState();
 
+    // 초기값을 각 옵션의 첫 값으로
+    // Initial value is the first of each key
     if (widget.mapOptions.isNotEmpty) {
       widget.mapOptions.forEach((key, list) {
         _selectedValues[key] = list.first;
       });
     }
+    // 예적금: 예치 기간에 해당하는 금리 반환, 대출: 최저, 평균, 최고 금리 반환
+    // savings: return rate based on period, loan: return mininum, maximum and average rate
     final value = ref
         .read(calculatorScreenViewmodelProvider.notifier)
         .returnRate(widget.category, widget.options, _selectedValues);
+    // 슬라이더의 초기값: 평균 금리
+    // initial slider value: average rate
     _sliderValue = value.isNotEmpty ? value[1] : 0.0;
+    // 예적금: 텍스트 필드 비활성화, 대출: 텍스트 필드 활성화
+    // savings: enable text field, loan: disable text field
     _period =
         (widget.category == ProductCategory.deposit ||
             widget.category == ProductCategory.installment)
         ? "0"
         : "";
-
+    
     _moneyFocusNode.addListener(() {
+      // 포커스 됐다면 숫자만 표시, 포커스에서 벗어나면 숫자 포맷 + 원 붙이기
+      // If focused, show digits only, else format number and add currency unit
       if (!_moneyFocusNode.hasFocus) {
         String textDigits = _moneyController.text.trim().replaceAll(
           RegExp(r'[^0-9]'),
@@ -75,6 +85,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       }
     });
 
+    // 포커스 됐다면 숫자만 표시, 포커스에서 벗어나면 "개월" 붙이기
+    // If focused, show digits only, else add "month"
     _periodFocusNode.addListener(() {
       if (!_periodFocusNode.hasFocus) {
         String text = _periodController.text.trim();
@@ -121,6 +133,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 예치금 및 대출 원금 텍스트(balance or principal text)
                 text(
                   switch (widget.category) {
                     (ProductCategory.deposit || ProductCategory.installment) =>
@@ -131,6 +144,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   textTheme.bodyLarge!,
                 ),
                 const SizedBox(height: 2.0),
+                // 예적금/대출에 따라 필드 디스플레이
+                // display fields based on savings or loan
                 ..._displayDynamicWidgetList(
                   widget.category,
                   widget.mapOptions,
@@ -143,7 +158,9 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                       ),
                 ),
                 const SizedBox(height: 32.0),
+                // 리셋 및 계산 버튼(reset and calculate button)
                 buttons(),
+                // 계산 결과(calculated result)
                 if (_isSubmitted)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,6 +272,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
 
     final keys = mapOptions.keys.toList();
     return [
+      // 예치금 및 대출 원금 텍스트 필드(balance or principal text field)
       textField(
         _moneyController,
         _moneyFocusNode,
@@ -270,6 +288,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         },
       ),
       const SizedBox(height: 28.0),
+      // 예치/대출 기간 및 상환 방법(대출)
+      // period and method of repayment(loan)
       text(
         switch (category) {
           (ProductCategory.deposit || ProductCategory.installment) =>
@@ -280,10 +300,14 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         textTheme.bodyLarge!,
       ),
       const SizedBox(height: 2.0),
+      // 예치 기간 드랍다운
+      // saving period dropdown
       if (category == ProductCategory.deposit)
         dropdownCard(keys[0], mapOptions[keys[0]] ?? [], colorScheme, textTheme)
       else if (category == ProductCategory.installment)
         dropdownCard(keys[1], mapOptions[keys[1]] ?? [], colorScheme, textTheme)
+      // 대출 상환 방법(드랍다운) 및 기간(텍스트 필드)
+      // repayment method(dropdown) & period(text field)
       else
         Row(
           children: [
@@ -315,6 +339,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           ],
         ),
       const SizedBox(height: 32.0),
+      // 금리(rate/interest)
       text(
         switch (category) {
           ProductCategory.deposit => "예치 금리",
@@ -325,6 +350,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         textTheme.bodyLarge!,
       ),
       const SizedBox(height: 2.0),
+      // 우대 조건 체크박스(preferential conditions checkbox)
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
         Row(
@@ -448,6 +474,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     ColorScheme colorScheme,
     TextTheme textTheme,
   ) {
+    // 결과가 없을 때(when no result)
     if (map.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(24.0),
@@ -463,6 +490,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     return (category == ProductCategory.mortgage ||
             category == ProductCategory.rent ||
             category == ProductCategory.credit)
+        // 대출 계산 결과(loan calculation result)
         ? Column(
             children: [
               SingleChildScrollView(
@@ -529,6 +557,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               ),
             ],
           )
+        // 예적금 계산 결과(savings calculation result)
         : Column(
             children: [
               Table(
@@ -591,6 +620,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           );
   }
 
+  // 리셋 및 계산 버튼(reset and calculate button)
   Widget buttons() {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;

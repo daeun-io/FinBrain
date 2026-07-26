@@ -17,6 +17,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
+    // AI 응답 필터
+    // AI response filter
     final filterCtg = [
       ProductCategory.deposit,
       ProductCategory.installment,
@@ -29,6 +31,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
     final summariesFilters = ref.watch(
       selectedCtgForSummariesViewmodelProvider,
     );
+    // AI 요약 및 비교
+    // AI summaries and comparison texts
     final compTexts = ref.watch(archiveComparisonViewmodelProvider);
     final summaries = ref.watch(archiveSummaryViewmodelProvider);
 
@@ -44,6 +48,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
             ),
             child: Column(
               children: [
+                // 필터 칩(filter chip)
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -61,6 +66,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                     }).toList(),
                   ),
                 ),
+                // 응답 리스트(response list)
                 Expanded(
                   child: (category == ArchiveCategory.comparison)
                       ? archiveList(data, colorScheme, ref)
@@ -84,6 +90,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
     TextTheme textTheme,
   ) {
     return FilterChip(
+      // 필터 선택 및 제거
+      // select and delete filter 
       onSelected: (selected) {
         if (selected) {
           if (category == ArchiveCategory.comparison) {
@@ -146,6 +154,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                 child: ExpansionTile(
                   leading: IconButton(
                     onPressed: () {
+                      // 응답 고정 등록/해제
+                      // pin/unpin response
                       if (category == ArchiveCategory.comparison) {
                         ref
                             .read(archiveComparisonViewmodelProvider.notifier)
@@ -168,6 +178,8 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                             size: 24,
                           ),
                   ),
+                  // 타일 펼치고 닫기
+                  // expand/collpase tile
                   onExpansionChanged: (expanded) {
                     if (category == ArchiveCategory.comparison) {
                       ref

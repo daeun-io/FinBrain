@@ -32,10 +32,10 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
     required this.fromLikedScreen,
   });
 
-  final String productCode;
-  final String productName;
-  final ProductCategory category;
-  final bool fromLikedScreen;
+  final String productCode;             // 상품 코드(product code)
+  final String productName;             // 상품명(product name)
+  final ProductCategory category;       // 상품 카테고리(product category)
+  final bool fromLikedScreen;           // 관심 스크린에서 호출됐는지 여부(whether is called from liked screen)
 
   @override
   ConsumerState<ProductDetailScreen> createState() =>
@@ -45,6 +45,8 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   bool isBtnClicked = false;
 
+  // 공식 웹사이트로 이동하는 함수
+  // Function to launch official website
   void launchPrdtUrl(
     WidgetRef ref,
     BuildContext context,
@@ -79,12 +81,16 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
+    // 상품 리스트 불러오기
+    // Fetch product list
     final page = ref.watch(currentPageViewmodelProvider(widget.category));
     final productList = ref.watch(
       fetchProductViewmodelProvider(widget.category, "$page"),
     );
     final likedList = ref.watch(fetchLikedViewmodelProvider);
 
+    // 호출된 부모 스크린에 따라 상품 이름/코드로 데이터 찾기
+    // Find data with product code or name in product list
     return ((widget.fromLikedScreen) ? likedList : productList).when(
       data: (data) {
         final product =
@@ -97,6 +103,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       : e.commonInfo.productCode == widget.productCode,
                 )
                 .firstOrNull;
+        // 상품이 없을 경우 원래 화면으로 돌아가기
+        // Back to main screen when no product found
         if (product == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) {
@@ -109,6 +117,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           );
         }
 
+        // 타블렛일 때 버튼을 누르면 AI 어시스트 스크린을 스플릿 뷰로, 핸드폰이면 네비게이션으로 이동
+        // if tablet, show assist screen through split view, else navigate
         return SplitView(
           viewMode: SplitViewMode.Horizontal,
           controller: SplitViewController(
@@ -143,6 +153,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
+  // 실제 상세 화면 스크린
+  // Actual product detail screen
   Widget detailScreen(
     FinancialProduct product,
     ColorScheme colorScheme,
@@ -173,6 +185,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       vertical: 24.0,
                       horizontal: 20.0,
                     ),
+                    // 상세 정보(detailed information)
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,6 +207,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   ),
                 ),
               ),
+              // AI 도우미 버튼(AI Button)
               Positioned(
                 right: 20,
                 bottom: 100,
@@ -213,6 +227,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   },
                 ),
               ),
+              // 네비게이션 버튼(계산기, 공식 사이트)
+              // Navigation Button(calculator, official site)
               if (product.commonInfo.category == ProductCategory.isaMp)
                 Positioned(
                   left: 0,
@@ -249,6 +265,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (ctx) {
+              // 카테고리에 따라 옵션 추출
+              // Extract options based on category
               final options = switch (product.commonInfo.category) {
                 ProductCategory.deposit =>
                   (product as DepositAndInstallmentSavings).options,
@@ -456,6 +474,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     ];
   }
 
+  // 개인신용대출 및 ISA 상품 표
+  // Credit loan interest and ISA products' profit rate
   Widget tableFrame(
     ProductCategory category,
     List<dynamic> options,
@@ -597,7 +617,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
     );
   }
-
+  // 예적금 및 주택담보대출, 전세자금대출 금리 표
+  // Savings, mortgage and rent loan interest table
   Widget dataTableFrame(
     ProductCategory category,
     List<String> columns,
@@ -714,10 +735,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
+  // 문자열 변환기: \\n -> \n
+  // Formatter: replace \\n -> \n
   String replace(String text) {
     return text.replaceAll(r'\\n', "\n");
   }
 
+  // 날짜 문자열 변환기: YYYY/MM/DD
+  // Formatter: add splash to date(YYYY/MM/DD)
   String addSlash(String text) {
     return "${text.substring(0, 4)}/${text.substring(4, 6)}/${text.substring(6, 8)}";
   }

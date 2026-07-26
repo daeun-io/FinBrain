@@ -12,6 +12,8 @@ import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// ISA 일임형 상품 스크린
+// ISA mp product screen
 class IsaMpScreen extends ConsumerStatefulWidget {
   const IsaMpScreen({super.key});
 
@@ -22,8 +24,8 @@ class IsaMpScreen extends ConsumerStatefulWidget {
 class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
-  bool _isLoading = false;
-  int _maxPage = 0;
+  bool _isLoading = false;            // 데이터 로딩 여부(loading data state)
+  int _maxPage = 0;                   // API 데이터 최대 페이지(api data max page)
 
   @override
   void initState() {
@@ -38,10 +40,15 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   }
 
   void _onScroll() async {
+    // 데이터 로딩 중이면 함수 중단
+    // Stop calling function when data is loading
     if (_isLoading) return;
-
+    // 현재 페이지 불러오기
+    // Fetch current page
     final cPage = ref.read(currentPageViewmodelProvider(ProductCategory.isaMp));
     final position = _controller.position;
+    // 최하단 스크롤 위치에 도달하면 다음 페이지 불러오기
+    // Fetch next page when reached bottom of the list
     if (position.pixels >= position.maxScrollExtent) {
       if (cPage < _maxPage) {
         _isLoading = true;
@@ -52,6 +59,8 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
       } else {
         _isLoading = false;
       }
+    // 최상단 위치에 도달하면 다음 페이지 불러오기
+    // Fetch previous page when reached top of the list
     } else if (position.pixels <= position.minScrollExtent + 10) {
       if (cPage > 1) {
         _isLoading = true;
@@ -67,13 +76,16 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 현재 페이지, ISA 상품 상태, 필터 관찰하기
+    // Watch current page, ISA products status and their filter
     final cPage = ref.watch(
       currentPageViewmodelProvider(ProductCategory.isaMp),
     );
     final products = ref.watch(productViewmodelProvider(ProductCategory.isaMp));
     final filters = ref.watch(filtersViewmodelProvider(ProductCategory.isaMp));
 
-    // Move to center after fetching data
+    // 데이터 불러오면 상단으로 이동
+    // Move to top after fetching data
     ref.listen(productViewmodelProvider(ProductCategory.isaMp), (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -95,6 +107,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
     return Column(
       children: [
         const SizedBox(height: 24.0),
+        // 검색창(search bar)
         SearchBox(
           searchItem: (value) {
             ref
@@ -107,7 +120,9 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // 필터 버튼(filter button)
             ProductFilter(category: ProductCategory.isaMp),
+            // 정렬 바텀시트(sorting bottom sheet)
             Expanded(
               child: SortOrFilterText(
                 category: ProductCategory.isaMp,
@@ -132,6 +147,8 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
         const SizedBox(height: 24.0),
         products.when(
           data: (data) {
+            // 최대 페이지 불러와 최대 페이지 계산
+            // Fetch total count and calculate maximum page
             final (totalCount, items) = data;
             _maxPage = (totalCount == 0) ? 1 : (totalCount - 1) ~/ 100 + 1;
 

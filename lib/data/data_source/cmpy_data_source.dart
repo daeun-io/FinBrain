@@ -7,6 +7,8 @@ class CmpyRemoteDataSource {
   final http.Client _client;
   CmpyRemoteDataSource(this._client);
 
+  // 업권과 일치하는 회사 주소 가져오기
+  // Get companies that matches with given category
   Future<Map<String, dynamic>> fetchCmpyNames(
     FinlifeSearchOptions options,
   ) async {

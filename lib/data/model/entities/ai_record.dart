@@ -1,5 +1,7 @@
 import 'package:finbrain/product_categories.dart';
 
+// AI 요약 및 비교 기록
+// AI summary and comparison records
 class AiRecord {
   final String key;
   final List<AiText> value;
@@ -29,6 +31,8 @@ class AiRecord {
   }
 }
 
+// 실제 AI 답변
+// Actual AI response
 class AiText {
   final DateTime createdAt;
   final String text;

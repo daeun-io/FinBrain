@@ -2,7 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
+// 상품 공식 홈페이지 이동 레포지토리
+// Repository for linking to official website
 class UrlRepository {
+  // 공식 웹사이트 검색 함수
+  // Searching official website function
   Future<String> fetchAndOpenProductUrl(
     String companyName,
     String productName,
@@ -63,6 +67,8 @@ class UrlRepository {
     }
   }
 
+  // 찾은 url을 웹 브라우저에 띄우기
+  // Launch found url in web browser
   Future<bool> launchInBrowser(String urlString) async {
     if (urlString.isEmpty || urlString == "No result found") {
       debugPrint("[empty] url string is invalid or empty, $urlString");

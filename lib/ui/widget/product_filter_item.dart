@@ -3,6 +3,8 @@ import 'package:finbrain/product_categories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 필터 다이얼로그 속 필터 칩
+// Filter chip in dialog
 class ProductFilterItem extends ConsumerWidget {
   const ProductFilterItem({
     super.key,

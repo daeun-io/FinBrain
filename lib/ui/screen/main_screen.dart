@@ -28,6 +28,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
+    // 바텀 네비게이션 뷰(bottom navigation view)
     final bottomView = const [SavingsScreen(), LoanScreen(), LikedScreen()];
 
     return Scaffold(
@@ -59,6 +60,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             ),
             child: BottomNavigationBar(
               onTap: (value) {
+                // 바텀 네비게이션에 따라 데이터 불러오기
+                // Fetch data based on bottom navigation
                 setState(() {
                   _currentIndex = value;
                 });

@@ -2,6 +2,8 @@ import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/product_filter_item.dart';
 import 'package:flutter/material.dart';
 
+// 필터 다이얼로그 속 필터 조건
+// Filter condition in dialog
 class ProductFilterCondition extends StatelessWidget {
   const ProductFilterCondition({
     super.key,

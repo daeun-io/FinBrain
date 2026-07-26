@@ -7,12 +7,14 @@ import 'package:finbrain/ui/widget/custom_tapbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 대출 상품 스크린
 class LoanScreen extends ConsumerWidget {
   const LoanScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
+    // 대출 상품 탭 리스트
+    // Loan product tab list
     final tabList = const ["주택담보대출", "전세자금대출", "개인신용대출"];
     final categories = const [
       ProductCategory.mortgage,
@@ -25,6 +27,8 @@ class LoanScreen extends ConsumerWidget {
       ProductBaseScreen(category: ProductCategory.credit),
     ];
 
+    // 탭 선택에 따라 데이터 불러오기
+    // Fetch data based on tab index
      void tapFunction(value) {
       ref
           .read(currentCtgViewmodelProvider.notifier)

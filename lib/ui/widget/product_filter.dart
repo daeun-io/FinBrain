@@ -2,6 +2,8 @@ import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/product_dialog.dart';
 import 'package:flutter/material.dart';
 
+// 필터 다이얼로그를 띄우는 버튼
+// Button showing filter dialog
 class ProductFilter extends StatefulWidget {
   const ProductFilter({super.key, required this.category});
 

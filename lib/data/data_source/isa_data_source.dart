@@ -7,6 +7,8 @@ class IsaRemoteDataSource {
   final http.Client _client;
   IsaRemoteDataSource(this._client);
 
+  // 주어진 조건에 따라 ISA 가입 현황 불러오기
+  // Get Isa join status with given condition
   Future<Map<String, dynamic>> fetchJoinStatus(IsaSearchOptions options) async {
     final queryParams = {...options.toQueryParams()};
     final uri = Uri.https(public, '$isa/getJoinStatus_V2', queryParams);
@@ -25,6 +27,8 @@ class IsaRemoteDataSource {
     }
   }
 
+  // 주어진 조건에 따라 ISA 운용 현황 불러오기
+  // Get Isa management status with given condition
   Future<Map<String, dynamic>> fetchManagementStatus(
     IsaSearchOptions options,
     String ctg,

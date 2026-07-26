@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProductBaseScreen extends ConsumerStatefulWidget {
   const ProductBaseScreen({super.key, required this.category});
 
-  final ProductCategory category;
+  final ProductCategory category;       // 상품 카테고리(product category)
 
   @override
   ConsumerState<ProductBaseScreen> createState() => _ProductBaseScreenState();
@@ -23,8 +23,8 @@ class ProductBaseScreen extends ConsumerStatefulWidget {
 class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
-  bool _isLoading = false;
-  int _maxPage = 0;
+  bool _isLoading = false;            // 데이터 로딩 여부(loading data state)
+  int _maxPage = 0;                   // API 데이터 최대 페이지(api data max page)
 
   @override
   void initState() {
@@ -39,10 +39,15 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   }
 
   void _onScroll() async {
+    // 데이터 로딩 중이면 함수 중단
+    // Stop calling function when data is loading
     if (_isLoading) return;
-
+    // 현재 페이지 불러오기
+    // Fetch current page
     final cPage = ref.read(currentPageViewmodelProvider(widget.category));
     final position = _controller.position;
+    // 최하단 스크롤 위치에 도달하면 다음 페이지 불러오기
+    // Fetch next page when reached bottom of the list
     if (position.pixels >= position.maxScrollExtent) {
       if (cPage < _maxPage) {
         _isLoading = true;
@@ -53,6 +58,8 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       } else {
         _isLoading = false;
       }
+    // 최상단 위치에 도달하면 다음 페이지 불러오기
+    // Fetch previous page when reached top of the list
     } else if (position.pixels <= position.minScrollExtent + 10) {
       if (cPage > 1) {
         _isLoading = true;
@@ -68,12 +75,15 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 현재 페이지와 상품 상태 관찰하기
+    // Watch current page and product state
     final cPage = ref.watch(currentPageViewmodelProvider(widget.category));
     final productState = ref.watch(
       productViewmodelProvider(widget.category),
     );
 
-    // Move to center after fetching data
+    // 데이터 불러오면 상단으로 이동
+    // Move to top after fetching data
     ref.listen(productViewmodelProvider(widget.category), (
       prev,
       next,
@@ -96,6 +106,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
       ),
       child: Column(
         children: [
+          // 검색창(search bar)
           SearchBox(
             searchItem: (value) {
               ref
@@ -112,7 +123,9 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // 필터 버튼(filter button)
               ProductFilter(category: widget.category),
+              // 정렬 바텀시트(sorting bottom sheet)
               Expanded(
                 child: SortOrFilterText(
                   category: widget.category,
@@ -134,6 +147,8 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           productState.when(
             data: (data) {
               final (maxPage, items) = data;
+              // 최대 페이지 불러오기
+              // Fetch maximum page
               _maxPage = maxPage;
               
               return Expanded(
@@ -146,6 +161,8 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                     SliverPadding(key: _key, padding: EdgeInsets.zero),
                     SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
+                        // 데이터 없을 때 스크린
+                        // Screen when no data
                         if (items.isEmpty) {
                           return Container(
                             height: MediaQuery.of(context).size.height * 0.45,

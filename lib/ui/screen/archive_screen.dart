@@ -4,6 +4,8 @@ import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_tapbar.dart';
 import 'package:flutter/material.dart';
 
+// AI 요약 및 비교 분석 저장소
+// AI response archive(summary and comparison)
 class ArchiveScreen extends StatelessWidget {
   const ArchiveScreen({super.key});
 

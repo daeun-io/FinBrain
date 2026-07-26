@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+// AI 도우미 및 비교 버튼
+// AI assist and comparison button
 class AiButton extends ConsumerWidget {
   const AiButton({
     super.key,
@@ -15,10 +17,10 @@ class AiButton extends ConsumerWidget {
     required this.isBtnClicked,
   });
 
-  final String tag;
-  final String name;
-  final ProductCategory category;
-  final void Function() isBtnClicked;
+  final String tag;                       // 상품(들) 코드 및 이름(product(s) code/codes or name/names)
+  final String name;                      // 상품(들) 이름(product(s) name/names)
+  final ProductCategory category;         // 상품(들) 카테고리(product(s) category)
+  final void Function() isBtnClicked;     // 태블릿 일 때 사용(Use when device is tablet)
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,6 +33,8 @@ class AiButton extends ConsumerWidget {
       child: FloatingActionButton(
         heroTag: tag,
         onPressed: () {
+          // 태그에 compare이 있으면 비교 분석
+          // If tag contains "compare", compare products
           if (tag.contains("compare")) {
             final num = ref
                 .read(selectedProductsViewmodelProvider.notifier)
@@ -63,7 +67,11 @@ class AiButton extends ConsumerWidget {
                 ),
               );
             }
+          // 태그에 compare이 없으면 AI 채팅
+          // Else, do AI chats about products
           } else {
+            // 핸드폰이면 네비게이션
+            // If device is phone, navigate to screen
             final screenWidth = MediaQuery.of(context).size.width;
             if (screenWidth < 600) {
               Navigator.of(context).push(
@@ -72,6 +80,8 @@ class AiButton extends ConsumerWidget {
                       AiAssistScreen(tag: tag, category: category, name: name),
                 ),
               );
+            // 아니면 스플릿 뷰에 보이기
+            // Else, display in split view
             } else {
               isBtnClicked();
             }

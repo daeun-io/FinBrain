@@ -12,6 +12,8 @@ import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 데이터 호출 스크린의 부모 스크린 + 탭 포함
+// Parent screen of IsaBase and IsaMp Screen including tab
 class IsaScreen extends ConsumerStatefulWidget {
   const IsaScreen({super.key});
 
@@ -28,6 +30,8 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
     super.initState();
     _controller = TabController(length: 3, vsync: this);
     _controller.addListener(() {
+      // 탭이 변할 때마다 맞는 데이터 호출
+      // Fetch data based on tab index
       if (!_controller.indexIsChanging) {
         final page = ref.read(
           currentPageViewmodelProvider(switch (_controller.index) {
@@ -55,6 +59,8 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    // 앱 최초 실행이면 ISA 매뉴얼 호출
+    // Navigate to ISA guide screen when launched for the first time
     final isFirstRun = ref.watch(sharedPreferencesViewmodelProvider);
     ref.listen<bool>(
       sharedPreferencesViewmodelProvider.select((async) => async.requireValue),
@@ -77,8 +83,12 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
     return isFirstRun.when(
       data: (data) {
         if (data) {
+          // 오류 방지를 위한 빈 화면
+          // Empty screen for error protection
           return Scaffold(backgroundColor: colorScheme.primary);
         } else {
+          // ISA 운용 데이터 불러오기
+          // Fetch isa join status
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final page = ref.read(
               currentPageViewmodelProvider(ProductCategory.isaJoin),

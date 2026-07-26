@@ -18,7 +18,11 @@ import 'package:http/http.dart' as http;
 
 final likedRepository = LikedRepository();
 
+// 금융 상품 레포지토리
+// Financial product repository
 class ProductRepository {
+  // 주어진 업권에 따라 금융한눈에 상품 불러오기
+  // Get financial products based on give category
   Future<(int, List<FinancialProduct>)> fetchFinlifeProductsAndPageNo(
     String uid,
     ProductCategory ctg,
@@ -54,6 +58,8 @@ class ProductRepository {
         throw Exception("[error] result of fetching finlife products is null");
       }
 
+      // 좋아요 리스트를 불러와 동적으로 좋아요 상태 반영하기
+      // Reflect the like status dynamically from the liked products list
       final likedProducts = await likedRepository.getLikedProducts(uid);
       final likedProductNames = likedProducts
           .map((e) => e.commonInfo.productName)
@@ -62,6 +68,8 @@ class ProductRepository {
       final rawProducts =
           result["result"]["products"]["product"] as Iterable<dynamic>;
 
+      // 카테고리에 맞는 클래스로 변환
+      // Convert data based on category
       final List<FinancialProduct> products = switch (ctg) {
         ProductCategory.deposit || ProductCategory.installment =>
           rawProducts
@@ -302,6 +310,8 @@ class ProductRepository {
     }
   }
 
+  // 필터링 조건 없이 모든 ISA 상품 불러오기
+  // Get ISA products without filters
   Future<(int, List<FinancialProduct>)> fetchIsaMpProductsAndCount(
     String uid,
     String pageNo,
@@ -340,6 +350,8 @@ class ProductRepository {
         throw Exception("[error] result of fetching isa mp products is null");
       }
 
+      // 좋아요 리스트를 불러와 동적으로 좋아요 상태 반영하기
+      // Reflect the like status dynamically from the liked products list
       final likedProducts = await likedRepository.getLikedProducts(uid);
       final likedProductNames = likedProducts
           .map((e) => e.commonInfo.productName)
@@ -347,6 +359,8 @@ class ProductRepository {
 
       final rawItems = body["items"]["item"] as Iterable<dynamic>;
 
+      // 원시 정보 가져와 IsaMPBenefit로 변환
+      // Convert raw data to IsaMPBenefit
       final items = rawItems
           .map<IsaMpBenefitRate?>((element) {
             if (element == null ||

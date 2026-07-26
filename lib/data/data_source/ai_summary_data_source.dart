@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 class AiSummaryDataSource {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  // AI 대화 내용 고정 여부 업데이트
+  // Update whether summary is pinned or not
   Future<void> updateSummaries(
     String uid,
     String productNameOrCd,
@@ -14,13 +16,19 @@ class AiSummaryDataSource {
   ) async {
     try {
       final batch = firestore.batch();
+
       final docRef = firestore
           .collection(uid)
           .doc("ai_summary")
           .collection("products")
           .doc(productNameOrCd);
       final summariesRef = docRef.collection("chat_summary");
-      await docRef.set({"category": category, "is_pinned": isPinned, "prdt_name": productName});
+      
+      batch.set(
+        docRef, 
+        {"category": category, "is_pinned": isPinned, "prdt_name": productName}
+      );
+      
       for (final text in texts) {
         final newDocRef = summariesRef.doc();
         batch.set(newDocRef, {
@@ -34,6 +42,8 @@ class AiSummaryDataSource {
     }
   }
 
+  // 상품 코드나 이름으로 AI 대화 요약본 가져오기
+  // Get Ai conversation summary with product code or name
   Future<Map<String, dynamic>> getSummariesWithPrdtNmOrCd(
     String uid,
     String productNameOrCd,
@@ -67,6 +77,8 @@ class AiSummaryDataSource {
     }
   }
 
+  // 모든 AI 대화 요약 가져오기
+  // Get all AI conversation summaries
   Future<List<(String, Map<String, dynamic>)>> getAllSummaries(
     String uid,
   ) async {

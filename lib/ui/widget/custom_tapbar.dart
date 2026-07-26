@@ -9,16 +9,18 @@ class CustomTapbar extends StatelessWidget {
     this.controller,
   });
 
-  final List<String> tabList;
-  final bool isIsaScreen;
-  final Function(int)? onTapFunc;
-  final TabController? controller;
+  final List<String> tabList;         // 탭 리스트
+  final bool isIsaScreen;             // ISA 스크린 여부
+  final Function(int)? onTapFunc;     // 탭 시 실행할 함수
+  final TabController? controller;    // 컨트롤러
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
+    // ISA 스크린여부에 따라 디자인 변경
+    // Change design whether it is called from ISA screen or not
     return TabBar(
       onTap: onTapFunc,
       controller: controller,

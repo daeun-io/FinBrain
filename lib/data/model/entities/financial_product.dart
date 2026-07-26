@@ -1,6 +1,7 @@
-// 공통 정보
 import 'package:finbrain/product_categories.dart';
 
+// 금융 상품 공통 정보
+// Common information of financial product
 class CommonInfo {
   // 프로퍼티명(필드명): 의미
   // submittedMonth(dcls_month): 공시 제출월

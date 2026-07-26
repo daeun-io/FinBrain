@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 class AiSummaryRepository {
   final dataSource = AiSummaryDataSource();
 
+  // AI 대화 내용 고정 여부 업데이트
+  // Update whether summary is pinned or not
   Future<void> updateSummaries(
     String uid,
     String productNameOrCd,
@@ -33,6 +35,8 @@ class AiSummaryRepository {
     }
   }
 
+  // 상품 코드나 이름으로 AI 대화 요약본 가져오기
+  // Get Ai conversation summary with product code or name
   Future<AiRecord> getSummariesWithPrdtNmOrCd(
     String uid,
     String productNameOrCd,
@@ -41,17 +45,23 @@ class AiSummaryRepository {
       final summary = await dataSource.getSummariesWithPrdtNmOrCd(uid, productNameOrCd);
       if (summary.isEmpty) {
         debugPrint("[empty] $productNameOrCd summary list is empty");
+        // 빈 AiRecord 반환
+        // Return an empty AiRecord
         return AiRecord(
           key: "",
           isExpanded: false,
           isPinned: false,
           value: [],
+          // liked는 필터링에 안 쓰이기에 지정
+          // ProductCategory.liked is not used in filtering AiRecords
           category: ProductCategory.liked,
           name: "",
         );
       }
+      // 요약본 AiRecord로 변환
+      // Convert summaries to AiRecord
       final record = AiRecord(
-        key: productNameOrCd, // change later
+        key: productNameOrCd,
         isExpanded: false,
         isPinned: summary["is_pinned"],
         value: (summary["summaries"] as List)
@@ -71,6 +81,8 @@ class AiSummaryRepository {
     }
   }
 
+  // 모든 AI 대화 요약 가져오기
+  // Get all AI conversation summaries
   Future<List<AiRecord>> getAllSummaries(String uid) async {
     try {
       final summaries = await dataSource.getAllSummaries(uid);
@@ -83,6 +95,8 @@ class AiSummaryRepository {
 
       for (final summary in summaries) {
         try {
+          // 요약본 AiRecord로 변환 후 리스트에 저장
+          // Convert summaries to AiRecord and add to list
           record.add(
             AiRecord(
               key: summary.$1,

@@ -8,17 +8,19 @@ import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// AI 비교분석 스크린
+// Displaying comparison text screen
 class AiComparisonScreen extends ConsumerStatefulWidget {
   const AiComparisonScreen({
     super.key,
-    required this.tag,
+    required this.tag, 
     required this.name,
     required this.ctg,
   });
 
-  final String tag;
-  final String name;
-  final ProductCategory ctg;
+  final String tag;             // 상품 코드나 이름 묶음(collection of product codes or names)
+  final String name;            // 상품 이름 묶음(collection of product names)
+  final ProductCategory ctg;    // 상품 카테고리(product category)
 
   @override
   ConsumerState<AiComparisonScreen> createState() => _AiComparisonScreenState();
@@ -32,7 +34,10 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   @override
   void initState() {
     super.initState();
+    // 상품 이름을 분리
+    // Separate name collection
     items = widget.name.split("`");
+    // AI 프롬프트(AI prompt)
     request = "$items들의 공통점과 차이점을 바탕으로 표 없이 비교 분석해줘";
   }
 
@@ -41,6 +46,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
+    // 프롬프트 전달
+    // Send AI prompt
     final text = ref.watch(aiComparisonScreenViewmodelProvider(request));
 
     return Scaffold(
@@ -62,6 +69,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const SizedBox(height: 16.0),
+                    // AI 응답
+                    // AI Comparison texts(response)
                     Align(
                       alignment: Alignment.centerLeft,
                       child: MarkdownTextRenderer(str: data),
@@ -70,6 +79,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                       children: [
                         TextButton(
                           onPressed: () {
+                            // 재생성(refresh)
                             ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
@@ -96,11 +106,15 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                         const SizedBox(width: 16.0),
                         GestureDetector(
                           onTap: () async {
+                            // 비교 대상 초기화
+                            // Reset the comparison target list
                             ref
                                 .read(
                                   selectedProductsViewmodelProvider.notifier,
                                 )
                                 .resetSelectedList();
+                            // 서버에 응답 저장
+                            // Save AI response in firestore
                            await ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
@@ -148,6 +162,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
             const SizedBox(width: 16.0),
             TextButton(
               onPressed: () {
+                // 오류 발생 시 재시도
+                // Try again to fetch response when error occurred
                 ref
                     .read(
                       aiComparisonScreenViewmodelProvider(widget.tag).notifier,

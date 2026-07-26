@@ -1,15 +1,23 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 
+// AI 응답 레포지토리
+// AI response repository
 class AiResponseRepository {
+  // AI 응답 호출하기
+  // Get AI response with given request
   Future<String?> fetchAIResponse(
     String text, [
     FinancialProduct? product,
   ]) async {
+    // AI 모델: 제미나이
+    // AI Model: Gemini
     final model = FirebaseAI.googleAI().generativeModel(
       model: "gemini-3.5-flash",
     );
 
+    // 프롬프트 지정
+    // Set AI prompt
     final prompt = [Content.text(text)];
     if (product != null) {
       prompt.add(
@@ -20,12 +28,14 @@ class AiResponseRepository {
         ),
       );
     }
+
+    // 응답 생성하기
+    // Get AI response
     try {
       final response = await model.generateContent(prompt);
       return response.text;
     } catch (e) {
       throw Exception("[error] failed to ai response) : $e");
-
     }
   }
 }

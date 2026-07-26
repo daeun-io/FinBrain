@@ -1,6 +1,8 @@
 import 'package:finbrain/themes/text_style.dart';
 import 'package:flutter/material.dart';
 
+// 기본 텍스트 크기
+// Default text size
 final normalTextTheme = TextTheme(
   headlineLarge: headingMd,
   headlineMedium: headingSm,
@@ -18,6 +20,8 @@ final normalTextTheme = TextTheme(
   labelSmall: captionSb,
 );
 
+// 큰 글씨 모드
+// Large text size
 final bigTextTheme = TextTheme(
   headlineLarge: headingMd,
   headlineMedium: headingSm,
