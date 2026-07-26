@@ -61,8 +61,9 @@ class AiButton extends ConsumerWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                         snackbar(context, "선택하신 상품의 카테고리가 존재하지 않습니다.\n다시 시도해주세요"),
                       );
+                      return const SizedBox.shrink();
                     }
-                    return AiComparisonScreen(tag: tag, name: name, ctg: ctg!);
+                    return AiComparisonScreen(tag: tag, name: name, ctg: ctg);
                   },
                 ),
               );

@@ -84,7 +84,7 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
               return a.companyCount!.compareTo(b.companyCount!);
             case "회사 수(내림차순)":
               return b.companyCount!.compareTo(a.companyCount!);
-            case "가입자 수(내림차순)":
+            case "가입자 수(오름차순)":
               return a.joinMemberCount!.compareTo(b.joinMemberCount!);
             default:
               return b.joinMemberCount!.compareTo(a.joinMemberCount!);

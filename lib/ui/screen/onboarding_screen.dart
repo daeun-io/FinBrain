@@ -94,7 +94,7 @@ class OnBoardingScreen extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.8,
       fit: BoxFit.contain,
       alignment: Alignment.topCenter,
-      semanticsLabel: "Onboading illustration $num",
+      semanticsLabel: "Onboarding illustration $num",
     );
   }
 
