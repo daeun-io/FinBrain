@@ -1,8 +1,10 @@
+import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // 커스텀 검색창
 // Custon search bar
-class SearchBox extends StatefulWidget {
+class SearchBox extends ConsumerStatefulWidget {
   const SearchBox({
     super.key,
     required this.searchItem,
@@ -13,14 +15,14 @@ class SearchBox extends StatefulWidget {
   final bool fromLikedScreen;
 
   @override
-  State<SearchBox> createState() => _SearchBoxState();
+  ConsumerState<SearchBox> createState() => _SearchBoxState();
 }
 
-class _SearchBoxState extends State<SearchBox> {
+class _SearchBoxState extends ConsumerState<SearchBox> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return ConstrainedBox(
       constraints: BoxConstraints(

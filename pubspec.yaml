@@ -132,18 +132,22 @@ flutter:
   - assets/images/isa_guide_light_portrait_02.svg
   - assets/images/isa_guide_light_portrait_03.svg
   - assets/images/isa_guide_light_portrait_04.svg
+  - assets/images/isa_guide_light_portrait_05.svg
   - assets/images/isa_guide_dark_portrait_01.svg
   - assets/images/isa_guide_dark_portrait_02.svg
   - assets/images/isa_guide_dark_portrait_03.svg
   - assets/images/isa_guide_dark_portrait_04.svg
+  - assets/images/isa_guide_dark_portrait_05.svg
   - assets/images/isa_guide_light_landscape_01.svg
   - assets/images/isa_guide_light_landscape_02.svg
   - assets/images/isa_guide_light_landscape_03.svg
   - assets/images/isa_guide_light_landscape_04.svg
+  - assets/images/isa_guide_light_landscape_05.svg
   - assets/images/isa_guide_dark_landscape_01.svg
   - assets/images/isa_guide_dark_landscape_02.svg
   - assets/images/isa_guide_dark_landscape_03.svg
   - assets/images/isa_guide_dark_landscape_04.svg
+  - assets/images/isa_guide_dark_landscape_05.svg
   - assets/icon/app_icon.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

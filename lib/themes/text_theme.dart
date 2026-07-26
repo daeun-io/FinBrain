@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 final normalTextTheme = TextTheme(
   headlineLarge: headingMd,
   headlineMedium: headingSm,
+  headlineSmall: bodySbLg,
 
   titleLarge: bodySbMd,
   titleMedium: bodySbSm,
@@ -25,6 +26,7 @@ final normalTextTheme = TextTheme(
 final bigTextTheme = TextTheme(
   headlineLarge: headingMd,
   headlineMedium: headingSm,
+  headlineSmall: bodySbXl,
 
   titleLarge: bodySbXl,
   titleMedium: bodySbLg,

@@ -1,3 +1,4 @@
+import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -16,7 +17,7 @@ class ProductDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     // 카테고리에 맞는 데이터 필터 불러오기
     // Fetch data filter by category

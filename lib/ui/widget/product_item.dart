@@ -10,6 +10,7 @@ import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,7 +39,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     final productList = ref.watch(productViewmodelProvider(widget.category));
     final likedList = ref.watch(fetchLikedViewmodelProvider);
@@ -88,7 +89,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
           // Add/Delete when liked product is long pressed
           onLongPress: () {
             setState(() {
-              if (product.commonInfo.isLiked) {
+              if(widget.fromLikedScreen){
+                if (product.commonInfo.isLiked) {
                 isSelected = !isSelected;
               }
               if (isSelected) {
@@ -99,6 +101,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                 ref
                     .read(selectedProductsViewmodelProvider.notifier)
                     .subtractProduct(product);
+              }
               }
             });
           },

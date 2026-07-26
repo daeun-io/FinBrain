@@ -2,6 +2,7 @@ import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/text_style.dart';
 import 'package:finbrain/ui/viewmodel/archive_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
@@ -15,7 +16,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     // AI 응답 필터
     // AI response filter

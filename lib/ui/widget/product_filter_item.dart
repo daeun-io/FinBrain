@@ -1,5 +1,6 @@
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,7 +21,7 @@ class ProductFilterItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     var localIsSelected = isSelected;
 

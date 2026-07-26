@@ -1,5 +1,6 @@
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,7 +26,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     // 정렬/필터링 기준 관찰
     // Watch sorting/filtering criteria

@@ -4,6 +4,7 @@ import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +27,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     // 바텀 네비게이션 뷰(bottom navigation view)
     final bottomView = const [SavingsScreen(), LoanScreen(), LikedScreen()];

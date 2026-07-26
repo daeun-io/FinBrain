@@ -1,17 +1,19 @@
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
 import 'package:finbrain/data/google_auth_service.dart';
 
-class OnBoardingScreen extends StatelessWidget {
+class OnBoardingScreen extends ConsumerWidget {
   OnBoardingScreen({super.key});
 
   final PageController _pageController = PageController();
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
     // 모드 및 기기에 따라 동적으로 이미지 불러오기
     // Fetch image dynamically based on mode and device
     final isLightMode = Theme.of(context).brightness == Brightness.light;

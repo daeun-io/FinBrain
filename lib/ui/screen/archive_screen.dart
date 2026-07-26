@@ -25,7 +25,7 @@ class ArchiveScreen extends StatelessWidget {
       backgroundColor: colorScheme.primary,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CustomAppbar(screen: "archive", title: "아카이브"),
+        child: CustomAppbar(screen: "archive", title: "기록 보관소"),
       ),
       body: DefaultTabController(
         length: 2,

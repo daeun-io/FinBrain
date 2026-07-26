@@ -2,6 +2,7 @@ import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/screen/ai_comparison_screen.dart';
+import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,7 +26,7 @@ class AiButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return SizedBox(
       height: 80,
@@ -39,9 +40,9 @@ class AiButton extends ConsumerWidget {
             final num = ref
                 .read(selectedProductsViewmodelProvider.notifier)
                 .getNumOfProducts();
-            if (num == 0) {
+            if (num < 2) {
               ScaffoldMessenger.of(context).showSnackBar(
-                snackbar(context, "선택하신 상품이 없습니다! 상품을 선택해주세요")
+                snackbar(context, "최소 2개 이상의 상품을 선택해주세요!")
               );
             }
             else if (!ref

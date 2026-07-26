@@ -73,11 +73,7 @@ class CustomAppbar extends ConsumerWidget {
           // Change text theme button
           OutlinedButton(
             onPressed: () {
-              ref
-                  .read(textThemeViewmodelProvider.notifier)
-                  .changeTxtTheme(
-                    (currTxtTheme == bigTextTheme) ? true : false,
-                  );
+              ref.read(textThemeViewmodelProvider.notifier).changeTxtTheme();
             },
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(
