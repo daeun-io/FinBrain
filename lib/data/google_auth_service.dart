@@ -54,7 +54,6 @@ class GoogleAuthService {
       final User? user = userCredential.user;
       
       if (user != null) {
-        debugPrint('User signed in: ${user.displayName}, ${user.email}');
         return userCredential;
       } else {
         debugPrint('User sign-in failed');

@@ -1,3 +1,4 @@
+import 'package:finbrain/ui/viewmodel/onboarding_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,7 +65,7 @@ class OnBoardingScreen extends ConsumerWidget {
             const SizedBox(height: 28),
             GestureDetector(
               onTap: () {
-                _signInWithGoogle(context);
+                _signInWithGoogle(context, ref);
               },
               behavior: HitTestBehavior.opaque,
               child: Container(
@@ -101,9 +102,8 @@ class OnBoardingScreen extends ConsumerWidget {
   }
 
   // 구글 로그인하기(google social login)
-  void _signInWithGoogle(BuildContext context) async {
+  void _signInWithGoogle(BuildContext context, WidgetRef ref) async {
     if (!context.mounted) return;
-
     final userCredential = await GoogleAuthService().signInWithGoogle();
 
     if (userCredential == null) {
@@ -113,6 +113,8 @@ class OnBoardingScreen extends ConsumerWidget {
         ).showSnackBar(const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요')));
       }
     } else {
+      final user = userCredential.user;
+      ref.read(onboardingScreenViewmodelProvider.notifier).savePersonalInfoInfirestore(user!);
       if (context.mounted) {
         Navigator.of(
           context,

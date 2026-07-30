@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finbrain/data/aes_helper.dart';
 import 'package:flutter/widgets.dart';
 
 class AiConversationDataSource {
@@ -16,14 +17,16 @@ class AiConversationDataSource {
   ) async {
     try {
       final docRef = firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("ai_conversation")
           .collection("products")
           .doc(productNameOrCode);
       await docRef.set({"category": ctg, "prdt_name": productName});
       await docRef.collection("chat_history").add({
-        "request": request,
-        "response": response,
+        "request": AesHelper.encryptText(request),
+        "response": AesHelper.encryptText(response),
         "created_at": DateTime.now().toIso8601String(),
       });
     } catch (e) {
@@ -37,9 +40,11 @@ class AiConversationDataSource {
     String uid,
     String productNameOrCode,
   ) async {
-    try {
+    try {      
       final docSnapshot = await firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("ai_conversation")
           .collection("products")
           .doc(productNameOrCode)

@@ -60,6 +60,7 @@ dependencies:
   shared_preferences: ^2.5.5
   split_view: ^3.2.2
   collection: ^1.19.1
+  encrypt: ^5.0.3
 
 
 flutter_native_splash:

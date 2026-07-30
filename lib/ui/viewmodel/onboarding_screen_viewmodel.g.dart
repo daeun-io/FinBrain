@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'text_theme_viewmodel.dart';
+part of 'onboarding_screen_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,52 +9,52 @@ part of 'text_theme_viewmodel.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(TextThemeViewmodel)
-final textThemeViewmodelProvider = TextThemeViewmodelProvider._();
+@ProviderFor(OnboardingScreenViewmodel)
+final onboardingScreenViewmodelProvider = OnboardingScreenViewmodelProvider._();
 
-final class TextThemeViewmodelProvider
-    extends $NotifierProvider<TextThemeViewmodel, TextTheme> {
-  TextThemeViewmodelProvider._()
+final class OnboardingScreenViewmodelProvider
+    extends $NotifierProvider<OnboardingScreenViewmodel, int> {
+  OnboardingScreenViewmodelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'textThemeViewmodelProvider',
+        name: r'onboardingScreenViewmodelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$textThemeViewmodelHash();
+  String debugGetCreateSourceHash() => _$onboardingScreenViewmodelHash();
 
   @$internal
   @override
-  TextThemeViewmodel create() => TextThemeViewmodel();
+  OnboardingScreenViewmodel create() => OnboardingScreenViewmodel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TextTheme value) {
+  Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<TextTheme>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
 
-String _$textThemeViewmodelHash() =>
-    r'c22f9435aefeb866e84ad061644c36e50e374d0b';
+String _$onboardingScreenViewmodelHash() =>
+    r'9604ff82ec9bee67cbb4780802ec96d5859dca52';
 
-abstract class _$TextThemeViewmodel extends $Notifier<TextTheme> {
-  TextTheme build();
+abstract class _$OnboardingScreenViewmodel extends $Notifier<int> {
+  int build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<TextTheme, TextTheme>;
+    final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<TextTheme, TextTheme>,
-              TextTheme,
+              AnyNotifier<int, int>,
+              int,
               Object?,
               Object?
             >;
