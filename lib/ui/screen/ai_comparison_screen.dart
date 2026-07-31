@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // AI 비교분석 스크린
 // Displaying comparison text screen
-class AiComparisonScreen extends ConsumerStatefulWidget {
+class AiComparisonScreen extends ConsumerWidget {
   const AiComparisonScreen({
     super.key,
     required this.tag, 
@@ -23,28 +23,15 @@ class AiComparisonScreen extends ConsumerStatefulWidget {
   final ProductCategory ctg;    // 상품 카테고리(product category)
 
   @override
-  ConsumerState<AiComparisonScreen> createState() => _AiComparisonScreenState();
-}
-
-class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
-  late List<String> items;
-
-  late String request;
-
-  @override
-  void initState() {
-    super.initState();
-    // 상품 이름을 분리
-    // Separate name collection
-    items = widget.name.split("`");
-    // AI 프롬프트(AI prompt)
-    request = "$items들의 공통점과 차이점을 바탕으로 표 없이 비교 분석해줘";
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
+
+    // 상품 이름을 분리
+    // Separate name collection
+    final items = name.split("`");
+    // AI 프롬프트(AI prompt)
+    final request = "$items들의 공통점과 차이점을 바탕으로 표 없이 비교 분석해줘";
 
     // 프롬프트 전달
     // Send AI prompt
@@ -78,12 +65,12 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                     Row(
                       children: [
                         TextButton(
-                          onPressed: () {
+                          onPressed: ()  {
                             // 재생성(refresh)
                             ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
-                                    widget.tag,
+                                    request,
                                   ).notifier,
                                 )
                                 .refreshComparison(request);
@@ -94,7 +81,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                             ),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(4.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Text(
                               "다시 생성하기",
                               style: textTheme.bodyMedium!.copyWith(
@@ -114,7 +101,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                     request,
                                   ).notifier,
                                 )
-                                .saveComparisonText(widget.name, widget.tag, widget.ctg);
+                                .saveComparisonText(name, tag, ctg);
                             if(context.mounted){
                               Navigator.of(context).pop();
                             }
@@ -159,7 +146,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                 // Try again to fetch response when error occurred
                 ref
                     .read(
-                      aiComparisonScreenViewmodelProvider(widget.tag).notifier,
+                      aiComparisonScreenViewmodelProvider(tag).notifier,
                     )
                     .refreshComparison(request);
               },

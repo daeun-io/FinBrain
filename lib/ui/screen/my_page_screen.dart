@@ -20,6 +20,7 @@ class MyPageScreen extends ConsumerWidget {
     final user = GoogleAuthService.getCurrentUser();
 
     return Scaffold(
+      backgroundColor: colorScheme.primary,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppbar(screen: "my_page", title: "마이페이지"),
@@ -146,7 +147,7 @@ class MyPageScreen extends ConsumerWidget {
                                 vertical: 32,
                                 horizontal: 20,
                               ),
-                              child: MarkdownTextRenderer(str: policy)
+                              child: MarkdownTextRenderer(str: policy),
                             );
                           },
                         );

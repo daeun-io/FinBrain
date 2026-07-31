@@ -226,7 +226,16 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
   // Re-request the comparison
   Future<void> refreshComparison(String text) async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _askComparsion(text));
+    try {
+      final response = await _askComparsion(text);
+      if(ref.mounted){
+        state = AsyncValue.data(response);
+      }
+    } catch (e, st){
+      if(ref.mounted){
+        state = AsyncValue.error(e, st);
+      }
+    }
   }
 
   // 저장소에 비교 글 저장하기
