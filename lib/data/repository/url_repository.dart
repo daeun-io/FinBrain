@@ -1,0 +1,96 @@
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+
+// 상품 공식 홈페이지 이동 레포지토리
+// Repository for linking to official website
+class UrlRepository {
+  // 공식 웹사이트 검색 함수
+  // Searching official website function
+  Future<String> fetchAndOpenProductUrl(
+    String companyName,
+    String productName,
+  ) async {
+    final client = http.Client();
+    final cleanCmpy = companyName.trim();
+    final cleanPrdt = productName.trim();
+    final String searchQuery = "$cleanCmpy $cleanPrdt 공식 사이트";
+    final String encodedQuery = Uri.encodeComponent(searchQuery);
+    final String url = "https://html.duckduckgo.com/html/?q=${encodedQuery}";
+
+    try {
+      final response = await client.get(
+        Uri.parse(url),
+        headers: {
+          "User-Agent":
+              "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+        },
+      );
+      if (response.statusCode == 200) {
+        final html = response.body;
+        final String searchResultSection = "class=\"links_main";
+
+        final cleanHtml = (html.contains(searchResultSection))
+            ? html.split(searchResultSection)[1]
+            : html;
+        final RegExp urlRegex = RegExp(
+          "class=\"result__url\"[^>]*href=\"([^\"]+)\"",
+        );
+        final Match? match = urlRegex.firstMatch(cleanHtml);
+
+        if (match != null && match.groupCount >= 1) {
+          String extracted = match.group(1)!;
+
+          if (extracted.contains("uddg=")) {
+            final List<String> parts = extracted.split("uddg=");
+            if (parts.length > 1) {
+              final String rawUrl = parts[1].split("&")[0];
+              extracted = Uri.decodeComponent(rawUrl);
+            }
+          } else {
+            extracted = Uri.decodeComponent(extracted);
+          }
+          return extracted;
+        } else {
+          debugPrint("[empty] no url found for $productName");
+          return "No result found";
+        }
+      } else {
+        throw Exception(
+          "[error] failed to fetch $productName url, ${response.statusCode}",
+        );
+      }
+    } catch (e) {
+      throw Exception("[error] failed to fetch $productName url, $e");
+    } finally {
+      client.close();
+    }
+  }
+
+  // 찾은 url을 웹 브라우저에 띄우기
+  // Launch found url in web browser
+  Future<bool> launchInBrowser(String urlString) async {
+    if (urlString.isEmpty || urlString == "No result found") {
+      debugPrint("[empty] url string is invalid or empty, $urlString");
+      return false;
+    }
+
+    final Uri? url = Uri.tryParse(urlString);
+    if (url == null) {
+      debugPrint("[error] failed to parse the url string");
+      return false;
+    }
+
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+        return true;
+      } else {
+        debugPrint("[error] failed to open url link via OS");
+        return false;
+      }
+    } catch (e) {
+      throw Exception("[error] failed to launch url, $e");
+    }
+  }
+}

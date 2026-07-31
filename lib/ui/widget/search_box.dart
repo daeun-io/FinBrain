@@ -1,0 +1,62 @@
+import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// 커스텀 검색창
+// Custon search bar
+class SearchBox extends ConsumerStatefulWidget {
+  const SearchBox({
+    super.key,
+    required this.searchItem,
+    required this.fromLikedScreen,
+  });
+
+  final Function(String) searchItem;          // 필터링 함수(filter funciton)
+  final bool fromLikedScreen;
+
+  @override
+  ConsumerState<SearchBox> createState() => _SearchBoxState();
+}
+
+class _SearchBoxState extends ConsumerState<SearchBox> {
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minWidth: MediaQuery.of(context).size.width
+      ),
+      child: SearchBar(
+        // 입력 완료되면 필터링 함수 실행
+        // Run filter function when submitted
+        onSubmitted: ((value) => widget.searchItem(value)),
+        // 입력이 초기화되면 원래 상태로 돌리기
+        // Back to original state when input is empty
+        onChanged: (value) {
+          if (value.isEmpty) widget.searchItem(value);
+        },
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(vertical: 2.0, horizontal: 12.0),
+        ),
+        trailing: [Icon(Icons.search, size: 28, color: colorScheme.outlineVariant)],
+        backgroundColor: WidgetStatePropertyAll(colorScheme.tertiary),
+        side: WidgetStatePropertyAll(BorderSide(color: colorScheme.outlineVariant, width: 1)),
+        shape: const WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.all(Radius.circular(30.0)),
+          ),
+        ),
+        elevation: const WidgetStatePropertyAll(0.0),
+        textStyle: WidgetStatePropertyAll(
+          textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary)
+        ),
+        hintText: (widget.fromLikedScreen) ? "상품명 검색" : "현재 불러온 상품에서 검색",
+        hintStyle: WidgetStatePropertyAll(
+          textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary)
+        ),
+      ),
+    );
+  }
+}
