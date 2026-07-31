@@ -13,7 +13,7 @@ class AiResponseRepository {
     // AI 모델: 제미나이
     // AI Model: Gemini
     final model = FirebaseAI.googleAI().generativeModel(
-      model: "gemini-3.5-flash",
+      model: "gemini-3.5-flash-lite",
     );
 
     // 프롬프트 지정
