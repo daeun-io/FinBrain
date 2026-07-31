@@ -1,7 +1,7 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/themes/text_theme.dart';
-import 'package:finbrain/ui/screen/archive_screen.dart';
 import 'package:finbrain/ui/screen/isa_guide_screen.dart';
+import 'package:finbrain/ui/screen/my_page_screen.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -104,16 +104,16 @@ class CustomAppbar extends ConsumerWidget {
               size: 32,
             ),
           ),
-          // 저장소 스크린으로 이동하는 버튼
-          // Navigate to archive screen button
+          // 마이페이지로 이동하는 버튼
+          // Navigate to my page screen button
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => const ArchiveScreen()),
+                MaterialPageRoute(builder: (ctx) => const MyPageScreen()),
               );
             },
             icon: Icon(
-              Icons.archive_sharp,
+              Icons.person,
               color: colorScheme.surfaceContainerHighest,
               size: 32,
             ),

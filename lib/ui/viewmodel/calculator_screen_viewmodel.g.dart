@@ -42,7 +42,7 @@ final class CalculatorScreenViewmodelProvider
 }
 
 String _$calculatorScreenViewmodelHash() =>
-    r'67168e826a1be869be4031703f89df13898f7207';
+    r'c0335d86cd42074186bf57e82fd358948042c73c';
 
 abstract class _$CalculatorScreenViewmodel extends $Notifier<List<double>> {
   List<double> build();

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finbrain/data/aes_helper.dart';
 import 'package:flutter/foundation.dart';
 
 class AiSummaryDataSource {
@@ -18,7 +19,9 @@ class AiSummaryDataSource {
       final batch = firestore.batch();
 
       final docRef = firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("ai_summary")
           .collection("products")
           .doc(productNameOrCd);
@@ -31,8 +34,9 @@ class AiSummaryDataSource {
       
       for (final text in texts) {
         final newDocRef = summariesRef.doc();
+      
         batch.set(newDocRef, {
-          "summary": text["summary"],
+          "summary": AesHelper.encryptText(text["summary"]),
           "created_at": text["created_at"],
         });
       }
@@ -50,7 +54,9 @@ class AiSummaryDataSource {
   ) async {
     try {
       final docRef = firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("ai_summary")
           .collection("products")
           .doc(productNameOrCd);
@@ -84,7 +90,9 @@ class AiSummaryDataSource {
   ) async {
     try {
       final docSnapshot = await firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("ai_summary")
           .collection("products")
           .get();

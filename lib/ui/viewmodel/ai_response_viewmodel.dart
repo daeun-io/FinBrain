@@ -1,3 +1,4 @@
+import 'package:finbrain/data/aes_helper.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/repository/ai_comp_repository.dart';
@@ -163,7 +164,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
       final conversation = <String, String>{};
       for (final entry in loaded) {
         if (entry["request"] != null && entry["response"] != null) {
-          conversation[entry["request"]!] = entry["response"]!;
+          conversation[AesHelper.decryptText(entry["request"]!)] = AesHelper.decryptText(entry["response"]!);
         }
       }
       final messages = conversation.entries

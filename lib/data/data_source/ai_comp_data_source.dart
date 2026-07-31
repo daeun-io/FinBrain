@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finbrain/data/aes_helper.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/rendering.dart';
 
@@ -17,14 +18,16 @@ class AiCompDataSource {
   ]) async {
     try {
       await firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("ai_comparison")
           .collection("products")
           .doc(tag)
           .set({
             "category": ctg.toString(),
             "created_at": DateTime.now(),
-            "comp_text": text,
+            "comp_text": AesHelper.encryptText(text),
             "is_pinned": isPinned ?? false,
             "prdt_names": prdtNames,
           });
@@ -42,7 +45,9 @@ class AiCompDataSource {
   ) async {
     try {
       final docSnapshot = await firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("ai_comparison")
           .collection("products")
           .doc(tag)
@@ -66,7 +71,9 @@ class AiCompDataSource {
   ) async {
     try {
       final docSnapshot = await firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("ai_comparison")
           .collection("products")
           .get();

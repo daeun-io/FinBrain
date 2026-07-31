@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'text_theme_viewmodel.dart';
+part of 'my_page_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,52 +9,51 @@ part of 'text_theme_viewmodel.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(TextThemeViewmodel)
-final textThemeViewmodelProvider = TextThemeViewmodelProvider._();
+@ProviderFor(MyPageViewmodel)
+final myPageViewmodelProvider = MyPageViewmodelProvider._();
 
-final class TextThemeViewmodelProvider
-    extends $NotifierProvider<TextThemeViewmodel, TextTheme> {
-  TextThemeViewmodelProvider._()
+final class MyPageViewmodelProvider
+    extends $NotifierProvider<MyPageViewmodel, bool> {
+  MyPageViewmodelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'textThemeViewmodelProvider',
+        name: r'myPageViewmodelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$textThemeViewmodelHash();
+  String debugGetCreateSourceHash() => _$myPageViewmodelHash();
 
   @$internal
   @override
-  TextThemeViewmodel create() => TextThemeViewmodel();
+  MyPageViewmodel create() => MyPageViewmodel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TextTheme value) {
+  Override overrideWithValue(bool value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<TextTheme>(value),
+      providerOverride: $SyncValueProvider<bool>(value),
     );
   }
 }
 
-String _$textThemeViewmodelHash() =>
-    r'c22f9435aefeb866e84ad061644c36e50e374d0b';
+String _$myPageViewmodelHash() => r'f8d942483cbbb1afc9a320ca79ce0de593df69ea';
 
-abstract class _$TextThemeViewmodel extends $Notifier<TextTheme> {
-  TextTheme build();
+abstract class _$MyPageViewmodel extends $Notifier<bool> {
+  bool build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<TextTheme, TextTheme>;
+    final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<TextTheme, TextTheme>,
-              TextTheme,
+              AnyNotifier<bool, bool>,
+              bool,
               Object?,
               Object?
             >;

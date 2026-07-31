@@ -12,7 +12,9 @@ class LikedDataSource {
   ) async {
     try {
       await firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("liked_products")
           .collection("products")
           .doc(
@@ -31,7 +33,9 @@ class LikedDataSource {
   Future<void> deleteProductInFirestore(String uid, String nmOrCd) async {
     try {
       await firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("liked_products")
           .collection("products")
           .doc(nmOrCd)
@@ -46,7 +50,9 @@ class LikedDataSource {
   Future<List<Map<String, dynamic>>> getLikedProducts(String uid) async {
     try {
       final docSnapshot = await firestore
-          .collection(uid)
+          .collection("users")
+          .doc(uid)
+          .collection("activities")
           .doc("liked_products")
           .collection("products")
           .get();

@@ -10,7 +10,7 @@ final ThemeData lightTheme = ThemeData(
     secondary: lightGray,
     tertiary: lightGrayishBlue,
     surface: transparent,
-    // dialog background
+    // dialog & bottom sheet background
     surfaceContainer: white,
     // text
     onPrimary: navy,
@@ -54,7 +54,7 @@ final ThemeData darkTheme = ThemeData(
     secondary: darkGray,
     tertiary: darkGrayishBlue,
     surface: transparent,
-    // dialog background
+    // dialog & bottom sheet background
     surfaceContainer: darkGray,
     // text
     onPrimary: paleBlue,

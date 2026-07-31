@@ -1,3 +1,4 @@
+import 'package:finbrain/data/aes_helper.dart';
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/data_source/ai_summary_data_source.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
@@ -68,7 +69,7 @@ class AiSummaryRepository {
             .map<AiText>(
               (e) => AiText(
                 createdAt: (e["created_at"] as Timestamp).toDate(),
-                text: e["summary"],
+                text: AesHelper.decryptText(e["summary"]),
               ),
             )
             .toList(),
@@ -106,7 +107,7 @@ class AiSummaryRepository {
                   .map<AiText>(
                     (e) => AiText(
                       createdAt: (e["created_at"] as Timestamp).toDate(),
-                      text: e["summary"],
+                      text: AesHelper.decryptText(e["summary"]),
                     ),
                   )
                   .toList(),

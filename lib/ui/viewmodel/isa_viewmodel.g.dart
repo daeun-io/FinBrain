@@ -57,7 +57,7 @@ final class FetchIsaJoinStatusViewmodelProvider
 }
 
 String _$fetchIsaJoinStatusViewmodelHash() =>
-    r'6c591de67a46be83b31e2b8d0a2961ea4aa34260';
+    r'8e201928c31d8818534a3c8ac9d81818c715ea19';
 
 final class FetchIsaJoinStatusViewmodelFamily extends $Family
     with
@@ -152,7 +152,7 @@ final class IsaJoinStatusViewModelProvider
 }
 
 String _$isaJoinStatusViewModelHash() =>
-    r'bd814c26ab9309da47a0a28d59601a430cae06f1';
+    r'f1b421833cc555c7afe16648d16b9597fbbd463d';
 
 abstract class _$IsaJoinStatusViewModel
     extends $Notifier<AsyncValue<(int, List<IsaJoinStatus>)>> {
@@ -229,7 +229,7 @@ final class FetchIsaMngmStatusViewmodelProvider
 }
 
 String _$fetchIsaMngmStatusViewmodelHash() =>
-    r'f2558a481472996b1a2d811a6507d69eddd79a98';
+    r'63f5e0d8b068e916fed7062f83afbd3e5bd2bf84';
 
 final class FetchIsaMngmStatusViewmodelFamily extends $Family
     with
@@ -286,33 +286,33 @@ abstract class _$FetchIsaMngmStatusViewmodel
   }
 }
 
-@ProviderFor(IsaManagementStatusViewModel)
-final isaManagementStatusViewModelProvider =
-    IsaManagementStatusViewModelProvider._();
+@ProviderFor(IsaManagementStatusViewmodel)
+final isaManagementStatusViewmodelProvider =
+    IsaManagementStatusViewmodelProvider._();
 
-final class IsaManagementStatusViewModelProvider
+final class IsaManagementStatusViewmodelProvider
     extends
         $NotifierProvider<
-          IsaManagementStatusViewModel,
+          IsaManagementStatusViewmodel,
           AsyncValue<(int, List<IsaManagementStatus>)>
         > {
-  IsaManagementStatusViewModelProvider._()
+  IsaManagementStatusViewmodelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'isaManagementStatusViewModelProvider',
+        name: r'isaManagementStatusViewmodelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$isaManagementStatusViewModelHash();
+  String debugGetCreateSourceHash() => _$isaManagementStatusViewmodelHash();
 
   @$internal
   @override
-  IsaManagementStatusViewModel create() => IsaManagementStatusViewModel();
+  IsaManagementStatusViewmodel create() => IsaManagementStatusViewmodel();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(
@@ -328,10 +328,10 @@ final class IsaManagementStatusViewModelProvider
   }
 }
 
-String _$isaManagementStatusViewModelHash() =>
-    r'c0b29cdff5404f5ac7c7eb8c1d19d332ef34aa2d';
+String _$isaManagementStatusViewmodelHash() =>
+    r'146320c4d71f62345957721e7220de3fce17376b';
 
-abstract class _$IsaManagementStatusViewModel
+abstract class _$IsaManagementStatusViewmodel
     extends $Notifier<AsyncValue<(int, List<IsaManagementStatus>)>> {
   AsyncValue<(int, List<IsaManagementStatus>)> build();
   @$mustCallSuper

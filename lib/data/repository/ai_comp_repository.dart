@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finbrain/data/aes_helper.dart';
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/data_source/ai_comp_data_source.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
@@ -49,7 +50,7 @@ class AiCompRepository {
               value: [
                 AiText(
                   createdAt: (text.$2["created_at"] as Timestamp).toDate(),
-                  text: text.$2["comp_text"],
+                  text: AesHelper.decryptText(text.$2["comp_text"]),
                 ),
               ],
               category:

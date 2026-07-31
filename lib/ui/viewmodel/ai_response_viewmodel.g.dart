@@ -151,7 +151,7 @@ final class AiAssistScreenViewmodelProvider
 }
 
 String _$aiAssistScreenViewmodelHash() =>
-    r'1ba31870bd6f43217ab25ab0684d7ed93e421a2d';
+    r'a19fa1a4561178f57d9b4eaaec4d7537a57e30b9';
 
 final class AiAssistScreenViewmodelFamily extends $Family
     with

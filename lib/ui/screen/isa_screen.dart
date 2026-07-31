@@ -1,6 +1,6 @@
 import 'package:finbrain/ui/screen/isa_guide_screen.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/shared_preferences_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/isa_guide_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';
@@ -59,16 +59,20 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    // 앱 최초 실행이면 ISA 매뉴얼 호출
-    // Navigate to ISA guide screen when launched for the first time
-    final isFirstRun = ref.watch(sharedPreferencesViewmodelProvider);
+    // 첫 로그인이면 ISA 가이드 스크린으로 이동
+    // Navigate to ISA guide screen when this is first login
+    final displayedISAScreen = ref.watch(isaGuideViewmodelProvider);
     ref.listen<bool>(
-      sharedPreferencesViewmodelProvider.select((async) => async.requireValue),
-      (prev, next) {
-        if (next == true) {
-          Navigator.of(
+      isaGuideViewmodelProvider.select((async) => async.requireValue),
+      (prev, next) async {
+        if (next == false) {
+          final result = await Navigator.of(
             context,
           ).push(MaterialPageRoute(builder: (ctx) => const IsaGuideScreen()));
+          
+          if(result == true && context.mounted){
+            ref.invalidate(isaGuideViewmodelProvider);
+          }
         }
       },
     );
@@ -80,9 +84,9 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
       IsaMpScreen(),
     ];
 
-    return isFirstRun.when(
+    return displayedISAScreen.when(
       data: (data) {
-        if (data) {
+        if (!data) {
           // 오류 방지를 위한 빈 화면
           // Empty screen for error protection
           return Scaffold(backgroundColor: colorScheme.primary);

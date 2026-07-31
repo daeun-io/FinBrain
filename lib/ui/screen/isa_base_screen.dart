@@ -139,7 +139,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     // 데이터와 헤더 칼럼(data and header column)
     final joinItems = ref.watch(isaJoinStatusViewModelProvider);
     final joinColumn = ["ISA 종류", "회사 수", "가입자 수", "업권값"];
-    final mngmItems = ref.watch(isaManagementStatusViewModelProvider);
+    final mngmItems = ref.watch(isaManagementStatusViewmodelProvider);
     final mngmColumn = ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
     // 데이터 불러오면 상단으로 이동
@@ -153,7 +153,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         });
       }
     });
-    ref.listen(isaManagementStatusViewModelProvider, (prev, next) {
+    ref.listen(isaManagementStatusViewmodelProvider, (prev, next) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_controller.hasClients) {
@@ -196,7 +196,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                             .read(isaJoinStatusViewModelProvider.notifier)
                             .sortByCriteria(criteria, _totalCount)
                       : ref
-                            .read(isaManagementStatusViewModelProvider.notifier)
+                            .read(isaManagementStatusViewmodelProvider.notifier)
                             .sortByCriteria(criteria, _totalCount);
                 },
               ),

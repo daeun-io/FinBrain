@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -53,8 +54,7 @@ class GoogleAuthService {
       final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
       final User? user = userCredential.user;
       
-      if (user != null) {
-        debugPrint('User signed in: ${user.displayName}, ${user.email}');
+      if (user != null && user.email != null && user.displayName != null) {
         return userCredential;
       } else {
         debugPrint('User sign-in failed');
@@ -71,6 +71,8 @@ class GoogleAuthService {
     try {
       await _googleSignIn.signOut();
       await _auth.signOut();
+      FirebaseFirestore.instance.terminate();
+      
       debugPrint('User signed out successfully');
     } catch (e) {
       debugPrint('Error signing out: $e');
