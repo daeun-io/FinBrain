@@ -114,7 +114,7 @@ class OnBoardingScreen extends ConsumerWidget {
       }
     } else {
       final user = userCredential.user;
-      ref.read(onboardingScreenViewmodelProvider.notifier).savePersonalInfoInfirestore(user!);
+      ref.read(onboardingScreenViewmodelProvider.notifier).saveEmailAndDisplayName(user);
       if (context.mounted) {
         Navigator.of(
           context,

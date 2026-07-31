@@ -18,6 +18,7 @@ setGlobalOptions({
 import { fetchAndGroupProducts } from "./isa_api";
 import { fetchCmpyNameList } from "./cmpy_api";
 import { summarizeAndArchiveChat } from "./summarize_chat";
+import { deleteAllUserData } from "./delete_user_data";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -37,6 +38,7 @@ import { summarizeAndArchiveChat } from "./summarize_chat";
 exports.fetchAndGroupProducts = fetchAndGroupProducts;
 exports.fetchCmpyNameList = fetchCmpyNameList;
 exports.summarizeAndArchiveChat = summarizeAndArchiveChat;
+exports.deleteAllUserData = deleteAllUserData;
 
 // export const helloWorld = onRequest((request, response) => {
 //   logger.info("Hello logs!", {structuredData: true});

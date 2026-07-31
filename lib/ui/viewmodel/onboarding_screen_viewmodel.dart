@@ -1,5 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:finbrain/data/aes_helper.dart';
+import 'package:finbrain/data/data_source/user_data_source.dart';
 import 'package:finbrain/ui/viewmodel/shared_preferences_viewmodel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,18 +9,15 @@ class OnboardingScreenViewmodel extends _$OnboardingScreenViewmodel{
   @override
   int build() => 0;
   
-  Future<void> savePersonalInfoInfirestore(User? user) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // 서비스 시작 시 이메일과 이름 서버에 저장
+  // Save email and name to the server at service start
+  Future<void> saveEmailAndDisplayName(User? user) async {
+    if(user == null) return;
+
+    final dataSource = UserDataSource();
     final isFirstRun = await ref.read(sharedPreferencesViewmodelProvider.future);
     if(isFirstRun){
-      final userRef = firestore.collection("users").doc(user!.uid);
-      await userRef.set(
-        {
-          "display_name": AesHelper.encryptText(user.displayName ?? "성이름"),
-          "email" : AesHelper.encryptText(user.email!),
-        },
-        SetOptions(merge: true)
-      );
+      await dataSource.saveEmailAndDisplayName(user);
     }
   }
 }

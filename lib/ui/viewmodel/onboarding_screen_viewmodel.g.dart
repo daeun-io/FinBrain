@@ -42,7 +42,7 @@ final class OnboardingScreenViewmodelProvider
 }
 
 String _$onboardingScreenViewmodelHash() =>
-    r'9604ff82ec9bee67cbb4780802ec96d5859dca52';
+    r'ce0e34971946ec0c12e9e02544f1a069636637d0';
 
 abstract class _$OnboardingScreenViewmodel extends $Notifier<int> {
   int build();

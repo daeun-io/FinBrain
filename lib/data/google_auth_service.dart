@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -70,6 +71,8 @@ class GoogleAuthService {
     try {
       await _googleSignIn.signOut();
       await _auth.signOut();
+      FirebaseFirestore.instance.terminate();
+      
       debugPrint('User signed out successfully');
     } catch (e) {
       debugPrint('Error signing out: $e');
