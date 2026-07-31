@@ -145,8 +145,8 @@ class OnBoardingScreen extends ConsumerWidget {
                   return AlertDialog(
                     backgroundColor: colorScheme.surfaceContainer,
                     contentPadding: const EdgeInsets.symmetric(
-                      vertical: 24,
-                      horizontal: 20,
+                      vertical: 20,
+                      horizontal: 10,
                     ),
                     content: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.8,
