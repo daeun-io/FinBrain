@@ -1,6 +1,5 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -107,13 +106,6 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                         const SizedBox(width: 16.0),
                         GestureDetector(
                           onTap: () async {
-                            // 비교 대상 초기화
-                            // Reset the comparison target list
-                            ref
-                                .read(
-                                  selectedProductsViewmodelProvider.notifier,
-                                )
-                                .resetSelectedList();
                             // 서버에 응답 저장
                             // Save AI response in firestore
                            await ref

@@ -52,7 +52,7 @@ final class OnboardingScreenViewmodelProvider
 }
 
 String _$onboardingScreenViewmodelHash() =>
-    r'a206d1bc33db6d03f0aa21d47f323c395974daf5';
+    r'4dcab531150ed15881a108c5eb743ce30152c190';
 
 final class OnboardingScreenViewmodelFamily extends $Family
     with

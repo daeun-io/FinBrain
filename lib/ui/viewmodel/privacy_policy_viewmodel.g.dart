@@ -34,7 +34,7 @@ final class PrivacyPolicyViewmodelProvider
 }
 
 String _$privacyPolicyViewmodelHash() =>
-    r'f762cd99d9b5ae44974ba3d4d30558dbd7036aaf';
+    r'90d7d176fc7f8bbd4c288261d8ff4edc75697cee';
 
 abstract class _$PrivacyPolicyViewmodel extends $AsyncNotifier<String> {
   FutureOr<String> build();

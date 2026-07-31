@@ -149,8 +149,8 @@ class OnBoardingScreen extends ConsumerWidget {
                       horizontal: 20,
                     ),
                     content: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      height: MediaQuery.of(context).size.height * 0.56,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.65,
                       child: Column(
                         children: [
                           Expanded(

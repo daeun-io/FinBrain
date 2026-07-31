@@ -286,33 +286,33 @@ abstract class _$FetchIsaMngmStatusViewmodel
   }
 }
 
-@ProviderFor(IsaManagementStatusViewModel)
-final isaManagementStatusViewModelProvider =
-    IsaManagementStatusViewModelProvider._();
+@ProviderFor(IsaManagementStatusViewmodel)
+final isaManagementStatusViewmodelProvider =
+    IsaManagementStatusViewmodelProvider._();
 
-final class IsaManagementStatusViewModelProvider
+final class IsaManagementStatusViewmodelProvider
     extends
         $NotifierProvider<
-          IsaManagementStatusViewModel,
+          IsaManagementStatusViewmodel,
           AsyncValue<(int, List<IsaManagementStatus>)>
         > {
-  IsaManagementStatusViewModelProvider._()
+  IsaManagementStatusViewmodelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'isaManagementStatusViewModelProvider',
+        name: r'isaManagementStatusViewmodelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$isaManagementStatusViewModelHash();
+  String debugGetCreateSourceHash() => _$isaManagementStatusViewmodelHash();
 
   @$internal
   @override
-  IsaManagementStatusViewModel create() => IsaManagementStatusViewModel();
+  IsaManagementStatusViewmodel create() => IsaManagementStatusViewmodel();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(
@@ -328,10 +328,10 @@ final class IsaManagementStatusViewModelProvider
   }
 }
 
-String _$isaManagementStatusViewModelHash() =>
-    r'c0b29cdff5404f5ac7c7eb8c1d19d332ef34aa2d';
+String _$isaManagementStatusViewmodelHash() =>
+    r'146320c4d71f62345957721e7220de3fce17376b';
 
-abstract class _$IsaManagementStatusViewModel
+abstract class _$IsaManagementStatusViewmodel
     extends $Notifier<AsyncValue<(int, List<IsaManagementStatus>)>> {
   AsyncValue<(int, List<IsaManagementStatus>)> build();
   @$mustCallSuper

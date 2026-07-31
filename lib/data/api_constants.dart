@@ -8,3 +8,5 @@ const String finlife = 'finlife.fss.or.kr';
 const String firebase = 'asia-northeast3-finbrain-bb12c.cloudfunctions.net';
 // 웹사이트 검색에 쓰는 duckduckgo url(duckdukgo url for searching website)
 const String duckduckgo = 'html.duckduckgo.com';
+// ISA 제도 Q&A 사이트
+const String isaQandA = 'https://www.fsc.go.kr/po020201/27339?srchCtgry=&curPage=&srchKey=&srchText=&srchBeginDt=&srchEndDt=';

@@ -49,11 +49,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   // Function to launch official website
   void launchPrdtUrl(
     WidgetRef ref,
-    BuildContext context,
-    ColorScheme colorScheme,
-    TextTheme textTheme,
     String companyName,
+    TextStyle style
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
     ref
         .read(productDetailScreenViewmodelProvider.notifier)
         .fetchAndOpenProductUrl(companyName, widget.productName)
@@ -66,7 +65,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 duration: Duration(seconds: 3),
                 content: Text(
                   "오류: 외부 url으로의 이동이 실패했습니다, 다시 시도해주세요",
-                  style: textTheme.bodySmall!.copyWith(
+                  style: style.copyWith(
                     color: colorScheme.onSecondary,
                   ),
                 ),
@@ -323,10 +322,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     return GestureDetector(
       onTap: () => launchPrdtUrl(
         ref,
-        context,
-        colorScheme,
-        textTheme,
         product.commonInfo.companyName ?? "",
+        textTheme.bodySmall!
       ),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0),

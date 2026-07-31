@@ -179,7 +179,7 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
 // 화면에 ISA 운용 현황 보이는 뷰모델
 // Displaying ISA management status in screen
 @riverpod
-class IsaManagementStatusViewModel extends _$IsaManagementStatusViewModel {
+class IsaManagementStatusViewmodel extends _$IsaManagementStatusViewmodel {
   @override
   AsyncValue<(int, List<IsaManagementStatus>)> build() {
     // 데이터 뷰모델 관찰하기
