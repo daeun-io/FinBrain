@@ -38,7 +38,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         preferredSize: const Size.fromHeight(70.0),
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0),
-          child: const CustomAppbar(screen: "main", title: "FinBrain")
+          child: const CustomAppbar(screen: "main", title: "핀브레인")
         ),
       ),
       body: IndexedStack(

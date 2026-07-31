@@ -78,7 +78,7 @@ class OnBoardingScreen extends ConsumerWidget {
                 ),
                 padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 32.0),
                 child: Text(
-                  "FINBRAIN 시작하기",
+                  "핀브레인 시작하기",
                   style: textTheme.headlineLarge!.copyWith(
                     color: colorScheme.onPrimary,
                   ),
