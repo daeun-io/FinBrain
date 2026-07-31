@@ -23,4 +23,11 @@ class UserDataSource {
     await functions.httpsCallable("deleteAllUserData").call();
   }
 
+  // 첫 로그인 여부 확인
+  // Check if this is the first login
+  Future<bool?> isFirstLogin(User? user) async {
+    if(user == null || user.email == null || user.displayName == null) return null;
+    final userRef = await firestore.collection("users").doc(user.uid).get();
+    return !userRef.exists;
+  }
 }

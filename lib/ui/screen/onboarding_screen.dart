@@ -1,5 +1,7 @@
 import 'package:finbrain/ui/viewmodel/onboarding_screen_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/privacy_policy_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
+import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -108,18 +110,116 @@ class OnBoardingScreen extends ConsumerWidget {
 
     if (userCredential == null) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요')));
+        ScaffoldMessenger.of(context).showSnackBar(errorSnackbar());
       }
     } else {
       final user = userCredential.user;
-      ref.read(onboardingScreenViewmodelProvider.notifier).saveEmailAndDisplayName(user);
-      if (context.mounted) {
-        Navigator.of(
-          context,
-        ).pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()));
+      if (user == null) return;
+      // 첫 로그인 여부 확인
+      // Check if this is the first login
+      final isFirstLogin = await ref.read(
+        onboardingScreenViewmodelProvider(user).future,
+      );
+
+      if (isFirstLogin == null) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(errorSnackbar());
+        }
+      // 첫 로그인이면
+      } else if (isFirstLogin) {
+        if (context.mounted) {
+          final colorScheme = Theme.of(context).colorScheme;
+          final textTheme = ref.read(textThemeViewmodelProvider);
+          // 개인정보 방침 읽기
+          // Read privacy policy
+          final policy = await ref.read(privacyPolicyViewmodelProvider.future);
+          // 동의 여부 확인
+          // Check if user agreed to the the policy
+          final isAgreed = await showDialog<bool>(
+            context: context,
+            builder: (ctx) {
+              bool isChecked = false;
+
+              return StatefulBuilder(
+                builder: (context, setState) {
+                  return AlertDialog(
+                    backgroundColor: colorScheme.surfaceContainer,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 24,
+                      horizontal: 20,
+                    ),
+                    content: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: MediaQuery.of(context).size.height * 0.56,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: MarkdownTextRenderer(str: policy),
+                            ),
+                          ),
+                          const SizedBox(height: 20,),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextButton.icon(
+                                  onPressed: () {
+                                    setState(() {
+                                      isChecked = true;
+                                    });
+                                    if (isChecked) {
+                                      Navigator.of(context).pop(true);
+                                    }
+                                  },
+                                  icon: Icon(
+                                    (isChecked)
+                                        ? Icons.check_box
+                                        : Icons.check_box_outline_blank,
+                                    color: colorScheme.onPrimary,
+                                    size: 24,
+                                  ),
+                                  label: Text(
+                                    "개인정보 처리방침에 동의합니다",
+                                    style: textTheme.titleMedium!.copyWith(
+                                      color: colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+          // 동의했다면 개인정보 서버에 저장 후 메인 화면으로 이동
+          // If agreed, save personal info in server and navigate to main screen
+          if (isAgreed == true) {
+            await ref
+                .read(onboardingScreenViewmodelProvider(user).notifier)
+                .saveEmailAndDisplayName(user);
+            if (context.mounted) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (ctx) => MainScreen()),
+              );
+            }
+          }
+        }
+      } else {
+        if (context.mounted) {
+          Navigator.of(
+            context,
+          ).pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()));
+        }
       }
     }
+  }
+
+  SnackBar errorSnackbar() {
+    return const SnackBar(content: Text('로그인에 실패했습니다. 다시 시도해주세요'));
   }
 }

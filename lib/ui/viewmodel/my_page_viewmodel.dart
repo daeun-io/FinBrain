@@ -1,4 +1,3 @@
-import 'package:finbrain/data/data_source/privacy_policies_data_source.dart';
 import 'package:finbrain/data/data_source/user_data_source.dart';
 import 'package:finbrain/data/google_auth_service.dart';
 import 'package:flutter/foundation.dart';
@@ -8,15 +7,10 @@ part 'my_page_viewmodel.g.dart';
 
 @riverpod
 class MyPageViewmodel extends _$MyPageViewmodel {
-  final policyDataSource = PrivacyPoliciesDataSource();
   final userDataStore = UserDataSource();
 
-  // 개인정보 처리방침 가져오기
-  // Fetch privacy policies
   @override
-  Future<String> build() async {
-    return await policyDataSource.getCurrentPolicy();
-  }
+  bool build() => false;
 
   // 메일 열기
   Future<void> openMail() async {

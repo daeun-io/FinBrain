@@ -54,7 +54,7 @@ class GoogleAuthService {
       final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
       final User? user = userCredential.user;
       
-      if (user != null) {
+      if (user != null && user.email != null && user.displayName != null) {
         return userCredential;
       } else {
         debugPrint('User sign-in failed');

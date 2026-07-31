@@ -10,54 +10,92 @@ part of 'onboarding_screen_viewmodel.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(OnboardingScreenViewmodel)
-final onboardingScreenViewmodelProvider = OnboardingScreenViewmodelProvider._();
+final onboardingScreenViewmodelProvider = OnboardingScreenViewmodelFamily._();
 
 final class OnboardingScreenViewmodelProvider
-    extends $NotifierProvider<OnboardingScreenViewmodel, int> {
-  OnboardingScreenViewmodelProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'onboardingScreenViewmodelProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+    extends $AsyncNotifierProvider<OnboardingScreenViewmodel, bool?> {
+  OnboardingScreenViewmodelProvider._({
+    required OnboardingScreenViewmodelFamily super.from,
+    required User? super.argument,
+  }) : super(
+         retry: null,
+         name: r'onboardingScreenViewmodelProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$onboardingScreenViewmodelHash();
+
+  @override
+  String toString() {
+    return r'onboardingScreenViewmodelProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
   OnboardingScreenViewmodel create() => OnboardingScreenViewmodel();
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+  @override
+  bool operator ==(Object other) {
+    return other is OnboardingScreenViewmodelProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
 String _$onboardingScreenViewmodelHash() =>
-    r'ce0e34971946ec0c12e9e02544f1a069636637d0';
+    r'a206d1bc33db6d03f0aa21d47f323c395974daf5';
 
-abstract class _$OnboardingScreenViewmodel extends $Notifier<int> {
-  int build();
+final class OnboardingScreenViewmodelFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          OnboardingScreenViewmodel,
+          AsyncValue<bool?>,
+          bool?,
+          FutureOr<bool?>,
+          User?
+        > {
+  OnboardingScreenViewmodelFamily._()
+    : super(
+        retry: null,
+        name: r'onboardingScreenViewmodelProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  OnboardingScreenViewmodelProvider call(User? user) =>
+      OnboardingScreenViewmodelProvider._(argument: user, from: this);
+
+  @override
+  String toString() => r'onboardingScreenViewmodelProvider';
+}
+
+abstract class _$OnboardingScreenViewmodel extends $AsyncNotifier<bool?> {
+  late final _$args = ref.$arg as User?;
+  User? get user => _$args;
+
+  FutureOr<bool?> build(User? user);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<int, int>;
+    final ref = this.ref as $Ref<AsyncValue<bool?>, bool?>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
+              AnyNotifier<AsyncValue<bool?>, bool?>,
+              AsyncValue<bool?>,
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, build);
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

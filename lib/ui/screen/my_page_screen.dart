@@ -2,11 +2,10 @@ import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/ui/screen/archive_screen.dart';
 import 'package:finbrain/ui/screen/onboarding_screen.dart';
 import 'package:finbrain/ui/viewmodel/my_page_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/privacy_policy_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
-import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
-import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,7 +18,6 @@ class MyPageScreen extends ConsumerWidget {
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
     final user = GoogleAuthService.getCurrentUser();
-    final policy = ref.watch(myPageViewmodelProvider);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -125,7 +123,12 @@ class MyPageScreen extends ConsumerWidget {
                   children: [
                     // 개인정보처리방침(privacy policies)
                     ListTile(
-                      onTap: () {
+                      onTap: () async {
+                        // 개인정보 처리 방침 읽고 디스플레이
+                        // Read and display privacy policy
+                        final policy = await ref.read(
+                          privacyPolicyViewmodelProvider.future,
+                        );
                         showModalBottomSheet(
                           context: context,
                           backgroundColor: colorScheme.surfaceContainer,
@@ -143,14 +146,7 @@ class MyPageScreen extends ConsumerWidget {
                                 vertical: 32,
                                 horizontal: 20,
                               ),
-                              child: policy.when(
-                                data: (data) => Center(
-                                  child: MarkdownTextRenderer(str: data),
-                                ),
-                                loading: () => const CustomProgressIndicator(),
-                                error: (error, stackTrace) =>
-                                    const ShowingErrorWidget(),
-                              ),
+                              child: MarkdownTextRenderer(str: policy)
                             );
                           },
                         );
@@ -349,9 +345,7 @@ class MyPageScreen extends ConsumerWidget {
 }
 
 void navigateToOnboarding(BuildContext context) {
-  Navigator.of(
-    context,
-  ).pushAndRemoveUntil(
+  Navigator.of(context).pushAndRemoveUntil(
     MaterialPageRoute(builder: (ctx) => OnBoardingScreen()),
     (route) => false,
   );

@@ -2,8 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 part 'shared_preferences_viewmodel.g.dart';
 
-// 앱 최초 실행 여부
-// Check this app is ran for the first time
+// 기기에서 앱 최초 실행 여부
+// Check this app is ran on device for the first time
 @riverpod
 class SharedPreferencesViewmodel extends _$SharedPreferencesViewmodel {
   @override

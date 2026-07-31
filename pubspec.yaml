@@ -150,6 +150,7 @@ flutter:
   - assets/images/isa_guide_dark_landscape_04.svg
   - assets/images/isa_guide_dark_landscape_05.svg
   - assets/icon/app_icon.png
+  - assets/privacy_policy.md
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

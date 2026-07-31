@@ -13,7 +13,7 @@ part of 'my_page_viewmodel.dart';
 final myPageViewmodelProvider = MyPageViewmodelProvider._();
 
 final class MyPageViewmodelProvider
-    extends $AsyncNotifierProvider<MyPageViewmodel, String> {
+    extends $NotifierProvider<MyPageViewmodel, bool> {
   MyPageViewmodelProvider._()
     : super(
         from: null,
@@ -31,21 +31,29 @@ final class MyPageViewmodelProvider
   @$internal
   @override
   MyPageViewmodel create() => MyPageViewmodel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
 }
 
-String _$myPageViewmodelHash() => r'73f2642d337af641d8973f81981e49af01599c1f';
+String _$myPageViewmodelHash() => r'f8d942483cbbb1afc9a320ca79ce0de593df69ea';
 
-abstract class _$MyPageViewmodel extends $AsyncNotifier<String> {
-  FutureOr<String> build();
+abstract class _$MyPageViewmodel extends $Notifier<bool> {
+  bool build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<String>, String>;
+    final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<String>, String>,
-              AsyncValue<String>,
+              AnyNotifier<bool, bool>,
+              bool,
               Object?,
               Object?
             >;
