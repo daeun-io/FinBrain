@@ -1,4 +1,4 @@
-package com.example.finbrain
+package com.daeun.finbrain
 
 import io.flutter.embedding.android.FlutterActivity
 
