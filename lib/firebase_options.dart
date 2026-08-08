@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCLy7diKtVMy3TXiTgEhmq8VIqlMjqgk6s',
-    appId: '1:1026903577783:android:41e1cfe1262e39fcefe932',
+    appId: '1:1026903577783:android:7462693cc70bea88efe932',
     messagingSenderId: '1026903577783',
     projectId: 'finbrain-bb12c',
     storageBucket: 'finbrain-bb12c.firebasestorage.app',
@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1026903577783',
     projectId: 'finbrain-bb12c',
     storageBucket: 'finbrain-bb12c.firebasestorage.app',
-    androidClientId: '1026903577783-qvsil5sis0nm2qmlgtmajnr5vtkukbb1.apps.googleusercontent.com',
+    androidClientId: '1026903577783-72eph0ts1b1sor46jaf0c0ui7bf0ukrb.apps.googleusercontent.com',
     iosClientId: '1026903577783-mriqarinnfmij4mac3nhfeqs0bgihf39.apps.googleusercontent.com',
     iosBundleId: 'com.example.finbrain',
   );
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1026903577783',
     projectId: 'finbrain-bb12c',
     storageBucket: 'finbrain-bb12c.firebasestorage.app',
-    androidClientId: '1026903577783-qvsil5sis0nm2qmlgtmajnr5vtkukbb1.apps.googleusercontent.com',
+    androidClientId: '1026903577783-72eph0ts1b1sor46jaf0c0ui7bf0ukrb.apps.googleusercontent.com',
     iosClientId: '1026903577783-mriqarinnfmij4mac3nhfeqs0bgihf39.apps.googleusercontent.com',
     iosBundleId: 'com.example.finbrain',
   );

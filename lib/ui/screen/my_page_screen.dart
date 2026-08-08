@@ -304,7 +304,7 @@ class MyPageScreen extends ConsumerWidget {
                                               style: textTheme.bodyLarge!
                                                   .copyWith(
                                                     color:
-                                                        colorScheme.onSurface,
+                                                        colorScheme.onSecondary,
                                                   ),
                                             ),
                                           ),
