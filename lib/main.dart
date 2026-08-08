@@ -1,10 +1,13 @@
 import 'package:finbrain/themes/color_theme.dart';
+import 'package:finbrain/ui/screen/main_screen.dart';
 import 'package:finbrain/ui/screen/onboarding_screen.dart';
 import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -75,7 +78,20 @@ class FinBrain extends ConsumerWidget {
         )
       ),
       themeMode: ThemeMode.system,
-      home: OnBoardingScreen(),
+      // Firebase 로그인 상태 스트림을 구독해 이에 따라 화면 이동
+      // Subscribe Firebase auth state to navigate screen
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return CustomProgressIndicator();
+          }
+          if(snapshot.hasData && snapshot.data != null) {
+            return const MainScreen();
+          }
+          return OnBoardingScreen();
+        }
+      ),
     );
   }
 }
