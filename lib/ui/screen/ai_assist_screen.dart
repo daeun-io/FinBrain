@@ -2,6 +2,7 @@ import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
+import 'package:finbrain/ui/widget/ai_example_query.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -19,9 +20,9 @@ class AiAssistScreen extends ConsumerStatefulWidget {
     required this.name,
   });
 
-  final String tag;                 // 상품 코드나 이름(product code or name)
-  final ProductCategory category;   // 상품 카테고리(product category)
-  final String name;                // 상품 이름(product name)
+  final String tag; // 상품 코드나 이름(product code or name)
+  final ProductCategory category; // 상품 카테고리(product category)
+  final String name; // 상품 이름(product name)
 
   @override
   ConsumerState<AiAssistScreen> createState() => _AiAssistScreenState();
@@ -29,8 +30,9 @@ class AiAssistScreen extends ConsumerStatefulWidget {
 
 class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   final _messageController = TextEditingController();
-  AiRecord? record;                                 // AI 요약(AI summaries)
-  List<(MessageBubble, MessageBubble)>? messages;   // 대화 내역(chat history in firestore)
+  AiRecord? record; // AI 요약(AI summaries)
+  List<(MessageBubble, MessageBubble)>?
+  messages; // 대화 내역(chat history in firestore)
 
   @override
   void initState() {
@@ -76,13 +78,16 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
-    
+
     // 현재 나누고 있는 대화
     // Current chats
     List<String> bubbles = ref.watch(
       aiAssistScreenViewmodelProvider(widget.tag),
     );
-
+    print("상품, ${widget.tag}");
+    print("record, ${record?.key}");
+    print("message, ${messages?.isEmpty}");
+    print("bubbles, ${bubbles.isEmpty}");
     return Scaffold(
       backgroundColor: colorScheme.primary,
       appBar: PreferredSize(
@@ -152,6 +157,43 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                 );
                               },
                             ),
+                          // 만약 첫 대화라면 질문 예시 디스플레이
+                          // If this is first conversation, display example queries
+                          if (bubbles.isEmpty &&
+                              (record == null || record!.key.isEmpty) &&
+                              (messages == null || messages!.isEmpty))
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              fillOverscroll: false,
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    AiExampleQuery(
+                                      query: "상품에 대해 자세히 설명해줘",
+                                      tapFunc: () => setState(() {
+                                        processAiRequest(
+                                          ref,
+                                          "상품에 대해 자세히 설명해줘",
+                                        );
+                                      }),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    AiExampleQuery(
+                                      query: "관련 금융 용어의 정의를 설명해줘",
+                                      tapFunc: () => setState(() {
+                                        processAiRequest(
+                                          ref,
+                                          "관련 금융 용어의 정의를 설명해줘",
+                                        );
+                                      }),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -182,27 +224,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                   if (value.isNotEmpty) {
                                     final request = value;
                                     _messageController.clear();
-                                    // 입력 저장하고 대화 불러오기
-                                    // Fetch AI response based on input and save in firestore
-                                    ref
-                                        .read(
-                                          aiAssistScreenViewmodelProvider(
-                                            widget.tag,
-                                          ).notifier,
-                                        )
-                                        .saveRequest(request);
-                                    ref
-                                        .read(
-                                          aiAssistScreenViewmodelProvider(
-                                            widget.tag,
-                                          ).notifier,
-                                        )
-                                        .fetchResponseAndSaveConv(
-                                          request,
-                                          widget.tag,
-                                          widget.category,
-                                          widget.name,
-                                        );
+                                    processAiRequest(ref, request);
                                   }
                                 },
                                 maxLines: null,
@@ -230,25 +252,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                               if (_messageController.text.isNotEmpty) {
                                 final request = _messageController.text;
                                 _messageController.clear();
-                                ref
-                                    .read(
-                                      aiAssistScreenViewmodelProvider(
-                                        widget.tag,
-                                      ).notifier,
-                                    )
-                                    .saveRequest(request);
-                                ref
-                                    .read(
-                                      aiAssistScreenViewmodelProvider(
-                                        widget.tag,
-                                      ).notifier,
-                                    )
-                                    .fetchResponseAndSaveConv(
-                                      request,
-                                      widget.tag,
-                                      widget.category,
-                                      widget.name,
-                                    );
+                                processAiRequest(ref, request);
                               }
                             },
                             icon: Icon(
@@ -265,5 +269,21 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
               ),
             ),
     );
+  }
+
+  // 입력 저장하고 대화 불러오기
+  // Fetch AI response based on input and save in firestore
+  void processAiRequest(WidgetRef ref, String request) {
+    ref
+        .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
+        .saveRequest(request);
+    ref
+        .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
+        .fetchResponseAndSaveConv(
+          request,
+          widget.tag,
+          widget.category,
+          widget.name,
+        );
   }
 }

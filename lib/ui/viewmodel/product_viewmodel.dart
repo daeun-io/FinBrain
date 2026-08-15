@@ -28,9 +28,6 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
     ProductCategory ctg,
     int pageNo,
   ) async {
-    print("----------------");
-    print("fetch product viewmodel 호출됨");
-    print('FETCH NOTIFIER HASH: ${identityHashCode(this)}');
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
@@ -105,7 +102,6 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
 class ProductViewmodel extends _$ProductViewmodel {
   @override
   Future<(int, List<FinancialProduct>)> build(ProductCategory ctg) async {
-    print("product viewmodel 빌드 호출됨!");
     // 데이터, 필터, 기준 관찰하기
     // Watch data, filter and sorting criteria
     final cPage = ref.watch(currentPageViewmodelProvider(ctg));
@@ -114,7 +110,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     final result = await ref.read(
       fetchProductViewmodelProvider(ctg, cPage).future,
     );
-    print('PRODUCT NOTIFIER HASH: ${identityHashCode(this)}');
+
     if (filters.value != null) {
       // 선택된 필터 추출
       // Extract selected filter value
