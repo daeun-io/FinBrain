@@ -33,7 +33,7 @@ final class IsaGuideViewmodelProvider
   IsaGuideViewmodel create() => IsaGuideViewmodel();
 }
 
-String _$isaGuideViewmodelHash() => r'ecc9b8f694ef9a2a1beb30e35231d9ff4ebd6992';
+String _$isaGuideViewmodelHash() => r'aac38b6486d8b91af4dca4456e80ed8d57bc0238';
 
 abstract class _$IsaGuideViewmodel extends $AsyncNotifier<bool> {
   FutureOr<bool> build();

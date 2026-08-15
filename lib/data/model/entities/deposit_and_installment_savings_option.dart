@@ -4,8 +4,8 @@ class DepositAndInstallmentSavingsOption {
   // intRateType(int_rate_type): 저축 금리 유형
   // intRateTypeName(int_rate_type_nm): 저축 금리 유형명
   // saveTerm(save_trm): 저축 기간
-  // intRate(int_rate): 저축 금리
-  // maxIntRate(int_rate2): 최고 우대 금리
+  // intRate(intr_rate): 저축 금리
+  // maxIntRate(intr_rate2): 최고 우대 금리
   // reserveType(rsrv_type): 적립 유형
   // reserveTypeName(rsrv_type_nm): 적립 유형명
   

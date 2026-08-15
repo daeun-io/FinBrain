@@ -47,7 +47,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
   Future<FinancialProduct?> getProduct(String tag, ProductCategory ctg) async {
     final page = ref.read(currentPageViewmodelProvider(ctg));
     final productList = await ref.read(
-      fetchProductViewmodelProvider(ctg, "$page").future,
+      fetchProductViewmodelProvider(ctg, page).future,
     );
     final likedList = await ref.read(fetchLikedViewmodelProvider.future);
     final product =

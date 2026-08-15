@@ -128,7 +128,7 @@ class CustomAppbar extends ConsumerWidget {
                   .read(
                     fetchProductViewmodelProvider(
                       product!.commonInfo.category,
-                      "$page",
+                      page ?? 1,
                     ).notifier,
                   )
                   .toggleLiked(product!);

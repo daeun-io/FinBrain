@@ -24,10 +24,7 @@ class GoogleAuthService {
   // Google social login
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      // 현재 로그인 되어 있는 경우 로그아웃 후 로그인
-      if(_auth.currentUser != null) {
-        await _googleSignIn.signOut();
-      }
+      await _googleSignIn.signOut();
       
       await initSignIn();
       

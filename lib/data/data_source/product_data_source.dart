@@ -7,6 +7,8 @@ import 'package:finbrain/data/api_constants.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:xml2json/xml2json.dart';
 
+final stopwatch = Stopwatch()..start();
+
 class ProductRemoteDataSource {
   final http.Client _client;
   ProductRemoteDataSource(this._client);
@@ -53,7 +55,8 @@ class ProductRemoteDataSource {
           "EUC-KR",
           res.bodyBytes,
         );
-
+        print('네트워크 대기: ${stopwatch.elapsedMilliseconds}ms');
+        print('현재 카테고리: $ctg');
         final formatter = Xml2Json();
 
         formatter.parse(xmlBody);

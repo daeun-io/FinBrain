@@ -84,7 +84,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     // Fetch product list
     final page = ref.watch(currentPageViewmodelProvider(widget.category));
     final productList = ref.watch(
-      fetchProductViewmodelProvider(widget.category, "$page"),
+      fetchProductViewmodelProvider(widget.category, page),
     );
     final likedList = ref.watch(fetchLikedViewmodelProvider);
 

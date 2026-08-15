@@ -21,7 +21,7 @@ final class FetchLikedViewmodelProvider
         argument: null,
         retry: null,
         name: r'fetchLikedViewmodelProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -35,7 +35,7 @@ final class FetchLikedViewmodelProvider
 }
 
 String _$fetchLikedViewmodelHash() =>
-    r'46e49a90637f3a7c264aed992c2dfbd2df6fa2cb';
+    r'f43db4639b9b99c5251d1089490ad83edd02c496';
 
 abstract class _$FetchLikedViewmodel
     extends $AsyncNotifier<List<FinancialProduct>> {
@@ -73,7 +73,7 @@ final class LikedProductViewmodelProvider
         argument: null,
         retry: null,
         name: r'likedProductViewmodelProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -87,7 +87,7 @@ final class LikedProductViewmodelProvider
 }
 
 String _$likedProductViewmodelHash() =>
-    r'37c4967daef303996ec4e9428183b0910f583a75';
+    r'72d408bc9e5befa42d13693d792171ca519fa82c';
 
 abstract class _$LikedProductViewmodel
     extends $AsyncNotifier<List<FinancialProduct>> {

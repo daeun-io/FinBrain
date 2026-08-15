@@ -18,7 +18,7 @@ final repository = IsaRepository();
 @riverpod
 class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
   @override
-  Future<(int, List<IsaJoinStatus>)> build(String pageNo) async {
+  Future<(int, List<IsaJoinStatus>)> build(int pageNo) async {
     try {
       // 저장한 필터 관찰하기
       // Watch saved filter
@@ -36,7 +36,11 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
 
       // ISA 가입 현황 데이터 호출하기
       // Fetch ISA join status
-      final result = await repository.fetchJoinStatus(pageNo, "200", baseYear);
+      final result = await repository.fetchJoinStatus(
+        pageNo.toString(),
+        "200",
+        baseYear,
+      );
 
       final totalCount = result.$1;
       final status = result.$2;
@@ -49,79 +53,9 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
 
       return (totalCount, filtered);
     } catch (e) {
+      debugPrint("[error] failed to isa join status : $e");
       throw Exception("[error] failed to isa join status : $e");
-      // debugPrint("[error] failed to fetch isa join status : $e");
-      // return (-1, <IsaJoinStatus>[]);
     }
-  }
-}
-
-// 화면에 ISA 가입 현황 보이는 뷰모델
-// Displaying ISA join status in screen
-@riverpod
-class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
-  @override
-  AsyncValue<(int, List<IsaJoinStatus>)> build() {
-    // 데이터 뷰모델 관찰하기
-    // Watch fetching isa join status viewmodel
-    final cPage = ref.watch(currentPageViewmodelProvider(ProductCategory.isaJoin));
-    final result = ref.watch(fetchIsaJoinStatusViewmodelProvider("$cPage"));
-    // 정렬 기준 읽기
-    // Read sort criteria
-    final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(ProductCategory.isaJoin))
-        .$1
-        .toString();
-
-    // 정렬 기준 적용하기
-    // Apply sorting criteria to data
-    return result.when(
-      data: (data) {
-        final sorted = List<IsaJoinStatus>.from(data.$2);
-        sorted.sort((a, b) {
-          switch (criteria) {
-            case "회사 수(오름차순)":
-              return a.companyCount!.compareTo(b.companyCount!);
-            case "회사 수(내림차순)":
-              return b.companyCount!.compareTo(a.companyCount!);
-            case "가입자 수(오름차순)":
-              return a.joinMemberCount!.compareTo(b.joinMemberCount!);
-            default:
-              return b.joinMemberCount!.compareTo(a.joinMemberCount!);
-          }
-        });
-        return AsyncValue.data((data.$1, sorted));
-      },
-      loading: () => const AsyncValue.loading(),
-      error: (error, stackTrace) => AsyncValue.error(
-        "[error] failed to fetch isa join status, $error",
-        stackTrace,
-      ),
-    );
-  }
-
-  // 데이터 정렬하는 함수
-  // Function that sorts ISA join status
-  AsyncValue<(int, List<IsaJoinStatus>)> sortByCriteria(
-    String criteria,
-    int totalCount, [
-    List<IsaJoinStatus>? status,
-  ]) {
-    final isaJoinData =
-        status ?? ((state.value == null) ? [] : [...state.value!.$2]);
-    final sorted = AsyncData((
-      totalCount,
-      isaJoinData..sort(switch (criteria) {
-        "회사 수(오름차순)" => (a, b) => a.companyCount!.compareTo(b.companyCount!),
-        "회사 수(내림차순)" => (a, b) => b.companyCount!.compareTo(a.companyCount!),
-        "가입자 수(오름차순)" => (a, b) => a.joinMemberCount!.compareTo(
-          b.joinMemberCount!,
-        ),
-        _ => (a, b) => b.joinMemberCount!.compareTo(a.joinMemberCount!),
-      }),
-    ));
-    state = sorted;
-    return sorted;
   }
 }
 
@@ -130,7 +64,7 @@ class IsaJoinStatusViewModel extends _$IsaJoinStatusViewModel {
 @riverpod
 class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
   @override
-  Future<(int, List<IsaManagementStatus>)> build(String pageNo) async {
+  Future<(int, List<IsaManagementStatus>)> build(int pageNo) async {
     try {
       // 저장한 필터 관찰하기
       // Watch saved filter
@@ -152,7 +86,7 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
       // ISA 운용 현황 데이터 호출하기
       // Fetch ISA management status
       final result = await repository.fetchManagementStatus(
-        pageNo,
+        pageNo.toString(),
         "200",
         baseYear,
         (selectedFilters["구분"]?.first ?? "비중"),
@@ -176,54 +110,120 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
   }
 }
 
-// 화면에 ISA 운용 현황 보이는 뷰모델
-// Displaying ISA management status in screen
+// 화면에 ISA 가입/운용 현황 보이는 뷰모델
+// Displaying ISA join/management status in screen
 @riverpod
-class IsaManagementStatusViewmodel extends _$IsaManagementStatusViewmodel {
+class IsaStatusViewmodel extends _$IsaStatusViewmodel {
   @override
-  AsyncValue<(int, List<IsaManagementStatus>)> build() {
+  AsyncValue<(int, List<Object>)> build(ProductCategory category) {
     // 데이터 뷰모델 관찰하기
     // Watch fetching isa join status viewmodel
-    final cPage = ref.watch(currentPageViewmodelProvider(ProductCategory.isaManagement));
-    final result = ref.watch(fetchIsaMngmStatusViewmodelProvider("$cPage"));
+    final cPage = ref.watch(currentPageViewmodelProvider(category));
+    final result = (category == ProductCategory.isaJoin)
+        ? ref.watch(fetchIsaJoinStatusViewmodelProvider(cPage))
+        : ref.watch(fetchIsaMngmStatusViewmodelProvider(cPage));
     // 정렬 기준 읽기
     // Read sort criteria
-    final criteria = ref
-        .read(sortOrFilterTextViewModelProvider(ProductCategory.isaManagement))
-        .$1
-        .toString();
-    
+    final criteria = ref.watch(sortOrFilterTextViewModelProvider(category));
+
     // 정렬 기준 적용하기
     // Apply sorting criteria to data
     return result.when(
-      data: (data) => sortByCriteria(criteria, data.$1, data.$2),
+      data: (data) {
+        final (totalCount, status) = data;
+        final sorted = sortByCriteria(criteria.$1.toString(), category, status);
+        return AsyncValue.data((totalCount, sorted));
+      },
+      loading: () => const AsyncValue.loading(),
       error: (error, stackTrace) => AsyncValue.error(
-        "[error] failed to fetch isa management status",
+        "[error] failed to fetch isa join status, $error",
         stackTrace,
       ),
-      loading: () => const AsyncValue.loading(),
     );
   }
 
   // 데이터 정렬하는 함수
-  // Function that sorts ISA management status
-  AsyncValue<(int, List<IsaManagementStatus>)> sortByCriteria(
+  // Function that sorts ISA join status
+  List<Object> sortByCriteria(
     String criteria,
-    int totalCount, [
-    List<IsaManagementStatus>? status,
+    ProductCategory category, [
+    List<Object>? status,
   ]) {
-    final isaMnData =
+    final isaStatus =
         status ?? ((state.value == null) ? [] : [...state.value!.$2]);
+    if (category == ProductCategory.isaJoin) {
+      final joinStatus = List.of(isaStatus as List<IsaJoinStatus>) ;
+      final sorted = joinStatus
+        ..sort(switch (criteria) {
+          "회사 수(오름차순)" => (a, b) {
+            if (a.companyCount == null && b.companyCount == null) {
+              return 0;
+            }
+            if (a.companyCount == null) return 1;
+            if (b.companyCount == null) return -1;
 
-    final sorted = AsyncData((
-      totalCount,
-      isaMnData..sort(
-        (a, b) => (criteria == "금액/비율(오름차순)")
-            ? a.amount!.compareTo(b.amount!)
-            : b.amount!.compareTo(a.amount!),
-      ),
-    ));
-    state = sorted;
-    return sorted;
+            final comparison = a.companyCount!.compareTo(b.companyCount!);
+            return comparison;
+          },
+          "회사 수(내림차순)" => (a, b) {
+            if (a.companyCount == null && b.companyCount == null) {
+              return 0;
+            }
+
+            if (a.companyCount == null) return 1;
+            if (b.companyCount == null) return -1;
+
+            final comparison = b.companyCount!.compareTo(a.companyCount!);
+            return comparison;
+          },
+          "가입자 수(오름차순)" => (a, b) {
+            if (a.joinMemberCount == null && b.joinMemberCount == null) {
+              return 0;
+            }
+
+            if (a.joinMemberCount == null) return 1;
+            if (b.joinMemberCount == null) return -1;
+
+            final comparison = a.joinMemberCount!.compareTo(b.joinMemberCount!);
+            return comparison;
+          },
+          _ => (a, b) {
+            if (a.joinMemberCount == null && b.joinMemberCount == null) {
+              return 0;
+            }
+
+            if (a.joinMemberCount == null) return 1;
+            if (b.joinMemberCount == null) return -1;
+
+            final comparison = b.joinMemberCount!.compareTo(a.joinMemberCount!);
+            return comparison;
+          },
+        });
+      return sorted;
+    } else {
+      final mngmStatus = List.of(isaStatus as List<IsaManagementStatus>);
+      final sorted = mngmStatus
+        ..sort(
+          (criteria == "금액/비율(오름차순)")
+              ? ((a, b) {
+                  if (a.amount == null && b.amount == null) {
+                    return 0;
+                  }
+
+                  if (a.amount == null) return 1;
+                  if (b.amount == null) return -1;
+                  return a.amount!.compareTo(b.amount!);
+                })
+              : ((a, b) {
+                  if (a.amount == null && b.amount == null) {
+                    return 0;
+                  }
+                  if (a.amount == null) return 1;
+                  if (b.amount == null) return -1;
+                  return b.amount!.compareTo(a.amount!);
+                }),
+        );
+      return sorted;
+    }
   }
 }

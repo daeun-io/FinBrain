@@ -1,6 +1,7 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/no_data_found.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
@@ -25,7 +26,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   final GlobalKey _key = GlobalKey();
   bool _isLoading = false;            // 데이터 로딩 여부(loading data state)
   int _maxPage = 0;                   // API 데이터 최대 페이지(api data max page)
-
+  
   @override
   void initState() {
     super.initState();
@@ -41,11 +42,16 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
   void _onScroll() async {
     // 데이터 로딩 중이면 함수 중단
     // Stop calling function when data is loading
-    if (_isLoading) return;
+    if (_isLoading || !_controller.hasClients) return;
     // 현재 페이지 불러오기
     // Fetch current page
     final cPage = ref.read(currentPageViewmodelProvider(widget.category));
     final position = _controller.position;
+
+    if (position.maxScrollExtent <= 0) return;
+    final productAsync = ref.read(productViewmodelProvider(widget.category));
+    if (productAsync.isLoading) return;
+    
     // 최하단 스크롤 위치에 도달하면 다음 페이지 불러오기
     // Fetch next page when reached bottom of the list
     if (position.pixels >= position.maxScrollExtent) {
@@ -84,12 +90,16 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
 
     // 데이터 불러오면 상단으로 이동
     // Move to top after fetching data
-    ref.listen(productViewmodelProvider(widget.category), (
+    ref.listen(fetchProductViewmodelProvider(widget.category, cPage), (
       prev,
       next,
     ) {
       if (next.hasValue && prev?.value != next.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
+          // 최대 페이지 불러오기
+          // Fetch maximum page
+          final (maxPage, _) = next.value!;
+          _maxPage = maxPage;
           if (_controller.hasClients) {
             _controller.jumpTo(0);
           }
@@ -131,13 +141,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                   category: widget.category,
                   baseYear: "",
                   onSortCriteriaChanged: (criteria) {
-                    ref
-                        .read(
-                          productViewmodelProvider(
-                            ProductCategory.isaMp,
-                          ).notifier,
-                        )
-                        .sortByCriteria(criteria, widget.category, _maxPage);
+                    ref.read(sortOrFilterTextViewModelProvider(widget.category).notifier).changeCriteria(criteria);
                   },
                 ),
               ),
@@ -147,11 +151,8 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           productState.when(
             data: (data) {
               final (maxPage, items) = data;
-              // 최대 페이지 불러오기
-              // Fetch maximum page
-              _maxPage = maxPage;
-              
               return Expanded(
+                key: ValueKey("${productState.hashCode}"),
                 child: CustomScrollView(
                   controller: _controller,
                   center: _key,

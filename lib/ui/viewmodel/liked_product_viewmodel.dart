@@ -11,7 +11,7 @@ final repository = LikedRepository();
 
 // 관심 상품 불러오는 뷰모델
 // Fetching liked product viewmodel
-@riverpod
+@Riverpod(keepAlive: true)
 class FetchLikedViewmodel extends _$FetchLikedViewmodel {
   @override
   Future<List<FinancialProduct>> build() async {
@@ -25,7 +25,7 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
       final products = await repository.getLikedProducts(user.uid);
 
       if (products.isEmpty) {
-        debugPrint("[empty] product list is empty");
+        debugPrint("[empty] no item in liked list");
         return [];
       }
       return products;
@@ -37,7 +37,7 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
 
 // 화면에 관심 상품 보이는 뷰모델
 // Displaying liked products in screen
-@riverpod
+@Riverpod(keepAlive: true)
 class LikedProductViewmodel extends _$LikedProductViewmodel {
   @override
   Future<List<FinancialProduct>> build() async {

@@ -1,8 +1,5 @@
 import 'package:finbrain/ui/screen/loan_screen.dart';
 import 'package:finbrain/ui/screen/savings_screen.dart';
-import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
@@ -18,19 +15,14 @@ class MainScreen extends ConsumerStatefulWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen> {
   int _currentIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  // 방문한 탭(캐시 유지)
+  // visited indicies to retain cache
+  final Set<int> _visitedIndices = {0};
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
-
-    // 바텀 네비게이션 뷰(bottom navigation view)
-    final bottomView = const [SavingsScreen(), LoanScreen(), LikedScreen()];
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -38,12 +30,22 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         preferredSize: const Size.fromHeight(70.0),
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0),
-          child: const CustomAppbar(screen: "main", title: "핀브레인")
+          child: const CustomAppbar(screen: "main", title: "핀브레인"),
         ),
       ),
       body: IndexedStack(
         index: _currentIndex,
-        children: bottomView,
+        children: [
+          _visitedIndices.contains(0)
+              ? const SavingsScreen()
+              : const SizedBox.shrink(),
+          _visitedIndices.contains(1)
+              ? const LoanScreen()
+              : const SizedBox.shrink(),
+          _visitedIndices.contains(2)
+              ? const LikedScreen()
+              : const SizedBox.shrink(),
+        ],
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -61,14 +63,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             ),
             child: BottomNavigationBar(
               onTap: (value) {
-                // 바텀 네비게이션에 따라 데이터 불러오기
-                // Fetch data based on bottom navigation
                 setState(() {
                   _currentIndex = value;
+                  // 방문한 탭 추가(add visited incides)
+                  _visitedIndices.add(value);
                 });
-                final ctg = ref.read(currentCtgViewmodelProvider);
-                final page = ref.read(currentPageViewmodelProvider(ctg));
-                ref.read(fetchProductViewmodelProvider(ctg, "$page"));
               },
               currentIndex: _currentIndex,
               elevation: 0,

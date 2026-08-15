@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/product_categories.dart';
@@ -20,6 +19,8 @@ class DepositAndInstallmentSavings extends FinancialProduct {
   final String? joinMember;
   final String? etc;
   final String? maxLimit;
+  final double? maxPrfRate;
+  final double? maxBaseRate;
   final List<DepositAndInstallmentSavingsOption> options;
 
   DepositAndInstallmentSavings({
@@ -42,6 +43,8 @@ class DepositAndInstallmentSavings extends FinancialProduct {
     required this.joinMember,
     required this.etc,
     required this.maxLimit,
+    required this.maxPrfRate,
+    required this.maxBaseRate,
     required this.options,
   }) : super(
          CommonInfo(
@@ -79,6 +82,8 @@ class DepositAndInstallmentSavings extends FinancialProduct {
       joinMember: joinMember,
       etc: etc,
       maxLimit: maxLimit,
+      maxPrfRate: maxPrfRate,
+      maxBaseRate: maxBaseRate,
       options: options,
     );
   }
@@ -87,22 +92,24 @@ class DepositAndInstallmentSavings extends FinancialProduct {
   Map<String, Object> toMap() {
     return {
       "isLiked": true,
-      "category": "${commonInfo.category}",
-      "submittedMonth": "${commonInfo.submittedMonth}",
-      "companyCode": "${commonInfo.companyCode}",
-      "companyName": "${commonInfo.companyName}",
-      "productCode": "${commonInfo.productCode}",
-      "productName": "${commonInfo.productName}",
-      "startDay": "${commonInfo.startDay}",
-      "endDay": "${commonInfo.endDay}",
-      "submittedDay": "${commonInfo.submittedDay}",
+      "category": commonInfo.category.toString(),
+      "submittedMonth": commonInfo.submittedMonth.toString(),
+      "companyCode": commonInfo.companyCode.toString(),
+      "companyName": commonInfo.companyName.toString(),
+      "productCode": commonInfo.productCode.toString(),
+      "productName": commonInfo.productName.toString(),
+      "startDay": commonInfo.startDay.toString(),
+      "endDay": commonInfo.endDay.toString(),
+      "submittedDay": commonInfo.submittedDay.toString(),
       "joinWay": commonInfo.joinWay ?? [],
-      "interestAfterExpiration": "$interestAfterExpiration",
-      "specialCondition": "$specialCondition",
-      "joinDeny": "$joinDeny",
-      "joinMember": "$joinMember",
-      "etc": "$etc",
-      "maxLimit": "$maxLimit",
+      "interestAfterExpiration": interestAfterExpiration.toString(),
+      "specialCondition": specialCondition.toString(),
+      "joinDeny": joinDeny.toString(),
+      "joinMember": joinMember.toString(),
+      "etc": etc.toString(),
+      "maxLimit": maxLimit.toString(),
+      "maxPrfRate": maxPrfRate.toString(),
+      "maxBaseRate": maxBaseRate.toString(),
       "options": options
           .map(
             (e) => {
@@ -117,11 +124,5 @@ class DepositAndInstallmentSavings extends FinancialProduct {
           )
           .toList(),
     };
-  }
-
-  (double?, double?) returnHighestRateValue() {
-    final maxRate = options.map((e) => e.maxIntRate).whereType<double>().maxOrNull;
-    final baseRate = options.map((e) => e.intRate).whereType<double>().maxOrNull;
-    return (maxRate, baseRate);
   }
 }

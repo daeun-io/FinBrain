@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
 import 'mortgage_and_rent_loan_option.dart';
@@ -17,6 +16,9 @@ class MortgageAndRentLoan extends FinancialProduct {
   final String? earlyRepayFee;
   final String? delayRate;
   final String? loanLimit;
+  final double? maxRate;
+  final double? minRate;
+  final double? avgRate;
   final List<MortgageAndRentLoanOption> options;
 
   MortgageAndRentLoan({
@@ -37,6 +39,9 @@ class MortgageAndRentLoan extends FinancialProduct {
     required this.earlyRepayFee,
     required this.delayRate,
     required this.loanLimit,
+    required this.maxRate,
+    required this.minRate,
+    required this.avgRate,
     required this.options,
   }) : super(
          CommonInfo(
@@ -72,6 +77,9 @@ class MortgageAndRentLoan extends FinancialProduct {
       earlyRepayFee: earlyRepayFee,
       delayRate: delayRate,
       loanLimit: loanLimit,
+      maxRate: maxRate,
+      minRate: minRate,
+      avgRate: avgRate,
       options: options,
     );
   }
@@ -94,6 +102,9 @@ class MortgageAndRentLoan extends FinancialProduct {
       "earlyRepayFee": "$earlyRepayFee",
       "delayRate": "$delayRate",
       "loanLimit": "$loanLimit",
+      "maxRate": "$maxRate",
+      "minRate": "$minRate",
+      "avgRate": "$avgRate",
       "options": options
           .map(
             (e) => {
@@ -110,15 +121,5 @@ class MortgageAndRentLoan extends FinancialProduct {
           )
           .toList(),
     };
-  }
-
-  List<double?> returnRates() {
-    final min =
-        options.map((e) => (e).lendRateMin).whereType<double>().minOrNull;
-    final max =
-        options.map((e) => (e).lendRateMax).whereType<double>().minOrNull;
-    final avg =
-        options.map((e) => (e).lendRateAvg).whereType<double>().minOrNull;
-    return [min, avg, max];
   }
 }

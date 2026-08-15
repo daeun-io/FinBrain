@@ -1,8 +1,8 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/product_base_screen.dart';
-import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_tapbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,14 +27,15 @@ class LoanScreen extends ConsumerWidget {
       ProductBaseScreen(category: ProductCategory.credit),
     ];
 
-    // 탭 선택에 따라 데이터 불러오기
-    // Fetch data based on tab index
+    // 탭 선택에 따라 카테고리 변경
+    // Change current category based on tab index
      void tapFunction(value) {
+      final ctg = categories[value];
       ref
           .read(currentCtgViewmodelProvider.notifier)
-          .setCurrentCtg(categories[value]);
-      final page = ref.read(currentPageViewmodelProvider(categories[value]));
-      ref.read(fetchProductViewmodelProvider(categories[value], "$page"));
+          .setCurrentCtg(ctg);
+      final page = ref.read(currentPageViewmodelProvider(ctg));
+      ref.read(fetchProductViewmodelProvider(ctg, page));
     }
 
     return DefaultTabController(

@@ -67,6 +67,8 @@ class LikedRepository {
                   joinMember: map["joinMember"],
                   etc: map["etc"],
                   maxLimit: map["maxLimit"],
+                  maxPrfRate: map["maxPrfRate"],
+                  maxBaseRate: map["maxBaseRate"],
                   options: map["options"]
                       .map(
                         (e) => DepositAndInstallmentSavingsOption(
@@ -109,6 +111,9 @@ class LikedRepository {
                   earlyRepayFee: map["earlyRepayFee"],
                   delayRate: map["delayRate"],
                   loanLimit: map["loanLimit"],
+                  minRate: map["minRate"],
+                  maxRate: map["maxRate"],
+                  avgRate: map["avgRate"],
                   options: map["options"]
                       .map(
                         (e) => MortgageAndRentLoanOption(
@@ -151,6 +156,9 @@ class LikedRepository {
                   productType: map["productType"],
                   productTypeName: map["productTypeName"],
                   cbName: map["cbName"],
+                  minRate: map["minRate"],
+                  maxRate: map["maxRate"],
+                  avgRate: map["avgRate"],
                   options: map["options"]
                       .map(
                         (e) => CreditLoanOption(
@@ -187,6 +195,8 @@ class LikedRepository {
                   baseDate: map["baseDate"],
                   businessDomain: map["businessDomain"],
                   mpType: map["mpType"],
+                  avgProfit: map["avgProfit"],
+                  medProfit: map["medProfit"],
                   options: map["options"]
                       .map(
                         (e) => IsaMpBenefitRateOption(

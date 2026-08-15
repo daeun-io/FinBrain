@@ -1,9 +1,8 @@
-// ISA MP 대표수익률
-import 'package:collection/collection.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/product_categories.dart';
 
+// ISA MP 대표수익률
 class IsaMpBenefitRate extends FinancialProduct {
   // 프로퍼티명(필드명): 의미
   // mpName(mpNm): mp명칭
@@ -16,6 +15,8 @@ class IsaMpBenefitRate extends FinancialProduct {
   final String? baseDate;
   final String? businessDomain;
   final String? mpType;
+  final double? avgProfit;
+  final double? medProfit;
   final List<IsaMpBenefitRateOption> options;
 
   IsaMpBenefitRate({
@@ -30,6 +31,8 @@ class IsaMpBenefitRate extends FinancialProduct {
     required this.businessDomain,
     required this.mpType,
     required this.options,
+    required this.avgProfit,
+    required this.medProfit
   }) : super(
          CommonInfo(
            category: category,
@@ -51,6 +54,8 @@ class IsaMpBenefitRate extends FinancialProduct {
       baseDate: baseDate,
       businessDomain: businessDomain,
       mpType: mpType,
+      avgProfit: avgProfit,
+      medProfit: medProfit,
       options: options,
     );
   }
@@ -59,29 +64,18 @@ class IsaMpBenefitRate extends FinancialProduct {
   Map<String, Object> toMap() {
     return {
       "isLiked": true,
-      "category": "${commonInfo.category}",
-      "companyName": "${commonInfo.companyName}",
-      "productName": "${commonInfo.productName}",
-      "releaseDate": "${commonInfo.submittedDay}",
-      "baseDate": "$baseDate",
-      "businessDomain": "$businessDomain",
-      "mpType": "$mpType",
+      "category": commonInfo.category.toString(),
+      "companyName": commonInfo.companyName.toString(),
+      "productName": commonInfo.productName.toString(),
+      "releaseDate": commonInfo.submittedDay.toString(),
+      "baseDate": baseDate.toString(),
+      "businessDomain": businessDomain.toString(),
+      "mpType": mpType.toString(),
+      "avgProfit": avgProfit.toString(),
+      "medProfit": medProfit.toString(),
       "options": options
           .map((e) => {"term": e.term, "benefitRate": e.benefitRate})
           .toList(),
     };
-  }
-
-  (double, double) returnAvgMedProfits() {
-    final profits =
-        options.map((e) => e.benefitRate).whereType<double>().toList()
-          ..sorted((a, b) => a.compareTo(b));
-    final middle = profits.length ~/ 2;
-    final average = profits.average;
-    final median = (profits.length % 2 == 1)
-        ? profits[middle]
-        : (profits[middle - 1] + profits[middle]) / 2;
-
-    return (average, median);
   }
 }

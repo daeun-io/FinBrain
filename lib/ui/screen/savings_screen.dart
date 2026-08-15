@@ -22,20 +22,21 @@ class SavingsScreen extends ConsumerWidget {
       ProductCategory.installment,
       ProductCategory.isaJoin,
     ];
-    final tabView = [
+    final tabView = const [
       ProductBaseScreen(category: ProductCategory.deposit),
       ProductBaseScreen(category: ProductCategory.installment),
       IsaScreen(),
     ];
     
-    // 탭 선택에 따라 데이터 불러오기
-    // Fetch data based on tab index
+    // 탭 선택에 따라 카테고리 변경
+    // Change current category based on tab index
     void tapFunction(value) {
+      final ctg = categories[value];
       ref
           .read(currentCtgViewmodelProvider.notifier)
-          .setCurrentCtg(categories[value]);
-      final page = ref.read(currentPageViewmodelProvider(categories[value]));
-      ref.read(fetchProductViewmodelProvider(categories[value], "$page"));
+          .setCurrentCtg(ctg);
+      final page = ref.read(currentPageViewmodelProvider(ctg));
+      ref.read(fetchProductViewmodelProvider(ctg, page));
     }
 
     return DefaultTabController(

@@ -1,10 +1,11 @@
 import 'package:finbrain/ui/screen/isa_guide_screen.dart';
+import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_guide_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';
 import 'package:finbrain/ui/screen/isa_mp_screen.dart';
+import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/custom_tapbar.dart';
@@ -24,35 +25,45 @@ class IsaScreen extends ConsumerStatefulWidget {
 class _IsaScreenState extends ConsumerState<IsaScreen>
     with SingleTickerProviderStateMixin {
   late TabController _controller;
+  final tabList = ["가입 현황", "운용 현황", "MP 수익률"];
+  final categories = const [
+    ProductCategory.isaJoin,
+    ProductCategory.isaManagement,
+    ProductCategory.isaMp,
+  ];
+  int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _controller = TabController(length: 3, vsync: this);
+    _controller = TabController(length: 3, initialIndex: 0, vsync: this);
     _controller.addListener(() {
-      // 탭이 변할 때마다 맞는 데이터 호출
-      // Fetch data based on tab index
-      if (!_controller.indexIsChanging) {
-        final page = ref.read(
-          currentPageViewmodelProvider(switch (_controller.index) {
-            0 => ProductCategory.isaJoin,
-            1 => ProductCategory.isaManagement,
-            _ => ProductCategory.isaMp,
-          }),
-        );
-        ref.read(switch (_controller.index) {
-          0 => fetchIsaJoinStatusViewmodelProvider("$page"),
-          1 => fetchIsaMngmStatusViewmodelProvider("$page"),
-          _ => fetchProductViewmodelProvider(ProductCategory.isaMp, "$page"),
+      if(!_controller.indexIsChanging){
+        setState(() {
+          currentIndex = _controller.index;
         });
+        tapFunction(_controller.index);
       }
     });
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  // 탭 선택에 따라 데이터 불러오기
+  // Fetch data based on tab index
+  void tapFunction(int value) {
+    ref
+        .read(currentCtgViewmodelProvider.notifier)
+        .setCurrentCtg(categories[value]);
+    final page = ref.read(currentPageViewmodelProvider(categories[value]));
+    if (ref.read(currentCtgViewmodelProvider) == categories[value]) {
+      switch (value) {
+        case 1:
+          ref.read(fetchIsaMngmStatusViewmodelProvider(page));
+        case 2:
+          ref.read(fetchProductViewmodelProvider(categories[value], page));
+        default:
+          ref.read(fetchIsaJoinStatusViewmodelProvider(page));
+      }
+    }
   }
 
   @override
@@ -69,20 +80,13 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
           final result = await Navigator.of(
             context,
           ).push(MaterialPageRoute(builder: (ctx) => const IsaGuideScreen()));
-          
-          if(result == true && context.mounted){
+
+          if (result == true && context.mounted) {
             ref.invalidate(isaGuideViewmodelProvider);
           }
         }
       },
     );
-
-    final tabList = ["가입 현황", "운용 현황", "MP 수익률"];
-    final tabView = const [
-      IsaBaseScreen(category: ProductCategory.isaJoin),
-      IsaBaseScreen(category: ProductCategory.isaManagement),
-      IsaMpScreen(),
-    ];
 
     return displayedISAScreen.when(
       data: (data) {
@@ -91,15 +95,6 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
           // Empty screen for error protection
           return Scaffold(backgroundColor: colorScheme.primary);
         } else {
-          // ISA 운용 데이터 불러오기
-          // Fetch isa join status
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            final page = ref.read(
-              currentPageViewmodelProvider(ProductCategory.isaJoin),
-            );
-            ref.read(fetchIsaJoinStatusViewmodelProvider("$page"));
-          });
-
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             child: Column(
@@ -118,7 +113,11 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
                   ),
                 ),
                 Expanded(
-                  child: TabBarView(controller: _controller, children: tabView),
+                  child: switch(currentIndex){
+                    1 => const IsaBaseScreen(category: ProductCategory.isaManagement),
+                    2 => const IsaMpScreen(),
+                    _ => const IsaBaseScreen(category: ProductCategory.isaJoin)
+                  }
                 ),
               ],
             ),

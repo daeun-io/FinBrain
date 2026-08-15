@@ -80,8 +80,8 @@ class FinBrain extends ConsumerWidget {
       themeMode: ThemeMode.system,
       // Firebase 로그인 상태 스트림을 구독해 이에 따라 화면 이동
       // Subscribe Firebase auth state to navigate screen
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
+      home: StreamBuilder<String?>(
+        stream: FirebaseAuth.instance.authStateChanges().map((user) => user?.uid).distinct(),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting){
             return CustomProgressIndicator();
