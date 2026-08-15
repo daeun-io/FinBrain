@@ -69,27 +69,6 @@ class CustomAppbar extends ConsumerWidget {
       },
       actions: switch (screen) {
         "main" => [
-          // 글자 모드 변경 버튼
-          // Change text theme button
-          OutlinedButton(
-            onPressed: () {
-              ref.read(textThemeViewmodelProvider.notifier).changeTxtTheme();
-            },
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                vertical: 4.0,
-                horizontal: 12.0,
-              ),
-              side: BorderSide(color: colorScheme.onPrimary, width: 1),
-            ),
-            child: Text(
-              (currTxtTheme == bigTextTheme) ? "작은 글씨" : "큰 글씨",
-              style: textTheme.titleMedium!.copyWith(
-                color: colorScheme.onPrimary,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
           // ISA 가이드 스크린으로 이동하는 버튼
           // Navigate to guide screen button
           IconButton(

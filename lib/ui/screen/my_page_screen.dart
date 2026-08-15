@@ -1,4 +1,5 @@
 import 'package:finbrain/data/google_auth_service.dart';
+import 'package:finbrain/themes/text_theme.dart';
 import 'package:finbrain/ui/screen/archive_screen.dart';
 import 'package:finbrain/ui/screen/onboarding_screen.dart';
 import 'package:finbrain/ui/viewmodel/my_page_viewmodel.dart';
@@ -116,7 +117,41 @@ class MyPageScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 24.0),
+              const SizedBox(height: 16.0),
+              // 글자 모드 변경 버튼
+              // Change text theme button
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.text_increase,
+                      size: 24.0,
+                    ),
+                    const SizedBox(width: 8.0,),
+                    Text(
+                      "큰 글씨 모드",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: colorScheme.onSecondary, 
+                      )
+                    ),
+                    const Spacer(),
+                    Switch(
+                      value: (textTheme == bigTextTheme),
+                      onChanged: (value){
+                        ref
+                        .read(textThemeViewmodelProvider.notifier)
+                        .changeTxtTheme();
+                      },
+                      activeThumbColor: colorScheme.tertiary,
+                      activeTrackColor: colorScheme.surfaceContainerHighest,
+                      inactiveThumbColor: colorScheme.tertiary,
+                      inactiveTrackColor: colorScheme.onTertiary,
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(height: 60.0),
               // 기타 버튼(other buttons)
               SizedBox(
                 height: 320,
