@@ -1,8 +1,6 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
-import 'package:finbrain/themes/text_theme.dart';
 import 'package:finbrain/ui/screen/isa_guide_screen.dart';
 import 'package:finbrain/ui/screen/my_page_screen.dart';
-import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +26,6 @@ class CustomAppbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final currTxtTheme = ref.watch(textThemeViewmodelProvider);
 
     final isPhone = MediaQuery.of(context).size.width < 600;
     final isLightMode = Theme.of(context).brightness == Brightness.light;

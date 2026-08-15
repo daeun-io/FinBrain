@@ -7,6 +7,7 @@ import 'package:finbrain/ui/viewmodel/privacy_policy_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -121,7 +122,7 @@ class MyPageScreen extends ConsumerWidget {
               // 글자 모드 변경 버튼
               // Change text theme button
               Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+                padding: const EdgeInsets.only(left: 8.0, right: 1.0),
                 child: Row(
                   children: [
                     Icon(
@@ -136,22 +137,24 @@ class MyPageScreen extends ConsumerWidget {
                       )
                     ),
                     const Spacer(),
-                    Switch(
-                      value: (textTheme == bigTextTheme),
-                      onChanged: (value){
-                        ref
-                        .read(textThemeViewmodelProvider.notifier)
-                        .changeTxtTheme();
-                      },
-                      activeThumbColor: colorScheme.tertiary,
-                      activeTrackColor: colorScheme.surfaceContainerHighest,
-                      inactiveThumbColor: colorScheme.tertiary,
-                      inactiveTrackColor: colorScheme.onTertiary,
+                    Transform.scale(
+                      scale: 0.8,
+                      child: CupertinoSwitch(
+                        value: (textTheme == bigTextTheme),
+                        onChanged: (value){
+                          ref
+                          .read(textThemeViewmodelProvider.notifier)
+                          .changeTxtTheme();
+                        },
+                        activeColor: colorScheme.surfaceContainerHighest,
+                        inactiveThumbColor: colorScheme.tertiary,
+                        inactiveTrackColor: colorScheme.onTertiary,
+                      ),
                     )
                   ],
                 ),
               ),
-              const SizedBox(height: 60.0),
+              const SizedBox(height: 60),
               // 기타 버튼(other buttons)
               SizedBox(
                 height: 320,

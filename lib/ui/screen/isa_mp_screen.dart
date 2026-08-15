@@ -76,8 +76,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    print('🎨 [Screen build] 위젯ID: ${identityHashCode(this)} / 카테고리: ProductCategory.isaMp');
+  Widget build(BuildContext context) {;
     // 현재 페이지, ISA 상품 상태, 필터 관찰하기
     // Watch current page, ISA products status and their filter
     final cPage = ref.watch(

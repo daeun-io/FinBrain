@@ -55,8 +55,6 @@ class ProductRemoteDataSource {
           "EUC-KR",
           res.bodyBytes,
         );
-        print('네트워크 대기: ${stopwatch.elapsedMilliseconds}ms');
-        print('현재 카테고리: $ctg');
         final formatter = Xml2Json();
 
         formatter.parse(xmlBody);

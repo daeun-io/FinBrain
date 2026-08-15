@@ -127,8 +127,6 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
           .firstWhere((e) => e.$2 == true)
           .$1;
       final newTopFinGrpNo = getFinGroupCode[newTopFinGrpName] ?? "020000";
-      print("현재 업권, $currentTopFinGrpNo");
-      print("선택된 새 업권, $newTopFinGrpNo");
       // 금융회사 업권 변경 시 새 데이터 호출
       // Fetch data when company category changes
       if (currentTopFinGrpNo != newTopFinGrpNo) {
@@ -145,8 +143,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
     if (snapshot["기준년도"] != null) {
       final currentBaseYear = ref.read(selectedBaseYearViewmodelProvider)[ctg];
       final newBaseYear = snapshot["기준년도"]!.firstWhere((e) => e.$2 == true).$1;
-      print("현재 기준년도, $currentBaseYear");
-      print("새 기준년도, $newBaseYear");
+
       if (currentBaseYear.toString() != newBaseYear) {
         ref
             .read(selectedBaseYearViewmodelProvider.notifier)
@@ -195,8 +192,6 @@ class SavedFilters extends _$SavedFilters {
 
   // 변경사항 저장
   // Save filter change
-  void save(Map<String, List<(String, bool)>> filters) {
+  void save(Map<String, List<(String, bool)>> filters) => 
     state = AsyncValue.data(filters);
-    print("새 필터 ${state.value}");
-  }
 }
