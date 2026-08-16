@@ -84,10 +84,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     List<String> bubbles = ref.watch(
       aiAssistScreenViewmodelProvider(widget.tag),
     );
-    print("상품, ${widget.tag}");
-    print("record, ${record?.key}");
-    print("message, ${messages?.isEmpty}");
-    print("bubbles, ${bubbles.isEmpty}");
+    
     return Scaffold(
       backgroundColor: colorScheme.primary,
       appBar: PreferredSize(

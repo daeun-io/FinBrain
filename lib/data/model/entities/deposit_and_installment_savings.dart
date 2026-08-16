@@ -108,8 +108,8 @@ class DepositAndInstallmentSavings extends FinancialProduct {
       "joinMember": joinMember.toString(),
       "etc": etc.toString(),
       "maxLimit": maxLimit.toString(),
-      "maxPrfRate": maxPrfRate.toString(),
-      "maxBaseRate": maxBaseRate.toString(),
+      "maxPrfRate": maxPrfRate ?? "null",
+      "maxBaseRate": maxBaseRate ?? "null",
       "options": options
           .map(
             (e) => {

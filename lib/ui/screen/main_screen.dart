@@ -7,17 +7,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({super.key, this.index});
 
+  final int? index;
   @override
   ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  int _currentIndex = 0;
-  // 방문한 탭(캐시 유지)
-  // visited indicies to retain cache
-  final Set<int> _visitedIndices = {0};
+  late int _currentIndex;
+  late Set<int> _visitedIndices;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.index ?? 0;
+    
+    // 방문한 탭(캐시 유지)
+    // visited indicies to retain cache
+    _visitedIndices = {_currentIndex};
+  }
 
   @override
   Widget build(BuildContext context) {

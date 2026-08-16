@@ -29,7 +29,7 @@ final ThemeData lightTheme = ThemeData(
     onSecondaryFixedVariant: grayishBlue,
     // radio/check/circulator/indicator
     onTertiaryFixed: lightSkyBlue,
-    // filterchip/isa-tab-indicator
+    // filterchip/isa-tab-indicator/product-check
     surfaceContainerHigh: skyBlue,
     // ai button
     surfaceDim: blueHeist85,
@@ -73,7 +73,7 @@ final ThemeData darkTheme = ThemeData(
     onSecondaryFixedVariant: grayishBlue,
     // radio/check/circulator/indicator
     onTertiaryFixed: lightSkyBlue,
-    // filterchip/isa-tab-indicator
+    // filterchip/isa-tab-indicator/product-check
     surfaceContainerHigh: blueHeist,
     // ai button
     surfaceDim: blueHeist85,

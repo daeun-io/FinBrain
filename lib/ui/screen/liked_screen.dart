@@ -1,7 +1,9 @@
+import 'package:finbrain/ui/screen/product_selection_screen.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:finbrain/ui/widget/sort_or_filter.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
@@ -14,26 +16,9 @@ class LikedScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 관심 상품 및 필터링 불러오기
-    // Fetch liked products and their filter
+    // 관심 상품 관찰하기
+    // Watch liked products
     final liked = ref.watch(likedProductViewmodelProvider);
-    final selectedProducts = ref.watch(selectedProductsViewmodelProvider);
-    // 비교 분석 tag
-    // AI Comparison response tag
-    final prdtCodes = selectedProducts
-        .map(
-          (e) => (e.commonInfo.category == ProductCategory.isaMp)
-              ? e.commonInfo.productName
-              : e.commonInfo.productCode,
-        )
-        .whereType<String>()
-        .join('`');
-    // 비교 분석 name
-    // AI Comparison response name
-    final prdtNames = selectedProducts
-        .map((e) => e.commonInfo.productName)
-        .whereType<String>()
-        .join('`');
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -65,42 +50,59 @@ class LikedScreen extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 20.0),
-          Expanded(
-            child: Stack(
-              children: [
-                if (liked.value != null)
-                  Positioned.fill(
-                    child: ListView.builder(
-                      itemCount: liked.value!.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: ProductItem(
-                            productCode:
-                                liked.value![index].commonInfo.productCode ?? "isaMp",
-                            productName:
-                                liked.value![index].commonInfo.productName!,
-                            category: liked.value![index].commonInfo.category,
-                            fromLikedScreen: true,
-                          ),
-                        );
-                      },
+          liked.when(
+            data: (data) {
+              return Expanded(
+                child: Stack(
+                  children: [
+                    if (liked.value != null)
+                      Positioned.fill(
+                        child: ListView.builder(
+                          itemCount: liked.value!.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: ProductItem(
+                                productCode:
+                                    data[index].commonInfo.productCode ??
+                                    "isaMp",
+                                productName:
+                                    data[index].commonInfo.productName!,
+                                category: data[index].commonInfo.category,
+                                fromLikedScreen: true,
+                                isSelecting: false,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    // 비교 분석 AI 버튼
+                    // AI button for comparison
+                    Positioned(
+                      right: 5,
+                      bottom: 5,
+                      child: AiButton(
+                        tag: null,
+                        name: null,
+                        category: ProductCategory.liked,
+                        isBtnClicked: () {
+                          // 상품 선택 스크린으로 이동
+                          // Navigate to product selection screen
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) => const ProductSelectionScreen(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                // 비교 분석 AI 버튼
-                // AI button for comparison
-                Positioned(
-                  right: 5,
-                  bottom: 5,
-                  child: AiButton(
-                    tag: "compare`$prdtCodes",
-                    name: prdtNames,
-                    category: ProductCategory.liked,
-                    isBtnClicked: () {},
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
+            loading: () => const Expanded(child: CustomProgressIndicator()),
+            error: (error, stackTrace) =>
+                const Expanded(child: ShowingErrorWidget()),
           ),
         ],
       ),

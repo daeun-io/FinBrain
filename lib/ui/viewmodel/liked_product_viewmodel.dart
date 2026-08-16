@@ -11,7 +11,7 @@ final repository = LikedRepository();
 
 // 관심 상품 불러오는 뷰모델
 // Fetching liked product viewmodel
-@Riverpod(keepAlive: true)
+@riverpod
 class FetchLikedViewmodel extends _$FetchLikedViewmodel {
   @override
   Future<List<FinancialProduct>> build() async {
@@ -37,7 +37,7 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
 
 // 화면에 관심 상품 보이는 뷰모델
 // Displaying liked products in screen
-@Riverpod(keepAlive: true)
+@riverpod
 class LikedProductViewmodel extends _$LikedProductViewmodel {
   @override
   Future<List<FinancialProduct>> build() async {
@@ -87,13 +87,15 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     final criteria = ref.read(
       sortOrFilterTextViewModelProvider(ProductCategory.liked),
     );
-    return filterByCategory(
+    final sorted = filterByCategory(
       (criteria.$1 as List<String>)
           .toString()
           .replaceAll("[", "")
           .replaceAll("]", ""),
       allProducts,
     );
+    state = AsyncValue.data(sorted);
+    return sorted;
   }
 
   // 금융 상품 관심 리스트에 저장하기

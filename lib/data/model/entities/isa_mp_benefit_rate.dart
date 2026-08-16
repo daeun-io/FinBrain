@@ -71,8 +71,8 @@ class IsaMpBenefitRate extends FinancialProduct {
       "baseDate": baseDate.toString(),
       "businessDomain": businessDomain.toString(),
       "mpType": mpType.toString(),
-      "avgProfit": avgProfit.toString(),
-      "medProfit": medProfit.toString(),
+      "avgProfit": avgProfit ?? "null",
+      "medProfit": medProfit ?? "null",
       "options": options
           .map((e) => {"term": e.term, "benefitRate": e.benefitRate})
           .toList(),

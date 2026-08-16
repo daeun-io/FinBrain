@@ -33,7 +33,7 @@ class CustomAppbar extends ConsumerWidget {
     return AppBar(
       // 스크린에 따라 배경색 변경
       // Change background color based on screen
-      backgroundColor: ["archive", "main", "calculator"].contains(screen)
+      backgroundColor: ["archive", "main", "calculator", "product_selection"].contains(screen)
           ? colorScheme.primary
           : colorScheme.tertiary,
       scrolledUnderElevation: 0.0,

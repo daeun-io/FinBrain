@@ -183,6 +183,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                             productName: items[index].commonInfo.productName!,
                             category: items[index].commonInfo.category,
                             fromLikedScreen: false,
+                            isSelecting: false,
                           ),
                         );
                       }, childCount: items.isEmpty ? 1 : items.length),

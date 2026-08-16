@@ -1,5 +1,7 @@
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/screen/main_screen.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -13,14 +15,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class AiComparisonScreen extends ConsumerWidget {
   const AiComparisonScreen({
     super.key,
-    required this.tag, 
+    required this.tag,
     required this.name,
     required this.ctg,
   });
 
-  final String tag;             // 상품 코드나 이름 묶음(collection of product codes or names)
-  final String name;            // 상품 이름 묶음(collection of product names)
-  final ProductCategory ctg;    // 상품 카테고리(product category)
+  final String tag; // 상품 코드나 이름 묶음(collection of product codes or names)
+  final String name; // 상품 이름 묶음(collection of product names)
+  final ProductCategory ctg; // 상품 카테고리(product category)
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -65,7 +67,7 @@ class AiComparisonScreen extends ConsumerWidget {
                     Row(
                       children: [
                         TextButton(
-                          onPressed: ()  {
+                          onPressed: () {
                             // 재생성(refresh)
                             ref
                                 .read(
@@ -95,15 +97,25 @@ class AiComparisonScreen extends ConsumerWidget {
                           onTap: () async {
                             // 서버에 응답 저장
                             // Save AI response in firestore
-                           await ref
+                            await ref
                                 .read(
                                   aiComparisonScreenViewmodelProvider(
                                     request,
                                   ).notifier,
                                 )
                                 .saveComparisonText(name, tag, ctg);
-                            if(context.mounted){
-                              Navigator.of(context).pop();
+                            ref
+                                .read(
+                                  selectedProductsViewmodelProvider.notifier,
+                                )
+                                .resetSelectedList();
+                            if (context.mounted) {
+                              // 관심 상품 화면으로 이동
+                              // Navigate to Liked Screen
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(builder: (ctx) => const MainScreen(index: 2)),
+                                (route) => false,
+                              );
                             }
                           },
                           child: Container(
@@ -145,9 +157,7 @@ class AiComparisonScreen extends ConsumerWidget {
                 // 오류 발생 시 재시도
                 // Try again to fetch response when error occurred
                 ref
-                    .read(
-                      aiComparisonScreenViewmodelProvider(tag).notifier,
-                    )
+                    .read(aiComparisonScreenViewmodelProvider(tag).notifier)
                     .refreshComparison(request);
               },
               style: ButtonStyle(

@@ -22,20 +22,20 @@ class ProductItem extends ConsumerStatefulWidget {
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
+    required this.isSelecting,
   });
 
   final String productCode;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
+  final bool isSelecting;
 
   @override
   ConsumerState<ProductItem> createState() => _ProductItemState();
 }
 
 class _ProductItemState extends ConsumerState<ProductItem> {
-  bool isSelected = false;
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -74,6 +74,9 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                 _ => "최저 금리(낮은 순)",
               }
             : sortFilter.$1.toString();
+        final isSelected = ref
+            .watch(selectedProductsViewmodelProvider)
+            .contains(product);
 
         return GestureDetector(
           onTap: () {
@@ -87,26 +90,6 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                 ),
               ),
             );
-          },
-          // 관심 상품을 꾹 누르면 비교 상품 리스트에 추가/삭제
-          // Add/Delete when liked product is long pressed
-          onLongPress: () {
-            setState(() {
-              if (widget.fromLikedScreen) {
-                if (product.commonInfo.isLiked) {
-                  isSelected = !isSelected;
-                }
-                if (isSelected) {
-                  ref
-                      .read(selectedProductsViewmodelProvider.notifier)
-                      .addProduct(product);
-                } else {
-                  ref
-                      .read(selectedProductsViewmodelProvider.notifier)
-                      .subtractProduct(product);
-                }
-              }
-            });
           },
           child: Container(
             decoration: BoxDecoration(
@@ -220,40 +203,35 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     ],
                   ),
                   const SizedBox(width: 3.0),
-                  // 관심 버튼
-                  // liked button
-                  IconButton(
-                    onPressed: () {
-                      final page = ref.read(
-                        currentPageViewmodelProvider(widget.category),
-                      );
-                      ref
-                          .read(
-                            fetchProductViewmodelProvider(
-                              widget.category,
-                              page,
-                            ).notifier,
-                          )
-                          .toggleLiked(product);
-                    },
-                    icon: isSelected
-                        ? Icon(
-                            Icons.check_circle,
-                            color: colorScheme.surfaceContainerHigh,
-                            size: 32.0,
-                          )
-                        : product.commonInfo.isLiked
-                        ? Icon(
-                            Icons.favorite,
-                            color: colorScheme.onPrimaryFixed,
-                            size: 32.0,
-                          )
-                        : Icon(
-                            Icons.favorite,
-                            color: colorScheme.onPrimaryFixedVariant,
-                            size: 32.0,
-                          ),
-                  ),
+                  if (!widget.isSelecting)
+                    // 관심 버튼
+                    // liked button
+                    IconButton(
+                      onPressed: () {
+                        final page = ref.read(
+                          currentPageViewmodelProvider(widget.category),
+                        );
+                        ref
+                            .read(
+                              fetchProductViewmodelProvider(
+                                widget.category,
+                                page,
+                              ).notifier,
+                            )
+                            .toggleLiked(product);
+                      },
+                      icon: product.commonInfo.isLiked
+                          ? Icon(
+                              Icons.favorite,
+                              color: colorScheme.onPrimaryFixed,
+                              size: 32.0,
+                            )
+                          : Icon(
+                              Icons.favorite,
+                              color: colorScheme.onPrimaryFixedVariant,
+                              size: 32.0,
+                            ),
+                    ),
                 ],
               ),
             ),

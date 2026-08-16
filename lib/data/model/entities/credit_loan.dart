@@ -97,9 +97,9 @@ class CreditLoan extends FinancialProduct {
       "productType": productType.toString(),
       "productTypeName": productType.toString(),
       "cbName": cbName.toString(),
-      "maxRate": maxRate.toString(),
-      "minRate": minRate.toString(),
-      "avgRate": avgRate.toString(),
+      "maxRate": maxRate ?? "null",
+      "minRate": minRate ?? "null",
+      "avgRate": avgRate ?? "null",
       "options": options
           .map(
             (e) => {

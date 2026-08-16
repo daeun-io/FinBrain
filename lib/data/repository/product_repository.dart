@@ -22,7 +22,7 @@ final likedRepository = LikedRepository();
 // 금융 상품 레포지토리
 // Financial product repository
 class ProductRepository {
-  List<String>? _cachedLikedPrdtNames;
+  List<String>? _cachedLikedPrdtCodes;
 
   // 주어진 업권에 따라 금융한눈에 상품 불러오기
   // Get financial products based on give category
@@ -42,7 +42,16 @@ class ProductRepository {
     try {
       // 좋아요 리스트를 불러와 동적으로 좋아요 상태 반영하기
       // Reflect the like status dynamically from the liked products list
-      _cachedLikedPrdtNames ??= (await likedRepository.getLikedProducts(uid)).map((e) => e.commonInfo.productName).whereType<String>().toList();
+      _cachedLikedPrdtCodes ??= (await likedRepository.getLikedProducts(uid))
+          .map((e) {
+            if (e.commonInfo.productCode == null) {
+              return e.commonInfo.productName;
+            } else {
+              return e.commonInfo.productCode;
+            }
+          })
+          .whereType<String>()
+          .toList();
       final result = await dataStore.fetchFinlifeProducts(ctg, options);
       if (result["result"] == null) {
         throw Exception("[error] result of fetching finlife products is null");
@@ -142,8 +151,8 @@ class ProductRepository {
                         ),
                       )
                       .toList(),
-                  isLiked: (_cachedLikedPrdtNames ?? []).contains(
-                    element["baseinfo"]["fin_prdt_nm"],
+                  isLiked: (_cachedLikedPrdtCodes ?? []).contains(
+                    element["baseinfo"]["fin_prdt_cd"],
                   ),
                 );
               })
@@ -200,8 +209,8 @@ class ProductRepository {
                   joinWay: (element["baseinfo"]["join_way"].toString()).split(
                     ",",
                   ),
-                  isLiked: (_cachedLikedPrdtNames ?? []).contains(
-                    element["baseinfo"]["fin_prdt_nm"],
+                  isLiked: (_cachedLikedPrdtCodes ?? []).contains(
+                    element["baseinfo"]["fin_prdt_cd"],
                   ),
                   extraExpense: element["baseinfo"]["loan_inci_expn"]
                       .toString(),
@@ -292,8 +301,8 @@ class ProductRepository {
                   joinWay: (element["baseinfo"]["join_way"].toString()).split(
                     ",",
                   ),
-                  isLiked: (_cachedLikedPrdtNames ?? []).contains(
-                    element["baseinfo"]["fin_prdt_nm"],
+                  isLiked: (_cachedLikedPrdtCodes ?? []).contains(
+                    element["baseinfo"]["fin_prdt_cd"],
                   ),
                   productType: element["baseinfo"]["crdt_prdt_type"].toString(),
                   productTypeName: element["baseinfo"]["crdt_prdt_type_nm"]
@@ -375,7 +384,9 @@ class ProductRepository {
     try {
       // 좋아요 리스트를 불러와 동적으로 좋아요 상태 반영하기
       // Reflect the like status dynamically from the liked products list
-      _cachedLikedPrdtNames ??= (await likedRepository.getLikedProducts(uid)).map((e) => e.commonInfo.productName).whereType<String>().toList();
+      _cachedLikedPrdtCodes ??= (await likedRepository.getLikedProducts(
+        uid,
+      )).map((e) => e.commonInfo.productName).whereType<String>().toList();
       final response = await dataStore.fetchIsaMpProducts(options);
 
       if (response["response"] == null ||
@@ -433,7 +444,9 @@ class ProductRepository {
                 companyName: element["cmpyNm"].toString(),
                 productName: element["mpNm"].toString(),
                 releaseDate: element["rlsDt"].toString(),
-                isLiked: (_cachedLikedPrdtNames ?? []).contains(element["mpNm"]),
+                isLiked: (_cachedLikedPrdtCodes ?? []).contains(
+                  element["mpNm"],
+                ),
                 baseDate: element["basDt"].toString(),
                 businessDomain: element["bzds"].toString(),
                 mpType: element["mpTp"].toString(),

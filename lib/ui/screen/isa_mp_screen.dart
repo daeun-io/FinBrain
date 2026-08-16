@@ -172,6 +172,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                           productName: items[index].commonInfo.productName!,
                           category: items[index].commonInfo.category,
                           fromLikedScreen: false,
+                          isSelecting: false,
                         ),
                       );
                     }, childCount: items.length),
