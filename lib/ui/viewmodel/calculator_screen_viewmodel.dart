@@ -157,7 +157,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
         final tax = interest * 0.154;
         final interestAfterTax = interest - tax;
         return {
-          "총 납입원금": totalPrincipal,
+          "월 납입액 합계": totalPrincipal,
           "총 이자": interest.toInt(),
           "세후 이자(15.4%)": interestAfterTax.toInt(),
           "만기수령액": (totalPrincipal + interestAfterTax).toInt(),
