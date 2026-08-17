@@ -22,7 +22,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   void initState() {
     super.initState();
     _currentIndex = widget.index ?? 0;
-    
+
     // 방문한 탭(캐시 유지)
     // visited indicies to retain cache
     _visitedIndices = {_currentIndex};

@@ -2,6 +2,7 @@ import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/ai_example_query.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
@@ -9,6 +10,7 @@ import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 // AI 어시스트 스크린(AI 채팅)
 // AI assist screen(chat window)
@@ -33,6 +35,11 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   AiRecord? record; // AI 요약(AI summaries)
   List<(MessageBubble, MessageBubble)>?
   messages; // 대화 내역(chat history in firestore)
+
+  // 튜토리얼을 위한 변수
+  // Variables for tutorial
+  GlobalKey key4 = GlobalKey();
+  bool isDetailScreenTutorialShown = false;
 
   @override
   void initState() {
@@ -74,6 +81,71 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     }
   }
 
+  // 튜토리얼 보이기
+  void showTutorial() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    TutorialCoachMark(
+      targets: [
+        TargetFocus(
+          identify: key4,
+          keyTarget: key4,
+          shape: ShapeLightFocus.RRect,
+          contents: [
+            TargetContent(
+              align: ContentAlign.bottom,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.secondary,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    child: Text(
+                      "이곳에서 AI와 대화할 수 있습니다\n금융 상품에 대해 궁금한 점을 자유롭게 질문해보세요",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: colorScheme.onSecondary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.secondary,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    child: Text(
+                      "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다",
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: colorScheme.onSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+      textSkip: "건너뛰기",
+      textStyleSkip: textTheme.bodySmall!.copyWith(
+        color: colorScheme.onSurface,
+      ),
+      pulseEnable: false,
+      onFinish: () =>
+          ref.read(detailTutorialViewmodelProvider.notifier).resetPhase(),
+    ).show(context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -84,10 +156,19 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     List<String> bubbles = ref.watch(
       aiAssistScreenViewmodelProvider(widget.tag),
     );
-    
+
+    if (!isDetailScreenTutorialShown) {
+      isDetailScreenTutorialShown = true;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(Duration(milliseconds: 300), () => showTutorial());
+      });
+    }
+
     return Scaffold(
       backgroundColor: colorScheme.primary,
       appBar: PreferredSize(
+        key: key4,
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppbar(screen: "ai_assist", title: "AI 어시스트"),
       ),
