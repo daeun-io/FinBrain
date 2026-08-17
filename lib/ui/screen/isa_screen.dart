@@ -8,6 +8,7 @@ import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_tapbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 // 데이터 호출 스크린의 부모 스크린 + 탭 포함
 // Parent screen of IsaBase and IsaMp Screen including tab
@@ -18,8 +19,7 @@ class IsaScreen extends ConsumerStatefulWidget {
   ConsumerState<IsaScreen> createState() => _IsaScreenState();
 }
 
-class _IsaScreenState extends ConsumerState<IsaScreen>
-    with SingleTickerProviderStateMixin {
+class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProviderStateMixin {
   late TabController _controller;
   final tabList = ["가입 현황", "운용 현황", "MP 수익률"];
   final categories = const [

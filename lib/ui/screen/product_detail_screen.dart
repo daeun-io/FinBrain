@@ -54,7 +54,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   GlobalKey key3 = GlobalKey();
   bool isDetailScreenTutorialShown = false;
 
-  // 튜토리얼 넣는 함수
+  // 튜토리얼 추가하는 함수
   // Add tutorial target
   void initTarget(GlobalKey key, String content) {
     final colorScheme = Theme.of(context).colorScheme;
