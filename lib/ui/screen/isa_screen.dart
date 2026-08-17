@@ -1,15 +1,11 @@
-import 'package:finbrain/ui/screen/isa_guide_screen.dart';
 import 'package:finbrain/ui/viewmodel/current_ctg_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/isa_guide_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/isa_base_screen.dart';
 import 'package:finbrain/ui/screen/isa_mp_screen.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
-import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/custom_tapbar.dart';
-import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,7 +34,7 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
     super.initState();
     _controller = TabController(length: 3, initialIndex: 0, vsync: this);
     _controller.addListener(() {
-      if(!_controller.indexIsChanging){
+      if (!_controller.indexIsChanging) {
         setState(() {
           currentIndex = _controller.index;
         });
@@ -70,62 +66,32 @@ class _IsaScreenState extends ConsumerState<IsaScreen>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    // 첫 로그인이면 ISA 가이드 스크린으로 이동
-    // Navigate to ISA guide screen when this is first login
-    final displayedISAScreen = ref.watch(isaGuideViewmodelProvider);
-    ref.listen<bool>(
-      isaGuideViewmodelProvider.select((async) => async.requireValue),
-      (prev, next) async {
-        if (next == false) {
-          final result = await Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (ctx) => const IsaGuideScreen()));
-
-          if (result == true && context.mounted) {
-            ref.invalidate(isaGuideViewmodelProvider);
-          }
-        }
-      },
-    );
-
-    return displayedISAScreen.when(
-      data: (data) {
-        if (!data) {
-          // 오류 방지를 위한 빈 화면
-          // Empty screen for error protection
-          return Scaffold(backgroundColor: colorScheme.primary);
-        } else {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            child: Column(
-              children: [
-                Card(
-                  margin: EdgeInsets.zero,
-                  color: colorScheme.tertiary,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  elevation: 0,
-                  child: CustomTapbar(
-                    tabList: tabList,
-                    isIsaScreen: true,
-                    controller: _controller,
-                  ),
-                ),
-                Expanded(
-                  child: switch(currentIndex){
-                    1 => const IsaBaseScreen(category: ProductCategory.isaManagement),
-                    2 => const IsaMpScreen(),
-                    _ => const IsaBaseScreen(category: ProductCategory.isaJoin)
-                  }
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      child: Column(
+        children: [
+          Card(
+            margin: EdgeInsets.zero,
+            color: colorScheme.tertiary,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
-          );
-        }
-      },
-      error: (error, stack) => const ShowingErrorWidget(),
-      loading: () => const CustomProgressIndicator(),
+            elevation: 0,
+            child: CustomTapbar(
+              tabList: tabList,
+              isIsaScreen: true,
+              controller: _controller,
+            ),
+          ),
+          Expanded(
+            child: switch (currentIndex) {
+              1 => const IsaBaseScreen(category: ProductCategory.isaManagement),
+              2 => const IsaMpScreen(),
+              _ => const IsaBaseScreen(category: ProductCategory.isaJoin),
+            },
+          ),
+        ],
+      ),
     );
   }
 }

@@ -15,6 +15,7 @@ import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -97,6 +98,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         color: colorScheme.onSurface,
       ),
       pulseEnable: false,
+      onFinish: () => ref.read(detailTutorialViewmodelProvider.notifier).updatePhase(3),
+      onSkip: () {
+        ref.read(detailTutorialViewmodelProvider.notifier).updatePhase(3);
+        return true;
+      }
     ).show(context: context);
   }
 

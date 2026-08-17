@@ -143,6 +143,10 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       pulseEnable: false,
       onFinish: () =>
           ref.read(detailTutorialViewmodelProvider.notifier).resetPhase(),
+      onSkip: () {
+        ref.read(detailTutorialViewmodelProvider.notifier).resetPhase();
+        return true;
+      }
     ).show(context: context);
   }
 
@@ -157,7 +161,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       aiAssistScreenViewmodelProvider(widget.tag),
     );
 
-    if (!isDetailScreenTutorialShown) {
+    if (!isDetailScreenTutorialShown && ref.read(detailTutorialViewmodelProvider) == 3) {
       isDetailScreenTutorialShown = true;
 
       WidgetsBinding.instance.addPostFrameCallback((_) {

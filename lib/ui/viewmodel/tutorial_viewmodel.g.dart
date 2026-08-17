@@ -20,7 +20,7 @@ final class DetailTutorialViewmodelProvider
         argument: null,
         retry: null,
         name: r'detailTutorialViewmodelProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -42,7 +42,7 @@ final class DetailTutorialViewmodelProvider
 }
 
 String _$detailTutorialViewmodelHash() =>
-    r'73ef27d3f51abdb996f93ce322d581ac0cc9d51e';
+    r'3ddf742e67d911b63e09ea0bc21a32c427ab7417';
 
 abstract class _$DetailTutorialViewmodel extends $Notifier<int> {
   int build();
