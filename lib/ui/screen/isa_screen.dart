@@ -8,7 +8,6 @@ import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_tapbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 // 데이터 호출 스크린의 부모 스크린 + 탭 포함
 // Parent screen of IsaBase and IsaMp Screen including tab

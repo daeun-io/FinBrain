@@ -42,9 +42,62 @@ final class DetailTutorialViewmodelProvider
 }
 
 String _$detailTutorialViewmodelHash() =>
-    r'3ddf742e67d911b63e09ea0bc21a32c427ab7417';
+    r'a5774dd6582b2653c83ca3c836049fba0ea2f41f';
 
 abstract class _$DetailTutorialViewmodel extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(AiCompTutorialViewmodel)
+final aiCompTutorialViewmodelProvider = AiCompTutorialViewmodelProvider._();
+
+final class AiCompTutorialViewmodelProvider
+    extends $NotifierProvider<AiCompTutorialViewmodel, int> {
+  AiCompTutorialViewmodelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'aiCompTutorialViewmodelProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$aiCompTutorialViewmodelHash();
+
+  @$internal
+  @override
+  AiCompTutorialViewmodel create() => AiCompTutorialViewmodel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$aiCompTutorialViewmodelHash() =>
+    r'dbef4b683bcd5bda646e04e382436d5a93d3d3e7';
+
+abstract class _$AiCompTutorialViewmodel extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override

@@ -2,9 +2,11 @@ import 'package:finbrain/ui/screen/loan_screen.dart';
 import 'package:finbrain/ui/screen/savings_screen.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key, this.index});
@@ -18,6 +20,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   late int _currentIndex;
   late Set<int> _visitedIndices;
 
+  // 튜토리얼을 위한 변수
+  // Variables for tutorial
+  GlobalKey key = GlobalKey();
+  bool isAiTutorialShown = false;
+
   @override
   void initState() {
     super.initState();
@@ -28,10 +35,64 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     _visitedIndices = {_currentIndex};
   }
 
+  // 튜토리얼 보이기
+  void showTutorial() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    TutorialCoachMark(
+      targets: [
+        TargetFocus(
+          identify: key,
+          keyTarget: key,
+          shape: ShapeLightFocus.Circle,
+          contents: [
+            TargetContent(
+              align: ContentAlign.top,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: colorScheme.secondary,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Text(
+                  "관심 상품을 확인하세요\n하단 메뉴에서 관심 설정한 금융 상품을 한 눈에볼 수 있습니다",
+                  style: textTheme.bodyMedium!.copyWith(
+                    color: colorScheme.onSecondary,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+      textSkip: "건너뛰기",
+      textStyleSkip: textTheme.bodySmall!.copyWith(
+        color: colorScheme.onSurface,
+      ),
+      pulseEnable: false,
+      onFinish: () =>
+          ref.read(aiCompTutorialViewmodelProvider.notifier).updatePhase(),
+      onSkip: () {
+        ref.read(aiCompTutorialViewmodelProvider.notifier).updatePhase();
+        return true;
+      },
+    ).show(context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
+
+    if (!isAiTutorialShown && ref.read(aiCompTutorialViewmodelProvider) == 1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(Duration(milliseconds: 2000), () => showTutorial());
+      });
+    }
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -51,9 +112,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           _visitedIndices.contains(1)
               ? const LoanScreen()
               : const SizedBox.shrink(),
-          _visitedIndices.contains(2)
-              ? const LikedScreen()
-              : const SizedBox.shrink(),
+          _visitedIndices.contains(2) ? LikedScreen() : const SizedBox.shrink(),
         ],
       ),
       bottomNavigationBar: SafeArea(
@@ -96,7 +155,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   icon: Icon(Icons.paid, size: 28),
                   label: "대출",
                 ),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
+                  key: key,
                   icon: Icon(Icons.favorite, size: 28),
                   label: "관심",
                 ),
