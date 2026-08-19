@@ -1,3 +1,5 @@
+import 'package:finbrain/data/data_source/user_data_source.dart';
+import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/data/repository/url_repository.dart';
 import 'package:finbrain/product_categories.dart';
@@ -7,8 +9,14 @@ part 'product_detail_screen_viewmodel.g.dart';
 // 상세 화면 뷰모델
 @riverpod
 class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
+  final userDataSource = UserDataSource();
+
   @override
-  Future<bool> build() async => false;
+  Future<bool> build() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.displayName == null || user.email == null) return true;
+    return userDataSource.readProductDetailTutorial(user);
+  }
 
   // 계산기에 전달할 금융 상품 옵션 매핑하기
   // Map options to be delivered to calculator screen 

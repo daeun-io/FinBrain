@@ -1,4 +1,5 @@
 import 'package:finbrain/data/aes_helper.dart';
+import 'package:finbrain/data/data_source/user_data_source.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/repository/ai_comp_repository.dart';
@@ -39,6 +40,8 @@ class AiResponseViewmodel extends _$AiResponseViewmodel {
 // AI assist screen viewmodel
 @riverpod
 class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
+  final userDataSource = UserDataSource();
+
   @override
   List<String> build(String tag) => [];
 
@@ -194,6 +197,18 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     } catch (e) {
       throw Exception("[error] failed to fetch summaries : $e");
     }
+  }
+
+  Future<bool> readProductDetailTutorial() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.displayName == null || user.email == null) return true;
+    return userDataSource.readProductDetailTutorial(user);
+  }
+
+  Future<void> setReadProductDetailTutorialToTrue() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.email == null || user.displayName == null) return;
+    return userDataSource.setReadProductDetailTutorialToTrue();
   }
 }
 

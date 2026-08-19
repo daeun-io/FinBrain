@@ -1,8 +1,8 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/ai_example_query.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
@@ -38,12 +38,14 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
 
   // 튜토리얼을 위한 변수
   // Variables for tutorial
-  GlobalKey key4 = GlobalKey();
-  bool isDetailScreenTutorialShown = false;
+  final List<TargetFocus> targets = [];
+  GlobalKey detailKey4 = GlobalKey();
+  bool isDetailScreenTutorialShown = true;
 
   @override
   void initState() {
     super.initState();
+    _userReadTutorial();
     _initializeMessages();
     _getSummaries();
   }
@@ -52,6 +54,12 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   void dispose() {
     _messageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _userReadTutorial() async {
+    isDetailScreenTutorialShown = await ref
+        .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
+        .readProductDetailTutorial();
   }
 
   Future<void> _initializeMessages() async {
@@ -81,75 +89,6 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     }
   }
 
-  // 튜토리얼 보이기
-  void showTutorial() {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    TutorialCoachMark(
-      targets: [
-        TargetFocus(
-          identify: key4,
-          keyTarget: key4,
-          shape: ShapeLightFocus.RRect,
-          contents: [
-            TargetContent(
-              align: ContentAlign.bottom,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    child: Text(
-                      "이곳에서 AI와 대화할 수 있습니다\n금융 상품에 대해 궁금한 점을 자유롭게 질문해보세요",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: colorScheme.onSecondary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    child: Text(
-                      "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: colorScheme.onSecondary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-      textSkip: "건너뛰기",
-      textStyleSkip: textTheme.bodySmall!.copyWith(
-        color: colorScheme.onSurface,
-      ),
-      pulseEnable: false,
-      onFinish: () =>
-          ref.read(detailTutorialViewmodelProvider.notifier).resetPhase(),
-      onSkip: () {
-        ref.read(detailTutorialViewmodelProvider.notifier).resetPhase();
-        return true;
-      }
-    ).show(context: context);
-  }
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -161,20 +100,31 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       aiAssistScreenViewmodelProvider(widget.tag),
     );
 
-    if (!isDetailScreenTutorialShown && ref.read(detailTutorialViewmodelProvider) == 3) {
-      isDetailScreenTutorialShown = true;
-
+    if (!isDetailScreenTutorialShown) {
+      initTarget(
+        context, targets, detailKey4, ContentAlign.bottom, ShapeLightFocus.RRect, 
+        "이곳에서 AI와 대화할 수 있습니다\n금융 상품에 대해 궁금한 점을 자유롭게 질문해보세요",
+        "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다\n\n상단 탭바를 눌러 설명을 닫아주세요"
+      );
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(Duration(milliseconds: 300), () => showTutorial());
+        Future.delayed(
+          Duration(milliseconds: 300),
+          () => showTutorial(
+            context,
+            targets,
+            () => ref
+                .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
+                .setReadProductDetailTutorialToTrue(),
+          ),
+        );
       });
     }
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
       appBar: PreferredSize(
-        key: key4,
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CustomAppbar(screen: "ai_assist", title: "AI 어시스트"),
+        child: CustomAppbar(key: detailKey4, screen: "ai_assist", title: "AI 어시스트"),
       ),
       body: (record == null)
           ? const CustomProgressIndicator()

@@ -8,6 +8,7 @@ import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
+import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
@@ -15,7 +16,6 @@ import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/calculator_screen.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
@@ -49,62 +49,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   // 튜토리얼을 위한 변수
   // Variables for tutorial
   final List<TargetFocus> targets = [];
-  GlobalKey key1 = GlobalKey();
-  GlobalKey key2 = GlobalKey();
-  GlobalKey key3 = GlobalKey();
-  bool isDetailScreenTutorialShown = false;
-
-  // 튜토리얼 추가하는 함수
-  // Add tutorial target
-  void initTarget(GlobalKey key, String content) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    targets.add(
-      TargetFocus(
-        identify: key,
-        keyTarget: key,
-        shape: ShapeLightFocus.RRect,
-        contents: [
-          TargetContent(
-            align: ContentAlign.top,
-            child: Container(
-              decoration: BoxDecoration(
-                color: colorScheme.secondary,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text(
-                content,
-                style: textTheme.bodyMedium!.copyWith(
-                  color: colorScheme.onSecondary,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 튜토리얼 보이기
-  void showTutorial() {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    TutorialCoachMark(
-      targets: targets,
-      textSkip: "건너뛰기",
-      textStyleSkip: textTheme.bodySmall!.copyWith(
-        color: colorScheme.onSurface,
-      ),
-      pulseEnable: false,
-      onFinish: () => ref.read(detailTutorialViewmodelProvider.notifier).updatePhase(3),
-      onSkip: () {
-        ref.read(detailTutorialViewmodelProvider.notifier).updatePhase(3);
-        return true;
-      }
-    ).show(context: context);
-  }
+  GlobalKey detailKey1 = GlobalKey();
+  GlobalKey detailKey2 = GlobalKey();
+  GlobalKey detailKey3 = GlobalKey();
 
   // 공식 웹사이트로 이동하는 함수
   // Function to launch official website
@@ -135,19 +82,51 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
-    if (!isDetailScreenTutorialShown) {
-      isDetailScreenTutorialShown = true;
-      initTarget(key1, "금융 계산기 버튼을 클릭해 예상 수령액 및 월별 상환 금액을 알 수 있습니다");
-      initTarget(key2, "'공식 상품 홈페이지로' 버튼을 클릭해 해당 금융 회사의 공식 사이트에 방문할 수 있습니다");
-      initTarget(
-        key3,
-        "AI와의 대화를 통해 해당 상품에 관한 정보를 쉽게얻을 수 있습니다\n해당 버튼을 클릭하면 채팅 화면으로 이동합니다",
-      );
+    ref.listen(productDetailScreenViewmodelProvider, (prev, next) {
+      next.when(
+        data: (data) {
+          if (data == false) {
+            initTarget(
+              context,
+              targets,
+              detailKey1,
+              ContentAlign.top,
+              ShapeLightFocus.RRect,
+              "금융 계산기 버튼을 클릭해 예상 수령액 및 월별 상환 금액을 알 수 있습니다",
+            );
+            initTarget(
+              context,
+              targets,
+              detailKey2,
+              ContentAlign.top,
+              ShapeLightFocus.RRect,
+              "'공식 상품 홈페이지로' 버튼을 클릭해 해당 금융 회사의 공식 사이트에 방문할 수 있습니다",
+            );
+            initTarget(
+              context,
+              targets,
+              detailKey3,
+              ContentAlign.top,
+              ShapeLightFocus.RRect,
+              "AI와의 대화를 통해 해당 상품에 관한 정보를 쉽게얻을 수 있습니다\n해당 버튼을 클릭하면 채팅 화면으로 이동합니다",
+              "버튼을 클릭해 이동해주세요",
+            );
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(Duration(milliseconds: 300), () => showTutorial());
-      });
-    }
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Future.delayed(
+                Duration(milliseconds: 300),
+                () => showTutorial(
+                  context,
+                  targets
+                ),
+              );
+            });
+          }
+        },
+        loading: () => const CustomProgressIndicator(),
+        error: (error, stackTrace) => const ShowingErrorWidget()
+      );
+    });
 
     // 상품 리스트 불러오기
     // Fetch product list
@@ -281,7 +260,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               ),
               // AI 도우미 버튼(AI Button)
               Positioned(
-                key: key3,
+                key: detailKey3,
                 right: 20,
                 bottom: 100,
                 child: AiButton(
@@ -333,7 +312,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
-      key: key1,
+      key: detailKey1,
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -391,7 +370,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
-      key: key2,
+      key: detailKey2,
       onTap: () => launchPrdtUrl(
         ref,
         product.commonInfo.companyName ?? "",

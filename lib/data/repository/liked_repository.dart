@@ -67,8 +67,8 @@ class LikedRepository {
                   joinMember: map["joinMember"],
                   etc: map["etc"],
                   maxLimit: map["maxLimit"],
-                  maxPrfRate: (map["maxPrfRate"] == "null") ? null : map["maxPrfRate"],
-                  maxBaseRate: (map["maxBaseRate"] == "null") ? null: map["maxBaseRate"],
+                  maxPrfRate: (map["maxPrfRate"] == null || map["maxPrfRate"] == "null") ? null : map["maxPrfRate"],
+                  maxBaseRate: (map["maxBaseRate"] == null || map["maxBaseRate"] == "null" ) ? null: map["maxBaseRate"],
                   options: map["options"]
                       .map(
                         (e) => DepositAndInstallmentSavingsOption(
@@ -111,9 +111,9 @@ class LikedRepository {
                   earlyRepayFee: map["earlyRepayFee"],
                   delayRate: map["delayRate"],
                   loanLimit: map["loanLimit"],
-                  minRate: (map["minRate"] == "null") ? null : map["minRate"],
-                  maxRate: (map["maxRate"] == "null") ? null : map["maxRate"],
-                  avgRate: (map["avgRate"] == "null") ? null : map["avgRate"],
+                  minRate: (map["minRate"] == null || map["minRate"] == "null") ? null : map["minRate"],
+                  maxRate: (map["maxRate"] == null || map["maxRate"] == "null") ? null : map["maxRate"],
+                  avgRate: (map["avgRate"] == null || map["avgRate"] == "null") ? null : map["avgRate"],
                   options: map["options"]
                       .map(
                         (e) => MortgageAndRentLoanOption(
@@ -156,9 +156,9 @@ class LikedRepository {
                   productType: map["productType"],
                   productTypeName: map["productTypeName"],
                   cbName: map["cbName"],
-                  minRate: (map["minRate"] == "null") ? null : map["minRate"],
-                  maxRate: (map["maxRate"] == "null") ? null : map["maxRate"],
-                  avgRate: (map["avgRate"] == "null") ? null : map["avgRate"],
+                  minRate: (map["minRate"] == null || map["minRate"] == "null") ? null : map["minRate"],
+                  maxRate: (map["maxRate"] == null || map["maxRate"] == "null") ? null : map["maxRate"],
+                  avgRate: (map["avgRate"] == null || map["avgRate"] == "null") ? null : map["avgRate"],
                   options: map["options"]
                       .map(
                         (e) => CreditLoanOption(
@@ -195,8 +195,8 @@ class LikedRepository {
                   baseDate: map["baseDate"],
                   businessDomain: map["businessDomain"],
                   mpType: map["mpType"],
-                  avgProfit: (map["avgProfit"] == "null") ? null : map["avgProfit"],
-                  medProfit: (map["medrofit"] == "null") ? null : map["medProfit"],
+                  avgProfit: (map["avgProfit"] == null || map["avgProfit"] == "null") ? null : map["avgProfit"],
+                  medProfit: (map["medrofit"] == null || map["medrofit"] == "null") ? null : map["medProfit"],
                   options: map["options"]
                       .map(
                         (e) => IsaMpBenefitRateOption(
