@@ -1,3 +1,5 @@
+import 'package:finbrain/data/data_source/user_data_source.dart';
+import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
 import 'package:finbrain/data/repository/isa_repository.dart';
@@ -225,5 +227,26 @@ class IsaStatusViewmodel extends _$IsaStatusViewmodel {
         );
       return sorted;
     }
+  }
+
+}
+
+// 파이어스토어의 ISA 튜토리얼 패러미터 다루기
+// Handle isa tutorial params in Firestore
+@riverpod
+class IsaTutorialViemodel extends _$IsaTutorialViemodel {
+  final userDataSource = UserDataSource();
+
+  @override
+  Future<bool> build() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.displayName == null || user.email == null) return true;
+    return userDataSource.readIsaTutorial(user);
+  }
+
+  Future<void> setReadIsaTutorialToTrue() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.email == null || user.displayName == null) return;
+    return userDataSource.setReadIsaTutorialToTrue();
   }
 }

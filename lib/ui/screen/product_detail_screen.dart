@@ -82,6 +82,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
+    // firestore의 값이 false면 튜토리얼 보이기
+    // Show tutorial when firestore value is false
     ref.listen(productDetailScreenViewmodelProvider, (prev, next) {
       next.when(
         data: (data) {

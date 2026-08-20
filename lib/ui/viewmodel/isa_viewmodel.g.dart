@@ -328,3 +328,48 @@ abstract class _$IsaStatusViewmodel
     return element.handleCreate(ref, () => build(_$args));
   }
 }
+
+@ProviderFor(IsaTutorialViemodel)
+final isaTutorialViemodelProvider = IsaTutorialViemodelProvider._();
+
+final class IsaTutorialViemodelProvider
+    extends $AsyncNotifierProvider<IsaTutorialViemodel, bool> {
+  IsaTutorialViemodelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isaTutorialViemodelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$isaTutorialViemodelHash();
+
+  @$internal
+  @override
+  IsaTutorialViemodel create() => IsaTutorialViemodel();
+}
+
+String _$isaTutorialViemodelHash() =>
+    r'0991097b79bf762333afa78ae03a507c1593d4ef';
+
+abstract class _$IsaTutorialViemodel extends $AsyncNotifier<bool> {
+  FutureOr<bool> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<bool>, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<bool>, bool>,
+              AsyncValue<bool>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}

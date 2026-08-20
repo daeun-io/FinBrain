@@ -64,7 +64,6 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Column(
@@ -84,9 +83,9 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
           ),
           Expanded(
             child: switch (currentIndex) {
-              1 => const IsaBaseScreen(category: ProductCategory.isaManagement),
-              2 => const IsaMpScreen(),
-              _ => const IsaBaseScreen(category: ProductCategory.isaJoin),
+              1 => IsaBaseScreen(category: ProductCategory.isaManagement),
+              2 => IsaMpScreen(),
+              _ => IsaBaseScreen(category: ProductCategory.isaJoin),
             },
           ),
         ],

@@ -199,6 +199,8 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     }
   }
 
+  // 튜토리얼 관련 함수
+  // Functions for product detail tutorial
   Future<bool> readProductDetailTutorial() async {
     final user = GoogleAuthService.getCurrentUser();
     if(user == null || user.displayName == null || user.email == null) return true;

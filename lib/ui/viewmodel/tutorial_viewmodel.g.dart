@@ -95,7 +95,7 @@ final class AiCompTutorialViewmodelProvider
 }
 
 String _$aiCompTutorialViewmodelHash() =>
-    r'dbef4b683bcd5bda646e04e382436d5a93d3d3e7';
+    r'f7d337f0c7301c1b0beb2527ab24a49fefbbbea6';
 
 abstract class _$AiCompTutorialViewmodel extends $Notifier<int> {
   int build();
