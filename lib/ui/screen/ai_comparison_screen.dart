@@ -1,9 +1,10 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
+import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/tutorial_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
@@ -33,55 +34,60 @@ class AiComparisonScreen extends ConsumerStatefulWidget {
 class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   // 튜토리얼을 위한 변수
   // Variables for tutorial
-  GlobalKey key = GlobalKey();
+  final List<TargetFocus> targets = [];
+  GlobalKey aiCompkey5 = GlobalKey();
   bool isAiTutorialShown = false;
 
-  // 튜토리얼 보이기
-  void showTutorial() {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+  @override
+  void initState() {
+    super.initState();
+    readAiCompTutorial();
+    ref.read(aiCompTutorialViewmodelProvider.future).then((value) {
+      if (value == false) {
+        _showAiCompTutorial();
+      }
+    });
+  }
 
-    TutorialCoachMark(
-      targets: [
-        TargetFocus(
-          identify: key,
-          keyTarget: key,
-          shape: ShapeLightFocus.RRect,
-          contents: [
-            TargetContent(
-              align: ContentAlign.top,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                child: Text(
-                  "저장하기 버튼을 통해 AI 비교 분석을 저장할 수 있습니다\n\n저장 내역은 마이페이지 > 기록 저장소에서 확인 가능합니다",
-                  style: textTheme.bodyMedium!.copyWith(
-                    color: colorScheme.onSecondary,
-                  ),
-                ),
-              ),
+  void readAiCompTutorial() async {
+    isAiTutorialShown = await ref
+        .read(aiCompTutorialViewmodelProvider.notifier)
+        .readAiCompTutorial();
+  }
+
+  void _showAiCompTutorial() {
+    initTarget(
+      context,
+      targets,
+      aiCompkey5,
+      ContentAlign.top,
+      ShapeLightFocus.RRect,
+      "저장하기 버튼을 통해 AI 비교 분석을 저장할 수 있습니다\n\n저장 내역은 마이페이지 > 기록 저장소에서 확인 가능합니다",
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 이 분석 저장하기 위치로 이동 후 튜토리얼 보이기
+      // Show tutorial after moving to "save response button"
+      final keyContext = aiCompkey5.currentContext;
+      if (keyContext != null) {
+        Scrollable.ensureVisible(
+          keyContext,
+          duration: const Duration(milliseconds: 300),
+          alignment: 0.5,
+        ).then((_) {
+          Future.delayed(
+            Duration(milliseconds: 300),
+            () => showTutorial(
+              context,
+              targets,
+              () => ref
+                  .read(aiCompTutorialViewmodelProvider.notifier)
+                  .setReadAiCompTutorialToTrue(),
             ),
-          ],
-        ),
-      ],
-      textSkip: "건너뛰기",
-      textStyleSkip: textTheme.bodySmall!.copyWith(
-        color: colorScheme.onSurface,
-      ),
-      pulseEnable: false,
-      onFinish: () =>
-          ref.read(aiCompTutorialViewmodelProvider.notifier).resetPhase(),
-      onSkip: () {
-        ref.read(aiCompTutorialViewmodelProvider.notifier).resetPhase();
-        return true;
-      },
-    ).show(context: context);
+          );
+        });
+      }
+    });
   }
 
   @override
@@ -98,21 +104,6 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
     // 프롬프트 전달
     // Send AI prompt
     final text = ref.watch(aiComparisonScreenViewmodelProvider(request));
-
-    if (!isAiTutorialShown) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final context = key.currentContext;
-        if (context != null) {
-          Scrollable.ensureVisible(
-            context,
-            duration: const Duration(milliseconds: 300),
-            alignment: 0.5,
-          ).then((_) {
-            Future.delayed(Duration(milliseconds: 1000), () => showTutorial());
-          });
-        }
-      });
-    }
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -198,6 +189,9 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                   )
                                   .resetSelectedList();
                             }
+                            // 변경된 상태를 반영하기 위해 invalidate
+                            // Invalidate provider to apply changed state
+                            ref.invalidate(aiCompTutorialViewmodelProvider);
 
                             if (context.mounted) {
                               // 관심 상품 화면으로 이동
@@ -211,7 +205,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                             }
                           },
                           child: Container(
-                            key: key,
+                            key: aiCompkey5,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [

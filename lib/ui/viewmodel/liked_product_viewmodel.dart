@@ -2,6 +2,7 @@ import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/repository/liked_repository.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:flutter/rendering.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,9 +21,12 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
       if (user == null) {
         throw Exception("[user] no user found");
       }
+
       // 관심 상품 불러오기
       // Fetch liked products
-      final products = await repository.getLikedProducts(user.uid);
+      final products = ref
+          .read(aiCompTutorialViewmodelProvider.notifier)
+          .getMockData();
 
       if (products.isEmpty) {
         debugPrint("[empty] no item in liked list");
@@ -41,7 +45,16 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
 class LikedProductViewmodel extends _$LikedProductViewmodel {
   @override
   Future<List<FinancialProduct>> build() async {
-    final likedProducts = ref.watch(fetchLikedViewmodelProvider);
+    // 튜토리얼이면 목데이터 아니면 관심 상품 불러오기
+    // Fetch mock data while tutorial, else fetch liked products
+    final isTutorialShownAsync = ref.watch(aiCompTutorialViewmodelProvider);
+    final isTutorialShown = isTutorialShownAsync.value ?? true;
+
+    final likedProducts = (!isTutorialShown)
+        ? AsyncValue.data(
+            ref.read(aiCompTutorialViewmodelProvider.notifier).getMockData(),
+          )
+        : ref.watch(fetchLikedViewmodelProvider);
     return getProductsFilteredByCriteria(likedProducts.value);
   }
 
@@ -59,12 +72,25 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     if (criteriaList.contains("모든 상품")) {
       categories.addAll(ProductCategory.values);
     } else {
-      if (criteriaList.contains("정기예금")) categories.add(ProductCategory.deposit);
-      if (criteriaList.contains("적금")) categories.add(ProductCategory.installment);
-      if (criteriaList.contains("ISA")) categories.add(ProductCategory.isaMp);
-      if (criteriaList.contains("주택담보대출")) categories.add(ProductCategory.mortgage);
-      if (criteriaList.contains("전세자금대출")) categories.add(ProductCategory.rent);
-      if (criteriaList.contains("개인신용대출")) categories.add(ProductCategory.credit);
+      if (criteriaList.contains("정기예금")) {
+        categories.add(ProductCategory.deposit);
+      }
+      if (criteriaList.contains("적금")) {
+        categories.add(ProductCategory.installment);
+      }
+      if (criteriaList.contains("ISA")) {
+        categories.add(ProductCategory.isaMp);
+      }
+      if (criteriaList.contains("주택담보대출")) {
+        categories.add(ProductCategory.mortgage);
+      }
+
+      if (criteriaList.contains("전세자금대출")) {
+        categories.add(ProductCategory.rent);
+      }
+      if (criteriaList.contains("개인신용대출")) {
+        categories.add(ProductCategory.credit);
+      }
     }
 
     // 데이터 불러와 필터 적용하기

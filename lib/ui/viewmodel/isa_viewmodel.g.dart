@@ -354,7 +354,7 @@ final class IsaTutorialViemodelProvider
 }
 
 String _$isaTutorialViemodelHash() =>
-    r'0991097b79bf762333afa78ae03a507c1593d4ef';
+    r'dc0dcd36e1c1e13b9b2f0bfaa2ac882565bb2901';
 
 abstract class _$IsaTutorialViemodel extends $AsyncNotifier<bool> {
   FutureOr<bool> build();

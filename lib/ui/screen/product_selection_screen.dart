@@ -1,10 +1,10 @@
-import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/ai_comparison_screen.dart';
+import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/tutorial_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
@@ -24,81 +24,46 @@ class ProductSelectionScreen extends ConsumerStatefulWidget {
 
 class _ProductScelectionScreenState
     extends ConsumerState<ProductSelectionScreen> {
-
   // 튜토리얼을 위한 변수
   // Variables for tutorial
   final List<TargetFocus> targets = [];
-  List<FinancialProduct> likedDummies = [];
-  GlobalKey key1 = GlobalKey();
-  GlobalKey key2 = GlobalKey();
-  bool isAiTutorialShown = false;
-  bool isFirstDummySelected = false;
-  bool isSecondDummySelected = false;
-  
+  GlobalKey aiCompkey3 = GlobalKey();
+  GlobalKey aiCompkey4 = GlobalKey();
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    likedDummies = ref
-        .read(aiCompTutorialViewmodelProvider.notifier)
-        .getMockData();
-    setState(() {});
-    print("더미 데이터, $likedDummies");
+    ref.read(aiCompTutorialViewmodelProvider.future).then((value) {
+      if (value == false) {
+        _showAiCompTutorial();
+      }
+    });
   }
 
-  
-
-  // 튜토리얼 추가하는 함수
-  // Add tutorial target
-  void initTarget(GlobalKey key, String content, ShapeLightFocus focusShape) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    targets.add(
-      TargetFocus(
-        identify: key,
-        keyTarget: key,
-        shape: focusShape,
-        contents: [
-          TargetContent(
-            align: ContentAlign.top,
-            child: Container(
-              decoration: BoxDecoration(
-                color: colorScheme.secondary,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text(
-                content,
-                style: textTheme.bodyMedium!.copyWith(
-                  color: colorScheme.onSecondary,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+  void _showAiCompTutorial() {
+    initTarget(
+      context,
+      targets,
+      aiCompkey3,
+      ContentAlign.bottom,
+      ShapeLightFocus.Circle,
+      "체크박스를 통해 원하는 상품을 선택하세요\n선택한 상품의 카테고리는 반드시 동일해야 합니다",
     );
-  }
+    initTarget(
+      context,
+      targets,
+      aiCompkey4,
+      ContentAlign.top,
+      ShapeLightFocus.RRect,
+      "상품 선택 이후 하단의 비교 분석 버튼을 클릭하면 AI가 상품을 비교 분석합니다",
+    );
 
-  // 튜토리얼 보이기
-  void showTutorial() {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    TutorialCoachMark(
-      targets: targets,
-      textSkip: "건너뛰기",
-      textStyleSkip: textTheme.bodySmall!.copyWith(
-        color: colorScheme.onSurface,
-      ),
-      pulseEnable: false,
-      onFinish: () =>
-          ref.read(aiCompTutorialViewmodelProvider.notifier).updatePhase(),
-      onSkip: () {
-        ref.read(aiCompTutorialViewmodelProvider.notifier).updatePhase();
-        return true;
-      },
-    ).show(context: context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(
+        Duration(milliseconds: 300),
+        () => showTutorial(context, targets),
+      );
+    });
   }
 
   @override
@@ -123,23 +88,6 @@ class _ProductScelectionScreenState
         .map((e) => e.commonInfo.productName)
         .whereType<String>()
         .join('`');
-
-    if (!isAiTutorialShown && ref.read(aiCompTutorialViewmodelProvider) == 3) {
-      initTarget(
-        key1,
-        "체크박스를 통해 원하는 상품을 선택하세요.\n선택한 상품의 카테고리는 반드시 동일해야 합니다",
-        ShapeLightFocus.Circle
-      );
-      initTarget(
-        key2,
-        "상품 선택 이후 하단의 비교 분석 버튼을 클릭하면 AI가 상품을 비교 분석합니다",
-        ShapeLightFocus.RRect
-      );
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(Duration(milliseconds: 300), () => showTutorial());
-      });
-    }
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -177,161 +125,66 @@ class _ProductScelectionScreenState
                 liked.when(
                   data: (data) {
                     return Expanded(
-                      child: (!isAiTutorialShown)
-                          ? Column(children: [
-                              Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0),
-                                  child: Row(
-                                    children: [
-                                      IconButton(
-                                        key: key1,
-                                        icon: (isFirstDummySelected)
-                                            ? Icon(
-                                                Icons.check_circle,
-                                                color: colorScheme
-                                                    .surfaceContainerHigh,
-                                                size: 36.0,
-                                              )
-                                            : Icon(
-                                                Icons.circle_outlined,
-                                                color: colorScheme.outline,
-                                                size: 36.0,
-                                              ),
-                                        onPressed: () {
-                                          setState(() {
-                                            isFirstDummySelected = !isFirstDummySelected;
-                                          });
-                                        },
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: ProductItem(
-                                          productCode:
-                                              likedDummies[0]
-                                                  .commonInfo
-                                                  .productCode ??
-                                              "isaMp",
-                                          productName: likedDummies[0]
-                                              .commonInfo
-                                              .productName ?? "상품 이름",
-                                          category:
-                                              likedDummies[0].commonInfo.category,
-                                          fromLikedScreen: true,
-                                          isSelecting: true,
+                      child: ListView.builder(
+                        itemCount: liked.value!.length,
+                        itemBuilder: (context, index) {
+                          final isSelected = selectedProducts.contains(
+                            data[index],
+                          );
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  key: (index == 0) ? aiCompkey3 : null,
+                                  icon: (isSelected)
+                                      ? Icon(
+                                          Icons.check_circle,
+                                          color:
+                                              colorScheme.surfaceContainerHigh,
+                                          size: 36.0,
+                                        )
+                                      : Icon(
+                                          Icons.circle_outlined,
+                                          color: colorScheme.outline,
+                                          size: 36.0,
                                         ),
-                                      ),
-                                    ],
+                                  onPressed: () {
+                                    if (isSelected) {
+                                      ref
+                                          .read(
+                                            selectedProductsViewmodelProvider
+                                                .notifier,
+                                          )
+                                          .subtractProduct(data[index]);
+                                    } else {
+                                      ref
+                                          .read(
+                                            selectedProductsViewmodelProvider
+                                                .notifier,
+                                          )
+                                          .addProduct(data[index]);
+                                    }
+                                  },
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: ProductItem(
+                                    productCode:
+                                        data[index].commonInfo.productCode ??
+                                        "isaMp",
+                                    productName:
+                                        data[index].commonInfo.productName!,
+                                    category: data[index].commonInfo.category,
+                                    fromLikedScreen: true,
+                                    isSelecting: true,
                                   ),
                                 ),
-                                const SizedBox(height: 16,),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0),
-                                  child: Row(
-                                    children: [
-                                      IconButton(
-                                        icon: (isSecondDummySelected)
-                                            ? Icon(
-                                                Icons.check_circle,
-                                                color: colorScheme
-                                                    .surfaceContainerHigh,
-                                                size: 36.0,
-                                              )
-                                            : Icon(
-                                                Icons.circle_outlined,
-                                                color: colorScheme.outline,
-                                                size: 36.0,
-                                              ),
-                                        onPressed: () {
-                                          setState(() {
-                                            isSecondDummySelected = !isSecondDummySelected;
-                                          });
-                                        },
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: ProductItem(
-                                          productCode:
-                                              likedDummies[1]
-                                                  .commonInfo
-                                                  .productCode ??
-                                              "isaMp",
-                                          productName: likedDummies[1]
-                                              .commonInfo
-                                              .productName ?? "상품 이름",
-                                          category:
-                                              likedDummies[1].commonInfo.category,
-                                          fromLikedScreen: true,
-                                          isSelecting: true,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                            ],
-                          )
-                          : ListView.builder(
-                              itemCount: liked.value!.length,
-                              itemBuilder: (context, index) {
-                                final isSelected = selectedProducts.contains(
-                                  data[index],
-                                );
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0),
-                                  child: Row(
-                                    children: [
-                                      IconButton(
-                                        icon: (isSelected)
-                                            ? Icon(
-                                                Icons.check_circle,
-                                                color: colorScheme
-                                                    .surfaceContainerHigh,
-                                                size: 36.0,
-                                              )
-                                            : Icon(
-                                                Icons.circle_outlined,
-                                                color: colorScheme.outline,
-                                                size: 36.0,
-                                              ),
-                                        onPressed: () {
-                                          if (isSelected) {
-                                            ref
-                                                .read(
-                                                  selectedProductsViewmodelProvider
-                                                      .notifier,
-                                                )
-                                                .subtractProduct(data[index]);
-                                          } else {
-                                            ref
-                                                .read(
-                                                  selectedProductsViewmodelProvider
-                                                      .notifier,
-                                                )
-                                                .addProduct(data[index]);
-                                          }
-                                        },
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: ProductItem(
-                                          productCode:
-                                              data[index]
-                                                  .commonInfo
-                                                  .productCode ??
-                                              "isaMp",
-                                          productName: data[index]
-                                              .commonInfo
-                                              .productName!,
-                                          category:
-                                              data[index].commonInfo.category,
-                                          fromLikedScreen: true,
-                                          isSelecting: true,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
+                              ],
                             ),
+                          );
+                        },
+                      ),
                     );
                   },
                   loading: () =>
@@ -365,13 +218,8 @@ class _ProductScelectionScreenState
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return GestureDetector(
-      key: key2,
+      key: aiCompkey4,
       onTap: () {
-        if(!isAiTutorialShown){
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (ctx) => AiComparisonScreen(tag: "", name: "", ctg: ProductCategory.deposit))
-          );
-        }
         final num = ref
             .read(selectedProductsViewmodelProvider.notifier)
             .getNumOfProducts();

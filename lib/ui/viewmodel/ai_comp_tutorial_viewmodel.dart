@@ -1,28 +1,32 @@
+import 'package:finbrain/data/data_source/user_data_source.dart';
+import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-part 'tutorial_viewmodel.g.dart';
+part 'ai_comp_tutorial_viewmodel.g.dart';
 
-@Riverpod(keepAlive: true)
-class DetailTutorialViewmodel extends _$DetailTutorialViewmodel {
-  @override
-  int build() => 1;
-
-  void updatePhase(int phase) => state = phase;
-
-  void resetPhase() => state = 0;
-}
-
-@Riverpod(keepAlive: true)
+@riverpod
 class AiCompTutorialViewmodel extends _$AiCompTutorialViewmodel {
+  final userDataSource = UserDataSource();
+
   @override
-  int build() => 1;
+  Future<bool> build() async {
+    return readAiCompTutorial();
+  }
 
-  void updatePhase() => state = state + 1;
+  Future<bool> readAiCompTutorial() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.displayName == null || user.email == null) return true;
+    return userDataSource.readAiCompTutorial(user);
+  }
 
-  void resetPhase() => state = 0;
-
+  Future<void> setReadAiCompTutorialToTrue() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.displayName == null || user.email == null) return;
+    return userDataSource.setReadAiCompTutorialToTrue();
+  }
+  
   List<FinancialProduct> getMockData() {
     return [
       DepositAndInstallmentSavings(

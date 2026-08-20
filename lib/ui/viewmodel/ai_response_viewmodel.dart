@@ -6,6 +6,7 @@ import 'package:finbrain/data/repository/ai_comp_repository.dart';
 import 'package:finbrain/data/repository/ai_response_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
@@ -219,7 +220,16 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
 class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
   @override
   Future<String> build(String text) async {
-    return _askComparsion(text);
+    // 튜토리얼이면 예시 응답 아니면 실제 비교 분석 불러오기
+    // Fetch mock response while tutorial, else fetch comparison text
+    final isTutorialShown = await ref.read(
+        aiCompTutorialViewmodelProvider.future,
+      );
+    if(!isTutorialShown){
+      return ref.read(aiCompTutorialViewmodelProvider.notifier).getMockRes();
+    } else {
+      return _askComparsion(text);
+    }
   }
 
   // AI 비교분석 응답 요청
