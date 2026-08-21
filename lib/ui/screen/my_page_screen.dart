@@ -164,220 +164,228 @@ class MyPageScreen extends ConsumerWidget {
               const SizedBox(height: 60),
               // 기타 버튼(other buttons)
               Expanded(
-                child: ListView(
-                  children: [
-                    // 개인정보처리방침(privacy policies)
-                    MyPageButton(
-                      context,
-                      ref,
-                      () async {
-                        // 개인정보 처리 방침 읽고 디스플레이
-                        // Read and display privacy policy
-                        final policy = await ref.read(
-                          privacyPolicyViewmodelProvider.future,
-                        );
-                        showModalBottomSheet(
-                          context: context,
-                          backgroundColor: colorScheme.surfaceContainer,
-                          isScrollControlled: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20.0),
-                              topRight: Radius.circular(20.0),
-                            ),
-                          ),
-                          builder: (BuildContext context) {
-                            return Container(
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 32,
-                                horizontal: 20,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // 개인정보처리방침(privacy policies)
+                      MyPageButton(
+                        context,
+                        ref,
+                        () async {
+                          // 개인정보 처리 방침 읽고 디스플레이
+                          // Read and display privacy policy
+                          final policy = await ref.read(
+                            privacyPolicyViewmodelProvider.future,
+                          );
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: colorScheme.surfaceContainer,
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20.0),
+                                topRight: Radius.circular(20.0),
                               ),
-                              child: MarkdownTextRenderer(str: policy),
-                            );
-                          },
-                        );
-                      },
-                      Icon(
-                        Icons.policy_outlined,
-                        color: colorScheme.onSecondary,
-                        size: 22,
-                      ),
-                      "개인정보 처리방침",
-                    ),
-                    const SizedBox(height: 16),
-                    // 앱 이용 안내(튜토리얼)
-                    // app manual(tutorial)
-                    ExpansionTile(
-                      leading: Icon(
-                        Icons.book_outlined,
-                        color: colorScheme.onSecondary,
-                        size: 20,
-                      ),
-                      title: Text(
-                        "앱 이용 안내",
-                        style: textTheme.bodyMedium!.copyWith(
+                            ),
+                            builder: (BuildContext context) {
+                              return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 32,
+                                  horizontal: 20,
+                                ),
+                                child: MarkdownTextRenderer(str: policy),
+                              );
+                            },
+                          );
+                        },
+                        Icon(
+                          Icons.policy_outlined,
                           color: colorScheme.onSecondary,
+                          size: 22,
                         ),
+                        "개인정보 처리방침",
                       ),
-                      backgroundColor: colorScheme.secondary,
-                      collapsedBackgroundColor: colorScheme.secondary,
-                      iconColor: colorScheme.onSecondary,
-                      collapsedIconColor: colorScheme.onSecondary,
-                      shape: const Border(),
-                      children: [
-                        TutorialTextBtn(context, ref, "상세 화면 및 AI 채팅"),
-                        TutorialTextBtn(context, ref, "ISA"),
-                        TutorialTextBtn(context, ref, "AI 비교 분석"),
-                        const SizedBox(height: 4.0),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // 문의(inquiry)
-                    MyPageButton(
-                      context,
-                      ref,
-                      () {
-                        ref.read(myPageViewmodelProvider.notifier).openMail();
-                      },
-                      Icon(
-                        Icons.contact_support_outlined,
-                        color: colorScheme.onSecondary,
-                        size: 22,
+                      const SizedBox(height: 16),
+                      // 앱 이용 안내(튜토리얼)
+                      // app manual(tutorial)
+                      ExpansionTile(
+                        leading: Icon(
+                          Icons.book_outlined,
+                          color: colorScheme.onSecondary,
+                          size: 20,
+                        ),
+                        title: Text(
+                          "앱 이용 안내",
+                          style: textTheme.bodyMedium!.copyWith(
+                            color: colorScheme.onSecondary,
+                          ),
+                        ),
+                        backgroundColor: colorScheme.secondary,
+                        collapsedBackgroundColor: colorScheme.secondary,
+                        iconColor: colorScheme.onSecondary,
+                        collapsedIconColor: colorScheme.onSecondary,
+                        shape: const Border(),
+                        children: [
+                          TutorialTextBtn(context, ref, "상세 화면 및 AI 채팅"),
+                          TutorialTextBtn(context, ref, "ISA"),
+                          TutorialTextBtn(context, ref, "AI 비교 분석"),
+                          const SizedBox(height: 4.0),
+                        ],
                       ),
-                      "문의하기",
-                    ),
-                    const SizedBox(height: 16),
-                    // 로그아웃(logout)
-                    MyPageButton(
-                      context,
-                      ref,
-                      () {
-                        GoogleAuthService.signOut();
-                        navigateToOnboarding(context);
-                      },
-                      Icon(
-                        Icons.logout,
-                        color: colorScheme.onSecondary,
-                        size: 20,
+                      const SizedBox(height: 16),
+                      // 문의(inquiry)
+                      MyPageButton(
+                        context,
+                        ref,
+                        () {
+                          ref.read(myPageViewmodelProvider.notifier).openMail();
+                        },
+                        Icon(
+                          Icons.contact_support_outlined,
+                          color: colorScheme.onSecondary,
+                          size: 22,
+                        ),
+                        "문의하기",
                       ),
-                      "로그아웃",
-                    ),
-                    const SizedBox(height: 40),
-                    // 탈퇴하기(delete account)
-                    MyPageButton(
-                      context,
-                      ref,
-                      () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: colorScheme.surfaceContainer,
-                              contentPadding: const EdgeInsets.all(20.0),
-                              content: SizedBox(
-                                width: 300,
-                                height: 206,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "정말 서비스에서",
-                                      style: textTheme.headlineSmall!.copyWith(
-                                        color: colorScheme.onSecondary,
-                                      ),
-                                    ),
-                                    Text(
-                                      "탈퇴하시겠습니까?",
-                                      style: textTheme.headlineSmall!.copyWith(
-                                        color: colorScheme.onSecondary,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      "기존에 작성한 모든 기록이 삭제됩니다",
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        color: colorScheme.onSecondary,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 32),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: TextButton(
-                                            onPressed: () {
-                                              navigateToOnboarding(context);
-                                              ref
-                                                  .read(
-                                                    myPageViewmodelProvider
-                                                        .notifier,
-                                                  )
-                                                  .deleteAllDataOfUser();
-                                            },
-                                            style: TextButton.styleFrom(
-                                              backgroundColor:
-                                                  colorScheme.onPrimaryFixed,
-                                              shadowColor: colorScheme.surface,
+                      const SizedBox(height: 16),
+                      // 로그아웃(logout)
+                      MyPageButton(
+                        context,
+                        ref,
+                        () {
+                          GoogleAuthService.signOut();
+                          navigateToOnboarding(context);
+                        },
+                        Icon(
+                          Icons.logout,
+                          color: colorScheme.onSecondary,
+                          size: 20,
+                        ),
+                        "로그아웃",
+                      ),
+                      const SizedBox(height: 40),
+                      // 탈퇴하기(delete account)
+                      MyPageButton(
+                        context,
+                        ref,
+                        () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor: colorScheme.surfaceContainer,
+                                contentPadding: const EdgeInsets.all(20.0),
+                                content: SizedBox(
+                                  width: 300,
+                                  height: 206,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "정말 서비스에서",
+                                        style: textTheme.headlineSmall!
+                                            .copyWith(
+                                              color: colorScheme.onSecondary,
                                             ),
-                                            child: Text(
-                                              "예",
-                                              style: textTheme.bodyLarge!
-                                                  .copyWith(
-                                                    color:
-                                                        colorScheme.onSurface,
-                                                  ),
+                                      ),
+                                      Text(
+                                        "탈퇴하시겠습니까?",
+                                        style: textTheme.headlineSmall!
+                                            .copyWith(
+                                              color: colorScheme.onSecondary,
                                             ),
-                                          ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        "기존에 작성한 모든 기록이 삭제됩니다",
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          color: colorScheme.onSecondary,
                                         ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            style: TextButton.styleFrom(
-                                              backgroundColor:
-                                                  colorScheme.secondary,
-                                              shadowColor: colorScheme.surface,
-                                              side: BorderSide(
-                                                color: colorScheme
-                                                    .outline, // Change your border color here
-                                                width:
-                                                    1.0, // Change border thickness
+                                      ),
+                                      const SizedBox(height: 32),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                navigateToOnboarding(context);
+                                                ref
+                                                    .read(
+                                                      myPageViewmodelProvider
+                                                          .notifier,
+                                                    )
+                                                    .deleteAllDataOfUser();
+                                              },
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    colorScheme.onPrimaryFixed,
+                                                shadowColor:
+                                                    colorScheme.surface,
+                                              ),
+                                              child: Text(
+                                                "예",
+                                                style: textTheme.bodyLarge!
+                                                    .copyWith(
+                                                      color:
+                                                          colorScheme.onSurface,
+                                                    ),
                                               ),
                                             ),
-                                            child: Text(
-                                              "아니오",
-                                              style: textTheme.bodyLarge!
-                                                  .copyWith(
-                                                    color:
-                                                        colorScheme.onSecondary,
-                                                  ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    colorScheme.secondary,
+                                                shadowColor:
+                                                    colorScheme.surface,
+                                                side: BorderSide(
+                                                  color: colorScheme
+                                                      .outline, // Change your border color here
+                                                  width:
+                                                      1.0, // Change border thickness
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "아니오",
+                                                style: textTheme.bodyLarge!
+                                                    .copyWith(
+                                                      color: colorScheme
+                                                          .onSecondary,
+                                                    ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      Icon(
-                        Icons.person_off_outlined,
-                        color: colorScheme.onPrimaryFixed,
-                        size: 20,
+                              );
+                            },
+                          );
+                        },
+                        Icon(
+                          Icons.person_off_outlined,
+                          color: colorScheme.onPrimaryFixed,
+                          size: 20,
+                        ),
+                        "탈퇴하기",
                       ),
-                      "탈퇴하기",
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

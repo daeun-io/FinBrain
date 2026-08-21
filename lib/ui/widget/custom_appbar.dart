@@ -74,9 +74,9 @@ class CustomAppbar extends ConsumerWidget {
               );
             },
             icon: Icon(
-              Icons.person,
+              Icons.account_circle,
               color: colorScheme.surfaceContainerHighest,
-              size: 32,
+              size: 36,
             ),
           ),
         ],
