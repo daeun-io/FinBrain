@@ -12,12 +12,14 @@ class CustomTapbar extends ConsumerStatefulWidget {
     required this.isIsaScreen,
     this.onTapFunc,
     this.controller,
+    this.isTutorial,
   });
 
   final List<String> tabList; // 탭 리스트
   final bool isIsaScreen; // ISA 스크린 여부
   final Function(int)? onTapFunc; // 탭 시 실행할 함수
   final TabController? controller; // 컨트롤러
+  final bool? isTutorial;
 
   @override
   ConsumerState<CustomTapbar> createState() => CustomTapbarState();
@@ -34,7 +36,7 @@ class CustomTapbarState extends ConsumerState<CustomTapbar> {
     super.initState();
 
     ref.read(isaTutorialViemodelProvider.future).then((value){
-      if(value == false && widget.isIsaScreen){
+      if((value == false || widget.isTutorial == true) && widget.isIsaScreen){
         _showIsaTutorial();
       }
     });
@@ -76,9 +78,15 @@ class CustomTapbarState extends ConsumerState<CustomTapbar> {
         () => showTutorial(
           context,
           targets,
-          () => ref
+          (){
+            if(widget.isTutorial == true){
+              Navigator.of(context).pop();
+            } else {
+              ref
               .read(isaTutorialViemodelProvider.notifier)
-              .setReadIsaTutorialToTrue(),
+              .setReadIsaTutorialToTrue();
+            }
+          },
         ),
       );
     });

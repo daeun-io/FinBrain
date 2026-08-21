@@ -15,7 +15,9 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 // 관심 상품 리스트
 class LikedScreen extends ConsumerStatefulWidget {
-  const LikedScreen({super.key});
+  const LikedScreen({super.key, this.isAiCompTutorial});
+
+  final bool? isAiCompTutorial;
 
   @override
   ConsumerState<LikedScreen> createState() => _LikedScreenState();
@@ -133,7 +135,7 @@ class _LikedScreenState extends ConsumerState<LikedScreen> {
                           // Navigate to product selection screen
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (ctx) => ProductSelectionScreen(),
+                              builder: (ctx) => ProductSelectionScreen(isAiCompTutorial: widget.isAiCompTutorial,),
                             ),
                           );
                         },

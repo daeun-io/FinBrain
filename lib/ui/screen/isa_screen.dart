@@ -12,7 +12,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // 데이터 호출 스크린의 부모 스크린 + 탭 포함
 // Parent screen of IsaBase and IsaMp Screen including tab
 class IsaScreen extends ConsumerStatefulWidget {
-  const IsaScreen({super.key});
+  const IsaScreen({super.key, this.isTutorial});
+  final bool? isTutorial;
 
   @override
   ConsumerState<IsaScreen> createState() => _IsaScreenState();
@@ -79,6 +80,7 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
               tabList: tabList,
               isIsaScreen: true,
               controller: _controller,
+              isTutorial: widget.isTutorial,
             ),
           ),
           Expanded(

@@ -10,9 +10,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
-  const MainScreen({super.key, this.index});
+  const MainScreen({
+    super.key,
+    this.index,
+    this.isAiCompTutorial,
+    this.isIsaTutorial,
+  });
 
   final int? index;
+  final bool? isAiCompTutorial;
+  final bool? isIsaTutorial;
+
   @override
   ConsumerState<MainScreen> createState() => _MainScreenState();
 }
@@ -38,7 +46,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     // 튜토리얼 띄우기
     // Launch tutorial
     ref.read(aiCompTutorialViewmodelProvider.future).then((value) {
-      if(value == false){
+      if (value == false) {
         _showAiCompTutorial();
       }
     });
@@ -57,7 +65,12 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(
-        Duration(milliseconds: 3000),
+        Duration(
+          milliseconds:
+              (widget.isAiCompTutorial == true || widget.isIsaTutorial == true)
+              ? 300
+              : 3000,
+        ),
         () => showTutorial(context, targets),
       );
     });
@@ -81,12 +94,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         index: _currentIndex,
         children: [
           _visitedIndices.contains(0)
-              ? const SavingsScreen()
+              ? SavingsScreen(isIsaTutorial: widget.isIsaTutorial)
               : const SizedBox.shrink(),
           _visitedIndices.contains(1)
               ? const LoanScreen()
               : const SizedBox.shrink(),
-          _visitedIndices.contains(2) ? LikedScreen() : const SizedBox.shrink(),
+          _visitedIndices.contains(2)
+              ? LikedScreen(isAiCompTutorial: widget.isAiCompTutorial)
+              : const SizedBox.shrink(),
         ],
       ),
       bottomNavigationBar: SafeArea(

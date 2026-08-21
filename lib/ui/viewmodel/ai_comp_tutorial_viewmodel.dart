@@ -21,10 +21,10 @@ class AiCompTutorialViewmodel extends _$AiCompTutorialViewmodel {
     return userDataSource.readAiCompTutorial(user);
   }
 
-  Future<void> setReadAiCompTutorialToTrue() async {
+  Future<void> setReadAiCompTutorialToValue(bool value) async {
     final user = GoogleAuthService.getCurrentUser();
     if(user == null || user.displayName == null || user.email == null) return;
-    return userDataSource.setReadAiCompTutorialToTrue();
+    return userDataSource.setReadAiCompTutorialToValue(value);
   }
   
   List<FinancialProduct> getMockData() {

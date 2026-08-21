@@ -10,7 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // 예적금 상품 스크린
 class SavingsScreen extends ConsumerWidget {
-  const SavingsScreen({super.key});
+  const SavingsScreen({super.key, this.isIsaTutorial});
+  final bool? isIsaTutorial;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,10 +23,10 @@ class SavingsScreen extends ConsumerWidget {
       ProductCategory.installment,
       ProductCategory.isaJoin,
     ];
-    final tabView = const [
-      ProductBaseScreen(category: ProductCategory.deposit),
-      ProductBaseScreen(category: ProductCategory.installment),
-      IsaScreen(),
+    final tabView = [
+      const ProductBaseScreen(category: ProductCategory.deposit),
+      const ProductBaseScreen(category: ProductCategory.installment),
+      IsaScreen(isTutorial: isIsaTutorial,),
     ];
     
     // 탭 선택에 따라 카테고리 변경
@@ -41,7 +42,7 @@ class SavingsScreen extends ConsumerWidget {
 
     return DefaultTabController(
       length: 3,
-      initialIndex: 0,
+      initialIndex: (isIsaTutorial == true) ? 2 : 0,
       child: Column(
         children: [
           CustomTapbar(tabList: tabList, isIsaScreen: false, onTapFunc: tapFunction),

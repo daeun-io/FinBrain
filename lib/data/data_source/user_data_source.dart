@@ -68,10 +68,10 @@ class UserDataSource {
     await userRef.update({"read_isa_tutorial" : true});
   }
 
-  Future<void> setReadAiCompTutorialToTrue() async {
+  Future<void> setReadAiCompTutorialToValue(bool value) async {
     final user = GoogleAuthService.getCurrentUser();
     if(user == null || user.email == null || user.displayName == null) return;
     final userRef = firestore.collection("users").doc(user.uid);
-    await userRef.update({"read_ai_comp_tutorial" : true});
+    await userRef.update({"read_ai_comp_tutorial" : value});
   }
 }

@@ -14,6 +14,7 @@ class AiButton extends ConsumerWidget {
     required this.name,
     required this.category,
     required this.isBtnClicked,
+    this.isDetailPrdtTutorial,
   });
 
   // 상품 코드 및 이름(product code or name)
@@ -25,6 +26,7 @@ class AiButton extends ConsumerWidget {
   // 태블릿이거나 상품 비교 분석시 사용
   // Used when device is tablet or comparing products
   final void Function() isBtnClicked;
+  final bool? isDetailPrdtTutorial;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +46,7 @@ class AiButton extends ConsumerWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (ctx) =>
-                    AiAssistScreen(tag: tag!, category: category, name: name!),
+                    AiAssistScreen(tag: tag!, category: category, name: name!, isTutorial: isDetailPrdtTutorial,),
               ),
             );
             // 아니면 스플릿 뷰에 보이기

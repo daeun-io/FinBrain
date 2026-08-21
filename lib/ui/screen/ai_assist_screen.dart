@@ -1,7 +1,10 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/screen/my_page_screen.dart';
+import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/ai_example_query.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
@@ -20,11 +23,13 @@ class AiAssistScreen extends ConsumerStatefulWidget {
     required this.tag,
     required this.category,
     required this.name,
+    this.isTutorial,
   });
 
   final String tag; // 상품 코드나 이름(product code or name)
   final ProductCategory category; // 상품 카테고리(product category)
   final String name; // 상품 이름(product name)
+  final bool? isTutorial;
 
   @override
   ConsumerState<AiAssistScreen> createState() => _AiAssistScreenState();
@@ -45,7 +50,12 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   @override
   void initState() {
     super.initState();
-    _userReadTutorial();
+    print("isTutorial, ${widget.isTutorial}");
+    ref.read(productDetailScreenViewmodelProvider.future).then((value) {
+      if (widget.isTutorial == true || value == false) {
+        _showPrdtDetailTutorial();
+      }
+    });
     _initializeMessages();
     _getSummaries();
   }
@@ -56,10 +66,34 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     super.dispose();
   }
 
-  Future<void> _userReadTutorial() async {
-    isDetailScreenTutorialShown = await ref
-        .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
-        .readProductDetailTutorial();
+  void _showPrdtDetailTutorial() {
+    initTarget(
+      context,
+      targets,
+      detailKey4,
+      ContentAlign.bottom,
+      ShapeLightFocus.RRect,
+      "이곳에서 AI와 대화할 수 있습니다\n금융 상품에 대해 궁금한 점을 자유롭게 질문해보세요",
+      "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다\n\n상단 탭바를 눌러 설명을 닫아주세요",
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(
+        Duration(milliseconds: 300),
+        () => showTutorial(context, targets, () {
+          if (widget.isTutorial == true) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (ctx) => const MyPageScreen()),
+              (route) => false,
+            );
+          } else {
+            ref
+                .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
+                .setReadProductDetailTutorialToTrue();
+          }
+        }),
+      );
+    });
   }
 
   Future<void> _initializeMessages() async {
@@ -100,31 +134,15 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       aiAssistScreenViewmodelProvider(widget.tag),
     );
 
-    if (!isDetailScreenTutorialShown) {
-      initTarget(
-        context, targets, detailKey4, ContentAlign.bottom, ShapeLightFocus.RRect, 
-        "이곳에서 AI와 대화할 수 있습니다\n금융 상품에 대해 궁금한 점을 자유롭게 질문해보세요",
-        "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다\n\n상단 탭바를 눌러 설명을 닫아주세요"
-      );
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(
-          Duration(milliseconds: 300),
-          () => showTutorial(
-            context,
-            targets,
-            () => ref
-                .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
-                .setReadProductDetailTutorialToTrue(),
-          ),
-        );
-      });
-    }
-
     return Scaffold(
       backgroundColor: colorScheme.primary,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CustomAppbar(key: detailKey4, screen: "ai_assist", title: "AI 어시스트"),
+        child: CustomAppbar(
+          key: detailKey4,
+          screen: "ai_assist",
+          title: "AI 어시스트",
+        ),
       ),
       body: (record == null)
           ? const CustomProgressIndicator()

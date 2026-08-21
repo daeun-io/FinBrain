@@ -9,6 +9,7 @@ import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
+import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
@@ -32,12 +33,14 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
+    this.isTutorial,
   });
 
   final String productCode;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
+  final bool? isTutorial;
 
   @override
   ConsumerState<ProductDetailScreen> createState() =>
@@ -52,6 +55,52 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   GlobalKey detailKey1 = GlobalKey();
   GlobalKey detailKey2 = GlobalKey();
   GlobalKey detailKey3 = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    print("isTutorial, ${widget.isTutorial}");
+    ref.read(productDetailScreenViewmodelProvider.future).then((value) {
+      if (widget.isTutorial == true || value == false) {
+        _showPrdtDetailTutorial();
+      }
+    });
+  }
+
+  void _showPrdtDetailTutorial() {
+    initTarget(
+      context,
+      targets,
+      detailKey1,
+      ContentAlign.top,
+      ShapeLightFocus.RRect,
+      "금융 계산기 버튼을 클릭해 예상 수령액 및 월별 상환 금액을 알 수 있습니다",
+    );
+    initTarget(
+      context,
+      targets,
+      detailKey2,
+      ContentAlign.top,
+      ShapeLightFocus.RRect,
+      "'공식 상품 홈페이지로' 버튼을 클릭해 해당 금융 회사의 공식 사이트에 방문할 수 있습니다",
+    );
+    initTarget(
+      context,
+      targets,
+      detailKey3,
+      ContentAlign.top,
+      ShapeLightFocus.RRect,
+      "AI와의 대화를 통해 해당 상품에 관한 정보를 쉽게얻을 수 있습니다\n해당 버튼을 클릭하면 채팅 화면으로 이동합니다",
+      "버튼을 클릭해 이동해주세요",
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(
+        Duration(milliseconds: 300),
+        () => showTutorial(context, targets),
+      );
+    });
+  }
 
   // 공식 웹사이트로 이동하는 함수
   // Function to launch official website
@@ -82,54 +131,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
-    // firestore의 값이 false면 튜토리얼 보이기
-    // Show tutorial when firestore value is false
-    ref.listen(productDetailScreenViewmodelProvider, (prev, next) {
-      next.when(
-        data: (data) {
-          if (data == false) {
-            initTarget(
-              context,
-              targets,
-              detailKey1,
-              ContentAlign.top,
-              ShapeLightFocus.RRect,
-              "금융 계산기 버튼을 클릭해 예상 수령액 및 월별 상환 금액을 알 수 있습니다",
-            );
-            initTarget(
-              context,
-              targets,
-              detailKey2,
-              ContentAlign.top,
-              ShapeLightFocus.RRect,
-              "'공식 상품 홈페이지로' 버튼을 클릭해 해당 금융 회사의 공식 사이트에 방문할 수 있습니다",
-            );
-            initTarget(
-              context,
-              targets,
-              detailKey3,
-              ContentAlign.top,
-              ShapeLightFocus.RRect,
-              "AI와의 대화를 통해 해당 상품에 관한 정보를 쉽게얻을 수 있습니다\n해당 버튼을 클릭하면 채팅 화면으로 이동합니다",
-              "버튼을 클릭해 이동해주세요",
-            );
-
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Future.delayed(
-                Duration(milliseconds: 300),
-                () => showTutorial(
-                  context,
-                  targets
-                ),
-              );
-            });
-          }
-        },
-        loading: () => const CustomProgressIndicator(),
-        error: (error, stackTrace) => const ShowingErrorWidget()
-      );
-    });
-
     // 상품 리스트 불러오기
     // Fetch product list
     final page = ref.watch(currentPageViewmodelProvider(widget.category));
@@ -137,6 +138,16 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       fetchProductViewmodelProvider(widget.category, page),
     );
     final likedList = ref.watch(fetchLikedViewmodelProvider);
+
+    // 튜토리얼일 때 목 데이터 보이기
+    // Show mock data when tutorial
+    if (widget.isTutorial == true) {
+      final product = ref
+          .read(aiCompTutorialViewmodelProvider.notifier)
+          .getMockData()
+          .first;
+      return DetailSplitView(product, page);
+    }
 
     // 호출된 부모 스크린에 따라 상품 이름/코드로 데이터 찾기
     // Find data with product code or name in product list
@@ -165,31 +176,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             body: SizedBox.shrink(),
           );
         }
-
-        // 타블렛일 때 버튼을 누르면 AI 어시스트 스크린을 스플릿 뷰로, 핸드폰이면 네비게이션으로 이동
-        // if tablet, show assist screen through split view, else navigate
-        return SplitView(
-          viewMode: SplitViewMode.Horizontal,
-          controller: SplitViewController(
-            weights: (isBtnClicked) ? const [0.5, 0.5] : const [1.0, 0.0],
-          ),
-          indicator: const SplitIndicator(viewMode: SplitViewMode.Horizontal),
-          activeIndicator: SplitIndicator(
-            viewMode: SplitViewMode.Horizontal,
-            color: colorScheme.onTertiary,
-          ),
-          children: [
-            detailScreen(product, colorScheme, textTheme, page),
-            if (isBtnClicked)
-              AiAssistScreen(
-                tag: (widget.category == ProductCategory.isaMp)
-                    ? widget.productName
-                    : widget.productCode,
-                category: product.commonInfo.category,
-                name: widget.productName,
-              ),
-          ],
-        );
+        return DetailSplitView(product, page);
       },
       error: (err, stack) => Scaffold(
         backgroundColor: colorScheme.primary,
@@ -199,6 +186,37 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         backgroundColor: colorScheme.primary,
         body: const CustomProgressIndicator(),
       ),
+    );
+  }
+
+  // 타블렛일 때 버튼을 누르면 AI 어시스트 스크린을 스플릿 뷰로, 핸드폰이면 네비게이션으로 이동
+  // if tablet, show assist screen through split view, else navigate
+  Widget DetailSplitView(FinancialProduct product, int page) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
+
+    return SplitView(
+      viewMode: SplitViewMode.Horizontal,
+      controller: SplitViewController(
+        weights: (isBtnClicked) ? const [0.5, 0.5] : const [1.0, 0.0],
+      ),
+      indicator: const SplitIndicator(viewMode: SplitViewMode.Horizontal),
+      activeIndicator: SplitIndicator(
+        viewMode: SplitViewMode.Horizontal,
+        color: colorScheme.onTertiary,
+      ),
+      children: [
+        detailScreen(product, colorScheme, textTheme, page),
+        if (isBtnClicked)
+          AiAssistScreen(
+            tag: (widget.category == ProductCategory.isaMp)
+                ? widget.productName
+                : widget.productCode,
+            category: product.commonInfo.category,
+            name: widget.productName,
+            isTutorial: widget.isTutorial,
+          ),
+      ],
     );
   }
 
@@ -279,6 +297,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       });
                     }
                   },
+                  isDetailPrdtTutorial: widget.isTutorial,
                 ),
               ),
               // 네비게이션 버튼(계산기, 공식 사이트)

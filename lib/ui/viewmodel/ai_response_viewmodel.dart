@@ -225,9 +225,12 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
     final isTutorialShown = await ref.read(
         aiCompTutorialViewmodelProvider.future,
       );
+    print("isTutorialShown(Viewmodel), $isTutorialShown");
     if(!isTutorialShown){
+      print("목데이터 호출");
       return ref.read(aiCompTutorialViewmodelProvider.notifier).getMockRes();
     } else {
+      print("실제 응답 호출");
       return _askComparsion(text);
     }
   }

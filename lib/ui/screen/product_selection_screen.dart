@@ -16,14 +16,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class ProductSelectionScreen extends ConsumerStatefulWidget {
-  const ProductSelectionScreen({super.key});
+  const ProductSelectionScreen({super.key, this.isAiCompTutorial});
+  
+  final bool? isAiCompTutorial;
   @override
-  ConsumerState<ProductSelectionScreen> createState() =>
-      _ProductScelectionScreenState();
+  ConsumerState<ProductSelectionScreen> createState() => _ProductScelectionScreenState();
 }
 
-class _ProductScelectionScreenState
-    extends ConsumerState<ProductSelectionScreen> {
+class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen> {
   // 튜토리얼을 위한 변수
   // Variables for tutorial
   final List<TargetFocus> targets = [];
@@ -250,6 +250,7 @@ class _ProductScelectionScreenState
                   tag: prdtCodes,
                   name: prdtNames,
                   ctg: ctg,
+                  isAiCompTutorial: widget.isAiCompTutorial,
                 );
               },
             ),

@@ -5,7 +5,7 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 void showTutorial(
   BuildContext context,
   List<TargetFocus> targets, [
-    Future<void> Function()? onFinishOrSkip,
+    Function()? onFinishOrSkip,
   ]
 ) {
   final colorScheme = Theme.of(context).colorScheme;

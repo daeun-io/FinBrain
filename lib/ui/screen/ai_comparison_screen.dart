@@ -1,5 +1,6 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
+import 'package:finbrain/ui/screen/my_page_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
@@ -21,11 +22,13 @@ class AiComparisonScreen extends ConsumerStatefulWidget {
     required this.tag,
     required this.name,
     required this.ctg,
+    this.isAiCompTutorial,
   });
 
   final String tag; // 상품 코드나 이름 묶음(collection of product codes or names)
   final String name; // 상품 이름 묶음(collection of product names)
   final ProductCategory ctg; // 상품 카테고리(product category)
+  final bool? isAiCompTutorial;
 
   @override
   ConsumerState<AiComparisonScreen> createState() => _AiComparisonScreenState();
@@ -36,23 +39,18 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   // Variables for tutorial
   final List<TargetFocus> targets = [];
   GlobalKey aiCompkey5 = GlobalKey();
-  bool isAiTutorialShown = false;
+  bool isAiTutorialShown = true;
 
   @override
   void initState() {
     super.initState();
-    readAiCompTutorial();
     ref.read(aiCompTutorialViewmodelProvider.future).then((value) {
+      print("Firestore 값, $value");
       if (value == false) {
+        isAiTutorialShown = false;
         _showAiCompTutorial();
       }
     });
-  }
-
-  void readAiCompTutorial() async {
-    isAiTutorialShown = await ref
-        .read(aiCompTutorialViewmodelProvider.notifier)
-        .readAiCompTutorial();
   }
 
   void _showAiCompTutorial() {
@@ -77,13 +75,14 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
         ).then((_) {
           Future.delayed(
             Duration(milliseconds: 300),
-            () => showTutorial(
-              context,
-              targets,
-              () => ref
+            () => showTutorial(context, targets, () {
+              ref
                   .read(aiCompTutorialViewmodelProvider.notifier)
-                  .setReadAiCompTutorialToTrue(),
-            ),
+                  .setReadAiCompTutorialToValue(true);
+              // 변경된 상태를 반영하기 위해 invalidate
+              // Invalidate provider to apply changed state
+              ref.invalidate(aiCompTutorialViewmodelProvider);
+            }),
           );
         });
       }
@@ -128,15 +127,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                     // AI Comparison texts(response)
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: MarkdownTextRenderer(
-                        str: (isAiTutorialShown
-                            ? data
-                            : ref
-                                  .read(
-                                    aiCompTutorialViewmodelProvider.notifier,
-                                  )
-                                  .getMockRes()),
-                      ),
+                      child: MarkdownTextRenderer(str: data),
                     ),
                     Row(
                       children: [
@@ -189,16 +180,16 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                   )
                                   .resetSelectedList();
                             }
-                            // 변경된 상태를 반영하기 위해 invalidate
-                            // Invalidate provider to apply changed state
-                            ref.invalidate(aiCompTutorialViewmodelProvider);
 
                             if (context.mounted) {
                               // 관심 상품 화면으로 이동
                               // Navigate to Liked Screen
                               Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
-                                  builder: (ctx) => const MainScreen(index: 2),
+                                  builder: (ctx) =>
+                                      (widget.isAiCompTutorial == true)
+                                      ? const MyPageScreen()
+                                      : const MainScreen(index: 2),
                                 ),
                                 (route) => false,
                               );
