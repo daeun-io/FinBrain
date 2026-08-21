@@ -26,13 +26,13 @@ class OnBoardingScreen extends ConsumerWidget {
 
     String path = "";
     if ((!isTablet || isPortrait) && isLightMode) {
-      path = "assets/images/onboarding_light_portrait";
+      path = "assets/images/onboarding/light_portrait";
     } else if ((!isTablet || isPortrait) && !isLightMode) {
-      path = "assets/images/onboarding_dark_portrait";
+      path = "assets/images/onboarding/dark_portrait";
     } else if (!isPortrait && isLightMode) {
-      path = "assets/images/onboarding_light_landscape";
+      path = "assets/images/onboarding/light_landscape";
     } else {
-      path = "assets/images/onboarding_dark_landscape";
+      path = "assets/images/onboarding/dark_landscape";
     }
 
     return SafeArea(
@@ -48,14 +48,13 @@ class OnBoardingScreen extends ConsumerWidget {
                   onBoardingImage(context, "${path}_01.svg", 1),
                   onBoardingImage(context, "${path}_02.svg", 2),
                   onBoardingImage(context, "${path}_03.svg", 3),
-                  onBoardingImage(context, "${path}_04.svg", 4),
                 ],
               ),
             ),
             const SizedBox(height: 8),
             SmoothPageIndicator(
               controller: _pageController,
-              count: 4, // Number of pages
+              count: 3, // Number of pages
               effect: ScrollingDotsEffect(
                 spacing: 12.0,
                 dotHeight: 8,
@@ -71,17 +70,19 @@ class OnBoardingScreen extends ConsumerWidget {
               },
               behavior: HitTestBehavior.opaque,
               child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
                 decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  border: Border.all(color: colorScheme.onPrimary, width: 1),
+                  color: colorScheme.secondary,
+                  border: Border.all(color: colorScheme.outline, width: 1),
                   borderRadius: BorderRadius.circular(30.0),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 32.0),
+                padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 child: Text(
                   "핀브레인 시작하기",
                   style: textTheme.headlineLarge!.copyWith(
                     color: colorScheme.onPrimary,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),

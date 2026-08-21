@@ -114,42 +114,18 @@ flutter:
   - assets/images/splash_dark.png
   - assets/images/icon_light.png
   - assets/images/icon_dark.png
-  - assets/images/onboarding_light_portrait_01.svg
-  - assets/images/onboarding_light_portrait_02.svg
-  - assets/images/onboarding_light_portrait_03.svg
-  - assets/images/onboarding_light_portrait_04.svg
-  - assets/images/onboarding_dark_portrait_01.svg
-  - assets/images/onboarding_dark_portrait_02.svg
-  - assets/images/onboarding_dark_portrait_03.svg
-  - assets/images/onboarding_dark_portrait_04.svg
-  - assets/images/onboarding_light_landscape_01.svg
-  - assets/images/onboarding_light_landscape_02.svg
-  - assets/images/onboarding_light_landscape_03.svg
-  - assets/images/onboarding_light_landscape_04.svg
-  - assets/images/onboarding_dark_landscape_01.svg
-  - assets/images/onboarding_dark_landscape_02.svg
-  - assets/images/onboarding_dark_landscape_03.svg
-  - assets/images/onboarding_dark_landscape_04.svg
-  - assets/images/isa_guide_light_portrait_01.svg
-  - assets/images/isa_guide_light_portrait_02.svg
-  - assets/images/isa_guide_light_portrait_03.svg
-  - assets/images/isa_guide_light_portrait_04.svg
-  - assets/images/isa_guide_light_portrait_05.svg
-  - assets/images/isa_guide_dark_portrait_01.svg
-  - assets/images/isa_guide_dark_portrait_02.svg
-  - assets/images/isa_guide_dark_portrait_03.svg
-  - assets/images/isa_guide_dark_portrait_04.svg
-  - assets/images/isa_guide_dark_portrait_05.svg
-  - assets/images/isa_guide_light_landscape_01.svg
-  - assets/images/isa_guide_light_landscape_02.svg
-  - assets/images/isa_guide_light_landscape_03.svg
-  - assets/images/isa_guide_light_landscape_04.svg
-  - assets/images/isa_guide_light_landscape_05.svg
-  - assets/images/isa_guide_dark_landscape_01.svg
-  - assets/images/isa_guide_dark_landscape_02.svg
-  - assets/images/isa_guide_dark_landscape_03.svg
-  - assets/images/isa_guide_dark_landscape_04.svg
-  - assets/images/isa_guide_dark_landscape_05.svg
+  - assets/images/onboarding/light_portrait_01.svg
+  - assets/images/onboarding/light_portrait_02.svg
+  - assets/images/onboarding/light_portrait_03.svg
+  - assets/images/onboarding/dark_portrait_01.svg
+  - assets/images/onboarding/dark_portrait_02.svg
+  - assets/images/onboarding/dark_portrait_03.svg
+  - assets/images/onboarding/light_landscape_01.svg
+  - assets/images/onboarding/light_landscape_02.svg
+  - assets/images/onboarding/light_landscape_03.svg
+  - assets/images/onboarding/dark_landscape_01.svg
+  - assets/images/onboarding/dark_landscape_02.svg
+  - assets/images/onboarding/dark_landscape_03.svg
   - assets/icon/app_icon.png
   - assets/privacy_policy.md
   # An image asset can refer to one or more resolution-specific "variants", see
