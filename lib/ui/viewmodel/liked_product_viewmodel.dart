@@ -24,9 +24,7 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
 
       // 관심 상품 불러오기
       // Fetch liked products
-      final products = ref
-          .read(aiCompTutorialViewmodelProvider.notifier)
-          .getMockData();
+      final products = await repository.getLikedProducts(user.uid);
 
       if (products.isEmpty) {
         debugPrint("[empty] no item in liked list");
@@ -50,12 +48,13 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     final isTutorialShownAsync = ref.watch(aiCompTutorialViewmodelProvider);
     final isTutorialShown = isTutorialShownAsync.value ?? true;
 
-    final likedProducts = (!isTutorialShown)
-        ? AsyncValue.data(
-            ref.read(aiCompTutorialViewmodelProvider.notifier).getMockData(),
-          )
-        : ref.watch(fetchLikedViewmodelProvider);
-    return getProductsFilteredByCriteria(likedProducts.value);
+    final realProductAsync = ref.watch(fetchLikedViewmodelProvider);
+
+    final List<FinancialProduct> likedProducts = (isTutorialShown)
+        ? realProductAsync.value ?? []
+        : ref.read(aiCompTutorialViewmodelProvider.notifier).getMockData();
+
+    return getProductsFilteredByCriteria(likedProducts);
   }
 
   // 카테고리로 데이터 필터링
