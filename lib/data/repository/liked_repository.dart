@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/data_source/liked_data_source.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
@@ -48,6 +49,15 @@ class LikedRepository {
           case ProductCategory.deposit:
           case ProductCategory.installment:
             try {
+              // maxPrfRate가 null일 경우를 대비해 구하기
+              // Calculate maxPrfRate in case of null
+              final List options = (map["options"] is List) ? map["options"] : [map["options"]];
+              final maxPrfRate = options
+                  .map((e) => e["maxIntRate"])
+                  .whereType<double>()
+                  .toList()
+                  .maxOrNull;
+              print("maxPrfRate, $maxPrfRate");
               products.add(
                 DepositAndInstallmentSavings(
                   category: getCategoryEnum[map["category"]]!,
@@ -67,8 +77,15 @@ class LikedRepository {
                   joinMember: map["joinMember"],
                   etc: map["etc"],
                   maxLimit: map["maxLimit"],
-                  maxPrfRate: (map["maxPrfRate"] == null || map["maxPrfRate"] == "null") ? null : map["maxPrfRate"],
-                  maxBaseRate: (map["maxBaseRate"] == null || map["maxBaseRate"] == "null" ) ? null: map["maxBaseRate"],
+                  maxPrfRate:
+                      (map["maxPrfRate"] == null || map["maxPrfRate"] == "null")
+                      ? maxPrfRate
+                      : map["maxPrfRate"],
+                  maxBaseRate:
+                      (map["maxBaseRate"] == null ||
+                          map["maxBaseRate"] == "null")
+                      ? null
+                      : map["maxBaseRate"],
                   options: map["options"]
                       .map(
                         (e) => DepositAndInstallmentSavingsOption(
@@ -94,6 +111,12 @@ class LikedRepository {
           case ProductCategory.mortgage:
           case ProductCategory.rent:
             try {
+              final List options = (map["options"] is List) ? map["options"] : [map["options"]];
+              final minRate = options
+                  .map((e) => e["lendRateMin"])
+                  .whereType<double>()
+                  .toList()
+                  .minOrNull;
               products.add(
                 MortgageAndRentLoan(
                   category: getCategoryEnum[map["category"]]!,
@@ -111,9 +134,15 @@ class LikedRepository {
                   earlyRepayFee: map["earlyRepayFee"],
                   delayRate: map["delayRate"],
                   loanLimit: map["loanLimit"],
-                  minRate: (map["minRate"] == null || map["minRate"] == "null") ? null : map["minRate"],
-                  maxRate: (map["maxRate"] == null || map["maxRate"] == "null") ? null : map["maxRate"],
-                  avgRate: (map["avgRate"] == null || map["avgRate"] == "null") ? null : map["avgRate"],
+                  minRate: (map["minRate"] == null || map["minRate"] == "null")
+                      ? minRate
+                      : map["minRate"],
+                  maxRate: (map["maxRate"] == null || map["maxRate"] == "null")
+                      ? null
+                      : map["maxRate"],
+                  avgRate: (map["avgRate"] == null || map["avgRate"] == "null")
+                      ? null
+                      : map["avgRate"],
                   options: map["options"]
                       .map(
                         (e) => MortgageAndRentLoanOption(
@@ -139,6 +168,21 @@ class LikedRepository {
             }
             break;
           case ProductCategory.credit:
+            final List options = (map["options"] is List) ? map["options"] : [map["options"]];
+            final foundOption = options
+                    .where((e) => e["creditLendRateTypeName"] == "대출금리")
+                    .firstOrNull;
+                final rates = [
+                  foundOption["gradeOver900"],
+                  foundOption["grade801900"],
+                  foundOption["grade701800"],
+                  foundOption["grade601700"],
+                  foundOption["grade501600"],
+                  foundOption["grade401500"],
+                  foundOption["grade301400"],
+                  foundOption["gradeUnder300"],
+                ].whereType<double>();
+                final minRate = (foundOption == null) ? null : rates.minOrNull;
             try {
               products.add(
                 CreditLoan(
@@ -156,9 +200,15 @@ class LikedRepository {
                   productType: map["productType"],
                   productTypeName: map["productTypeName"],
                   cbName: map["cbName"],
-                  minRate: (map["minRate"] == null || map["minRate"] == "null") ? null : map["minRate"],
-                  maxRate: (map["maxRate"] == null || map["maxRate"] == "null") ? null : map["maxRate"],
-                  avgRate: (map["avgRate"] == null || map["avgRate"] == "null") ? null : map["avgRate"],
+                  minRate: (map["minRate"] == null || map["minRate"] == "null")
+                      ? minRate
+                      : map["minRate"],
+                  maxRate: (map["maxRate"] == null || map["maxRate"] == "null")
+                      ? null
+                      : map["maxRate"],
+                  avgRate: (map["avgRate"] == null || map["avgRate"] == "null")
+                      ? null
+                      : map["avgRate"],
                   options: map["options"]
                       .map(
                         (e) => CreditLoanOption(
@@ -185,6 +235,15 @@ class LikedRepository {
             break;
           default:
             try {
+            final List options = (map["options"] is List) ? map["options"] : [map["options"]];
+            final profits =
+                options
+                    .map((e) => e["benefitRate"])
+                    .whereType<double>()
+                    .toList()
+                  ..sorted((a, b) => a.compareTo(b));
+            final averageProfit = profits.isEmpty ? null : profits.average;
+
               products.add(
                 IsaMpBenefitRate(
                   category: ProductCategory.isaMp,
@@ -195,8 +254,14 @@ class LikedRepository {
                   baseDate: map["baseDate"],
                   businessDomain: map["businessDomain"],
                   mpType: map["mpType"],
-                  avgProfit: (map["avgProfit"] == null || map["avgProfit"] == "null") ? null : map["avgProfit"],
-                  medProfit: (map["medrofit"] == null || map["medrofit"] == "null") ? null : map["medProfit"],
+                  avgProfit:
+                      (map["avgProfit"] == null || map["avgProfit"] == "null")
+                      ? averageProfit
+                      : map["avgProfit"],
+                  medProfit:
+                      (map["medrofit"] == null || map["medrofit"] == "null")
+                      ? null
+                      : map["medProfit"],
                   options: map["options"]
                       .map(
                         (e) => IsaMpBenefitRateOption(
