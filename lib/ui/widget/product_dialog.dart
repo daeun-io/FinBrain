@@ -163,8 +163,6 @@ class ProductDialog extends ConsumerWidget {
                     Expanded(
                       child: TextButton(
                         onPressed: () async {
-                          print("--------------");
-                          print("필터 적용 버튼 클릭");
                           await ref.read(
                             dialogFiltersViewModelProvider(category).notifier,
                           ).applyChanges(1);

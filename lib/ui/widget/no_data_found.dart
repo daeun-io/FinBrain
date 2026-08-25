@@ -34,10 +34,10 @@ class NoDataFound extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                text(context, "검색 조건에 맞는 상품이 없습니다", textStyle),
+                CustomText(context, "검색 조건에 맞는 상품이 없습니다", textStyle),
                 const SizedBox(height: 16.0),
                 if (!isLastPage)
-                  text(
+                  CustomText(
                     context,
                     "아직 불러오지 않은 상품이 있을 수 있으니, 화면을 아래로 스크롤해 더 많은 상품을 확인해주세요",
                     textStyle
@@ -45,7 +45,7 @@ class NoDataFound extends ConsumerWidget {
                 // 마지막 페이지에 도달하면 첫 페이지로 이동하는 로직 제공
                 // Move to the first page when reached to the last
                 if (isLastPage && cPage != 1) ...[
-                  text(
+                  CustomText(
                     context, 
                     "현재가 마지막 페이지입니다. 다시 첫 페이지로 돌아가시겠습니까?", 
                     textStyle
@@ -55,7 +55,7 @@ class NoDataFound extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      button(
+                      YNButton(
                         context, 
                         "예", 
                         textStyle,
@@ -65,7 +65,7 @@ class NoDataFound extends ConsumerWidget {
                             .setCurrentPage(1);
                       }),
                       const SizedBox(width: 16.0),
-                      button(
+                      YNButton(
                         context, 
                         "아니오", 
                         textStyle,
@@ -76,11 +76,11 @@ class NoDataFound extends ConsumerWidget {
                 ],
               ],
             )
-          : text(context, "검색 조건과 일치하는 데이터가 없습니다.", textStyle),
+          : CustomText(context, "검색 조건과 일치하는 데이터가 없습니다.", textStyle),
     );
   }
 
-  Widget text(BuildContext context, String text, TextStyle style) {
+  Widget CustomText(BuildContext context, String text, TextStyle style) {
     return Text(
       text,
       style: style,
@@ -90,7 +90,7 @@ class NoDataFound extends ConsumerWidget {
 
   // 첫 페이지 이동 버튼(예/아니요)
   // Move to the first page button(yes/no)
-  ElevatedButton button(
+  ElevatedButton YNButton(
     BuildContext context,
     String btnTxt,
     TextStyle style,
@@ -108,7 +108,7 @@ class NoDataFound extends ConsumerWidget {
           width: 1.0, // Change border thickness
         ),
       ),
-      child: text(context, btnTxt, style),
+      child: CustomText(context, btnTxt, style),
     );
   }
 }

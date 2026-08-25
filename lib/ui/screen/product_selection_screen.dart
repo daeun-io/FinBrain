@@ -7,6 +7,7 @@ import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/custom_snack_bar.dart';
 import 'package:finbrain/ui/widget/product_item.dart';
 import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
@@ -197,7 +198,7 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
           ),
         ],
       ),
-      bottomNavigationBar: navToAiComparisonScreen(
+      bottomNavigationBar: NavToAiComparisonScreenBtn(
         context,
         ref,
         prdtCodes,
@@ -208,7 +209,7 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
 
   // 선택된 상품을 갖고 비교 분석 화면으로 이동
   // Navigate to AI comparison screen with selected products
-  Widget navToAiComparisonScreen(
+  Widget NavToAiComparisonScreenBtn(
     BuildContext context,
     WidgetRef ref,
     String prdtCodes,
@@ -224,15 +225,11 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
             .read(selectedProductsViewmodelProvider.notifier)
             .getNumOfProducts();
         if (num < 2) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(snackbar(context, "최소 2개 이상의 상품을 선택해주세요!"));
+          CustomSnackBar.show(context, ref, text: "최소 2개 이상의 상품을 선택해주세요!");
         } else if (!ref
             .read(selectedProductsViewmodelProvider.notifier)
             .allCategoriesSame()) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackbar(context, "선택하신 상품들의 카테고리가 다릅니다!\n동일 카테고리의 상품을 비교해주세요"),
-          );
+          CustomSnackBar.show(context, ref, text: "선택하신 상품들의 카테고리가 다릅니다!\n동일 카테고리의 상품을 비교해주세요");
         } else {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -241,9 +238,7 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
                     .read(selectedProductsViewmodelProvider.notifier)
                     .getCategory();
                 if (ctg == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    snackbar(context, "선택하신 상품의 카테고리가 존재하지 않습니다.\n다시 시도해주세요"),
-                  );
+                  CustomSnackBar.show(context, ref, text: "선택하신 상품의 카테고리가 존재하지 않습니다.\n다시 시도해주세요");
                   return const SizedBox.shrink();
                 }
                 return AiComparisonScreen(
@@ -270,20 +265,6 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
           textAlign: TextAlign.center,
           style: textTheme.titleLarge!.copyWith(color: colorScheme.onSecondary),
         ),
-      ),
-    );
-  }
-
-  SnackBar snackbar(BuildContext context, String text) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return SnackBar(
-      backgroundColor: colorScheme.scrim,
-      duration: const Duration(seconds: 3),
-      content: Text(
-        text,
-        style: textTheme.bodySmall!.copyWith(color: colorScheme.onSecondary),
       ),
     );
   }

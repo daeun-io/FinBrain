@@ -46,8 +46,8 @@ class CustomAppbar extends ConsumerWidget {
         // 기기에 따라 백버튼 추가/삭제
         // Display back button based on device
         "ai_assist" =>
-          (isPhone) ? backButton(context, colorScheme.onPrimary) : null,
-        _ => backButton(context, colorScheme.onPrimary),
+          (isPhone) ? BackButton(context, colorScheme.onPrimary) : null,
+        _ => BackButton(context, colorScheme.onPrimary),
       },
       title: Text(
         title,
@@ -112,7 +112,7 @@ class CustomAppbar extends ConsumerWidget {
     );
   }
 
-  IconButton backButton(BuildContext context, Color color) {
+  IconButton BackButton(BuildContext context, Color color) {
     return IconButton(
       onPressed: () {
         Navigator.of(context).pop();

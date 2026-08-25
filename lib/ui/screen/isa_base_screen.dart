@@ -30,9 +30,9 @@ class IsaBaseScreen extends ConsumerStatefulWidget {
 class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
-  bool _isLoading = false; // 데이터 로딩 여부(loading data state)
-  late int _cPage; // 현재 페이지(current page)
-  int _maxPage = 0; // API 데이터 최대 페이지(api data max page)
+  bool _isLoading = false;          // 데이터 로딩 여부(loading data state)
+  late int _cPage;                  // 현재 페이지(current page)
+  int _maxPage = 0;                 // API 데이터 최대 페이지(api data max page)
 
   @override
   void initState() {
@@ -180,7 +180,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // 헤더 칼럼(header column)
-                      header(
+                      Header(
                         column,
                         colorScheme.secondary,
                         textTheme.titleMedium!.copyWith(
@@ -205,7 +205,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                 index,
                               ) {
                                 final item = items[index];
-                                return _buildTableRow(
+                                return IsaTableRow(
                                   item,
                                   colorScheme.surface,
                                   colorScheme.onSecondary,
@@ -233,7 +233,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     );
   }
 
-  Widget header(
+  Widget Header(
     List<String> column,
     Color bgColor,
     TextStyle style,
@@ -260,22 +260,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     );
   }
 
-  Widget rowCell(String text, String type, Color color, TextStyle style) {
-    final formatter = NumberFormat("###,##0.##", "en_US");
-    final number = double.tryParse(text);
-    return Flexible(
-      flex: (type == "incAstCtg" || type == "isaForm") ? 3 : 2,
-      child: Center(
-        child: Text(
-          (number == null) ? text : formatter.format(number),
-          style: style.copyWith(color: color),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTableRow(
+  Widget IsaTableRow(
     Object item,
     Color ctnColor,
     Color txtColor,
@@ -289,33 +274,48 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       child: Row(
         children: [
           if (widget.category == ProductCategory.isaJoin) ...[
-            rowCell(
+            RowCell(
               (item as IsaJoinStatus).isaForm!,
               "isaForm",
               txtColor,
               style,
             ),
-            rowCell(item.companyCount.toString(), "cmpyCnt", txtColor, style),
-            rowCell(
+            RowCell(item.companyCount.toString(), "cmpyCnt", txtColor, style),
+            RowCell(
               item.joinMemberCount.toString(),
               "jnMbCnt",
               txtColor,
               style,
             ),
-            rowCell(item.category!, "category", txtColor, style),
+            RowCell(item.category!, "category", txtColor, style),
           ] else ...[
-            rowCell(
+            RowCell(
               (item as IsaManagementStatus).isaForm!,
               "isaForm",
               txtColor,
               style,
             ),
-            rowCell(item.businessDomain!, "bzds", txtColor, style),
-            rowCell(item.includeAssetCtg!, "incAstCtg", txtColor, style),
-            rowCell(item.category!, "category", txtColor, style),
-            rowCell(item.amount.toString(), "amount", txtColor, style),
+            RowCell(item.businessDomain!, "bzds", txtColor, style),
+            RowCell(item.includeAssetCtg!, "incAstCtg", txtColor, style),
+            RowCell(item.category!, "category", txtColor, style),
+            RowCell(item.amount.toString(), "amount", txtColor, style),
           ],
         ],
+      ),
+    );
+  }
+
+  Widget RowCell(String text, String type, Color color, TextStyle style) {
+    final formatter = NumberFormat("###,##0.##", "en_US");
+    final number = double.tryParse(text);
+    return Flexible(
+      flex: (type == "incAstCtg" || type == "isaForm") ? 3 : 2,
+      child: Center(
+        child: Text(
+          (number == null) ? text : formatter.format(number),
+          style: style.copyWith(color: color),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

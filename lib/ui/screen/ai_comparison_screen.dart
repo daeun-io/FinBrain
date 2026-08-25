@@ -45,7 +45,6 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
   void initState() {
     super.initState();
     ref.read(aiCompTutorialViewmodelProvider.future).then((value) {
-      print("Firestore 값, $value");
       if (value == false) {
         isAiTutorialShown = false;
         _showAiCompTutorial();

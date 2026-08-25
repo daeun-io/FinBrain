@@ -22,9 +22,9 @@ class MyPageScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
-
     final user = GoogleAuthService.getCurrentUser();
-    void navigateToOnboarding(BuildContext context) {
+
+    void _navigateToOnboarding(BuildContext context) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (ctx) => OnBoardingScreen()),
         (route) => false,
@@ -256,7 +256,7 @@ class MyPageScreen extends ConsumerWidget {
                         ref,
                         () {
                           GoogleAuthService.signOut();
-                          navigateToOnboarding(context);
+                          _navigateToOnboarding(context);
                         },
                         Icon(
                           Icons.logout,
@@ -316,7 +316,7 @@ class MyPageScreen extends ConsumerWidget {
                                           Expanded(
                                             child: TextButton(
                                               onPressed: () {
-                                                navigateToOnboarding(context);
+                                                _navigateToOnboarding(context);
                                                 ref
                                                     .read(
                                                       myPageViewmodelProvider

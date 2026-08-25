@@ -1,7 +1,6 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/my_page_screen.dart';
-import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
@@ -123,6 +122,22 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
     }
   }
 
+  // 입력 저장하고 대화 불러오기
+  // Fetch AI response based on input and save in firestore
+  void processAiRequest(WidgetRef ref, String request) {
+    ref
+        .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
+        .saveRequest(request);
+    ref
+        .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
+        .fetchResponseAndSaveConv(
+          request,
+          widget.tag,
+          widget.category,
+          widget.name,
+        );
+  }
+  
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -319,21 +334,5 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
               ),
             ),
     );
-  }
-
-  // 입력 저장하고 대화 불러오기
-  // Fetch AI response based on input and save in firestore
-  void processAiRequest(WidgetRef ref, String request) {
-    ref
-        .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
-        .saveRequest(request);
-    ref
-        .read(aiAssistScreenViewmodelProvider(widget.tag).notifier)
-        .fetchResponseAndSaveConv(
-          request,
-          widget.tag,
-          widget.category,
-          widget.name,
-        );
   }
 }
