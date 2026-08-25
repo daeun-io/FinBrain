@@ -3,7 +3,6 @@ import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 // AI 도우미 및 비교 버튼
 // AI assist and comparison button
@@ -18,10 +17,10 @@ class AiButton extends ConsumerWidget {
   });
 
   // 상품 코드 및 이름(product code or name)
-  final String? tag;  
-  // 상품 이름(product name)         
+  final String? tag;
+  // 상품 이름(product name)
   final String? name;
-  // 상품 카테고리(product category)  
+  // 상품 카테고리(product category)
   final ProductCategory category;
   // 태블릿이거나 상품 비교 분석시 사용
   // Used when device is tablet or comparing products
@@ -34,8 +33,8 @@ class AiButton extends ConsumerWidget {
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return SizedBox(
-      height: 80,
-      width: 80,
+      height: 92,
+      width: 92,
       child: FloatingActionButton(
         heroTag: tag,
         onPressed: () {
@@ -45,8 +44,12 @@ class AiButton extends ConsumerWidget {
           if (screenWidth < 600 && category != ProductCategory.liked) {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (ctx) =>
-                    AiAssistScreen(tag: tag!, category: category, name: name!, isTutorial: isDetailPrdtTutorial,),
+                builder: (ctx) => AiAssistScreen(
+                  tag: tag!,
+                  category: category,
+                  name: name!,
+                  isTutorial: isDetailPrdtTutorial,
+                ),
               ),
             );
             // 아니면 스플릿 뷰에 보이기
@@ -55,24 +58,40 @@ class AiButton extends ConsumerWidget {
             isBtnClicked();
           }
         },
-        backgroundColor: colorScheme.surfaceDim,
+        backgroundColor: Colors.transparent,
         splashColor: Colors.transparent,
         shape: const CircleBorder(),
         elevation: 0.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset("assets/images/ai_assist.svg"),
-            Text(
-              "AI 도우미",
-              style: textTheme.labelSmall!.copyWith(
-                color: colorScheme.onSurface,
-              ),
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: AlignmentGeometry.topLeft,
+              end: AlignmentGeometry.bottomRight,
+              colors: [
+                colorScheme.surfaceDim,
+                colorScheme.surfaceTint
+              ],
             ),
-          ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/images/ic_robot.png"),
+              Text(
+                "AI 도우미",
+                style: textTheme.labelSmall!.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+    // );
   }
 
   SnackBar snackbar(BuildContext context, String text) {

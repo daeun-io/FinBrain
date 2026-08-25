@@ -32,7 +32,9 @@ final ThemeData lightTheme = ThemeData(
     // filterchip/isa-tab-indicator/product-check
     surfaceContainerHigh: skyBlue,
     // ai button
-    surfaceDim: blueHeist85,
+    surfaceTint: paleBlue90,
+    surfaceDim: pastelSkyBlue90,
+    onSurfaceVariant: navy,
     // other button
     surfaceContainerHighest: blueHeist,
     // gradient
@@ -76,7 +78,9 @@ final ThemeData darkTheme = ThemeData(
     // filterchip/isa-tab-indicator/product-check
     surfaceContainerHigh: blueHeist,
     // ai button
-    surfaceDim: blueHeist85,
+    surfaceTint: paleBlue90,
+    surfaceDim: pastelSkyBlue90,
+    onSurfaceVariant: navy,
     // other button
     surfaceContainerHighest: lightGrayishBlue,
     // gradient
