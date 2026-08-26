@@ -96,107 +96,109 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppbar(screen: "product_selection", title: "상품 선택"),
       ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0),
-            child: Column(
-              children: [
-                // 검색창(search bar)
-                SearchBox(
-                  searchItem: (value) {
-                    ref
-                        .read(likedProductViewmodelProvider.notifier)
-                        .filterByKeyword(value);
-                  },
-                  fromLikedScreen: true,
-                ),
-                const SizedBox(height: 32.0),
-                // 필터링 바텀시트(filter bottom sheet)
-                SortOrFilterText(
-                  category: ProductCategory.liked,
-                  baseYear: "",
-                  onSortCriteriaChanged: (criteria) {
-                    ref
-                        .read(likedProductViewmodelProvider.notifier)
-                        .filterByCategory(criteria);
-                  },
-                ),
-                const SizedBox(height: 20.0),
-                liked.when(
-                  data: (data) {
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: liked.value!.length,
-                        itemBuilder: (context, index) {
-                          final isSelected = selectedProducts.contains(
-                            data[index],
-                          );
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  key: (index == 0) ? aiCompkey3 : null,
-                                  icon: (isSelected)
-                                      ? Icon(
-                                          Icons.check_circle,
-                                          color:
-                                              colorScheme.surfaceContainerHigh,
-                                          size: 36.0,
-                                        )
-                                      : Icon(
-                                          Icons.circle_outlined,
-                                          color: colorScheme.outline,
-                                          size: 36.0,
-                                        ),
-                                  onPressed: () {
-                                    if (isSelected) {
-                                      ref
-                                          .read(
-                                            selectedProductsViewmodelProvider
-                                                .notifier,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 24.0, left: 20.0, right: 20.0),
+              child: Column(
+                children: [
+                  // 검색창(search bar)
+                  SearchBox(
+                    searchItem: (value) {
+                      ref
+                          .read(likedProductViewmodelProvider.notifier)
+                          .filterByKeyword(value);
+                    },
+                    fromLikedScreen: true,
+                  ),
+                  const SizedBox(height: 32.0),
+                  // 필터링 바텀시트(filter bottom sheet)
+                  SortOrFilterText(
+                    category: ProductCategory.liked,
+                    baseYear: "",
+                    onSortCriteriaChanged: (criteria) {
+                      ref
+                          .read(likedProductViewmodelProvider.notifier)
+                          .filterByCategory(criteria);
+                    },
+                  ),
+                  const SizedBox(height: 20.0),
+                  liked.when(
+                    data: (data) {
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: liked.value!.length,
+                          itemBuilder: (context, index) {
+                            final isSelected = selectedProducts.contains(
+                              data[index],
+                            );
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    key: (index == 0) ? aiCompkey3 : null,
+                                    icon: (isSelected)
+                                        ? Icon(
+                                            Icons.check_circle,
+                                            color:
+                                                colorScheme.surfaceContainerHigh,
+                                            size: 36.0,
                                           )
-                                          .subtractProduct(data[index]);
-                                    } else {
-                                      ref
-                                          .read(
-                                            selectedProductsViewmodelProvider
-                                                .notifier,
-                                          )
-                                          .addProduct(data[index]);
-                                    }
-                                  },
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: ProductItem(
-                                    productCode:
-                                        data[index].commonInfo.productCode ??
-                                        "isaMp",
-                                    productName:
-                                        data[index].commonInfo.productName!,
-                                    category: data[index].commonInfo.category,
-                                    fromLikedScreen: true,
-                                    isSelecting: true,
+                                        : Icon(
+                                            Icons.circle_outlined,
+                                            color: colorScheme.outline,
+                                            size: 36.0,
+                                          ),
+                                    onPressed: () {
+                                      if (isSelected) {
+                                        ref
+                                            .read(
+                                              selectedProductsViewmodelProvider
+                                                  .notifier,
+                                            )
+                                            .subtractProduct(data[index]);
+                                      } else {
+                                        ref
+                                            .read(
+                                              selectedProductsViewmodelProvider
+                                                  .notifier,
+                                            )
+                                            .addProduct(data[index]);
+                                      }
+                                    },
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  loading: () =>
-                      const Expanded(child: CustomProgressIndicator()),
-                  error: (error, stackTrace) =>
-                      const Expanded(child: ShowingErrorWidget()),
-                ),
-              ],
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: ProductItem(
+                                      productCode:
+                                          data[index].commonInfo.productCode ??
+                                          "isaMp",
+                                      productName:
+                                          data[index].commonInfo.productName!,
+                                      category: data[index].commonInfo.category,
+                                      fromLikedScreen: true,
+                                      isSelecting: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    loading: () =>
+                        const Expanded(child: CustomProgressIndicator()),
+                    error: (error, stackTrace) =>
+                        const Expanded(child: ShowingErrorWidget()),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: NavToAiComparisonScreenBtn(
         context,
