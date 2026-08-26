@@ -173,13 +173,14 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                     widget.tag,
                                     widget.ctg,
                                   );
-                              ref
-                                  .read(
-                                    selectedProductsViewmodelProvider.notifier,
-                                  )
-                                  .resetSelectedList();
                             }
-
+                            // 선택 상품 리스트 초기화
+                            // Reset selected products list
+                            ref
+                                .read(
+                                  selectedProductsViewmodelProvider.notifier,
+                                )
+                                .resetSelectedList();
                             if (context.mounted) {
                               // 관심 상품 화면으로 이동
                               // Navigate to Liked Screen

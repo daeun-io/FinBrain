@@ -47,13 +47,11 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
     // Fetch mock data while tutorial, else fetch liked products
     final isTutorialShownAsync = ref.watch(aiCompTutorialViewmodelProvider);
     final isTutorialShown = isTutorialShownAsync.value ?? true;
-
     final realProductAsync = ref.watch(fetchLikedViewmodelProvider);
-
-    final List<FinancialProduct> likedProducts = (isTutorialShown)
+    
+    final List<FinancialProduct> likedProducts = (isTutorialShown == true)
         ? realProductAsync.value ?? []
         : ref.read(aiCompTutorialViewmodelProvider.notifier).getMockData();
-
     return getProductsFilteredByCriteria(likedProducts);
   }
 

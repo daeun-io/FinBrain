@@ -57,7 +57,6 @@ class LikedRepository {
                   .whereType<double>()
                   .toList()
                   .maxOrNull;
-              print("maxPrfRate, $maxPrfRate");
               products.add(
                 DepositAndInstallmentSavings(
                   category: getCategoryEnum[map["category"]]!,

@@ -89,7 +89,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       targets,
       detailKey3,
       ContentAlign.top,
-      ShapeLightFocus.RRect,
+      ShapeLightFocus.Circle,
       "AI와의 대화를 통해 해당 상품에 관한 정보를 쉽게얻을 수 있습니다\n해당 버튼을 클릭하면 채팅 화면으로 이동합니다",
       "버튼을 클릭해 이동해주세요",
     );

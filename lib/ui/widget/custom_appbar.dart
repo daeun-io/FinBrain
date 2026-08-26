@@ -1,4 +1,5 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
+import 'package:finbrain/ui/screen/main_screen.dart';
 import 'package:finbrain/ui/screen/my_page_screen.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,6 @@ class CustomAppbar extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     final isPhone = MediaQuery.of(context).size.width < 600;
-    final isLightMode = Theme.of(context).brightness == Brightness.light;
 
     return AppBar(
       // 스크린에 따라 배경색 변경
@@ -38,11 +38,7 @@ class CustomAppbar extends ConsumerWidget {
       scrolledUnderElevation: 0.0,
       automaticallyImplyLeading: false,
       leading: switch (screen) {
-        "main" => Image.asset(
-          (isLightMode)
-              ? "assets/images/icon_light.png"
-              : "assets/images/icon_dark.png",
-        ),
+        "main" => null,
         // 기기에 따라 백버튼 추가/삭제
         // Display back button based on device
         "ai_assist" =>
@@ -59,7 +55,7 @@ class CustomAppbar extends ConsumerWidget {
             : textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary),
       ),
       titleSpacing: switch (screen) {
-        "main" => -4.0,
+        "main" => 24.0,
         "ai_assist" => (isPhone) ? -6.0 : 24.0,
         _ => -6.0,
       },
@@ -115,7 +111,13 @@ class CustomAppbar extends ConsumerWidget {
   IconButton BackButton(BuildContext context, Color color) {
     return IconButton(
       onPressed: () {
-        Navigator.of(context).pop();
+        if(Navigator.canPop(context)){
+          Navigator.of(context).pop();
+        } else {
+          Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (ctx) => const MainScreen())
+          );
+        }
       },
       icon: Icon(
         Icons.arrow_back_ios_new,

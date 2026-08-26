@@ -45,7 +45,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     final productList = ref.watch(
       fetchProductViewmodelProvider(widget.category, cPage),
     );
-    final likedList = ref.watch(fetchLikedViewmodelProvider);
+    final likedList = ref.watch(likedProductViewmodelProvider);
 
     // 부모 스크린에 따라 관찰하기
     // Watch data based on parent screen

@@ -34,7 +34,7 @@ class _LikedScreenState extends ConsumerState<LikedScreen> {
   void initState() {
     super.initState();
     ref.read(aiCompTutorialViewmodelProvider.future).then((value) {
-      if(value == false){
+      if (value == false) {
         _showAiCompTutorial();
       }
     });
@@ -135,7 +135,9 @@ class _LikedScreenState extends ConsumerState<LikedScreen> {
                           // Navigate to product selection screen
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (ctx) => ProductSelectionScreen(isAiCompTutorial: widget.isAiCompTutorial,),
+                              builder: (ctx) => ProductSelectionScreen(
+                                isAiCompTutorial: widget.isAiCompTutorial,
+                              ),
                             ),
                           );
                         },
