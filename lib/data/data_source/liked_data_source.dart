@@ -59,7 +59,7 @@ class LikedDataSource {
       if (docSnapshot.docs.isNotEmpty) {
         return docSnapshot.docs.map((doc) => doc.data()).toList();
       } else {
-        debugPrint("[empty] comparison text is empty");
+        debugPrint("[empty] no item in liked list");
         return [];
       }
     } catch (e) {

@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
@@ -15,6 +14,9 @@ class CreditLoan extends FinancialProduct {
   final String? productType;
   final String? productTypeName;
   final String? cbName;
+  final double? maxRate;
+  final double? minRate;
+  final double? avgRate;
   final List<CreditLoanOption> options;
 
   CreditLoan({
@@ -35,6 +37,9 @@ class CreditLoan extends FinancialProduct {
     required this.productTypeName,
     required this.cbName,
     required this.options,
+    required this.maxRate,
+    required this.minRate,
+    required this.avgRate,
   }) : super(
          CommonInfo(
            category: category,
@@ -68,6 +73,9 @@ class CreditLoan extends FinancialProduct {
       productType: productType,
       productTypeName: productTypeName,
       cbName: cbName,
+      maxRate: maxRate,
+      minRate: minRate,
+      avgRate: avgRate,
       options: options,
     );
   }
@@ -76,19 +84,22 @@ class CreditLoan extends FinancialProduct {
   Map<String, Object> toMap() {
     return {
       "isLiked": true,
-      "category": "${commonInfo.category}",
-      "submittedMonth": "${commonInfo.submittedMonth}",
-      "companyCode": "${commonInfo.companyCode}",
-      "companyName": "${commonInfo.companyName}",
-      "productCode": "${commonInfo.productCode}",
-      "productName": "${commonInfo.productName}",
-      "startDay": "${commonInfo.startDay}",
-      "endDay": "${commonInfo.endDay}",
-      "submittedDay": "${commonInfo.submittedDay}",
+      "category": commonInfo.category.toString(),
+      "submittedMonth": commonInfo.submittedMonth.toString(),
+      "companyCode": commonInfo.companyCode.toString(),
+      "companyName": commonInfo.companyName.toString(),
+      "productCode": commonInfo.productCode.toString(),
+      "productName": commonInfo.productName.toString(),
+      "startDay": commonInfo.startDay.toString(),
+      "endDay": commonInfo.endDay.toString(),
+      "submittedDay": commonInfo.submittedDay.toString(),
       "joinWay": commonInfo.joinWay ?? [],
-      "productType": "$productType",
-      "productTypeName": "$productTypeName",
-      "cbName": "$cbName",
+      "productType": productType.toString(),
+      "productTypeName": productType.toString(),
+      "cbName": cbName.toString(),
+      "maxRate": maxRate ?? "null",
+      "minRate": minRate ?? "null",
+      "avgRate": avgRate ?? "null",
       "options": options
           .map(
             (e) => {
@@ -107,29 +118,5 @@ class CreditLoan extends FinancialProduct {
           )
           .toList(),
     };
-  }
-
-  List<double?> returnRates() {
-    final foundOption = options
-        .where((e) => e.creditLendRateTypeName == "대출금리")
-        .firstOrNull;
-
-    if (foundOption == null) return [null, null, null];
-    final rates = [
-      foundOption.gradeOver900,
-      foundOption.grade801900,
-      foundOption.grade701800,
-      foundOption.grade601700,
-      foundOption.grade501600,
-      foundOption.grade401500,
-      foundOption.grade301400,
-      foundOption.gradeUnder300,
-    ].whereType<double>();
-
-    final avgRates = foundOption.averageGrade;
-    final min = rates.minOrNull;
-    final max = rates.maxOrNull;
-    final avg = (avgRates != null) ? avgRates : rates.average;
-    return [min, avg, max];
   }
 }

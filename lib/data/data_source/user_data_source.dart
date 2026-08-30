@@ -14,7 +14,9 @@ class UserDataSource {
     await userRef.set({
       "display_name": AesHelper.encryptText(user.displayName ?? "성이름"),
       "email": AesHelper.encryptText(user.email!),
-      "displayed_isa_guide": false,
+      "read_product_detail_tutorial": false,
+      "read_isa_tutorial": false,
+      "read_ai_comp_tutorial": false
     }, SetOptions(merge: true));
   }
 
@@ -33,19 +35,43 @@ class UserDataSource {
     return !userRef.exists;
   }
 
-  // ISA 가이드를 보였는지 여부 확인
-  // Check if isa guide was displayed before
-  Future<bool> displayedIsaGuideBefore(User user) async {
+  // 튜토리얼을 봤는가
+  // Check if user read tutorials
+  Future<bool> readProductDetailTutorial(User user) async {
     final userRef = await firestore.collection("users").doc(user.uid).get();
-    return userRef["displayed_isa_guide"];
+    return userRef["read_product_detail_tutorial"];
   }
 
-  // displayed_isa_guide를 true로 업데이트
-  // Update displayed_isa_guide to true
-  Future<void> setDisplayedIsaGuideToTrue() async {
+  Future<bool> readIsaTutorial(User user) async {
+    final userRef = await firestore.collection("users").doc(user.uid).get();
+    return userRef["read_isa_tutorial"];
+  }
+
+  Future<bool> readAiCompTutorial(User user) async {
+    final userRef = await firestore.collection("users").doc(user.uid).get();
+    return userRef["read_ai_comp_tutorial"];
+  }
+
+  // 튜토리얼 패러미터를 true로 업데이트
+  // Update tutorial params to true
+  Future<void> setReadProductDetailTutorialToTrue() async {
     final user = GoogleAuthService.getCurrentUser();
     if(user == null || user.email == null || user.displayName == null) return;
     final userRef = firestore.collection("users").doc(user.uid);
-    await userRef.update({"displayed_isa_guide" : true});
+    await userRef.update({"read_product_detail_tutorial" : true});
+  }
+
+  Future<void> setReadIsaTutorialToTrue() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.email == null || user.displayName == null) return;
+    final userRef = firestore.collection("users").doc(user.uid);
+    await userRef.update({"read_isa_tutorial" : true});
+  }
+
+  Future<void> setReadAiCompTutorialToValue(bool value) async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.email == null || user.displayName == null) return;
+    final userRef = firestore.collection("users").doc(user.uid);
+    await userRef.update({"read_ai_comp_tutorial" : value});
   }
 }

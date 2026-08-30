@@ -1,10 +1,12 @@
 import 'package:finbrain/data/aes_helper.dart';
+import 'package:finbrain/data/data_source/user_data_source.dart';
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/repository/ai_comp_repository.dart';
 import 'package:finbrain/data/repository/ai_response_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
@@ -39,6 +41,8 @@ class AiResponseViewmodel extends _$AiResponseViewmodel {
 // AI assist screen viewmodel
 @riverpod
 class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
+  final userDataSource = UserDataSource();
+
   @override
   List<String> build(String tag) => [];
 
@@ -47,7 +51,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
   Future<FinancialProduct?> getProduct(String tag, ProductCategory ctg) async {
     final page = ref.read(currentPageViewmodelProvider(ctg));
     final productList = await ref.read(
-      fetchProductViewmodelProvider(ctg, "$page").future,
+      fetchProductViewmodelProvider(ctg, page).future,
     );
     final likedList = await ref.read(fetchLikedViewmodelProvider.future);
     final product =
@@ -195,6 +199,20 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
       throw Exception("[error] failed to fetch summaries : $e");
     }
   }
+
+  // 튜토리얼 관련 함수
+  // Functions for product detail tutorial
+  Future<bool> readProductDetailTutorial() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.displayName == null || user.email == null) return true;
+    return userDataSource.readProductDetailTutorial(user);
+  }
+
+  Future<void> setReadProductDetailTutorialToTrue() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user == null || user.email == null || user.displayName == null) return;
+    return userDataSource.setReadProductDetailTutorialToTrue();
+  }
 }
 
 // AI 비교 분석 스크린 뷰모델
@@ -202,7 +220,19 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
 class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
   @override
   Future<String> build(String text) async {
-    return _askComparsion(text);
+    // 튜토리얼이면 예시 응답 아니면 실제 비교 분석 불러오기
+    // Fetch mock response while tutorial, else fetch comparison text
+    final isTutorialShown = await ref.read(
+        aiCompTutorialViewmodelProvider.future,
+      );
+    print("isTutorialShown(Viewmodel), $isTutorialShown");
+    if(!isTutorialShown){
+      print("목데이터 호출");
+      return ref.read(aiCompTutorialViewmodelProvider.notifier).getMockRes();
+    } else {
+      print("실제 응답 호출");
+      return _askComparsion(text);
+    }
   }
 
   // AI 비교분석 응답 요청

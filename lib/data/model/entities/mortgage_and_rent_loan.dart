@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
 import 'mortgage_and_rent_loan_option.dart';
@@ -17,6 +16,9 @@ class MortgageAndRentLoan extends FinancialProduct {
   final String? earlyRepayFee;
   final String? delayRate;
   final String? loanLimit;
+  final double? maxRate;
+  final double? minRate;
+  final double? avgRate;
   final List<MortgageAndRentLoanOption> options;
 
   MortgageAndRentLoan({
@@ -37,6 +39,9 @@ class MortgageAndRentLoan extends FinancialProduct {
     required this.earlyRepayFee,
     required this.delayRate,
     required this.loanLimit,
+    required this.maxRate,
+    required this.minRate,
+    required this.avgRate,
     required this.options,
   }) : super(
          CommonInfo(
@@ -72,6 +77,9 @@ class MortgageAndRentLoan extends FinancialProduct {
       earlyRepayFee: earlyRepayFee,
       delayRate: delayRate,
       loanLimit: loanLimit,
+      maxRate: maxRate,
+      minRate: minRate,
+      avgRate: avgRate,
       options: options,
     );
   }
@@ -80,20 +88,23 @@ class MortgageAndRentLoan extends FinancialProduct {
   Map<String, Object> toMap() {
     return {
       "isLiked": true,
-      "category": "${commonInfo.category}",
-      "submittedMonth": "${commonInfo.submittedMonth}",
-      "companyCode": "${commonInfo.companyCode}",
-      "companyName": "${commonInfo.companyName}",
-      "productCode": "${commonInfo.productCode}",
-      "productName": "${commonInfo.productName}",
-      "startDay": "${commonInfo.startDay}",
-      "endDay": "${commonInfo.endDay}",
-      "submittedDay": "${commonInfo.submittedDay}",
+      "category": commonInfo.category.toString(),
+      "submittedMonth": commonInfo.submittedMonth.toString(),
+      "companyCode": commonInfo.companyCode.toString(),
+      "companyName": commonInfo.companyName.toString(),
+      "productCode": commonInfo.productCode.toString(),
+      "productName": commonInfo.productName.toString(),
+      "startDay": commonInfo.startDay.toString(),
+      "endDay": commonInfo.endDay.toString(),
+      "submittedDay": commonInfo.submittedDay.toString(),
       "joinWay": commonInfo.joinWay ?? [],
-      "extraExpense": "$extraExpense",
-      "earlyRepayFee": "$earlyRepayFee",
-      "delayRate": "$delayRate",
-      "loanLimit": "$loanLimit",
+      "extraExpense": extraExpense.toString(),
+      "earlyRepayFee": earlyRepayFee.toString(),
+      "delayRate": delayRate.toString(),
+      "loanLimit": loanLimit.toString(),
+      "maxRate": maxRate ?? "null",
+      "minRate": minRate ?? "null",
+      "avgRate": avgRate ?? "null",
       "options": options
           .map(
             (e) => {
@@ -110,15 +121,5 @@ class MortgageAndRentLoan extends FinancialProduct {
           )
           .toList(),
     };
-  }
-
-  List<double?> returnRates() {
-    final min =
-        options.map((e) => (e).lendRateMin).whereType<double>().minOrNull;
-    final max =
-        options.map((e) => (e).lendRateMax).whereType<double>().minOrNull;
-    final avg =
-        options.map((e) => (e).lendRateAvg).whereType<double>().minOrNull;
-    return [min, avg, max];
   }
 }

@@ -17,7 +17,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.finbrain"
+    namespace = "com.daeun.finbrain"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -29,7 +29,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.finbrain"
+        applicationId = "com.daeun.finbrain"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
@@ -38,11 +38,28 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            val keyPropertiesFile = rootProject.file("key.properties")
+            if (keyPropertiesFile.exists()) {
+                val properties = Properties().apply {
+                    load(FileInputStream(keyPropertiesFile))
+                }
+                properties.getProperty("storeFile")?.let { storeFile = file(it) }
+                properties.getProperty("storePassword")?.let { storePassword = it }
+                properties.getProperty("keyAlias")?.let { keyAlias = it }
+                properties.getProperty("keyPassword")?.let { keyPassword = it }
+            }
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled  = true
+            isShrinkResources = true
         }
     }
 }

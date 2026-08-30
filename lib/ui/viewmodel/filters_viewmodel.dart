@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/repository/filters_repository.dart';
-import 'package:finbrain/ui/viewmodel/selected_parameter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/selected_parameter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'filters_viewmodel.g.dart';
 
@@ -17,10 +18,10 @@ final repository = FiltersRepository();
 class FiltersViewmodel extends _$FiltersViewmodel {
   @override
   Future<Map<String, List<(String, bool)>>> build(ProductCategory ctg) async {
-    final topFinGrpMap = ref.watch(selectedTopFinGrpNoViewmodelProvider);
+    final topFinGrpMap = ref.read(selectedTopFinGrpNoViewmodelProvider);
     final topFinGrpNo = topFinGrpMap[ctg] ?? "020000";
 
-    final baseYearMap = ref.watch(selectedBaseYearViewmodelProvider);
+    final baseYearMap = ref.read(selectedBaseYearViewmodelProvider);
     final baseYear = baseYearMap[ctg] ?? DateTime.now().year;
     return await repository.fetchFilters(ctg, topFinGrpNo, baseYear);
   }
@@ -31,9 +32,11 @@ class FiltersViewmodel extends _$FiltersViewmodel {
 @riverpod
 class DialogFiltersViewModel extends _$DialogFiltersViewModel {
   @override
-  AsyncValue<Map<String, List<(String, bool)>>> build(ProductCategory ctg){
+  AsyncValue<Map<String, List<(String, bool)>>> build(ProductCategory ctg) {
     final currentSaved = ref.watch(savedFiltersProvider(ctg));
-    return AsyncValue.data(Map<String, List<(String, bool)>>.from(currentSaved.value ?? {})); 
+    return AsyncValue.data(
+      Map<String, List<(String, bool)>>.from(currentSaved.value ?? {}),
+    );
   }
 
   // 필터 칩 선택/미선택 변경
@@ -58,12 +61,11 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
         else
           entry.key: entry.value,
     };
-    
     // 업권 필터 변경
     // Change company category
     final selectedFinGrp = updated["금융회사"];
     // 선택 카테고리가 없으면 이 외 것만 반영
-    // Update basic filters if there is no company category 
+    // Update basic filters if there is no company category
     if (selectedFinGrp == null || selectedFinGrp == currentState["금융회사"]) {
       state = AsyncValue.data(updated);
       return;
@@ -112,38 +114,55 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
 
   // 선택한 필터 항목 저장
   // Save selected filter options
-  Future<void> applyChanges(String pageNo) async {
+  Future<void> applyChanges(int pageNo) async {
     final snapshot = Map<String, List<(String, bool)>>.from(state.value ?? {});
-    ref.read(savedFiltersProvider(ctg).notifier).save(snapshot);
 
     // 기준년도 및 회사 업권 뷰모델 업데이트
     // Update base year and company category
     if (snapshot["금융회사"] != null) {
-      final topFinGrpName = snapshot["금융회사"]!
+      final currentTopFinGrpNo =
+          ref.read(selectedTopFinGrpNoViewmodelProvider)[ctg] ?? "020000";
+      final newTopFinGrpName = snapshot["금융회사"]!
           .firstWhere((e) => e.$2 == true)
           .$1;
-      final topFinGrpNo = getFinGroupCode[topFinGrpName] ?? "020000";
-      ref
-          .read(selectedTopFinGrpNoViewmodelProvider.notifier)
-          .changeTopFinGrp(ctg, topFinGrpNo);
+      final newTopFinGrpNo = getFinGroupCode[newTopFinGrpName] ?? "020000";
+      // 금융회사 업권 변경 시 새 데이터 호출
+      // Fetch data when company category changes
+      if (currentTopFinGrpNo != newTopFinGrpNo) {
+        ref
+            .read(selectedTopFinGrpNoViewmodelProvider.notifier)
+            .changeTopFinGrp(ctg, newTopFinGrpNo);
+        Future.microtask(() {
+          ref.invalidate(fetchProductViewmodelProvider(ctg, pageNo));
+        });
+      }
     }
+    // 기준년도 변경 시 새 데이터 호출
+    // Fetch data when base year changes
     if (snapshot["기준년도"] != null) {
-      final baseYear = snapshot["기준년도"]!.firstWhere((e) => e.$2 == true).$1;
-      ref
-          .read(selectedBaseYearViewmodelProvider.notifier)
-          .changeBaseYear(ctg, int.tryParse(baseYear) ?? DateTime.now().year);
-    }
+      final currentBaseYear = ref.read(selectedBaseYearViewmodelProvider)[ctg];
+      final newBaseYear = snapshot["기준년도"]!.firstWhere((e) => e.$2 == true).$1;
 
-    // 업데이트된 필터 기반으로 데이터 불러오기
-    // Fetch data based on updated filter
-    switch (ctg) {
-      case ProductCategory.isaJoin:
-        ref.read(fetchIsaJoinStatusViewmodelProvider(pageNo));
-      case ProductCategory.isaManagement:
-        ref.read(fetchIsaMngmStatusViewmodelProvider(pageNo));
-      default:
-        ref.read(fetchProductViewmodelProvider(ctg, pageNo));
+      if (currentBaseYear.toString() != newBaseYear) {
+        ref
+            .read(selectedBaseYearViewmodelProvider.notifier)
+            .changeBaseYear(
+              ctg,
+              int.tryParse(newBaseYear) ?? DateTime.now().year,
+            );
+        switch (ctg) {
+          case ProductCategory.isaJoin:
+            ref.read(fetchIsaJoinStatusViewmodelProvider(pageNo));
+          case ProductCategory.isaManagement:
+            ref.read(fetchIsaMngmStatusViewmodelProvider(pageNo));
+          default:
+            Future.microtask(() {
+              ref.invalidate(fetchProductViewmodelProvider(ctg, pageNo));
+            });
+        }
+      }
     }
+    ref.read(savedFiltersProvider(ctg).notifier).save(snapshot);
   }
 
   // 선택 초기화
@@ -157,12 +176,11 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
 // 상품 카테고리별 필터
 // Filter by product category
 @Riverpod(keepAlive: true)
-@riverpod
 class SavedFilters extends _$SavedFilters {
   // 생성 시 카테고리 별 기본 필터 호출
   // Fetch default filter by given category
   @override
-  Future<Map<String, List<(String, bool)>>> build(ProductCategory ctg) async{
+  Future<Map<String, List<(String, bool)>>> build(ProductCategory ctg) async {
     try {
       final data = await ref.read(filtersViewmodelProvider(ctg).future);
       return data;
@@ -173,5 +191,6 @@ class SavedFilters extends _$SavedFilters {
 
   // 변경사항 저장
   // Save filter change
-  void save(Map<String, List<(String, bool)>> filters) => state = AsyncValue.data(filters);
+  void save(Map<String, List<(String, bool)>> filters) => 
+    state = AsyncValue.data(filters);
 }

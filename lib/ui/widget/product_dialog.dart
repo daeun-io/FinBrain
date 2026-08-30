@@ -163,10 +163,9 @@ class ProductDialog extends ConsumerWidget {
                     Expanded(
                       child: TextButton(
                         onPressed: () async {
-                          final notifier = ref.read(
+                          await ref.read(
                             dialogFiltersViewModelProvider(category).notifier,
-                          );
-                          await notifier.applyChanges("1");
+                          ).applyChanges(1);
                           if (context.mounted) Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

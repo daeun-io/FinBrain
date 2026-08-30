@@ -7,17 +7,33 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1026903577783:android:41e1cfe1262e39fcefe932",
+        "mobilesdk_app_id": "1:1026903577783:android:7462693cc70bea88efe932",
         "android_client_info": {
-          "package_name": "com.example.finbrain"
+          "package_name": "com.daeun.finbrain"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1026903577783-vh44eehnui1g2kte0d71tjjcrqjkqn5n.apps.googleusercontent.com",
+          "client_id": "1026903577783-72eph0ts1b1sor46jaf0c0ui7bf0ukrb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.finbrain",
+            "package_name": "com.daeun.finbrain",
+            "certificate_hash": "4cf9c7751ebe4f9f103c723fa9cec3414e315612"
+          }
+        },
+        {
+          "client_id": "1026903577783-dpe84nk8arlphhra340l3uvvvn0cksvj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daeun.finbrain",
+            "certificate_hash": "c25be0402dbddb99089a29fa273d82e120fe9c84"
+          }
+        },
+        {
+          "client_id": "1026903577783-qvsil5sis0nm2qmlgtmajnr5vtkukbb1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daeun.finbrain",
             "certificate_hash": "75e98a6d158406b29ba7b11b73a1a35cb88a9c09"
           }
         },
@@ -28,7 +44,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC0xeYpuZNNcgT9F-kgGGbvzifDi6Bxt30"
+          "current_key": "AIzaSyCLy7diKtVMy3TXiTgEhmq8VIqlMjqgk6s"
         }
       ],
       "services": {

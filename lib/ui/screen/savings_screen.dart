@@ -10,7 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // 예적금 상품 스크린
 class SavingsScreen extends ConsumerWidget {
-  const SavingsScreen({super.key});
+  const SavingsScreen({super.key, this.isIsaTutorial});
+  final bool? isIsaTutorial;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,24 +24,25 @@ class SavingsScreen extends ConsumerWidget {
       ProductCategory.isaJoin,
     ];
     final tabView = [
-      ProductBaseScreen(category: ProductCategory.deposit),
-      ProductBaseScreen(category: ProductCategory.installment),
-      IsaScreen(),
+      const ProductBaseScreen(category: ProductCategory.deposit),
+      const ProductBaseScreen(category: ProductCategory.installment),
+      IsaScreen(isTutorial: isIsaTutorial,),
     ];
     
-    // 탭 선택에 따라 데이터 불러오기
-    // Fetch data based on tab index
+    // 탭 선택에 따라 카테고리 변경
+    // Change current category based on tab index
     void tapFunction(value) {
+      final ctg = categories[value];
       ref
           .read(currentCtgViewmodelProvider.notifier)
-          .setCurrentCtg(categories[value]);
-      final page = ref.read(currentPageViewmodelProvider(categories[value]));
-      ref.read(fetchProductViewmodelProvider(categories[value], "$page"));
+          .setCurrentCtg(ctg);
+      final page = ref.read(currentPageViewmodelProvider(ctg));
+      ref.read(fetchProductViewmodelProvider(ctg, page));
     }
 
     return DefaultTabController(
       length: 3,
-      initialIndex: 0,
+      initialIndex: (isIsaTutorial == true) ? 2 : 0,
       child: Column(
         children: [
           CustomTapbar(tabList: tabList, isIsaScreen: false, onTapFunc: tapFunction),

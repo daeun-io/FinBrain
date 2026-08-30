@@ -7,6 +7,8 @@ import 'package:finbrain/data/api_constants.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:xml2json/xml2json.dart';
 
+final stopwatch = Stopwatch()..start();
+
 class ProductRemoteDataSource {
   final http.Client _client;
   ProductRemoteDataSource(this._client);
@@ -53,7 +55,6 @@ class ProductRemoteDataSource {
           "EUC-KR",
           res.bodyBytes,
         );
-
         final formatter = Xml2Json();
 
         formatter.parse(xmlBody);
