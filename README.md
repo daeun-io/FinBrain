@@ -1,5 +1,5 @@
 # 핀브레인(FinBrain)
-An AI-powered application for searching, anaylzing and comparing financial products.
+An AI-powered application for searching, anaylzing, and comparing financial products.
 
 ### 🔗 Links
 > 🍎 **App Store**: https://apps.apple.com/us/app/핀브레인/id6796775538
@@ -79,7 +79,6 @@ project/
 | `release`  | Release branch                    |
 
 #### PR Convention
-- Do not push commits in main directly
 - Submit screenshot while adding new features
 - Use Squash and Merge options while merging
 - Delete merged branch
