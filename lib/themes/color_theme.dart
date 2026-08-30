@@ -29,10 +29,12 @@ final ThemeData lightTheme = ThemeData(
     onSecondaryFixedVariant: grayishBlue,
     // radio/check/circulator/indicator
     onTertiaryFixed: lightSkyBlue,
-    // filterchip/isa-tab-indicator
+    // filterchip/isa-tab-indicator/product-check
     surfaceContainerHigh: skyBlue,
     // ai button
-    surfaceDim: blueHeist85,
+    surfaceTint: paleBlue90,
+    surfaceDim: pastelSkyBlue90,
+    onSurfaceVariant: navy,
     // other button
     surfaceContainerHighest: blueHeist,
     // gradient
@@ -73,10 +75,12 @@ final ThemeData darkTheme = ThemeData(
     onSecondaryFixedVariant: grayishBlue,
     // radio/check/circulator/indicator
     onTertiaryFixed: lightSkyBlue,
-    // filterchip/isa-tab-indicator
+    // filterchip/isa-tab-indicator/product-check
     surfaceContainerHigh: blueHeist,
     // ai button
-    surfaceDim: blueHeist85,
+    surfaceTint: paleBlue90,
+    surfaceDim: pastelSkyBlue90,
+    onSurfaceVariant: navy,
     // other button
     surfaceContainerHighest: lightGrayishBlue,
     // gradient

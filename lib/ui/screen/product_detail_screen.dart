@@ -8,6 +8,8 @@ import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
+import 'package:finbrain/ui/tutorial_helper.dart';
+import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
@@ -18,10 +20,12 @@ import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/ai_button.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/custom_snack_bar.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:split_view/split_view.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
   const ProductDetailScreen({
@@ -30,12 +34,14 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
+    this.isTutorial,
   });
 
   final String productCode;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
+  final bool? isTutorial;
 
   @override
   ConsumerState<ProductDetailScreen> createState() =>
@@ -44,32 +50,71 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   bool isBtnClicked = false;
+  // 튜토리얼을 위한 변수
+  // Variables for tutorial
+  final List<TargetFocus> targets = [];
+  GlobalKey detailKey1 = GlobalKey();
+  GlobalKey detailKey2 = GlobalKey();
+  GlobalKey detailKey3 = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(productDetailScreenViewmodelProvider.future).then((value) {
+      if (widget.isTutorial == true || value == false) {
+        _showPrdtDetailTutorial();
+      }
+    });
+  }
+
+  void _showPrdtDetailTutorial() {
+    initTarget(
+      context,
+      targets,
+      detailKey1,
+      ContentAlign.top,
+      ShapeLightFocus.RRect,
+      "금융 계산기 버튼을 클릭해 예상 수령액 및 월별 상환 금액을 알 수 있습니다",
+    );
+    initTarget(
+      context,
+      targets,
+      detailKey2,
+      ContentAlign.top,
+      ShapeLightFocus.RRect,
+      "'공식 상품 홈페이지로' 버튼을 클릭해 해당 금융 회사의 공식 사이트에 방문할 수 있습니다",
+    );
+    initTarget(
+      context,
+      targets,
+      detailKey3,
+      ContentAlign.top,
+      ShapeLightFocus.Circle,
+      "AI와의 대화를 통해 해당 상품에 관한 정보를 쉽게얻을 수 있습니다\n해당 버튼을 클릭하면 채팅 화면으로 이동합니다",
+      "버튼을 클릭해 이동해주세요",
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(
+        Duration(milliseconds: 300),
+        () => showTutorial(context, targets),
+      );
+    });
+  }
 
   // 공식 웹사이트로 이동하는 함수
   // Function to launch official website
-  void launchPrdtUrl(
-    WidgetRef ref,
-    String companyName,
-    TextStyle style
-  ) {
-    final colorScheme = Theme.of(context).colorScheme;
+  void _launchPrdtUrl(WidgetRef ref, String companyName, TextStyle style) {
     ref
         .read(productDetailScreenViewmodelProvider.notifier)
         .fetchAndOpenProductUrl(companyName, widget.productName)
         .then((isSuccess) {
           if (!isSuccess) {
             if (!context.mounted) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: colorScheme.scrim,
-                duration: Duration(seconds: 3),
-                content: Text(
-                  "오류: 외부 url으로의 이동이 실패했습니다, 다시 시도해주세요",
-                  style: style.copyWith(
-                    color: colorScheme.onSecondary,
-                  ),
-                ),
-              ),
+            CustomSnackBar.show(
+              context,
+              ref,
+              text: "오류: 외부 url으로의 이동이 실패했습니다, 다시 시도해주세요",
             );
           }
         });
@@ -78,15 +123,25 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = ref.watch(textThemeViewmodelProvider);
+    // final textTheme = ref.watch(textThemeViewmodelProvider);
 
     // 상품 리스트 불러오기
     // Fetch product list
     final page = ref.watch(currentPageViewmodelProvider(widget.category));
     final productList = ref.watch(
-      fetchProductViewmodelProvider(widget.category, "$page"),
+      fetchProductViewmodelProvider(widget.category, page),
     );
     final likedList = ref.watch(fetchLikedViewmodelProvider);
+
+    // 튜토리얼일 때 목 데이터 보이기
+    // Show mock data when tutorial
+    if (widget.isTutorial == true) {
+      final product = ref
+          .read(aiCompTutorialViewmodelProvider.notifier)
+          .getMockData()
+          .first;
+      return DetailSplitView(product, page);
+    }
 
     // 호출된 부모 스크린에 따라 상품 이름/코드로 데이터 찾기
     // Find data with product code or name in product list
@@ -115,31 +170,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             body: SizedBox.shrink(),
           );
         }
-
-        // 타블렛일 때 버튼을 누르면 AI 어시스트 스크린을 스플릿 뷰로, 핸드폰이면 네비게이션으로 이동
-        // if tablet, show assist screen through split view, else navigate
-        return SplitView(
-          viewMode: SplitViewMode.Horizontal,
-          controller: SplitViewController(
-            weights: (isBtnClicked) ? const [0.5, 0.5] : const [1.0, 0.0],
-          ),
-          indicator: const SplitIndicator(viewMode: SplitViewMode.Horizontal),
-          activeIndicator: SplitIndicator(
-            viewMode: SplitViewMode.Horizontal,
-            color: colorScheme.onTertiary,
-          ),
-          children: [
-            detailScreen(product, colorScheme, textTheme, page),
-            if (isBtnClicked)
-              AiAssistScreen(
-                tag: (widget.category == ProductCategory.isaMp)
-                    ? widget.productName
-                    : widget.productCode,
-                category: product.commonInfo.category,
-                name: widget.productName,
-              ),
-          ],
-        );
+        return DetailSplitView(product, page);
       },
       error: (err, stack) => Scaffold(
         backgroundColor: colorScheme.primary,
@@ -152,9 +183,40 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
+  // 타블렛일 때 버튼을 누르면 AI 어시스트 스크린을 스플릿 뷰로, 핸드폰이면 네비게이션으로 이동
+  // if tablet, show assist screen through split view, else navigate
+  Widget DetailSplitView(FinancialProduct product, int page) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
+
+    return SplitView(
+      viewMode: SplitViewMode.Horizontal,
+      controller: SplitViewController(
+        weights: (isBtnClicked) ? const [0.5, 0.5] : const [1.0, 0.0],
+      ),
+      indicator: const SplitIndicator(viewMode: SplitViewMode.Horizontal),
+      activeIndicator: SplitIndicator(
+        viewMode: SplitViewMode.Horizontal,
+        color: colorScheme.onTertiary,
+      ),
+      children: [
+        DetailScreen(product, colorScheme, textTheme, page),
+        if (isBtnClicked)
+          AiAssistScreen(
+            tag: (widget.category == ProductCategory.isaMp)
+                ? widget.productName
+                : widget.productCode,
+            category: product.commonInfo.category,
+            name: widget.productName,
+            isTutorial: widget.isTutorial,
+          ),
+      ],
+    );
+  }
+
   // 실제 상세 화면 스크린
   // Actual product detail screen
-  Widget detailScreen(
+  Widget DetailScreen(
     FinancialProduct product,
     ColorScheme colorScheme,
     TextTheme textTheme,
@@ -212,6 +274,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               ),
               // AI 도우미 버튼(AI Button)
               Positioned(
+                key: detailKey3,
                 right: 20,
                 bottom: 100,
                 child: AiButton(
@@ -228,6 +291,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       });
                     }
                   },
+                  isDetailPrdtTutorial: widget.isTutorial,
                 ),
               ),
               // 네비게이션 버튼(계산기, 공식 사이트)
@@ -237,7 +301,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child: navToWebsite(textTheme, product),
+                  child: NavToWebsiteBtn(textTheme, product),
                 )
               else
                 Positioned(
@@ -247,8 +311,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(child: navToCalculator(textTheme, product)),
-                      Expanded(child: navToWebsite(textTheme, product)),
+                      Expanded(child: NavToCalculatorBtn(textTheme, product)),
+                      Expanded(child: NavToWebsiteBtn(textTheme, product)),
                     ],
                   ),
                 ),
@@ -259,10 +323,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
-  Widget navToCalculator(TextTheme textTheme, FinancialProduct product) {
+  Widget NavToCalculatorBtn(TextTheme textTheme, FinancialProduct product) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
+      key: detailKey1,
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -316,14 +381,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
-  Widget navToWebsite(TextTheme textTheme, FinancialProduct product) {
+  Widget NavToWebsiteBtn(TextTheme textTheme, FinancialProduct product) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
-      onTap: () => launchPrdtUrl(
+      key: detailKey2,
+      onTap: () => _launchPrdtUrl(
         ref,
         product.commonInfo.companyName ?? "",
-        textTheme.bodySmall!
+        textTheme.bodySmall!,
       ),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -356,12 +422,23 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     ColorScheme colorScheme,
     TextTheme textTheme,
   ) {
-    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary);
+    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(
+      color: colorScheme.onSecondary,
+    );
     return [
-      Text("상품 안내", style: textTheme.headlineSmall!.copyWith(color: colorScheme.onPrimary)),
+      Text(
+        "상품 안내",
+        style: textTheme.headlineSmall!.copyWith(color: colorScheme.onPrimary),
+      ),
       Divider(thickness: 1, color: colorScheme.onSecondary),
-      textFrame("금융 상품명: ${replace(product.commonInfo.productName!)}", defaultTxtStyle),
-      textFrame("금융회사: ${replace(product.commonInfo.companyName ?? "미제공")}", defaultTxtStyle),
+      TextFrame(
+        "금융 상품명: ${replace(product.commonInfo.productName!)}",
+        defaultTxtStyle,
+      ),
+      TextFrame(
+        "금융회사: ${replace(product.commonInfo.companyName ?? "미제공")}",
+        defaultTxtStyle,
+      ),
     ];
   }
 
@@ -371,60 +448,65 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     ColorScheme colorScheme,
     TextTheme textTheme,
   ) {
-    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary);
+    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(
+      color: colorScheme.onSecondary,
+    );
     return [
       if (category != ProductCategory.isaMp)
-        textFrame(
+        TextFrame(
           "가입 방법: ${(product.commonInfo.joinWay == null || product.commonInfo.joinWay!.isEmpty) ? "미제공" : product.commonInfo.joinWay!.join(",")}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
-        textFrame(
+        TextFrame(
           "가입 제한: ${((product as DepositAndInstallmentSavings).joinDeny == null || product.joinDeny == "null") ? "미제공" : replace(product.joinDeny!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
-        textFrame(
+        TextFrame(
           "가입 대상: ${(product.joinMember == null || product.joinMember == "null") ? "미제공" : replace(product.joinMember!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
       ] else if (category == ProductCategory.isaMp) ...[
-        textFrame(
+        TextFrame(
           "업권: ${((product as IsaMpBenefitRate).businessDomain == null || product.businessDomain == "null") ? "미제공" : replace(product.businessDomain!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
-        textFrame(
+        TextFrame(
           "mp유형: ${(product.mpType == null || product.mpType == "null") ? "미제공" : replace(product.mpType!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
       ] else
         ...[],
-      textFrame(
+      TextFrame(
         "공시 제출일: ${(product.commonInfo.submittedDay == null) ? "미제공" : addSlash(product.commonInfo.submittedDay!)}",
-        defaultTxtStyle
+        defaultTxtStyle,
       ),
       if (category == ProductCategory.mortgage ||
           category == ProductCategory.rent ||
           category == ProductCategory.credit) ...[
         const SizedBox(height: 12.0),
-        textFrame(
+        TextFrame(
           "*본인의 최대 대출 금액 및 한도의 경우 해당 회사에 문의하세요",
           textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary),
         ),
       ],
       const SizedBox(height: 24.0),
-      Text(switch (category) {
-        ProductCategory.credit => "대출 금리 안내",
-        ProductCategory.isaMp => "수익률",
-        _ => "상품 세부사항",
-      }, style: textTheme.headlineSmall!.copyWith(color: colorScheme.onPrimary)),
+      Text(
+        switch (category) {
+          ProductCategory.credit => "대출 금리 안내",
+          ProductCategory.isaMp => "수익률",
+          _ => "상품 세부사항",
+        },
+        style: textTheme.headlineSmall!.copyWith(color: colorScheme.onPrimary),
+      ),
       Divider(thickness: 1, color: colorScheme.onSecondary),
       const SizedBox(height: 14.0),
       if (category == ProductCategory.deposit ||
           category == ProductCategory.installment) ...[
-        textFrame("금리", defaultTxtStyle),
+        TextFrame("금리", defaultTxtStyle),
         const SizedBox(height: 14.0),
-        dataTableFrame(
+        DetailDataTableFrame(
           ref,
           category,
           (category == ProductCategory.deposit)
@@ -433,25 +515,25 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           (product as DepositAndInstallmentSavings).options,
         ),
         const SizedBox(height: 14.0),
-        textFrame(
+        TextFrame(
           "만기 후 이자율:\n${(product.interestAfterExpiration == null || product.interestAfterExpiration == "null") ? "미제공" : replace(product.interestAfterExpiration!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
         const SizedBox(height: 14.0),
-        textFrame(
+        TextFrame(
           "우대 조건:\n${(product.specialCondition == null || product.specialCondition == "null") ? "미제공" : replace(product.specialCondition!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
         const SizedBox(height: 14.0),
-        textFrame(
+        TextFrame(
           "기타 유의 사항:\n${(product.etc == null || product.etc == "null") ? "미제공" : replace(product.etc!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
       ] else if (category == ProductCategory.mortgage ||
           category == ProductCategory.rent) ...[
-        textFrame("금리", defaultTxtStyle),
+        TextFrame("금리", defaultTxtStyle),
         const SizedBox(height: 14.0),
-        dataTableFrame(
+        DetailDataTableFrame(
           ref,
           category,
           (category == ProductCategory.mortgage)
@@ -467,34 +549,34 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           (product as MortgageAndRentLoan).options,
         ),
         const SizedBox(height: 14.0),
-        textFrame(
+        TextFrame(
           "대출 부대 비용:\n${(product.extraExpense == null || product.extraExpense == "null") ? "미제공" : replace(product.extraExpense!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
         const SizedBox(height: 14.0),
-        textFrame(
+        TextFrame(
           "중도 상환 수수료:\n${(product.earlyRepayFee == null || product.earlyRepayFee == "null") ? "미제공" : replace(product.earlyRepayFee!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
         const SizedBox(height: 14.0),
-        textFrame(
+        TextFrame(
           "연체 이자율:\n${(product.delayRate == null || product.delayRate == "null") ? "미제공" : replace(product.delayRate!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
         const SizedBox(height: 14.0),
-        textFrame(
+        TextFrame(
           "대출 한도: ${(product.loanLimit == null || product.loanLimit == "null") ? "미제공" : replace(product.loanLimit!)}",
-          defaultTxtStyle
+          defaultTxtStyle,
         ),
       ] else if (category == ProductCategory.credit)
-        tableFrame(
+        DetailTableFrame(
           category,
           (product as CreditLoan).options,
           colorScheme,
           textTheme,
         )
       else
-        tableFrame(
+        DetailTableFrame(
           category,
           (product as IsaMpBenefitRate).options,
           colorScheme,
@@ -505,26 +587,34 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
   // 개인신용대출 및 ISA 상품 표
   // Credit loan interest and ISA products' profit rate
-  Widget tableFrame(
+  Widget DetailTableFrame(
     ProductCategory category,
     List<dynamic> options,
     ColorScheme colorScheme,
     TextTheme textTheme,
   ) {
-    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary);
+    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(
+      color: colorScheme.onSecondary,
+    );
     // 개인시용대출(credit loan)
     if (category == ProductCategory.credit) {
       return Column(
         children: [
           for (final option in options as List<CreditLoanOption>)
             if (option.creditLendRateTypeName != null) ...[
-              textFrame(option.creditLendRateTypeName!, defaultTxtStyle),
+              TextFrame(option.creditLendRateTypeName!, defaultTxtStyle),
               const SizedBox(height: 8.0),
               Table(
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                 border: TableBorder.all(color: colorScheme.outline),
                 children: [
-                  tableRow(("신용 등급", "금리"), true, textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)),
+                  DetailTableRow(
+                    ("신용 등급", "금리"),
+                    true,
+                    textTheme.bodyMedium!.copyWith(
+                      color: colorScheme.onSecondary,
+                    ),
+                  ),
                   ...[
                     (
                       "900점 초과",
@@ -580,7 +670,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           ? "미제공"
                           : option.averageGrade.toString(),
                     ),
-                  ].map((e) => tableRow(e, false, textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary))),
+                  ].map(
+                    (e) => DetailTableRow(
+                      e,
+                      false,
+                      textTheme.bodyMedium!.copyWith(
+                        color: colorScheme.onSecondary,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 28.0),
@@ -593,22 +691,34 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         border: TableBorder.all(color: colorScheme.outline),
         children: [
-          tableRow(("기간", "수익률"), true, textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)),
+          DetailTableRow(
+            ("기간", "수익률"),
+            true,
+            textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+          ),
           for (final option in options as List<IsaMpBenefitRateOption>) ...[
             if (option.term != null && option.benefitRate != null)
-              tableRow((
-                option.term!,
-                (option.benefitRate == null)
-                    ? "미제공"
-                    : option.benefitRate.toString(),
-              ), false, textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary)),
+              DetailTableRow(
+                (
+                  option.term!,
+                  (option.benefitRate == null)
+                      ? "미제공"
+                      : option.benefitRate.toString(),
+                ),
+                false,
+                textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+              ),
           ],
         ],
       );
     }
   }
 
-  TableRow tableRow((String, String) values, bool isHeader, TextStyle style) {
+  TableRow DetailTableRow(
+    (String, String) values,
+    bool isHeader,
+    TextStyle style,
+  ) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return TableRow(
@@ -616,30 +726,26 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         color: (isHeader) ? colorScheme.secondary : colorScheme.surface,
         border: BoxBorder.all(color: colorScheme.outline),
       ),
-      children: [tableCellFrame(values.$1, style), tableCellFrame(values.$2, style)],
+      children: [
+        DetailTableCellFrame(values.$1, style),
+        DetailTableCellFrame(values.$2, style),
+      ],
     );
   }
 
-  Widget tableCellFrame(String text, TextStyle? textStyle) {
+  Widget DetailTableCellFrame(String text, TextStyle? textStyle) {
     return TableCell(
       verticalAlignment: TableCellVerticalAlignment.middle,
       child: Padding(
         padding: const EdgeInsets.all(4.0),
-        child: Center(child: textFrame(text, textStyle)),
+        child: Center(child: TextFrame(text, textStyle)),
       ),
-    );
-  }
-
-  Widget textFrame(String text, TextStyle? textStyle) {
-    return Text(
-      text,
-      style: textStyle,
     );
   }
 
   // 예적금 및 주택담보대출, 전세자금대출 금리 표
   // Savings, mortgage and rent loan interest table
-  Widget dataTableFrame(
+  Widget DetailDataTableFrame(
     WidgetRef ref,
     ProductCategory category,
     List<String> columns,
@@ -647,7 +753,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   ) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
-    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary);
+    final defaultTxtStyle = textTheme.bodyMedium!.copyWith(
+      color: colorScheme.onSecondary,
+    );
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -667,7 +775,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 label: Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [dataTableCellText(column, defaultTxtStyle)],
+                    children: [
+                      DetailDataTableCellText(column, defaultTxtStyle),
+                    ],
                   ),
                 ),
               ),
@@ -676,7 +786,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             if (category == ProductCategory.deposit)
               for (final option
                   in options as List<DepositAndInstallmentSavingsOption>)
-                dataTableRow([
+                DetailDataTableRow([
                   option.intRateTypeName ?? "미제공",
                   (option.saveTerm == null)
                       ? "미제공"
@@ -685,12 +795,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   (option.maxIntRate == null)
                       ? "미제공"
                       : option.maxIntRate.toString(),
-                ],
-                defaultTxtStyle),
+                ], defaultTxtStyle),
             if (category == ProductCategory.installment)
               for (final option
                   in options as List<DepositAndInstallmentSavingsOption>)
-                dataTableRow([
+                DetailDataTableRow([
                   option.intRateTypeName ?? "미제공",
                   option.reserveTypeName ?? "미제공",
                   (option.saveTerm == null)
@@ -700,12 +809,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   (option.maxIntRate == null)
                       ? "미제공"
                       : option.maxIntRate.toString(),
-                ],
-                defaultTxtStyle
-                ),
+                ], defaultTxtStyle),
             if (category == ProductCategory.mortgage)
               for (final option in options as List<MortgageAndRentLoanOption>)
-                dataTableRow([
+                DetailDataTableRow([
                   option.loanTypeName ?? "미제공",
                   option.repayTypeName ?? "미제공",
                   option.lendRateTypeName ?? "미제공",
@@ -718,11 +825,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   (option.lendRateAvg == null)
                       ? "미제공"
                       : option.lendRateAvg.toString(),
-                ],
-                defaultTxtStyle),
+                ], defaultTxtStyle),
             if (category == ProductCategory.rent)
               for (final option in options as List<MortgageAndRentLoanOption>)
-                dataTableRow([
+                DetailDataTableRow([
                   option.repayTypeName ?? "미제공",
                   option.lendRateTypeName ?? "미제공",
                   (option.lendRateMin == null)
@@ -734,28 +840,29 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   (option.lendRateAvg == null)
                       ? "미제공"
                       : option.lendRateAvg.toString(),
-                ],
-                defaultTxtStyle),
+                ], defaultTxtStyle),
           ],
         ),
       ),
     );
   }
 
-  DataRow dataTableRow(List<String> values, TextStyle style) {
+  DataRow DetailDataTableRow(List<String> values, TextStyle style) {
     return DataRow(
-      cells: values.map((e) => DataCell(dataTableCellText(e, style))).toList(),
+      cells: values
+          .map((e) => DataCell(DetailDataTableCellText(e, style)))
+          .toList(),
     );
   }
 
-  Widget dataTableCellText(String text, TextStyle? textStyle) {
+  Widget DetailDataTableCellText(String text, TextStyle? textStyle) {
     return Center(
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: textStyle
-      ),
+      child: Text(text, textAlign: TextAlign.center, style: textStyle),
     );
+  }
+
+  Widget TextFrame(String text, TextStyle? textStyle) {
+    return Text(text, style: textStyle);
   }
 
   // 문자열 변환기: \\n -> \n

@@ -55,7 +55,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                   child: Row(
                     spacing: 8.0,
                     children: filterCtg.map((e) {
-                      return categoryFilterChip(
+                      return CategoryFilterChip(
                         ref,
                         e,
                         (category == ArchiveCategory.comparison)
@@ -69,9 +69,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                 ),
                 // 응답 리스트(response list)
                 Expanded(
-                  child: (category == ArchiveCategory.comparison)
-                      ? archiveList(data, colorScheme, ref)
-                      : archiveList(data, colorScheme, ref),
+                  child: ArchiveList(data, colorScheme, ref),
                 ),
               ],
             ),
@@ -83,7 +81,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
         );
   }
   
-  FilterChip categoryFilterChip(
+  FilterChip CategoryFilterChip(
     WidgetRef ref,
     ProductCategory ctg,
     List<ProductCategory> filters,
@@ -137,7 +135,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
     );
   }
 
-  Widget archiveList(
+  Widget ArchiveList(
     List<AiRecord> records,
     ColorScheme colorScheme,
     WidgetRef ref,

@@ -1,7 +1,8 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
-import 'package:finbrain/ui/viewModel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/no_data_found.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
@@ -75,7 +76,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {;
     // 현재 페이지, ISA 상품 상태, 필터 관찰하기
     // Watch current page, ISA products status and their filter
     final cPage = ref.watch(
@@ -128,17 +129,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                 category: ProductCategory.isaMp,
                 baseYear: baseYear,
                 onSortCriteriaChanged: (criteria) {
-                  ref
-                      .read(
-                        productViewmodelProvider(
-                          ProductCategory.isaMp,
-                        ).notifier,
-                      )
-                      .sortByCriteria(
-                        criteria,
-                        ProductCategory.isaMp,
-                        products.value!.$1,
-                      );
+                  ref.read(sortOrFilterTextViewModelProvider(ProductCategory.isaMp).notifier).changeCriteria(criteria);
                 },
               ),
             ),
@@ -181,6 +172,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                           productName: items[index].commonInfo.productName!,
                           category: items[index].commonInfo.category,
                           fromLikedScreen: false,
+                          isSelecting: false,
                         ),
                       );
                     }, childCount: items.length),

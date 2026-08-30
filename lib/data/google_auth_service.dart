@@ -24,8 +24,10 @@ class GoogleAuthService {
   // Google social login
   Future<UserCredential?> signInWithGoogle() async {
     try {
+      await _googleSignIn.signOut();
+      
       await initSignIn();
-  
+      
       final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
 
       final idToken = googleUser.authentication.idToken;
@@ -34,17 +36,6 @@ class GoogleAuthService {
       GoogleSignInClientAuthorization? authorization = await authorizationClient.authorizationForScopes(['email', 'profile']);
 
       final accessToken = authorization?.accessToken;
-      if(accessToken == null){
-        // 다시 한 번 더 시도
-        // Try once again
-        final authorization2 = await authorizationClient.authorizationForScopes(['email', 'profile']);
-
-        if(authorization2?.accessToken == null){
-          debugPrint('Access token is null');
-          return null;
-        }
-        authorization = authorization2;
-      }
 
       final credential = GoogleAuthProvider.credential(
         accessToken: accessToken,

@@ -46,5 +46,5 @@ class MyPageViewmodel extends _$MyPageViewmodel {
     } catch (e){
       debugPrint("[error] failed to delete user data, $e");
     }
-  }
+  }  
 }

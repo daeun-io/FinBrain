@@ -54,7 +54,7 @@ final class FiltersViewmodelProvider
   }
 }
 
-String _$filtersViewmodelHash() => r'9b0564a9fa701558bf83de5cda0d5ac89636d085';
+String _$filtersViewmodelHash() => r'8150c66dcf07a4e0f395b1684190c74c4f62ecf3';
 
 final class FiltersViewmodelFamily extends $Family
     with
@@ -171,7 +171,7 @@ final class DialogFiltersViewModelProvider
 }
 
 String _$dialogFiltersViewModelHash() =>
-    r'8ea5da78d1b383dc285754c022990e3643df8779';
+    r'0966d2ff3d5ea1346dcb4a99f0156dd5f4c7c999';
 
 final class DialogFiltersViewModelFamily extends $Family
     with
@@ -273,7 +273,7 @@ final class SavedFiltersProvider
   }
 }
 
-String _$savedFiltersHash() => r'f1bd63a326acad73eb96555724c5ebc3d05dde4b';
+String _$savedFiltersHash() => r'b4f49a9dd792611920e60175e6ff87dfd3e9929f';
 
 final class SavedFiltersFamily extends $Family
     with
