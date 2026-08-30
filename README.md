@@ -1,14 +1,15 @@
 # FinBrain(핀브레인)
 An AI-powered application for searching, anaylzing and comparing financial products.
-<br><br>
 
 ### 🛠️ Tech Stack
-> FrameWork & Language: Flutter & Dart
-> Architecture: MVVM, Repository Pattern
-> Network: HTTP
-> State Management: Riverpod
-> Database: Firebase Firestore
-> Authentication: Firebase Authentication
+```
+FrameWork & Language: Flutter & Dart
+Architecture: MVVM, Repository Pattern
+Network: HTTP
+State Management: Riverpod
+Database: Firebase Firestore
+Authentication: Firebase Authentication
+```
 
 ### 📚 Libraries
 > #### State Management
@@ -44,7 +45,6 @@ project/
         ├── viewmodel/
         └── widget/
 ```
-___
 ### 📚 Git Convention
 #### Naming Rules
 - Use lowercase, - and /
