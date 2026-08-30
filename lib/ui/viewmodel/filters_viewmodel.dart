@@ -61,7 +61,6 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
         else
           entry.key: entry.value,
     };
-
     // 업권 필터 변경
     // Change company category
     final selectedFinGrp = updated["금융회사"];

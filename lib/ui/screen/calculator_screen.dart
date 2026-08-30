@@ -67,7 +67,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             widget.category == ProductCategory.installment)
         ? "0"
         : "";
-
     _moneyFocusNode.addListener(() {
       // 포커스 됐다면 숫자만 표시, 포커스에서 벗어나면 숫자 포맷 + 원 붙이기
       // If focused, show digits only, else format number and add currency unit

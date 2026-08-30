@@ -14,7 +14,6 @@ class OnBoardingScreen extends ConsumerWidget {
   OnBoardingScreen({super.key});
 
   final PageController _pageController = PageController();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;

@@ -142,7 +142,6 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
-
     // 현재 나누고 있는 대화
     // Current chats
     List<String> bubbles = ref.watch(

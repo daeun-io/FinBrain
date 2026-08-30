@@ -21,7 +21,6 @@ class FetchLikedViewmodel extends _$FetchLikedViewmodel {
       if (user == null) {
         throw Exception("[user] no user found");
       }
-
       // 관심 상품 불러오기
       // Fetch liked products
       final products = await repository.getLikedProducts(user.uid);
