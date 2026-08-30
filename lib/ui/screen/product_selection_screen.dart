@@ -200,11 +200,13 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
           ],
         ),
       ),
-      bottomNavigationBar: NavToAiComparisonScreenBtn(
-        context,
-        ref,
-        prdtCodes,
-        prdtNames,
+      bottomNavigationBar: SafeArea(
+        child: NavToAiComparisonScreenBtn(
+          context,
+          ref,
+          prdtCodes,
+          prdtNames,
+        ),
       ),
     );
   }
