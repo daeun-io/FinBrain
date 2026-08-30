@@ -1,5 +1,19 @@
-# FinBrain(핀브레인)
+# 핀브레인(FinBrain)
 An AI-powered application for searching, anaylzing and comparing financial products.
+
+### 🔗 Links
+> 🍎 **App Store**: https://apps.apple.com/us/app/핀브레인/id6796775538
+> <br>
+> 📄 **Portfolio(English)**: https://heliotrope-son-4ff.notion.site/FinBrain-3cc4ef68c518807aafeeff8dc7a5fa0a
+> <br>
+> 📄 **Portfolio(Korean)**: https://heliotrope-son-4ff.notion.site/34a4ef68c51881e3898ac7667cacc6d5
+<br>
+
+### 🎬 Demo
+
+https://github.com/user-attachments/assets/51ad6db1-129f-4566-8ac6-92eb7f1d82d1
+
+<br>
 
 ### 🛠️ Tech Stack
 ```
@@ -23,6 +37,8 @@ Authentication: Firebase Authentication
 > #### Security
 > Encrypt · Flutter Dotenv
 
+<br>
+
 ### 📁 Structure
 ```
 project/
@@ -45,6 +61,8 @@ project/
         ├── viewmodel/
         └── widget/
 ```
+<br>
+
 ### 📚 Git Convention
 #### Naming Rules
 - Use lowercase, - and /
