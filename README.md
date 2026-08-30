@@ -1,15 +1,67 @@
-# FinBrain
+# FinBrain(핀브레인)
+An AI-powered application for searching, anaylzing and comparing financial products.
+<br><br>
 
-Finbrain is an application that analyzes and compares financial products with AI to assist users in understanding the explanations and differences among them.
+### 🛠️ Tech Stack
+> FrameWork & Language: Flutter & Dart
+> Architecture: MVVM, Repository Pattern
+> Network: HTTP
+> State Management: Riverpod
+> Database: Firebase Firestore
+> Authentication: Firebase Authentication
 
-### Git Convention
+### 📚 Libraries
+> #### State Management
+> Riverpod
+> #### Network & Data
+> HTTP · XML2JSON · Charset Converter · Intl
+> #### Backend & Authentication
+> Firebase Auth · Firestore · Cloud Functions · Firebase AI · Google Sign-In
+> #### UI / UX
+> Flutter SVG · Split View · Smooth Page Indicator · Tutorial Coach Mark
+> #### Security
+> Encrypt · Flutter Dotenv
 
-|제목|내용|
-|------|---|
-|main(default)|The primary branch that maintains a production-ready, deployable state at all times.|
-|develop|The main integration branch for ongoing development.|
-|feat/new-feature|Used for developing and adding new features to the project.|
-|refactor/existing-code|Dedicated to improving or restructuring existing code without changing its external behavior.|
-|fix/bug-fix|Used for resolving standard bugs or issues found during development.|
-|hotfix/bug-fix|Specifically for addressing critical issues in production that require immediate attention.|
-|release/vn.m.r|Used for release preparation, including final polish, documentation, and versioning.|
+### 📁 Structure
+```
+project/
+├── assets/
+│   ├── icon/
+│   ├── images/
+│   │   └── onboarding/
+│   └── privacy_policy.md
+│
+└── lib/
+    ├── data/
+    │   ├── data_source/
+    │   ├── model/
+    │   └── repository/
+    │
+    ├── themes/
+    │
+    └── ui/
+        ├── screen/
+        ├── viewmodel/
+        └── widget/
+```
+___
+### 📚 Git Convention
+#### Naming Rules
+- Use lowercase, - and /
+- Use prefix written below
+
+| prefix     | explanation                       |
+|------------|-----------------------------------|
+| `feat`     | Add new features                  |
+| `fix`      | Resolve standard bugs or issues   |
+| `refactor` | Improve or restruct code without changing its behavior     |
+| `hotfix`   | Resolve critical issues           |
+| `style`    | Change UI design                  |
+| `docs`     | Add or modify document            |
+| `release`  | Release branch                    |
+
+#### PR Convention
+- Do not push commits in main directly
+- Submit screenshot while adding new features
+- Use Squash and Merge options while merging
+- Delete merged branch
