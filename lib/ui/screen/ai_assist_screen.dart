@@ -73,7 +73,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       ContentAlign.bottom,
       ShapeLightFocus.RRect,
       "이곳에서 AI와 대화할 수 있습니다\n금융 상품에 대해 궁금한 점을 자유롭게 질문해보세요",
-      "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다\n\n상단 탭바를 눌러 설명을 닫아주세요",
+      "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다",
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(
