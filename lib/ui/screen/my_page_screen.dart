@@ -39,10 +39,9 @@ class MyPageScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.only(top: 36, left: 20, right: 20, bottom: 20),
           child: Column(
             children: [
-              const SizedBox(height: 36.0),
               // 프로필(profile)
               Row(
                 children: [
@@ -131,7 +130,8 @@ class MyPageScreen extends ConsumerWidget {
               const SizedBox(height: 16.0),
               // 글자 모드 변경 버튼
               // Change text theme button
-              Padding(
+              Container(
+                color: colorScheme.primary,
                 padding: const EdgeInsets.only(left: 8.0, right: 1.0),
                 child: Row(
                   children: [
