@@ -130,7 +130,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                       child: MarkdownTextRenderer(str: data),
                     ),
                     CustomText(
-                      text: "AI 응답 특성 상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다",
+                      text: "*AI 응답 특성 상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다",
                       style: textTheme.bodySmall!.copyWith(
                         color: colorScheme.onTertiary,
                       ),

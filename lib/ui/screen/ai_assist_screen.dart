@@ -263,12 +263,15 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                       ),
                     ),
                   ),
-                  CustomText(
-                      text: "AI 응답 특성 상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다",
-                      style: textTheme.bodySmall!.copyWith(
-                        color: colorScheme.onTertiary,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomText(
+                        text: "*AI 응답 특성 상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다",
+                        style: textTheme.bodySmall!.copyWith(
+                          color: colorScheme.onTertiary,
+                        ),
                       ),
-                    ),
+                  ),
                   const SizedBox(height: 16.0,),
                   // 대화 입력창
                   // Chat input

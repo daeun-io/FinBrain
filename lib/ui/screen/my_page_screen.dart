@@ -39,7 +39,12 @@ class MyPageScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(top: 36, left: 20, right: 20, bottom: 20),
+          padding: const EdgeInsets.only(
+            top: 36,
+            left: 20,
+            right: 20,
+            bottom: 36,
+          ),
           child: Column(
             children: [
               // 프로필(profile)
@@ -77,96 +82,95 @@ class MyPageScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 46.0),
-              // 기록 보관소 이동 버튼
-              // Button for navigating to archive
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(
-                    context,
-                  ).push(MaterialPageRoute(builder: (ctx) => ArchiveScreen()));
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        colorScheme.surfaceContainerLowest,
-                        colorScheme.surfaceContainerLow,
-                      ],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 22,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.archive,
-                        color: colorScheme.surfaceContainerHighest,
-                        size: 24,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "기록 보관소로 이동",
-                        style: textTheme.titleMedium!.copyWith(
-                          color: colorScheme.onSecondary,
-                        ),
-                      ),
-                      const Spacer(),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: colorScheme.onSecondary,
-                        size: 20,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              // 글자 모드 변경 버튼
-              // Change text theme button
-              Container(
-                color: colorScheme.primary,
-                padding: const EdgeInsets.only(left: 8.0, right: 1.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.text_increase, size: 24.0),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      "큰 글씨 모드",
-                      style: textTheme.bodyMedium!.copyWith(
-                        color: colorScheme.onSecondary,
-                      ),
-                    ),
-                    const Spacer(),
-                    Transform.scale(
-                      scale: 0.8,
-                      child: CupertinoSwitch(
-                        value: (textTheme == bigTextTheme),
-                        onChanged: (value) {
-                          ref
-                              .read(textThemeViewmodelProvider.notifier)
-                              .changeTxtTheme();
-                        },
-                        activeColor: colorScheme.surfaceContainerHighest,
-                        inactiveThumbColor: colorScheme.tertiary,
-                        inactiveTrackColor: colorScheme.onTertiary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 60),
-              // 기타 버튼(other buttons)
+              const SizedBox(height: 32.0),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      // 기록 보관소 이동 버튼
+                      // Button for navigating to archive
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (ctx) => ArchiveScreen()),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                colorScheme.surfaceContainerLowest,
+                                colorScheme.surfaceContainerLow,
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 22,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.archive,
+                                color: colorScheme.surfaceContainerHighest,
+                                size: 24,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                "기록 보관소로 이동",
+                                style: textTheme.titleMedium!.copyWith(
+                                  color: colorScheme.onSecondary,
+                                ),
+                              ),
+                              const Spacer(),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: colorScheme.onSecondary,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      // 글자 모드 변경 버튼
+                      // Change text theme button
+                      Container(
+                        color: colorScheme.primary,
+                        padding: const EdgeInsets.only(left: 8.0, right: 1.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.text_increase, size: 24.0),
+                            const SizedBox(width: 8.0),
+                            Text(
+                              "큰 글씨 모드",
+                              style: textTheme.bodyMedium!.copyWith(
+                                color: colorScheme.onSecondary,
+                              ),
+                            ),
+                            const Spacer(),
+                            Transform.scale(
+                              scale: 0.8,
+                              child: CupertinoSwitch(
+                                value: (textTheme == bigTextTheme),
+                                onChanged: (value) {
+                                  ref
+                                      .read(textThemeViewmodelProvider.notifier)
+                                      .changeTxtTheme();
+                                },
+                                activeColor: colorScheme.surfaceContainerHighest,
+                                inactiveThumbColor: colorScheme.tertiary,
+                                inactiveTrackColor: colorScheme.onTertiary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 32),
                       // 개인정보처리방침(privacy policies)
                       MyPageButton(
                         context,
@@ -189,8 +193,7 @@ class MyPageScreen extends ConsumerWidget {
                             ),
                             builder: (BuildContext context) {
                               return Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
+                                height: MediaQuery.of(context).size.height * 0.8,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 32,
                                   horizontal: 20,
@@ -282,22 +285,19 @@ class MyPageScreen extends ConsumerWidget {
                                   height: 206,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         "정말 서비스에서",
-                                        style: textTheme.headlineSmall!
-                                            .copyWith(
-                                              color: colorScheme.onSecondary,
-                                            ),
+                                        style: textTheme.headlineSmall!.copyWith(
+                                          color: colorScheme.onSecondary,
+                                        ),
                                       ),
                                       Text(
                                         "탈퇴하시겠습니까?",
-                                        style: textTheme.headlineSmall!
-                                            .copyWith(
-                                              color: colorScheme.onSecondary,
-                                            ),
+                                        style: textTheme.headlineSmall!.copyWith(
+                                          color: colorScheme.onSecondary,
+                                        ),
                                       ),
                                       const SizedBox(height: 16),
                                       Text(
@@ -327,8 +327,7 @@ class MyPageScreen extends ConsumerWidget {
                                               style: TextButton.styleFrom(
                                                 backgroundColor:
                                                     colorScheme.onPrimaryFixed,
-                                                shadowColor:
-                                                    colorScheme.surface,
+                                                shadowColor: colorScheme.surface,
                                               ),
                                               child: Text(
                                                 "예",
@@ -349,8 +348,7 @@ class MyPageScreen extends ConsumerWidget {
                                               style: TextButton.styleFrom(
                                                 backgroundColor:
                                                     colorScheme.secondary,
-                                                shadowColor:
-                                                    colorScheme.surface,
+                                                shadowColor: colorScheme.surface,
                                                 side: BorderSide(
                                                   color: colorScheme
                                                       .outline, // Change your border color here
@@ -362,8 +360,8 @@ class MyPageScreen extends ConsumerWidget {
                                                 "아니오",
                                                 style: textTheme.bodyLarge!
                                                     .copyWith(
-                                                      color: colorScheme
-                                                          .onSecondary,
+                                                      color:
+                                                          colorScheme.onSecondary,
                                                     ),
                                               ),
                                             ),
