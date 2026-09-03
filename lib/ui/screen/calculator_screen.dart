@@ -756,12 +756,12 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               horizontal: 20.0,
             ),
             decoration: BoxDecoration(
-              color: colorScheme.surfaceDim,
+              color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             child: CustomText(
               text: "계산", 
-              style: textTheme.bodyLarge!.copyWith(color: colorScheme.onSurface)
+              style: textTheme.titleLarge!.copyWith(color: colorScheme.onSecondaryContainer)
             ),
           ),
         ),
