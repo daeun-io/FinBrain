@@ -447,8 +447,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   color: colorScheme.surfaceContainerHighest,
                   width: 1.0,
                 ),
-                checkColor: colorScheme.onSurface,
-                activeColor: colorScheme.surfaceDim,
+                checkColor: colorScheme.onSecondaryContainer,
+                activeColor: colorScheme.surfaceContainerHighest,
               ),
             ),
             const SizedBox(width: 4.0),
@@ -756,12 +756,12 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               horizontal: 20.0,
             ),
             decoration: BoxDecoration(
-              color: colorScheme.surfaceDim,
+              color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             child: CustomText(
               text: "계산", 
-              style: textTheme.bodyLarge!.copyWith(color: colorScheme.onSurface)
+              style: textTheme.titleLarge!.copyWith(color: colorScheme.onSecondaryContainer)
             ),
           ),
         ),

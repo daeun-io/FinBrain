@@ -57,7 +57,6 @@ dependencies:
   intl: ^0.20.3
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.8
-  shared_preferences: ^2.5.5
   split_view: ^3.2.2
   collection: ^1.19.1
   encrypt: ^5.0.3
@@ -109,7 +108,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
   - assets/keys.env
-  - assets/images/ic_robot.png
+  - assets/images/ic_robot.svg
   - assets/images/splash_light.png
   - assets/images/splash_dark.png
   - assets/images/onboarding/light_portrait_01.svg

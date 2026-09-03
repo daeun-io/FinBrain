@@ -8,6 +8,7 @@ import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +129,13 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                       alignment: Alignment.centerLeft,
                       child: MarkdownTextRenderer(str: data),
                     ),
+                    CustomText(
+                      text: "*AI 응답 특성 상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다",
+                      style: textTheme.bodySmall!.copyWith(
+                        color: colorScheme.onTertiary,
+                      ),
+                    ),
+                    const SizedBox(height: 16.0,),
                     Row(
                       children: [
                         TextButton(

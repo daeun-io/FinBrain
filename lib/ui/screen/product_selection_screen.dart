@@ -56,7 +56,7 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
       aiCompkey4,
       ContentAlign.top,
       ShapeLightFocus.RRect,
-      "상품 선택 이후 하단의 비교 분석 버튼을 클릭하면 AI가 상품을 비교 분석합니다",
+      "상품 선택 이후 하단의 비교 분석 버튼을 클릭하면 AI가 상품을 비교 분석합니다\n위 두 상품을 선택 후 버튼을 클릭해주세요",
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -47,7 +47,7 @@ class _LikedScreenState extends ConsumerState<LikedScreen> {
       aiCompkey2,
       ContentAlign.top,
       ShapeLightFocus.Circle,
-      "AI를 통해 상품끼리 비교 분석하세요\n버튼 클릭 시 상품 선택 화면으로 이동합니다",
+      "AI를 통해 상품끼리 비교 분석하세요\n버튼 클릭 시 상품 선택 화면으로 이동합니다. 버튼을 눌러 이동해주세요",
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

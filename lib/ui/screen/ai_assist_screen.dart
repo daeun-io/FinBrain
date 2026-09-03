@@ -9,6 +9,7 @@ import 'package:finbrain/ui/widget/ai_example_query.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,7 +74,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       ContentAlign.bottom,
       ShapeLightFocus.RRect,
       "이곳에서 AI와 대화할 수 있습니다\n금융 상품에 대해 궁금한 점을 자유롭게 질문해보세요",
-      "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다\n\n상단 탭바를 눌러 설명을 닫아주세요",
+      "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다",
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(
@@ -137,7 +138,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
           widget.name,
         );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -262,6 +263,16 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomText(
+                        text: "*AI 응답 특성 상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다",
+                        style: textTheme.bodySmall!.copyWith(
+                          color: colorScheme.onTertiary,
+                        ),
+                      ),
+                  ),
+                  const SizedBox(height: 16.0,),
                   // 대화 입력창
                   // Chat input
                   Container(
