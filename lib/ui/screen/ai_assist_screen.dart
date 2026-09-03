@@ -9,6 +9,7 @@ import 'package:finbrain/ui/widget/ai_example_query.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
+import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -137,7 +138,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
           widget.name,
         );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -262,6 +263,13 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                       ),
                     ),
                   ),
+                  CustomText(
+                      text: "AI 응답 특성 상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다",
+                      style: textTheme.bodySmall!.copyWith(
+                        color: colorScheme.onTertiary,
+                      ),
+                    ),
+                  const SizedBox(height: 16.0,),
                   // 대화 입력창
                   // Chat input
                   Container(
