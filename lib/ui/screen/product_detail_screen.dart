@@ -107,7 +107,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   void _launchPrdtUrl(WidgetRef ref, String companyName, TextStyle style) {
     ref
         .read(productDetailScreenViewmodelProvider.notifier)
-        .fetchAndOpenProductUrl(companyName, widget.productName)
+        .fetchAndOpenProductUrl(companyName)
         .then((isSuccess) {
           if (!isSuccess) {
             if (!context.mounted) return;
@@ -392,7 +392,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         textTheme.bodySmall!,
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0),
         decoration: BoxDecoration(
           color: colorScheme.secondary,
           border: Border.all(color: colorScheme.outline, width: 1.0),
