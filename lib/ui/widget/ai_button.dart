@@ -3,6 +3,7 @@ import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 // AI 도우미 및 비교 버튼
 // AI assist and comparison button
@@ -79,7 +80,8 @@ class AiButton extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/images/ic_robot.png"),
+              SvgPicture.asset("assets/images/ic_robot.svg", width: 52,),
+              const SizedBox(height: 4,),
               Text(
                 "AI 도우미",
                 style: textTheme.labelSmall!.copyWith(

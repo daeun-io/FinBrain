@@ -108,7 +108,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
   - assets/keys.env
-  - assets/images/ic_robot.png
+  - assets/images/ic_robot.svg
   - assets/images/splash_light.png
   - assets/images/splash_dark.png
   - assets/images/onboarding/light_portrait_01.svg
