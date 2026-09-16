@@ -59,8 +59,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       aiCompKey1,
       ContentAlign.top,
       ShapeLightFocus.Circle,
-      "관심 상품을 확인하세요\n하단 메뉴에서 관심 설정한 금융 상품을 한 눈에 볼 수 있습니다",
-      "AI 비교 분석애 관한 설명을 듣고 싶다면 해당 버튼을 클릭해 튜토리얼을 진행하세요",
+      "관심 상품을 확인하세요.\n하단 메뉴에서 관심 설정한 금융 상품을 한눈에 볼 수 있습니다",
+      "AI 비교·분석에 관한 설명을 듣고 싶다면 해당 버튼을 클릭해 튜토리얼을 진행하세요.",
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

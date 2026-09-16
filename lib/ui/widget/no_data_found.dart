@@ -34,12 +34,12 @@ class NoDataFound extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CustomText(context, "검색 조건에 맞는 상품이 없습니다", textStyle),
+                CustomText(context, "검색 조건에 맞는 상품이 없습니다.", textStyle),
                 const SizedBox(height: 16.0),
                 if (!isLastPage)
                   CustomText(
                     context,
-                    "아직 불러오지 않은 상품이 있을 수 있으니, 화면을 아래로 스크롤해 더 많은 상품을 확인해주세요",
+                    "아직 불러오지 않은 상품이 있을 수 있으니, 화면을 아래로 스크롤해 더 많은 상품을 확인해주세요.",
                     textStyle
                   ),
                 // 마지막 페이지에 도달하면 첫 페이지로 이동하는 로직 제공
