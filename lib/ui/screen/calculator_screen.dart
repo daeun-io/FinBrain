@@ -304,7 +304,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           WordCard(switch (widget.category) {
             ProductCategory.deposit => "예치금: 정기예금을 위해 은행에 맡겨둔 금액",
             ProductCategory.installment =>
-              "월 불입액: 적금 상품 가입 시 매월 납부하는 금액\n자유적립식이어도 매월 동일한 금액을 납부한다고 가정",
+              "월 납부액: 적금 상품 가입 시 매월 내는 금액\n자유적립식이어도 매월 동일한 금액을 낸다고 가정",
             _ => "대출 원금: 금융회사에 대출한 금액",
           }, textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary,)),
           SizedBox(height: (widget.category == ProductCategory.installment) ? 70 : 80),
@@ -331,7 +331,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             ... [ 
               const SizedBox(height: 4,),
               WordCard(
-              "단리: 원금에 대해서만 일정한 비율의 이자가 붙는 방식\n복리: 원금뿐 아니라 이전에 쌓인 기간에도 다시 이자가 붙는 방식 ",
+              "단리: 원금에 대해서만 일정한 비율의 이자가 붙는 방식\n복리: 원금뿐 아니라 이전에 쌓인 기간에도 다시 이자가 붙는 방식",
               textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary,),
             ), ]
         ],
@@ -447,8 +447,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   color: colorScheme.surfaceContainerHighest,
                   width: 1.0,
                 ),
-                checkColor: colorScheme.onSurface,
-                activeColor: colorScheme.surfaceDim,
+                checkColor: colorScheme.onSecondaryContainer,
+                activeColor: colorScheme.surfaceContainerHighest,
               ),
             ),
             const SizedBox(width: 4.0),
@@ -626,7 +626,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               ),
               const SizedBox(height: 12.0),
               CustomText(
-                text: "*본 계산 결과는 매월 30일로 가정해 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
+                text: "*본 계산 결과는 매월 30일로 가정해 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해 주세요",
                 style: textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary),
               ),
             ],
@@ -686,7 +686,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               ),
               const SizedBox(height: 12.0),
               CustomText(
-                text: "*본 계산 결과는 월을 기준으로 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해주세요",
+                text: "*본 계산 결과는 월을 기준으로 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해 주세요.",
                 style: textTheme.bodySmall!.copyWith(color: colorScheme.onTertiary,),
               ),
             ],
@@ -756,12 +756,12 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               horizontal: 20.0,
             ),
             decoration: BoxDecoration(
-              color: colorScheme.surfaceDim,
+              color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             child: CustomText(
               text: "계산", 
-              style: textTheme.bodyLarge!.copyWith(color: colorScheme.onSurface)
+              style: textTheme.titleLarge!.copyWith(color: colorScheme.onSecondaryContainer)
             ),
           ),
         ),

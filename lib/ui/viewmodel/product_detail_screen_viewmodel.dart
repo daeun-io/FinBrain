@@ -14,12 +14,13 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
   @override
   Future<bool> build() async {
     final user = GoogleAuthService.getCurrentUser();
-    if(user == null || user.displayName == null || user.email == null) return true;
+    if (user == null || user.displayName == null || user.email == null)
+      return true;
     return userDataSource.readProductDetailTutorial(user);
   }
 
   // 계산기에 전달할 금융 상품 옵션 매핑하기
-  // Map options to be delivered to calculator screen 
+  // Map options to be delivered to calculator screen
   Map<String, List<String>> mapProductOptions(
     ProductCategory category,
     List<dynamic> options,
@@ -47,7 +48,13 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
         );
         // 단리/복리(interest rate type)
         values.add(
-          List.of(options.map((e) => e.intRateTypeName!).whereType<String>().toSet().toList()),
+          List.of(
+            options
+                .map((e) => e.intRateTypeName!)
+                .whereType<String>()
+                .toSet()
+                .toList(),
+          ),
         );
       case ProductCategory.installment:
         // 정기적립식/자유적립식(reserve type name)
@@ -62,11 +69,23 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
         );
         // 가입 개월(period)
         values.add(
-          List.of(options.map((e) => "${e.saveTerm}개월").whereType<String>().toSet().toList()),
+          List.of(
+            options
+                .map((e) => "${e.saveTerm}개월")
+                .whereType<String>()
+                .toSet()
+                .toList(),
+          ),
         );
         // 단리/복리(interest rate type)
         values.add(
-          List.of(options.map((e) => e.intRateTypeName!).whereType<String>().toSet().toList()),
+          List.of(
+            options
+                .map((e) => e.intRateTypeName!)
+                .whereType<String>()
+                .toSet()
+                .toList(),
+          ),
         );
       // 대출상환방법(repayment method)
       default:
@@ -83,16 +102,10 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
 
   // 상품 공식 페이지 검색 후 이동
   // Find official website and launch
-  Future<bool> fetchAndOpenProductUrl(
-    String companyName,
-    String productName,
-  ) async {
+  Future<bool> fetchAndOpenProductUrl(String companyName) async {
     try {
       final repository = UrlRepository();
-      final urlString = await repository.fetchAndOpenProductUrl(
-        companyName,
-        productName,
-      );
+      final urlString = await repository.fetchAndOpenProductUrl(companyName);
       return await repository.launchInBrowser(urlString);
     } catch (error) {
       return false;

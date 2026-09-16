@@ -48,7 +48,7 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
       aiCompkey3,
       ContentAlign.bottom,
       ShapeLightFocus.Circle,
-      "체크박스를 통해 원하는 상품을 선택하세요\n선택한 상품의 카테고리는 반드시 동일해야 합니다",
+      "체크박스를 통해 원하는 상품을 선택하세요.\n선택한 상품의 카테고리는 반드시 동일해야 합니다.",
     );
     initTarget(
       context,
@@ -56,7 +56,8 @@ class _ProductScelectionScreenState extends ConsumerState<ProductSelectionScreen
       aiCompkey4,
       ContentAlign.top,
       ShapeLightFocus.RRect,
-      "상품 선택 이후 하단의 비교 분석 버튼을 클릭하면 AI가 상품을 비교 분석합니다",
+      "상품 선택 이후 하단의 버튼을 누르면 AI가 상품을 비교 및 분석합니다.",
+      "위 두 상품을 선택 후 버튼을 눌러주세요."
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

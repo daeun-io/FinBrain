@@ -7,14 +7,10 @@ import 'package:url_launcher/url_launcher.dart';
 class UrlRepository {
   // 공식 웹사이트 검색 함수
   // Searching official website function
-  Future<String> fetchAndOpenProductUrl(
-    String companyName,
-    String productName,
-  ) async {
+  Future<String> fetchAndOpenProductUrl(String companyName) async {
     final client = http.Client();
     final cleanCmpy = companyName.trim();
-    final cleanPrdt = productName.trim();
-    final String searchQuery = "$cleanCmpy $cleanPrdt 공식 사이트";
+    final String searchQuery = "$cleanCmpy 공식 사이트";
     final String encodedQuery = Uri.encodeComponent(searchQuery);
     final String url = "https://html.duckduckgo.com/html/?q=${encodedQuery}";
 
@@ -52,16 +48,16 @@ class UrlRepository {
           }
           return extracted;
         } else {
-          debugPrint("[empty] no url found for $productName");
+          debugPrint("[empty] no url found for $companyName");
           return "No result found";
         }
       } else {
         throw Exception(
-          "[error] failed to fetch $productName url, ${response.statusCode}",
+          "[error] failed to fetch $companyName url, ${response.statusCode}",
         );
       }
     } catch (e) {
-      throw Exception("[error] failed to fetch $productName url, $e");
+      throw Exception("[error] failed to fetch $companyName url, $e");
     } finally {
       client.close();
     }

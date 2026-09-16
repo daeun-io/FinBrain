@@ -74,7 +74,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       detailKey1,
       ContentAlign.top,
       ShapeLightFocus.RRect,
-      "금융 계산기 버튼을 클릭해 예상 수령액 및 월별 상환 금액을 알 수 있습니다",
+      "금융 계산기를 통해 예상 수령액 및 월별 상환 금액을 알 수 있습니다.",
     );
     initTarget(
       context,
@@ -82,7 +82,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       detailKey2,
       ContentAlign.top,
       ShapeLightFocus.RRect,
-      "'공식 상품 홈페이지로' 버튼을 클릭해 해당 금융 회사의 공식 사이트에 방문할 수 있습니다",
+      "'공식 상품 홈페이지로' 버튼을 통해 해당 금융 회사의 공식 사이트에 방문할 수 있습니다.",
     );
     initTarget(
       context,
@@ -90,8 +90,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       detailKey3,
       ContentAlign.top,
       ShapeLightFocus.Circle,
-      "AI와의 대화를 통해 해당 상품에 관한 정보를 쉽게얻을 수 있습니다\n해당 버튼을 클릭하면 채팅 화면으로 이동합니다",
-      "버튼을 클릭해 이동해주세요",
+      "AI와의 대화를 통해 해당 상품에 관한 정보를 쉽게 얻을 수 있습니다.\n해당 버튼을 누르면 채팅 화면으로 이동합니다.",
+      "버튼을 눌러 이동해주세요.",
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -107,14 +107,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   void _launchPrdtUrl(WidgetRef ref, String companyName, TextStyle style) {
     ref
         .read(productDetailScreenViewmodelProvider.notifier)
-        .fetchAndOpenProductUrl(companyName, widget.productName)
+        .fetchAndOpenProductUrl(companyName)
         .then((isSuccess) {
           if (!isSuccess) {
             if (!context.mounted) return;
             CustomSnackBar.show(
               context,
               ref,
-              text: "오류: 외부 url으로의 이동이 실패했습니다, 다시 시도해주세요",
+              text: "오류: 공식 사이트 이동에 실패했습니다. 다시 시도해 주세요.",
             );
           }
         });
@@ -392,7 +392,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         textTheme.bodySmall!,
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0),
         decoration: BoxDecoration(
           color: colorScheme.secondary,
           border: Border.all(color: colorScheme.outline, width: 1.0),

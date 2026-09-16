@@ -5,26 +5,16 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 void showTutorial(
   BuildContext context,
   List<TargetFocus> targets, [
-    Function()? onFinishOrSkip,
-  ]
-) {
-  final colorScheme = Theme.of(context).colorScheme;
-  final textTheme = Theme.of(context).textTheme;
+  Function()? onFinish,
+]) {
   TutorialCoachMark(
     targets: targets,
-    textSkip: "건너뛰기",
-    textStyleSkip: textTheme.bodySmall!.copyWith(color: colorScheme.onSurface),
     pulseEnable: false,
+    hideSkip: true,
     onFinish: () async {
-      if(onFinishOrSkip != null){
-        await onFinishOrSkip();
+      if (onFinish != null) {
+        await onFinish();
       }
-    },
-    onSkip: () {
-      if(onFinishOrSkip != null){
-        onFinishOrSkip();
-      }
-      return true;
     },
   ).show(context: context);
 }
@@ -48,15 +38,17 @@ void initTarget(
       identify: key,
       keyTarget: key,
       shape: shape,
+      enableOverlayTab: true,
       contents: [
         TargetContent(
           align: alignment,
-          child: Column(children: [
+          child: Column(
+            children: [
               TutorialBox(context, colorScheme, textTheme, content),
-              if(content2 != null) ...[
-                const SizedBox(height: 16,),
-                TutorialBox(context, colorScheme, textTheme, content2)
-              ]
+              if (content2 != null) ...[
+                const SizedBox(height: 16),
+                TutorialBox(context, colorScheme, textTheme, content2),
+              ],
             ],
           ),
         ),

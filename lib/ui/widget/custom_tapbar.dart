@@ -69,7 +69,7 @@ class CustomTapbarState extends ConsumerState<CustomTapbar> {
       tutorialKeys[2],
       ContentAlign.bottom,
       ShapeLightFocus.Circle,
-      "MP 수익률에서는 일임형 상품별 MP 운용 수익률을 제공해 운용 성과 비교가 가능합니다.\n\n기타 카테고리와 같이 AI 도우미를 통해 상품에 대한 정보를 쉽게 얻을 수 있습니다",
+      "MP 수익률에서는 일임형 상품별 MP 운용 수익률을 제공해 운용 성과 비교가 가능합니다.\n\n다른 카테고리와 동일하게 AI 도우미를 통해 상품에 대한 정보를 쉽게 얻을 수 있습니다.",
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
