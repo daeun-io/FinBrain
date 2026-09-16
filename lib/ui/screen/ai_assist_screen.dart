@@ -50,7 +50,6 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
   @override
   void initState() {
     super.initState();
-    print("isTutorial, ${widget.isTutorial}");
     ref.read(productDetailScreenViewmodelProvider.future).then((value) {
       if (widget.isTutorial == true || value == false) {
         _showPrdtDetailTutorial();
@@ -73,8 +72,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
       detailKey4,
       ContentAlign.bottom,
       ShapeLightFocus.RRect,
-      "이곳에서 AI와 대화할 수 있습니다\n금융 상품에 대해 궁금한 점을 자유롭게 질문해보세요",
-      "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다",
+      "이곳에서 AI와 대화할 수 있습니다.\n금융 상품에 대해 궁금한 점을 자유롭게 질문해 보세요.",
+      "대화는 매일 새벽 3시에 요약본으로 변환 후 저장됩니다.",
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(
@@ -266,7 +265,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: CustomText(
-                        text: "*AI 응답 특성 상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다",
+                        text: "AI 응답 특성상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다.",
                         style: textTheme.bodySmall!.copyWith(
                           color: colorScheme.onTertiary,
                         ),

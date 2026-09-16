@@ -162,7 +162,8 @@ class MyPageScreen extends ConsumerWidget {
                                       .read(textThemeViewmodelProvider.notifier)
                                       .changeTxtTheme();
                                 },
-                                activeColor: colorScheme.surfaceContainerHighest,
+                                activeTrackColor: colorScheme.surfaceContainerHighest,
+                                thumbColor: colorScheme.tertiary,
                                 inactiveThumbColor: colorScheme.tertiary,
                                 inactiveTrackColor: colorScheme.onTertiary,
                               ),
@@ -301,7 +302,7 @@ class MyPageScreen extends ConsumerWidget {
                                       ),
                                       const SizedBox(height: 16),
                                       Text(
-                                        "기존에 작성한 모든 기록이 삭제됩니다",
+                                        "기존에 작성한 모든 기록이 삭제됩니다.",
                                         style: textTheme.bodyMedium!.copyWith(
                                           color: colorScheme.onSecondary,
                                         ),

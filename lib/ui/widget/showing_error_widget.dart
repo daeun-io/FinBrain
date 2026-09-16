@@ -12,7 +12,7 @@ class ShowingErrorWidget extends ConsumerWidget {
 
     return Center(
       child: Text(
-        "오류가 발생했습니다. 다시 시도해주세요",
+        "오류가 발생했습니다. 다시 시도해 주세요.",
         style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
       ),
     );
