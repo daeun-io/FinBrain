@@ -3,6 +3,7 @@ An AI-powered application for searching, anaylzing, and comparing financial prod
 
 ### 🔗 Links
 > 🍎 **App Store**: https://apps.apple.com/us/app/핀브레인/id6796775538
+> <br>
 > ▶️ **Google Play**: https://play.google.com/store/apps/details?id=com.daeun.finbrain
 > <br>
 
