@@ -4,10 +4,8 @@ An AI-powered application for searching, anaylzing, and comparing financial prod
 ### 🔗 Links
 > 🍎 **App Store**: https://apps.apple.com/us/app/핀브레인/id6796775538
 > <br>
-> 📄 **Portfolio(English)**: https://heliotrope-son-4ff.notion.site/FinBrain-3cc4ef68c518807aafeeff8dc7a5fa0a
+> ▶️ **Google Play**: https://play.google.com/store/apps/details?id=com.daeun.finbrain
 > <br>
-> 📄 **Portfolio(Korean)**: https://heliotrope-son-4ff.notion.site/34a4ef68c51881e3898ac7667cacc6d5
-<br>
 
 ### 🎬 Demo
 
@@ -63,7 +61,7 @@ project/
 ```
 <br>
 
-### 📚 Git Convention
+### 📖 Git Convention
 #### Naming Rules
 - Use lowercase, - and /
 - Use prefix written below
