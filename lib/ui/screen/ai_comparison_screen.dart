@@ -130,14 +130,18 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                       alignment: Alignment.centerLeft,
                       child: MarkdownTextRenderer(str: data),
                     ),
-                    CustomText(
-                      text: "AI 응답 특성상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다.",
-                      style: textTheme.bodySmall!.copyWith(
-                        color: colorScheme.onTertiary,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: CustomText(
+                        text: "AI 대답에는 오류가 있을 수 있습니다.",
+                        style: textTheme.bodySmall!.copyWith(
+                          color: colorScheme.onTertiary,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16.0),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextButton(
                           onPressed: () {
@@ -158,7 +162,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                             ),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                             child: Text(
                               "다시 생성하기",
                               style: textTheme.bodyMedium!.copyWith(
@@ -219,7 +223,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                               ),
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            padding: const EdgeInsets.all(12.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                             child: Text(
                               "이 분석 저장하기",
                               style: textTheme.titleMedium!.copyWith(

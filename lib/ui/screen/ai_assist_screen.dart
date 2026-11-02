@@ -260,16 +260,10 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                             )
                           else
                             SliverToBoxAdapter(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: CustomText(
-                                  text:
-                                      "* AI 응답 특성상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다.",
-                                  style: textTheme.bodySmall!.copyWith(
-                                    color: colorScheme.onTertiary,
-                                  ),
+                              child: CustomText(
+                                text: "AI 대답에는 오류가 있을 수 있습니다.",
+                                style: textTheme.bodySmall!.copyWith(
+                                  color: colorScheme.onTertiary,
                                 ),
                               ),
                             ),

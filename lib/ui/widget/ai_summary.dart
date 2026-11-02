@@ -63,6 +63,7 @@ class AiSummary extends ConsumerWidget {
           text: text.createdAt.toIso8601String().split("T").first,
           style: textTheme.titleSmall!.copyWith(color: colorScheme.onTertiary),
         ),
+        const SizedBox(height: 8.0),
         MarkdownTextRenderer(str: text.text),
         const SizedBox(height: 16.0),
       ],
