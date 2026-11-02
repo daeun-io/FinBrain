@@ -106,13 +106,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          height: 70,
-          decoration: BoxDecoration(
-            color: colorScheme.secondary,
-            border: Border(
-              top: BorderSide(color: colorScheme.outline, width: 1.0),
-            ),
-          ),
+          height: 80,
+          color: colorScheme.secondary,
           child: Theme(
             data: Theme.of(context).copyWith(
               splashFactory: NoSplash.splashFactory,

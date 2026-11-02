@@ -279,12 +279,10 @@ class _ProductScelectionScreenState
       },
       child: Container(
         width: double.infinity,
+        alignment: Alignment.center,
         padding: EdgeInsets.symmetric(vertical: 12.0),
-        decoration: BoxDecoration(
-          color: colorScheme.secondary,
-          border: Border.all(color: colorScheme.outline, width: 1.0),
-        ),
         height: 60.0,
+        color: colorScheme.secondary,
         child: Text(
           "상품 비교·분석하기",
           textAlign: TextAlign.center,
