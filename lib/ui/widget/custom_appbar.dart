@@ -1,6 +1,5 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
-import 'package:finbrain/ui/screen/my_page_screen.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -60,22 +59,6 @@ class CustomAppbar extends ConsumerWidget {
         _ => -6.0,
       },
       actions: switch (screen) {
-        "main" => [
-          // 마이페이지로 이동하는 버튼
-          // Navigate to my page screen button
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => const MyPageScreen()),
-              );
-            },
-            icon: Icon(
-              Icons.account_circle,
-              color: colorScheme.surfaceContainerHighest,
-              size: 36,
-            ),
-          ),
-        ],
         "detail" => [
           // 관심 상품 선택/미선택 아이콘
           // Toggle product as liked/unliked button

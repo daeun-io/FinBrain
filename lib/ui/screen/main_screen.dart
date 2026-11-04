@@ -1,4 +1,5 @@
 import 'package:finbrain/ui/screen/loan_screen.dart';
+import 'package:finbrain/ui/screen/my_page_screen.dart';
 import 'package:finbrain/ui/screen/savings_screen.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
@@ -102,6 +103,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           _visitedIndices.contains(2)
               ? LikedScreen(isAiCompTutorial: widget.isAiCompTutorial)
               : const SizedBox.shrink(),
+          _visitedIndices.contains(3)
+              ? const MyPageScreen()
+              : const SizedBox.shrink(),
         ],
       ),
       bottomNavigationBar: SafeArea(
@@ -143,6 +147,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   key: aiCompKey1,
                   icon: Icon(Icons.favorite, size: 28),
                   label: "관심",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person, size: 28),
+                  label: "마이",
                 ),
               ],
             ),
