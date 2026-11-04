@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 // 기본 텍스트 크기
 // Default text size
 final normalTextTheme = TextTheme(
-  headlineLarge: headingMd,
+  headlineLarge: headingSbMd,
   headlineMedium: headingSm,
   headlineSmall: bodySbLg,
+
+  displayLarge: headingRgMd,
 
   titleLarge: bodySbMd,
   titleMedium: bodySbSm,
@@ -24,9 +26,11 @@ final normalTextTheme = TextTheme(
 // 큰 글씨 모드
 // Large text size
 final bigTextTheme = TextTheme(
-  headlineLarge: headingMd,
+  headlineLarge: headingSbMd,
   headlineMedium: headingSm,
   headlineSmall: bodySbXl,
+
+  displayLarge: headingRgLg,
 
   titleLarge: bodySbXl,
   titleMedium: bodySbLg,
