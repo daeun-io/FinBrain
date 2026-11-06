@@ -3,6 +3,7 @@ import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/themes/text_theme.dart';
 import 'package:finbrain/ui/screen/archive_screen.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
+import 'package:finbrain/ui/screen/my_page_detail_screen.dart';
 import 'package:finbrain/ui/screen/onboarding_screen.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
@@ -183,7 +184,12 @@ class MyPageScreen extends ConsumerWidget {
                       context,
                       ref,
                       () {
-                        // 추후 구현
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (ctx) =>
+                                MyPageDetailScreen(title: "앱 튜토리얼 다시보기"),
+                          ),
+                        );
                       },
                       Icons.book_outlined,
                       "앱 튜토리얼 다시보기",

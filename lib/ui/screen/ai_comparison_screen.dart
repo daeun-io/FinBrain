@@ -1,6 +1,6 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
-import 'package:finbrain/ui/screen/my_page_screen.dart';
+import 'package:finbrain/ui/screen/my_page_detail_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
@@ -203,7 +203,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                 MaterialPageRoute(
                                   builder: (ctx) =>
                                       (widget.isAiCompTutorial == true)
-                                      ? const MyPageScreen()
+                                      ? const MyPageDetailScreen(title: "앱 튜토리얼 다시보기")
                                       : const MainScreen(index: 2),
                                 ),
                                 (route) => false,
