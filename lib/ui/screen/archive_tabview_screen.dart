@@ -5,6 +5,7 @@ import 'package:finbrain/ui/viewmodel/archive_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
+import 'package:finbrain/ui/widget/search_box.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,6 +50,21 @@ class ArchiveTabViewScreen extends ConsumerWidget {
             ),
             child: Column(
               children: [
+                SearchBox(
+                  searchItem: (value) {
+                    if(category == ArchiveCategory.comparison){
+                      ref
+                        .read(archiveComparisonViewmodelProvider.notifier)
+                        .filterByKeyword(value);
+                    } else {
+                      ref
+                        .read(archiveSummaryViewmodelProvider.notifier)
+                        .filterByKeyword(value);
+                    }
+                  },
+                  fromLikedScreen: false,
+                ),
+                const SizedBox(height: 20,),
                 // 필터 칩(filter chip)
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -68,9 +84,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                   ),
                 ),
                 // 응답 리스트(response list)
-                Expanded(
-                  child: ArchiveList(data, colorScheme, ref),
-                ),
+                Expanded(child: ArchiveList(data, colorScheme, ref)),
               ],
             ),
           ),
@@ -80,7 +94,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
           loading: () => const CustomProgressIndicator(),
         );
   }
-  
+
   FilterChip CategoryFilterChip(
     WidgetRef ref,
     ProductCategory ctg,
@@ -90,7 +104,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
   ) {
     return FilterChip(
       // 필터 선택 및 제거
-      // select and delete filter 
+      // select and delete filter
       onSelected: (selected) {
         if (selected) {
           if (category == ArchiveCategory.comparison) {
@@ -239,6 +253,4 @@ class ArchiveTabViewScreen extends ConsumerWidget {
       ),
     );
   }
-
-  
 }
