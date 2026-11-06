@@ -41,7 +41,7 @@ final class MyPageViewmodelProvider
   }
 }
 
-String _$myPageViewmodelHash() => r'f8d942483cbbb1afc9a320ca79ce0de593df69ea';
+String _$myPageViewmodelHash() => r'81bf77759e7e53f2cd8c5f2c6902bc3db0b9d555';
 
 abstract class _$MyPageViewmodel extends $Notifier<bool> {
   bool build();

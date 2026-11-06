@@ -3,42 +3,103 @@ import 'package:finbrain/ui/screen/main_screen.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/my_page_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
+import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyPageDetailScreen extends ConsumerWidget {
+class MyPageDetailScreen extends ConsumerStatefulWidget {
   final String title;
-  const MyPageDetailScreen({super.key, required this.title});
+  final String? content;
+  const MyPageDetailScreen({super.key, required this.title, this.content});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _MyPageDetailScreenState();
+}
 
-    final items = switch (title) {
-      "앱 튜토리얼 다시보기" => ["상세 화면 및 AI 채팅", "ISA", "AI 비교 분석"],
-      "공지사항" => [],
-      "AI 설정" => [],
-      _ => [],
-    };
+class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
+  late List<dynamic> items;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final fetched = switch (widget.title) {
+        "앱 튜토리얼 다시보기" => ["상세 화면 및 AI 채팅", "ISA", "AI 비교 분석"],
+        "공지사항" =>
+          await ref.read(myPageViewmodelProvider.notifier).fetchNotices(),
+        "AI 설정" => [],
+        _ => [],
+      };
+
+      if (mounted) {
+        setState(() {
+          items = fetched;
+          isLoading = false;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
       appBar: PreferredSize(
-        preferredSize: CupertinoMagnifier.kDefaultSize,
-        child: CustomAppbar(screen: "my_page_detail", title: title),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: CustomAppbar(
+          screen: "my_page_detail",
+          title: !["앱 튜토리얼 다시보기", "공지사항"].contains(widget.title)
+              ? "공지사항"
+              : widget.title,
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) => switch (title) {
-            "앱 튜토리얼 다시보기" => TutorialListTile(context, ref, items[index]),
-            _ => TutorialListTile(context, ref, "not yet implemented"),
-          },
-        ),
+        padding: const EdgeInsets.all(20),
+        child: (isLoading)
+            ? CustomProgressIndicator()
+            : (!["앱 튜토리얼 다시보기", "공지사항"].contains(widget.title))
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    text: widget.title,
+                    style: textTheme.headlineSmall!.copyWith(
+                      color: colorScheme.onSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  CustomText(
+                    text: widget.content ?? "",
+                    style: textTheme.bodyMedium!.copyWith(
+                      color: colorScheme.onSecondary,
+                    ),
+                  ),
+                ],
+              )
+            : ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) => switch (widget.title) {
+                  "앱 튜토리얼 다시보기" => TutorialListTile(context, ref, items[index]),
+                  "공지사항" => NoticeListTile(
+                    context,
+                    ref,
+                    items[index].title,
+                    items[index].content,
+                  ),
+                  _ => TutorialListTile(context, ref, "not yet implemented"),
+                },
+              ),
       ),
     );
   }
@@ -48,7 +109,7 @@ class MyPageDetailScreen extends ConsumerWidget {
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         if (title == "AI 비교 분석") {
           ref
               .read(aiCompTutorialViewmodelProvider.notifier)
@@ -86,6 +147,38 @@ class MyPageDetailScreen extends ConsumerWidget {
         trailing: Icon(
           Icons.arrow_forward_ios,
           size: 16,
+          color: colorScheme.onSecondary,
+        ),
+      ),
+    );
+  }
+
+  Widget NoticeListTile(
+    BuildContext context,
+    WidgetRef ref,
+    String title,
+    String content,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (ctx) =>
+                MyPageDetailScreen(title: title, content: content),
+          ),
+        );
+      },
+      child: ListTile(
+        title: CustomText(
+          text: title,
+          style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+        ),
+        leading: Icon(
+          Icons.campaign_outlined,
+          size: 24,
           color: colorScheme.onSecondary,
         ),
       ),

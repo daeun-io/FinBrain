@@ -100,7 +100,12 @@ class MyPageScreen extends ConsumerWidget {
                             context,
                             ref,
                             () {
-                              // 추후 구현
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) =>
+                                      MyPageDetailScreen(title: "공지사항"),
+                                ),
+                              );
                             },
                             Icons.campaign_outlined,
                             "공지사항",

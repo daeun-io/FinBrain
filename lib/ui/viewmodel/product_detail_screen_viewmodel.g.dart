@@ -35,7 +35,7 @@ final class ProductDetailScreenViewmodelProvider
 }
 
 String _$productDetailScreenViewmodelHash() =>
-    r'ed5eb4178d68055fe90ff5b6f93ffe24cc7461cb';
+    r'0e797230dccf9020f419dbfaf29852e105b8309c';
 
 abstract class _$ProductDetailScreenViewmodel extends $AsyncNotifier<bool> {
   FutureOr<bool> build();
