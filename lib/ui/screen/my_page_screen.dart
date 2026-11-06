@@ -5,13 +5,12 @@ import 'package:finbrain/ui/screen/archive_screen.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
 import 'package:finbrain/ui/screen/my_page_detail_screen.dart';
 import 'package:finbrain/ui/screen/onboarding_screen.dart';
+import 'package:finbrain/ui/screen/policy_screen.dart';
 import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/my_page_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/privacy_policy_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_text.dart';
-import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -153,34 +152,11 @@ class MyPageScreen extends ConsumerWidget {
                     MyPageListTile(
                       context,
                       ref,
-                      () async {
-                        // 개인정보 처리 방침 읽고 디스플레이
-                        // Read and display privacy policy
-                        final policy = await ref.read(
-                          privacyPolicyViewmodelProvider.future,
-                        );
-                        showModalBottomSheet(
-                          context: context,
-                          backgroundColor: colorScheme.surfaceContainer,
-                          isScrollControlled: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20.0),
-                              topRight: Radius.circular(20.0),
-                            ),
-                          ),
-                          builder: (BuildContext context) {
-                            return Container(
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 32,
-                                horizontal: 20,
-                              ),
-                              child: MarkdownTextRenderer(str: policy),
-                            );
-                          },
-                        );
-                      },
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (ctx) => const PolicyScreen(isAgreed: true),
+                        ),
+                      ),
                       Icons.policy_outlined,
                       "개인정보 처리방침",
                     ),
@@ -262,15 +238,15 @@ class MyPageScreen extends ConsumerWidget {
                                               Expanded(
                                                 child: TextButton(
                                                   onPressed: () {
-                                                    _navigateToOnboarding(
-                                                      context,
-                                                    );
                                                     ref
                                                         .read(
                                                           myPageViewmodelProvider
                                                               .notifier,
                                                         )
                                                         .deleteAllDataOfUser();
+                                                    _navigateToOnboarding(
+                                                      context,
+                                                    );
                                                   },
                                                   style: TextButton.styleFrom(
                                                     backgroundColor: colorScheme
