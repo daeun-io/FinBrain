@@ -1,16 +1,30 @@
 import 'package:flutter/painting.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final headingLg = GoogleFonts.notoSansKr(
+final headingSbLg = GoogleFonts.notoSansKr(
   fontSize: 28.0,
   fontWeight: FontWeight.w600,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );
 
-final headingMd = GoogleFonts.notoSansKr(
+final headingRgLg = GoogleFonts.notoSansKr(
+  fontSize: 28.0,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -1,
+  decoration: TextDecoration.none
+);
+
+final headingSbMd = GoogleFonts.notoSansKr(
   fontSize: 24.0,
   fontWeight: FontWeight.w600,
+  letterSpacing: -1,
+  decoration: TextDecoration.none
+);
+
+final headingRgMd = GoogleFonts.notoSansKr(
+  fontSize: 24.0,
+  fontWeight: FontWeight.w400,
   letterSpacing: -1,
   decoration: TextDecoration.none
 );

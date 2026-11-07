@@ -54,7 +54,7 @@ class ProductRepository {
           .toList();
       final result = await dataStore.fetchFinlifeProducts(ctg, options);
       if (result["result"] == null) {
-        throw Exception("[error] result of fetching finlife products is null");
+        return (0, <FinancialProduct>[]);
       }
 
       final maxPage =
@@ -66,7 +66,7 @@ class ProductRepository {
 
       if (result["result"]["products"] == null ||
           result["result"]["products"]["product"] == null) {
-        throw Exception("[error] result of fetching finlife products is null");
+        return (0, <FinancialProduct>[]);
       }
 
       final rawProducts =
@@ -109,7 +109,11 @@ class ProductRepository {
                   category: ctg,
                   submittedMonth: element["baseinfo"]["dcls_month"].toString(),
                   companyCode: element["baseinfo"]["fin_co_no"].toString(),
-                  companyName: element["baseinfo"]["kor_co_nm"].toString(),
+                  companyName: element["baseinfo"]["kor_co_nm"]
+                      .toString()
+                      .replaceAll("주식회사", "")
+                      .replaceAll("㈜", "")
+                      .trim(),
                   productCode: element["baseinfo"]["fin_prdt_cd"].toString(),
                   productName: element["baseinfo"]["fin_prdt_nm"].toString(),
                   startDay: element["baseinfo"]["dcls_strt_day"].toString(),
@@ -199,7 +203,11 @@ class ProductRepository {
                   category: ctg,
                   submittedMonth: element["baseinfo"]["dcls_month"].toString(),
                   companyCode: element["baseinfo"]["fin_co_no"].toString(),
-                  companyName: element["baseinfo"]["kor_co_nm"].toString(),
+                  companyName: element["baseinfo"]["kor_co_nm"]
+                      .toString()
+                      .replaceAll("주식회사", "")
+                      .replaceAll("㈜", "")
+                      .trim(),
                   productCode: element["baseinfo"]["fin_prdt_cd"].toString(),
                   productName: element["baseinfo"]["fin_prdt_nm"].toString(),
                   startDay: element["baseinfo"]["dcls_strt_day"].toString(),
@@ -291,7 +299,11 @@ class ProductRepository {
                   category: ProductCategory.credit,
                   submittedMonth: element["baseinfo"]["dcls_month"].toString(),
                   companyCode: element["baseinfo"]["fin_co_no"].toString(),
-                  companyName: element["baseinfo"]["kor_co_nm"].toString(),
+                  companyName: element["baseinfo"]["kor_co_nm"]
+                      .toString()
+                      .replaceAll("주식회사", "")
+                      .replaceAll("㈜", "")
+                      .trim(),
                   productCode: element["baseinfo"]["fin_prdt_cd"].toString(),
                   productName: element["baseinfo"]["fin_prdt_nm"].toString(),
                   startDay: element["baseinfo"]["dcls_strt_day"].toString(),
@@ -468,7 +480,6 @@ class ProductRepository {
           .nonNulls
           .toList()
           .cast<FinancialProduct>();
-      print('데이터 매핑: ${stopwatch.elapsedMilliseconds}ms');
       return (totalCount, items);
     } catch (e) {
       throw Exception("[error] failed to fetch isa mp products : $e");

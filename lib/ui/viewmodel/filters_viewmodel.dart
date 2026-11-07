@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:collection/collection.dart';
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/repository/filters_repository.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
@@ -81,8 +82,8 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
         for (final entry in updated.entries)
           if (entry.key == "회사 선택")
             entry.key: cmpyList
-                .map<(String, bool)>((e) => (e as String, false))
-                .toList()
+                .map<(String, bool)>((e) => (e.toString().replaceAll("주식회사", "").replaceAll("㈜", "").trim(), false))
+                .toList().sorted((a, b) => a.$1.compareTo(b.$1))
           else
             entry.key: entry.value,
       });

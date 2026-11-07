@@ -25,6 +25,7 @@ class UserDataSource {
   Future<void> deleteAllDataOfUser(User user) async {
     final functions = FirebaseFunctions.instanceFor(region: "asia-northeast3");
     await functions.httpsCallable("deleteAllUserData").call();
+    print("성공적으로 탈퇴됨");
   }
 
   // 첫 로그인 여부 확인

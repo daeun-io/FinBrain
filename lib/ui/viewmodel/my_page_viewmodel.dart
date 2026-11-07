@@ -1,5 +1,7 @@
 import 'package:finbrain/data/data_source/user_data_source.dart';
 import 'package:finbrain/data/google_auth_service.dart';
+import 'package:finbrain/data/model/entities/notice.dart';
+import 'package:finbrain/data/repository/notice_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -8,6 +10,7 @@ part 'my_page_viewmodel.g.dart';
 @riverpod
 class MyPageViewmodel extends _$MyPageViewmodel {
   final userDataStore = UserDataSource();
+  final repository = NoticeRepository();
 
   @override
   bool build() => false;
@@ -46,5 +49,14 @@ class MyPageViewmodel extends _$MyPageViewmodel {
     } catch (e){
       debugPrint("[error] failed to delete user data, $e");
     }
-  }  
+  }
+
+  Future<List<Notice>> fetchNotices() async {
+    try {
+      return await repository.fetchNotices();
+    } catch (e){
+      debugPrint("[error] failed to fetch notices, $e");
+      return [];
+    }
+  }
 }

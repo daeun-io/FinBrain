@@ -354,12 +354,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0),
-        decoration: BoxDecoration(
-          color: colorScheme.secondary,
-          border: Border.all(color: colorScheme.outline, width: 1.0),
-        ),
-        height: 80.0,
+        padding: EdgeInsets.symmetric(vertical: 12.0),
+        height: 60.0,
+        color: colorScheme.secondary,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -392,11 +389,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         textTheme.bodySmall!,
       ),
       child: Container(
-        decoration: BoxDecoration(
-          color: colorScheme.secondary,
-          border: Border.all(color: colorScheme.outline, width: 1.0),
-        ),
-        height: 80.0,
+        padding: EdgeInsets.symmetric(vertical: 12.0),
+        height: 60.0,
+        color: colorScheme.secondary,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

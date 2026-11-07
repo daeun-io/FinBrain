@@ -243,7 +243,7 @@ final class AiComparisonScreenViewmodelProvider
 }
 
 String _$aiComparisonScreenViewmodelHash() =>
-    r'a5768fa7f76e459bce7d9a9785a2094584559fec';
+    r'2130d0f0011511f6c6febce02934ef7ebc8d0eda';
 
 final class AiComparisonScreenViewmodelFamily extends $Family
     with

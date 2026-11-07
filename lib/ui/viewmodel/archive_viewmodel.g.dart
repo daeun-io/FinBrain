@@ -148,7 +148,7 @@ final class ArchiveSummaryViewmodelProvider
 }
 
 String _$archiveSummaryViewmodelHash() =>
-    r'39c31ec86e0d4a92e347ca4fe8f9b383f7d929cd';
+    r'63b2b8ef1060a0aa766cbcb3873d5df99d83dd36';
 
 abstract class _$ArchiveSummaryViewmodel
     extends $Notifier<AsyncValue<List<AiRecord>>> {

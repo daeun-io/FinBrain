@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:finbrain/data/data_source/cmpy_data_source.dart';
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/model/request/finlife_search_options.dart';
@@ -13,7 +14,7 @@ class FiltersRepository {
   Future<Map<String, List<(String, bool)>>> fetchFilters(
     ProductCategory ctg,
     String topFinGrpNo,
-    int baseYear
+    int baseYear,
   ) async {
     final Map<String, List<(String, bool)>> filters = {};
     // ISA 관련 데이터 필터
@@ -62,8 +63,11 @@ class FiltersRepository {
 
       final selectedFinGroup = getFinGroupName[topFinGrpNo] ?? "";
       final List<String> finGroups = switch (ctg) {
-        ProductCategory.deposit || ProductCategory.installment => ["은행", "저축은행"],
-        ProductCategory.mortgage || ProductCategory.rent || ProductCategory.credit =>  ["은행", "저축은행", "여신전문", "보험"],
+        ProductCategory.deposit ||
+        ProductCategory.installment => ["은행", "저축은행"],
+        ProductCategory.mortgage ||
+        ProductCategory.rent ||
+        ProductCategory.credit => ["은행", "저축은행", "여신전문", "보험"],
         _ => [],
       };
 
@@ -71,8 +75,14 @@ class FiltersRepository {
           .map((e) => (e, e == selectedFinGroup))
           .toList();
       filters["회사 선택"] = cmpyList
-          .map<(String, bool)>((e) => (e, false))
-          .toList();
+          .map<(String, bool)>(
+            (e) => (
+              e.toString().replaceAll("주식회사", "").replaceAll("㈜", "").trim(),
+              false,
+            ),
+          )
+          .toList()
+          .sorted((a, b) => a.$1.compareTo(b.$1));
       filters["가입 방법"] = [
         ("영업점", true),
         ("인터넷", true),

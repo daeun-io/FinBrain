@@ -1,6 +1,6 @@
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
-import 'package:finbrain/ui/screen/my_page_screen.dart';
+import 'package:finbrain/ui/screen/my_page_detail_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
@@ -130,14 +130,18 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                       alignment: Alignment.centerLeft,
                       child: MarkdownTextRenderer(str: data),
                     ),
-                    CustomText(
-                      text: "AI 응답 특성상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다.",
-                      style: textTheme.bodySmall!.copyWith(
-                        color: colorScheme.onTertiary,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: CustomText(
+                        text: "AI 대답에는 오류가 있을 수 있습니다.",
+                        style: textTheme.bodySmall!.copyWith(
+                          color: colorScheme.onTertiary,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16.0),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextButton(
                           onPressed: () {
@@ -158,7 +162,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                             ),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                             child: Text(
                               "다시 생성하기",
                               style: textTheme.bodyMedium!.copyWith(
@@ -199,7 +203,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                 MaterialPageRoute(
                                   builder: (ctx) =>
                                       (widget.isAiCompTutorial == true)
-                                      ? const MyPageScreen()
+                                      ? const MyPageDetailScreen(title: "앱 튜토리얼 다시보기")
                                       : const MainScreen(index: 2),
                                 ),
                                 (route) => false,
@@ -219,7 +223,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                               ),
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            padding: const EdgeInsets.all(12.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                             child: Text(
                               "이 분석 저장하기",
                               style: textTheme.titleMedium!.copyWith(

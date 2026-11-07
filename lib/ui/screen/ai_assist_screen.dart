@@ -1,6 +1,6 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/ui/screen/my_page_screen.dart';
+import 'package:finbrain/ui/screen/my_page_detail_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_response_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
@@ -82,7 +82,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
           if (widget.isTutorial == true) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (ctx) => const MyPageScreen()),
+              MaterialPageRoute(builder: (ctx) => const MyPageDetailScreen(title: "앱 튜토리얼 다시보기",)),
               (route) => false,
             );
           } else {
@@ -257,21 +257,21 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                                   ],
                                 ),
                               ),
+                            )
+                          else
+                            SliverToBoxAdapter(
+                              child: CustomText(
+                                text: "AI 대답에는 오류가 있을 수 있습니다.",
+                                style: textTheme.bodySmall!.copyWith(
+                                  color: colorScheme.onTertiary,
+                                ),
+                              ),
                             ),
                         ],
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomText(
-                        text: "AI 응답 특성상 일부 잘못되거나 최신 정보를 포함하지 않을 수 있습니다.",
-                        style: textTheme.bodySmall!.copyWith(
-                          color: colorScheme.onTertiary,
-                        ),
-                      ),
-                  ),
-                  const SizedBox(height: 16.0,),
+                  const SizedBox(height: 16.0),
                   // 대화 입력창
                   // Chat input
                   Container(
