@@ -4,7 +4,6 @@ import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/my_page_viewmodel.dart';
-import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -46,11 +45,73 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
         setState(() {
           _items = fetched;
           _selectedToneIndex = _items.contains(tone) ? _items.indexOf(tone) : 3;
-          _controller.text = (tone == null || _selectedToneIndex != 3) ? "" : tone;
+          _controller.text = (tone == null || _selectedToneIndex != 3)
+              ? ""
+              : tone;
           _isLoading = false;
         });
       }
     });
+  }
+
+  Future<void> _saveToneOrShowDialog(BuildContext context, WidgetRef ref) async {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = ref.watch(textThemeViewmodelProvider);
+
+    if (widget.title == "AI 어조 설정") {
+      if (_selectedToneIndex == 3 && _controller.text.isEmpty) {
+        final bool? shouldPop = await showDialog<bool>(
+          context: Navigator.of(context, rootNavigator: true).context,
+          builder: (context) => AlertDialog(
+            backgroundColor: colorScheme.surfaceContainer,
+            title: CustomText(
+              text: "AI 어조가 설정되지 않았습니다",
+              style: textTheme.bodyMedium!.copyWith(
+                color: colorScheme.onSecondary,
+              ),
+            ),
+            content: CustomText(
+              text: "다시 설정하시겠습니까?",
+              style: textTheme.titleMedium!.copyWith(
+                color: colorScheme.onSecondary,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: CustomText(
+                  text: "아니오",
+                  style: textTheme.bodyMedium!.copyWith(
+                    color: colorScheme.onSecondary,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: CustomText(
+                  text: "예",
+                  style: textTheme.bodyMedium!.copyWith(
+                    color: colorScheme.onSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+        if (shouldPop == true) {
+          if (!context.mounted) return;
+          Navigator.of(context).pop();
+        }
+      } else {
+        ref
+            .read(myPageViewmodelProvider.notifier)
+            .setAiTone(
+              (_selectedToneIndex == 3)
+                  ? _controller.text
+                  : _items[_selectedToneIndex],
+            );
+      }
+    }
   }
 
   @override
@@ -58,30 +119,36 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
-    return Scaffold(
-      backgroundColor: colorScheme.primary,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CustomAppbar(
-          screen: "my_page_detail",
-          title: !["앱 튜토리얼 다시보기", "공지사항", "AI 어조 설정"].contains(widget.title)
-              ? "공지사항"
-              : widget.title,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        _saveToneOrShowDialog(context, ref);
+      },
+      child: Scaffold(
+        backgroundColor: colorScheme.primary,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: AppBar(
+            title: CustomText(
+              text: !["앱 튜토리얼 다시보기", "공지사항", "AI 어조 설정"].contains(widget.title)
+                  ? "공지사항"
+                  : widget.title,
+              style: textTheme.headlineMedium!.copyWith(
+                color: colorScheme.onPrimary,
+              ),
+            ),
+            leading: IconButton(
+              onPressed: () async {
+                _saveToneOrShowDialog(context, ref);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                color: colorScheme.onPrimary,
+              ),
+            ),
+          ),
         ),
-      ),
-      body: PopScope(
-        onPopInvoked: (didPop) {
-          if (widget.title == "AI 어조 설정") {
-            ref
-                .read(myPageViewmodelProvider.notifier)
-                .setAiTone(
-                  (_selectedToneIndex == 3)
-                      ? _controller.text
-                      : _items[_selectedToneIndex],
-                );
-          }
-        },
-        child: Padding(
+        body: Padding(
           padding: const EdgeInsets.all(20),
           child: (_isLoading)
               ? CustomProgressIndicator()
@@ -261,6 +328,11 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
               filled: true,
               fillColor: colorScheme.secondary,
               border: InputBorder.none,
+              hintText:
+                  "차근차근 설명해주세요. 복잡한 내용도 쉽게 이해하도록 예시를 들어가며 단계별로 풀어서 설명해주세요.",
+              hintStyle: textTheme.bodyMedium!.copyWith(
+                color: colorScheme.onTertiary,
+              ),
             ),
             style: textTheme.bodyMedium!.copyWith(
               color: colorScheme.onSecondary,
