@@ -110,6 +110,7 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
                   ? _controller.text
                   : _items[_selectedToneIndex],
             );
+        Navigator.of(context).pop();
       }
     }
   }
@@ -129,6 +130,7 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: AppBar(
+            backgroundColor: colorScheme.tertiary,
             title: CustomText(
               text: !["앱 튜토리얼 다시보기", "공지사항", "AI 어조 설정"].contains(widget.title)
                   ? "공지사항"
