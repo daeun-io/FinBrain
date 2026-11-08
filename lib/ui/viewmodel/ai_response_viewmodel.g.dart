@@ -51,7 +51,7 @@ final class AiResponseViewmodelProvider
 }
 
 String _$aiResponseViewmodelHash() =>
-    r'5a37eff9dd453f55444f620859cd916c6db4d83d';
+    r'0e861bd9813d4fd84a2abdf4e677aa2e438925d7';
 
 final class AiResponseViewmodelFamily extends $Family
     with
@@ -207,7 +207,7 @@ final class AiComparisonScreenViewmodelProvider
     extends $AsyncNotifierProvider<AiComparisonScreenViewmodel, String> {
   AiComparisonScreenViewmodelProvider._({
     required AiComparisonScreenViewmodelFamily super.from,
-    required String super.argument,
+    required List<String> super.argument,
   }) : super(
          retry: null,
          name: r'aiComparisonScreenViewmodelProvider',
@@ -243,7 +243,7 @@ final class AiComparisonScreenViewmodelProvider
 }
 
 String _$aiComparisonScreenViewmodelHash() =>
-    r'2130d0f0011511f6c6febce02934ef7ebc8d0eda';
+    r'58edbd69cb6d523f26197d72f2cad0ac6e9dea85';
 
 final class AiComparisonScreenViewmodelFamily extends $Family
     with
@@ -252,7 +252,7 @@ final class AiComparisonScreenViewmodelFamily extends $Family
           AsyncValue<String>,
           String,
           FutureOr<String>,
-          String
+          List<String>
         > {
   AiComparisonScreenViewmodelFamily._()
     : super(
@@ -263,18 +263,18 @@ final class AiComparisonScreenViewmodelFamily extends $Family
         isAutoDispose: true,
       );
 
-  AiComparisonScreenViewmodelProvider call(String text) =>
-      AiComparisonScreenViewmodelProvider._(argument: text, from: this);
+  AiComparisonScreenViewmodelProvider call(List<String> items) =>
+      AiComparisonScreenViewmodelProvider._(argument: items, from: this);
 
   @override
   String toString() => r'aiComparisonScreenViewmodelProvider';
 }
 
 abstract class _$AiComparisonScreenViewmodel extends $AsyncNotifier<String> {
-  late final _$args = ref.$arg as String;
-  String get text => _$args;
+  late final _$args = ref.$arg as List<String>;
+  List<String> get items => _$args;
 
-  FutureOr<String> build(String text);
+  FutureOr<String> build(List<String> items);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {

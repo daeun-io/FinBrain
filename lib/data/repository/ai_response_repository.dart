@@ -1,9 +1,12 @@
+import 'package:finbrain/data/data_source/user_data_source.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 
 // AI 응답 레포지토리
 // AI response repository
 class AiResponseRepository {
+  final userDataSource = UserDataSource();
+
   // AI 응답 호출하기
   // Get AI response with given request
   Future<String?> fetchAIResponse(
@@ -18,13 +21,18 @@ class AiResponseRepository {
 
     // 프롬프트 지정
     // Set AI prompt
-    final prompt = [Content.text(text)];
-    if (product != null) {
+    final prompt = <Content>[];
+    final tone = await userDataSource.getAiTone();
+    if (product != null && tone != null) {
+      final tPrompt = switch (tone) {
+        "설명적으로" => "차근차근 설명해주세요. 복잡한 내용도 쉽게 이해하도록 예시를 들어가며 단계별로 풀어서 설명해주세요.",
+        "간결하게" => "핵심만 간단하게, 불필요한 설명을 제외하고 중요한 내용만 짧고 명확하게 설명해주세요",
+        "전문적으로" => "해당 분야의 정확한 용어를 사용하고, 구체적인 데이터나 절차를 포함해 전문적으로 설명해주세요",
+        _ => tone,
+      };
       prompt.add(
         Content.text(
-          """현재 사용자가 묻는 상품은 ${product.commonInfo.companyName}의 ${product.commonInfo.productName}이야.
-          어려운 금융 용어를 쉽고 직관적으로 설명하고 상품 정보에 명시되지 않은 내용은 임의로 지어내지 마.
-          또한 공식 웹사이트에서 정보를 가져올 경우, 출처를 함께 표시해.""",
+          "${product.commonInfo.companyName}의 ${product.commonInfo.productName}에 대해 $text한 질문의 답을 $tPrompt",
         ),
       );
     }

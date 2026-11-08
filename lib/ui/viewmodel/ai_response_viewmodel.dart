@@ -220,28 +220,34 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
 @riverpod
 class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
   @override
-  Future<String> build(String text) async {
+  Future<String> build(List<String> items) async {
     // 튜토리얼이면 예시 응답 아니면 실제 비교 분석 불러오기
     // Fetch mock response while tutorial, else fetch comparison text
     final isTutorialShown = await ref.read(
         aiCompTutorialViewmodelProvider.future,
       );
-    print("isTutorialShown(Viewmodel), $isTutorialShown");
+    
     if(!isTutorialShown){
-      print("목데이터 호출");
       return ref.read(aiCompTutorialViewmodelProvider.notifier).getMockRes();
     } else {
-      print("실제 응답 호출");
-      return _askComparsion(text);
+      return _askComparsion(items);
     }
   }
 
   // AI 비교분석 응답 요청
   // Request comparison among selected products
-  Future<String> _askComparsion(String text) async {
+  Future<String> _askComparsion(List<String> items) async {
     try {
+      // 프롬프트 설정
+    final tone = await userDataSource.getAiTone();
+    final tPrompt = switch (tone) {
+        "설명적으로" => "차근차근 설명해주세요. 복잡한 내용도 쉽게 이해하도록 예시를 들어가며 단계별로 풀어서 설명해주세요.",
+        "간결하게" => "핵심만 간단하게, 불필요한 설명을 제외하고 중요한 내용만 짧고 명확하게 설명해주세요",
+        "전문적으로" => "해당 분야의 정확한 용어를 사용하고, 구체적인 데이터나 절차를 포함해 전문적으로 설명해주세요",
+        _ => tone,
+      };
       final newResponse = await ref.read(
-        aiResponseViewmodelProvider(text).future,
+        aiResponseViewmodelProvider("$items의 주요 공통점과 차이점을 표 없이 $tPrompt").future,
       );
       if (newResponse == null || newResponse.isEmpty) {
         return "오류가 발생했습니다. 다시 시도해주세요";
@@ -255,10 +261,10 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
 
   // 비교 분석 재요청
   // Re-request the comparison
-  Future<void> refreshComparison(String text) async {
+  Future<void> refreshComparison(List<String> items) async {
     state = const AsyncValue.loading();
     try {
-      final response = await _askComparsion(text);
+      final response = await _askComparsion(items);
       if(ref.mounted){
         state = AsyncValue.data(response);
       }

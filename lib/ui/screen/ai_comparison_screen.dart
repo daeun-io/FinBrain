@@ -61,7 +61,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
       ContentAlign.top,
       ShapeLightFocus.RRect,
       "저장 내역은 마이페이지 > 기록 저장소에서 확인 가능합니다.",
-      "'이 분석 저장하기' 버튼을 눌러 튜토리얼을 완료하세요."
+      "'이 분석 저장하기' 버튼을 눌러 튜토리얼을 완료하세요.",
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -98,12 +98,10 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
     // 상품 이름을 분리
     // Separate name collection
     final items = widget.name.split("`");
-    // AI 프롬프트(AI prompt)
-    final request = "$items들의 공통점과 차이점을 바탕으로 표 없이 비교 분석해줘";
 
     // 프롬프트 전달
     // Send AI prompt
-    final text = ref.watch(aiComparisonScreenViewmodelProvider(request));
+    final text = ref.watch(aiComparisonScreenViewmodelProvider(items));
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -150,10 +148,10 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                               ref
                                   .read(
                                     aiComparisonScreenViewmodelProvider(
-                                      request,
+                                      items,
                                     ).notifier,
                                   )
-                                  .refreshComparison(request);
+                                  .refreshComparison(items);
                             }
                           },
                           style: ButtonStyle(
@@ -162,7 +160,10 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                             ),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 2,
+                            ),
                             child: Text(
                               "다시 생성하기",
                               style: textTheme.bodyMedium!.copyWith(
@@ -180,7 +181,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                               await ref
                                   .read(
                                     aiComparisonScreenViewmodelProvider(
-                                      request,
+                                      items,
                                     ).notifier,
                                   )
                                   .saveComparisonText(
@@ -203,7 +204,9 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                 MaterialPageRoute(
                                   builder: (ctx) =>
                                       (widget.isAiCompTutorial == true)
-                                      ? const MyPageDetailScreen(title: "앱 튜토리얼 다시보기")
+                                      ? const MyPageDetailScreen(
+                                          title: "앱 튜토리얼 다시보기",
+                                        )
                                       : const MainScreen(index: 2),
                                 ),
                                 (route) => false,
@@ -223,7 +226,10 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                               ),
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 8,
+                            ),
                             child: Text(
                               "이 분석 저장하기",
                               style: textTheme.titleMedium!.copyWith(
@@ -250,10 +256,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                 // 오류 발생 시 재시도
                 // Try again to fetch response when error occurred
                 ref
-                    .read(
-                      aiComparisonScreenViewmodelProvider(widget.tag).notifier,
-                    )
-                    .refreshComparison(request);
+                    .read(aiComparisonScreenViewmodelProvider(items).notifier)
+                    .refreshComparison(items);
               },
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(colorScheme.secondary),
