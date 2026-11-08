@@ -191,7 +191,7 @@ class _FilterTextState extends ConsumerState<SortOrFilterText> {
                                         color: colorScheme.onTertiaryFixed,
                                       )
                                     : Icon(
-                                        Icons.circle_outlined,
+                                        Icons.radio_button_unchecked,
                                         size: 24.0,
                                         color: colorScheme.outline,
                                       ),

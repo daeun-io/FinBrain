@@ -148,7 +148,7 @@ final class ArchiveSummaryViewmodelProvider
 }
 
 String _$archiveSummaryViewmodelHash() =>
-    r'63b2b8ef1060a0aa766cbcb3873d5df99d83dd36';
+    r'adedd6f3ba05f0bf798b270a0aef460eeece80f8';
 
 abstract class _$ArchiveSummaryViewmodel
     extends $Notifier<AsyncValue<List<AiRecord>>> {
@@ -315,7 +315,7 @@ final class ArchiveComparisonViewmodelProvider
 }
 
 String _$archiveComparisonViewmodelHash() =>
-    r'eb1a0348f780eec16607029488b1626bdc8028db';
+    r'b9754d92928dadae819b143fa1cec29ccc912d90';
 
 abstract class _$ArchiveComparisonViewmodel
     extends $Notifier<AsyncValue<List<AiRecord>>> {

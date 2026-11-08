@@ -3,6 +3,7 @@ import 'package:finbrain/ui/screen/my_page_screen.dart';
 import 'package:finbrain/ui/screen/savings_screen.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
+import 'package:finbrain/ui/viewmodel/main_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(mainScreenViewmodelProvider.notifier).setUserOptions();
+    });
+
     _currentIndex = widget.index ?? 0;
 
     // 방문한 탭(캐시 유지)

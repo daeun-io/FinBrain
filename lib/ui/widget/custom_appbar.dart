@@ -15,8 +15,8 @@ class CustomAppbar extends ConsumerWidget {
     this.page,
   });
 
-  final String screen;      // 호출하는 화면 이름(screen name)
-  final String title;       // 앱 바 타이틀(app bar title)
+  final String screen; // 호출하는 화면 이름(screen name)
+  final String title; // 앱 바 타이틀(app bar title)
 
   final int? page;
   final FinancialProduct? product;
@@ -31,7 +31,8 @@ class CustomAppbar extends ConsumerWidget {
     return AppBar(
       // 스크린에 따라 배경색 변경
       // Change background color based on screen
-      backgroundColor: ["archive", "calculator", "product_selection"].contains(screen)
+      backgroundColor:
+          ["archive", "calculator", "product_selection"].contains(screen)
           ? colorScheme.primary
           : colorScheme.tertiary,
       scrolledUnderElevation: 0.0,
@@ -88,11 +89,12 @@ class CustomAppbar extends ConsumerWidget {
   IconButton BackButton(BuildContext context, Color color) {
     return IconButton(
       onPressed: () {
-        if(Navigator.canPop(context)){
+        if (Navigator.canPop(context)) {
           Navigator.of(context).pop();
         } else {
           Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (ctx) => const MainScreen())
+            context,
+            MaterialPageRoute(builder: (ctx) => const MainScreen()),
           );
         }
       },

@@ -175,6 +175,21 @@ class MyPageScreen extends ConsumerWidget {
                       Icons.book_outlined,
                       "앱 튜토리얼 다시보기",
                     ),
+                    const SizedBox(height: 16),
+                    MyPageListTile(
+                      context,
+                      ref,
+                      () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (ctx) =>
+                                MyPageDetailScreen(title: "AI 어조 설정"),
+                          ),
+                        );
+                      },
+                      Icons.chat_bubble_outline,
+                      "AI 어조 설정",
+                    ),
                   ],
                 ),
                 Row(
