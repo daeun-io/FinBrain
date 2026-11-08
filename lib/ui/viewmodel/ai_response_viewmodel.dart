@@ -25,6 +25,7 @@ final messageRepository = AiConversationRepository();
 final summaryRepository = AiSummaryRepository();
 // AI 비교 분석 관련 레포지토리(AI comparison text repository)
 final compRepository = AiCompRepository();
+final userDataSource = UserDataSource();
 
 // AI 응답 뷰모델
 @riverpod

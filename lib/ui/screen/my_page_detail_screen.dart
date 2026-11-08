@@ -40,12 +40,13 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
         _ => [],
       };
 
+      final tone = await ref.read(myPageViewmodelProvider.notifier).getAiTone();
+
       if (mounted) {
         setState(() {
           _items = fetched;
-          _selectedToneIndex = _items.contains("설명적으로")
-              ? _items.indexOf("설명적으로")
-              : 3;
+          _selectedToneIndex = _items.contains(tone) ? _items.indexOf(tone) : 3;
+          _controller.text = (tone == null || _selectedToneIndex != 3) ? "" : tone;
           _isLoading = false;
         });
       }
@@ -71,9 +72,13 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
       body: PopScope(
         onPopInvoked: (didPop) {
           if (widget.title == "AI 어조 설정") {
-            print(
-              "테스트: ${(_selectedToneIndex == 3) ? _controller.text : _items[_selectedToneIndex]}",
-            );
+            ref
+                .read(myPageViewmodelProvider.notifier)
+                .setAiTone(
+                  (_selectedToneIndex == 3)
+                      ? _controller.text
+                      : _items[_selectedToneIndex],
+                );
           }
         },
         child: Padding(

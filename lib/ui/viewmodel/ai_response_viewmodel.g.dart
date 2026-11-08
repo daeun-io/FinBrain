@@ -51,7 +51,7 @@ final class AiResponseViewmodelProvider
 }
 
 String _$aiResponseViewmodelHash() =>
-    r'0e861bd9813d4fd84a2abdf4e677aa2e438925d7';
+    r'5a37eff9dd453f55444f620859cd916c6db4d83d';
 
 final class AiResponseViewmodelFamily extends $Family
     with

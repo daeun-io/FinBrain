@@ -46,7 +46,7 @@ class PolicyScreen extends ConsumerWidget {
                         await ref
                             .read(onboardingScreenViewmodelProvider(user).notifier)
                             .saveEmailAndDisplayName(user);
-                        Navigator.of(context).push(
+                        Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (ctx) => const MainScreen()),
                         );
                       },
