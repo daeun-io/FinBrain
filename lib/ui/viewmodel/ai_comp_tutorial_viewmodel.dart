@@ -12,6 +12,10 @@ class AiCompTutorialViewmodel extends _$AiCompTutorialViewmodel {
 
   @override
   Future<bool> build() async {
+    final user = GoogleAuthService.getCurrentUser();
+    if(user != null){
+      await userDataSource.setUserOptions(user);
+    }
     return readAiCompTutorial();
   }
 
