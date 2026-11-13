@@ -15,7 +15,8 @@ class SortOrFilterTextViewModel extends _$SortOrFilterTextViewModel {
       ProductCategory.installment => ["최고 금리(높은 순)", "기본 금리(높은 순)"],
       ProductCategory.mortgage ||
       ProductCategory.rent ||
-      ProductCategory.credit => ["최저 금리(낮은 순)", "최고 금리(낮은 순)", "평균 금리(낮은 순)"],
+      ProductCategory.credit ||
+      ProductCategory.business => ["최저 금리(낮은 순)", "최고 금리(낮은 순)", "평균 금리(낮은 순)"],
       ProductCategory.isaJoin => [
         "회사 수(내림차순)",
         "회사 수(오름차순)",
