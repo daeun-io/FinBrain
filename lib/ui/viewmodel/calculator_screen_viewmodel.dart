@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
+import 'package:finbrain/data/model/entities/business_loan_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
@@ -108,6 +109,23 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
             .whereType<double>()
             .average;
         return [min, avg, max];
+      case ProductCategory.business:
+        final option = options[0] as BusinessLoanOption;
+        final rates = [
+          option.loanGradeOver900,
+          option.loanGrade801900,
+          option.loanGrade701800,
+          option.loanGrade601700,
+          option.loanGrade501600,
+          option.loanGrade401500,
+          option.loanGrade301400,
+          option.loanGradeUnder300,
+        ].whereType<double>();
+
+        final min = option.minRate ?? rates.min;
+        final max = option.maxRate ?? rates.max;
+        final avg = option.loanGradeAvg ?? rates.average;
+        return [min, avg, max];
       default:
         return [];
     }
@@ -162,14 +180,14 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
           "세후 이자(15.4%)": interestAfterTax.toInt(),
           "만기수령액": (totalPrincipal + interestAfterTax).toInt(),
         };
-      default:        // 대출(loan)
+      default: // 대출(loan)
         final num = List.generate(term, (index) => index + 1);
-        List<int> monthlyPaymentList = [];        // 월 납입금(원금 + 이자)
-        List<int> repaidPrincipalList = [];       // 상환한 원금
-        List<int> interestList = [];              // 매달 이자
-        List<int> remainingBalanceList = [];      // 대출 잔액
+        List<int> monthlyPaymentList = []; // 월 납입금(원금 + 이자)
+        List<int> repaidPrincipalList = []; // 상환한 원금
+        List<int> interestList = []; // 매달 이자
+        List<int> remainingBalanceList = []; // 대출 잔액
         switch (type) {
-          case "원리금균등상환방식":                   // full amortization
+          case "원리금균등상환방식": // full amortization
             for (final currentMonth in num) {
               double monthlyPayment =
                   principal *
@@ -190,7 +208,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
               remainingBalanceList.add(remainingBalance.toInt());
             }
             break;
-          case "원금균등상환방식":                   // even repayment of principal
+          case "원금균등상환방식": // even repayment of principal
             for (final currentMonth in num) {
               double repaidPrincipal = principal / term;
               double previousBalance =
@@ -204,7 +222,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
               remainingBalanceList.add(remainingBalance.toInt());
             }
             break;
-          default:                   // 만기일시상환방식: bullet payment
+          default: // 만기일시상환방식: bullet payment
             final interest = principal * monthlyRate;
             interestList = List.generate(term, (index) => interest.toInt());
             repaidPrincipalList = List.generate(term - 1, (index) => 0);

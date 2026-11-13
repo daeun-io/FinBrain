@@ -582,7 +582,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     }
     return (category == ProductCategory.mortgage ||
             category == ProductCategory.rent ||
-            category == ProductCategory.credit)
+            category == ProductCategory.credit || 
+            category == ProductCategory.business)
         // 대출 계산 결과(loan calculation result)
         ? Column(
             children: [

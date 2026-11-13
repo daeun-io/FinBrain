@@ -341,6 +341,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 ProductCategory.installment =>
                   (product as DepositAndInstallmentSavings).options,
                 ProductCategory.credit => (product as CreditLoan).options,
+                ProductCategory.business => (product as BusinessLoan).options,
                 _ => (product as MortgageAndRentLoan).options,
               };
               return CalculatorScreen(
