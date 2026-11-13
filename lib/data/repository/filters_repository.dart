@@ -67,7 +67,8 @@ class FiltersRepository {
         ProductCategory.installment => ["은행", "저축은행"],
         ProductCategory.mortgage ||
         ProductCategory.rent ||
-        ProductCategory.credit => ["은행", "저축은행", "여신전문", "보험"],
+        ProductCategory.credit || 
+        ProductCategory.business => ["은행", "저축은행", "여신전문", "보험"],
         _ => [],
       };
 

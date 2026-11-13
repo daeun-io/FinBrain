@@ -40,9 +40,14 @@ class ProductRemoteDataSource {
         '/finlifeapi/rentHouseLoanProductsSearch.xml',
         options.toQueryParams(),
       ),
-      _ => Uri.http(
+      ProductCategory.credit => Uri.http(
         finlife,
         '/finlifeapi/creditLoanProductsSearch.xml',
+        options.toQueryParams(),
+      ),
+      _ => Uri.http(
+        finlife,
+        '/finlifeapi//busiLoanProductsSearch.xml',
         options.toQueryParams(),
       ),
     };

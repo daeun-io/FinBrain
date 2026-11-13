@@ -1,4 +1,6 @@
 import 'package:collection/collection.dart';
+import 'package:finbrain/data/model/entities/business_loan.dart';
+import 'package:finbrain/data/model/entities/business_loan_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
@@ -256,7 +258,7 @@ class ProductRepository {
               .toList()
               .cast<FinancialProduct>(),
         // 개인신용대출(credit loan)
-        _ =>
+        ProductCategory.credit =>
           rawProducts
               .map<CreditLoan?>((element) {
                 if (element == null ||
@@ -357,6 +359,101 @@ class ProductRepository {
                           averageGrade: double.tryParse(
                             e["crdt_grad_avg"].toString(),
                           ),
+                        ),
+                      )
+                      .toList(),
+                );
+              })
+              .nonNulls
+              .toList()
+              .cast<FinancialProduct>(),
+        // 개인사업자대출(Business Loan)
+        _ =>
+          rawProducts
+              .map<BusinessLoan?>((element) {
+                if (element == null ||
+                    element["baseinfo"] == null ||
+                    element["baseinfo"]["kor_co_nm"] == null ||
+                    element["baseinfo"]["fin_prdt_nm"] == null ||
+                    element["baseinfo"]["fin_prdt_cd"] == null ||
+                    element["options"] == null ||
+                    element["options"]["option"] == null) {
+                  return null;
+                }
+                final productOptions = (element["options"]["option"] is List)
+                    ? element["options"]["option"]
+                    : [element["options"]["option"]];
+                return BusinessLoan(
+                  category: ProductCategory.business,
+                  submittedMonth: element["baseinfo"]["dcls_month"].toString(),
+                  companyCode: element["baseinfo"]["fin_co_no"].toString(),
+                  companyName: element["baseinfo"]["kor_co_nm"]
+                      .toString()
+                      .replaceAll("주식회사", "")
+                      .replaceAll("㈜", "")
+                      .trim(),
+                  productCode: element["baseinfo"]["fin_prdt_cd"].toString(),
+                  productName: element["baseinfo"]["fin_prdt_nm"].toString(),
+                  startDay: element["baseinfo"]["dcls_strt_day"].toString(),
+                  endDay: element["baseinfo"]["dcls_end_day"].toString(),
+                  submittedDay: element["baseinfo"]["fin_co_subm_day"]
+                      .toString(),
+                  joinWay: (element["baseinfo"]["join_way"].toString()).split(
+                    ",",
+                  ),
+                  isLiked: (_cachedLikedPrdtCodes ?? []).contains(
+                    element["baseinfo"]["fin_prdt_cd"],
+                  ),
+                  productType: element["baseinfo"]["crdt_prdt_type"].toString(),
+                  productTypeName: element["baseinfo"]["crdt_prdt_type_nm"]
+                      .toString(),
+                  cbName: element["baseinfo"]["cb_name"].toString(),
+                  loanType: element["baseinfo"]["loan_type"].toString(),
+                  repayType: element["baseinfo"]["rpay_type"].toString(),
+                  rateType: element["baseinfo"]["lend_rate_type"].toString(),
+                  loanLimit: element["baseinfo"]["loan_limit"].toString(),
+                  loanLimitDetail: element["baseinfo"]["loan_limit_detl"].toString(),
+                  joinDeny: element["baseinfo"]["join_deny"].toString(),
+                  joinDenyDetail: element["baseinfo"]["join_deny_detl"].toString(),
+                  specialRate: element["baseinfo"]["spcl_rate"].toString(),
+                  loanTerm: element["baseinfo"]["loan_term"].toString(),
+                  extraExpense: element["baseinfo"]["loan_inci_expn"].toString(),
+                  earlyRepayFee: element["baseinfo"]["erly_rpay_fee"].toString(),
+                  delayRate: element["baseinfo"]["dly_rate"].toString(),
+                  useWay: element["baseinfo"]["use_way"],
+                  options: productOptions
+                      .map<BusinessLoanOption>(
+                        (e) => BusinessLoanOption(
+                          minRate: double.tryParse(e["lend_rate_min"].toString()),
+                          maxRate: double.tryParse(e["lend_rate_max"].toString()),
+                          avgRate: double.tryParse(e["lend_rate_avg"].toString()),
+                          loanGradeOver900: double.tryParse(e["val1_grad_1"].toString()),
+                          loanGrade801900: double.tryParse(e["val1_grad_2"].toString()),
+                          loanGrade701800: double.tryParse(e["val1_grad_3"].toString()),
+                          loanGrade601700: double.tryParse(e["val1_grad_4"].toString()),
+                          loanGrade501600: double.tryParse(e["val1_grad_5"].toString()),
+                          loanGrade401500: double.tryParse(e["val1_grad_6"].toString()),
+                          loanGrade301400: double.tryParse(e["val1_grad_7"].toString()),
+                          loanGradeUnder300: double.tryParse(e["val1_grad_8"].toString()),
+                          loanGradeAvg: double.tryParse(e["val1_grad_avg"].toString()),
+                          baseGradeOver900: double.tryParse(e["val2_grad_1"].toString()),
+                          baseGrade801900: double.tryParse(e["val2_grad_2"].toString()),
+                          baseGrade701800: double.tryParse(e["val2_grad_3"].toString()),
+                          baseGrade601700: double.tryParse(e["val2_grad_4"].toString()),
+                          baseGrade501600: double.tryParse(e["val2_grad_5"].toString()),
+                          baseGrade401500: double.tryParse(e["val2_grad_6"].toString()),
+                          baseGrade301400: double.tryParse(e["val2_grad_7"].toString()),
+                          baseGradeUnder300: double.tryParse(e["val2_grad_8"].toString()),
+                          baseGradeAvg: double.tryParse(e["val2_grad_avg"].toString()),
+                          marginGradeOver900: double.tryParse(e["val3_grad_1"].toString()),
+                          marginGrade801900: double.tryParse(e["val3_grad_2"].toString()),
+                          marginGrade701800: double.tryParse(e["val3_grad_3"].toString()),
+                          marginGrade601700: double.tryParse(e["val3_grad_4"].toString()),
+                          marginGrade501600: double.tryParse(e["val3_grad_5"].toString()),
+                          marginGrade401500: double.tryParse(e["val3_grad_6"].toString()),
+                          marginGrade301400: double.tryParse(e["val3_grad_7"].toString()),
+                          marginGradeUnder300: double.tryParse(e["val3_grad_8"].toString()),
+                          marginGradeAvg: double.tryParse(e["val3_grad_avg"].toString()),
                         ),
                       )
                       .toList(),

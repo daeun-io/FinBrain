@@ -15,8 +15,8 @@ class SortOrFilterTextViewModel extends _$SortOrFilterTextViewModel {
       ProductCategory.installment => ["최고 금리(높은 순)", "기본 금리(높은 순)"],
       ProductCategory.mortgage ||
       ProductCategory.rent ||
-      ProductCategory.credit ||
-      ProductCategory.business => ["최저 금리(낮은 순)", "최고 금리(낮은 순)", "평균 금리(낮은 순)"],
+      ProductCategory.credit => ["최저 금리(낮은 순)", "최고 금리(낮은 순)", "평균 금리(낮은 순)"],
+      ProductCategory.business => ["최저 적용 이자율(낮은 순)", "최고 적용 이자율(낮은 순)", "전월취급평균이자율(낮은 순)"],
       ProductCategory.isaJoin => [
         "회사 수(내림차순)",
         "회사 수(오름차순)",
@@ -33,6 +33,7 @@ class SortOrFilterTextViewModel extends _$SortOrFilterTextViewModel {
         "주택담보대출",
         "전세자금대출",
         "개인신용대출",
+        "개인사업자대출"
       ],
     };
 

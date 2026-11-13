@@ -172,11 +172,11 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                                   : product.avgRate!.toStringAsFixed(2),
                           },
                           ProductCategory.business => switch (sortCriteria) {
-                            "최저 금리(낮은 순)" =>
+                            "최저 적용 이자율(낮은 순)" =>
                               ((product as BusinessLoan).options[0].minRate == null)
                                   ? "미제공"
                                   : product.options[0].minRate!.toStringAsFixed(2),
-                            "최고 금리(낮은 순)" =>
+                            "최고 적용 이자율(낮은 순)" =>
                               ((product as BusinessLoan).options[0].maxRate == null)
                                   ? "미제공"
                                   : product.options[0].maxRate!.toStringAsFixed(2),

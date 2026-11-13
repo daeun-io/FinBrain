@@ -21,6 +21,7 @@ class BusinessLoan extends FinancialProduct {
   // extraExpense(loan_inci_expn): 대출 부대비용
   // earlyReplayFee(erly_rpay_fee): 중도상환 수수료
   // delayRate(dly_rate): 연체 이자율
+  // useWay(use_way): 자금용도
 
   final String? productType;
   final String? productTypeName;
@@ -37,6 +38,7 @@ class BusinessLoan extends FinancialProduct {
   final String? extraExpense;
   final String? earlyRepayFee;
   final String? delayRate;
+  final String? useWay;
   final List<BusinessLoanOption> options;
 
   BusinessLoan({
@@ -68,6 +70,7 @@ class BusinessLoan extends FinancialProduct {
     required this.extraExpense,
     required this.earlyRepayFee,
     required this.delayRate,
+    required this.useWay,
     required this.options,
   }) : super(
          CommonInfo(
@@ -114,6 +117,7 @@ class BusinessLoan extends FinancialProduct {
       extraExpense: extraExpense,
       earlyRepayFee: earlyRepayFee,
       delayRate: delayRate,
+      useWay: useWay,
       options: options,
     );
   }
@@ -147,6 +151,7 @@ class BusinessLoan extends FinancialProduct {
       "extraExpense": extraExpense.toString(),
       "earlyRepayFee": earlyRepayFee.toString(),
       "delayRate": delayRate.toString(),
+      "useWay": useWay.toString(),
       "options": options
     };
   }

@@ -605,6 +605,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ),
         Divider(thickness: 1, color: colorScheme.onSecondary),
         TextFrame(
+          "사용용도: ${(product.useWay == null || product.useWay == "null") ? "미제공" : product.useWay}\n",
+          defaultTxtStyle,
+        ),
+        TextFrame(
           "대출한도: ${(product.loanLimit == null || product.loanLimit == "null") ? "미제공" : product.loanLimit}",
           defaultTxtStyle,
         ),

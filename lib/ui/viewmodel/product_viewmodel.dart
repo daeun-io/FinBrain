@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/data/model/entities/business_loan.dart';
-import 'package:finbrain/data/model/entities/business_loan_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
@@ -41,205 +40,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
       final baseYear =
           ref.read(selectedBaseYearViewmodelProvider)[ctg] ??
           DateTime.now().year;
-      if (ctg == ProductCategory.business) {
-        return (
-          3,
-          [
-            BusinessLoan(
-              category: ProductCategory.business,
-              submittedMonth: "202610",
-              companyCode: "0010001",
-              companyName: "우리은행",
-              productCode: "1001",
-              productName: "우리CUBE론-X(일반,산업단지)",
-              startDay: "20261006",
-              endDay: null,
-              submittedDay: "202610061119",
-              joinWay: ["영업점"],
-              isLiked: false,
-              productType: "1",
-              productTypeName: "일반대출상품",
-              cbName: "NICE, KCB",
-              loanType: "담보대출, 보증대출, 신용대출",
-              repayType: "만기일시상환, 원금분할상환, 임의상환",
-              rateType: "고정금리, 변동금리",
-              loanLimit: "기타",
-              loanLimitDetail: "제한없음",
-              joinDeny: "제한없음",
-              joinDenyDetail: "우리은행 내부 신용등급 BB+(SOHO 5)등급 이상 기업(개인사업자)",
-              specialRate: null,
-              loanTerm: "운전자금 최대 5년 시설자금 최대 20년",
-              extraExpense:
-                  "1) 인지세 50% 2) 국민주택채권매입비용 3) 보증기관 보증료 4) 한도미사용수수료 또는 한도약정수수료",
-              earlyRepayFee:
-                  "중도상환금액 x 수수료율* x 대출잔여일수/대출기간 *변동금리 대출: 부동산 및 동산 담보 0.36%, 보증서 및 기타담보 0.08%, 신용 0.04% / 고정금리 대출 : 부동산 및 동산 담보 0.62%, 보증서 및 기타담보 0.32%, 신용 0.34% ※ 대출취급일로부터 3년 이상 경과, 대출 만기일이 1개월 미만 : 면제",
-              delayRate: "적용금리+연 3% (최고 연 15%)",
-              options: [
-                BusinessLoanOption(
-                  minRate: 4.44,
-                  maxRate: 5.96,
-                  avgRate: 4.14,
-                  loanGradeOver900: 4.6,
-                  loanGrade801900: 4.79,
-                  loanGrade701800: 5.25,
-                  loanGrade601700: 0,
-                  loanGrade501600: 0,
-                  loanGrade401500: 0,
-                  loanGrade301400: 0,
-                  loanGradeUnder300: 0,
-                  loanGradeAvg: 4.73,
-                  baseGradeOver900: 3.19,
-                  baseGrade801900: 3.18,
-                  baseGrade701800: 3.16,
-                  baseGrade601700: 0,
-                  baseGrade501600: 0,
-                  baseGrade401500: 0,
-                  baseGrade301400: 0,
-                  baseGradeUnder300: 0,
-                  baseGradeAvg: 3.18,
-                  marginGradeOver900: 1.41,
-                  marginGrade801900: 1.61,
-                  marginGrade701800: 2.09,
-                  marginGrade601700: 0,
-                  marginGrade501600: 0,
-                  marginGrade401500: 0,
-                  marginGrade301400: 0,
-                  marginGradeUnder300: 0,
-                  marginGradeAvg: 1.55,
-                ),
-              ],
-            ),
-            BusinessLoan(
-              category: ProductCategory.business,
-              submittedMonth: "202610",
-              companyCode: "0010001",
-              companyName: "우리은행",
-              productCode: "1001",
-              productName: "우리CUBE론-X(일반,산업단지)",
-              startDay: "20261006",
-              endDay: null,
-              submittedDay: "202610061119",
-              joinWay: ["영업점"],
-              isLiked: false,
-              productType: "1",
-              productTypeName: "일반대출상품",
-              cbName: "NICE, KCB",
-              loanType: "담보대출, 보증대출, 신용대출",
-              repayType: "만기일시상환, 원금분할상환, 임의상환",
-              rateType: "고정금리, 변동금리",
-              loanLimit: "기타",
-              loanLimitDetail: "제한없음",
-              joinDeny: "제한없음",
-              joinDenyDetail: "우리은행 내부 신용등급 BB+(SOHO 5)등급 이상 기업(개인사업자)",
-              specialRate: null,
-              loanTerm: "운전자금 최대 5년 시설자금 최대 20년",
-              extraExpense:
-                  "1) 인지세 50% 2) 국민주택채권매입비용 3) 보증기관 보증료 4) 한도미사용수수료 또는 한도약정수수료",
-              earlyRepayFee:
-                  "중도상환금액 x 수수료율* x 대출잔여일수/대출기간 *변동금리 대출: 부동산 및 동산 담보 0.36%, 보증서 및 기타담보 0.08%, 신용 0.04% / 고정금리 대출 : 부동산 및 동산 담보 0.62%, 보증서 및 기타담보 0.32%, 신용 0.34% ※ 대출취급일로부터 3년 이상 경과, 대출 만기일이 1개월 미만 : 면제",
-              delayRate: "적용금리+연 3% (최고 연 15%)",
-              options: [
-                BusinessLoanOption(
-                  minRate: 4.44,
-                  maxRate: 5.96,
-                  avgRate: 4.14,
-                  loanGradeOver900: 4.6,
-                  loanGrade801900: 4.79,
-                  loanGrade701800: 5.25,
-                  loanGrade601700: 0,
-                  loanGrade501600: 0,
-                  loanGrade401500: 0,
-                  loanGrade301400: 0,
-                  loanGradeUnder300: 0,
-                  loanGradeAvg: 4.73,
-                  baseGradeOver900: 3.19,
-                  baseGrade801900: 3.18,
-                  baseGrade701800: 3.16,
-                  baseGrade601700: 0,
-                  baseGrade501600: 0,
-                  baseGrade401500: 0,
-                  baseGrade301400: 0,
-                  baseGradeUnder300: 0,
-                  baseGradeAvg: 3.18,
-                  marginGradeOver900: 1.41,
-                  marginGrade801900: 1.61,
-                  marginGrade701800: 2.09,
-                  marginGrade601700: 0,
-                  marginGrade501600: 0,
-                  marginGrade401500: 0,
-                  marginGrade301400: 0,
-                  marginGradeUnder300: 0,
-                  marginGradeAvg: 1.55,
-                ),
-              ],
-            ),
-            BusinessLoan(
-              category: ProductCategory.business,
-              submittedMonth: "202610",
-              companyCode: "0010001",
-              companyName: "우리은행",
-              productCode: "1001",
-              productName: "우리CUBE론-X(일반,산업단지)",
-              startDay: "20261006",
-              endDay: null,
-              submittedDay: "202610061119",
-              joinWay: ["영업점"],
-              isLiked: false,
-              productType: "1",
-              productTypeName: "일반대출상품",
-              cbName: "NICE, KCB",
-              loanType: "담보대출, 보증대출, 신용대출",
-              repayType: "만기일시상환, 원금분할상환, 임의상환",
-              rateType: "고정금리, 변동금리",
-              loanLimit: "기타",
-              loanLimitDetail: "제한없음",
-              joinDeny: "제한없음",
-              joinDenyDetail: "우리은행 내부 신용등급 BB+(SOHO 5)등급 이상 기업(개인사업자)",
-              specialRate: null,
-              loanTerm: "운전자금 최대 5년 시설자금 최대 20년",
-              extraExpense:
-                  "1) 인지세 50% 2) 국민주택채권매입비용 3) 보증기관 보증료 4) 한도미사용수수료 또는 한도약정수수료",
-              earlyRepayFee:
-                  "중도상환금액 x 수수료율* x 대출잔여일수/대출기간 *변동금리 대출: 부동산 및 동산 담보 0.36%, 보증서 및 기타담보 0.08%, 신용 0.04% / 고정금리 대출 : 부동산 및 동산 담보 0.62%, 보증서 및 기타담보 0.32%, 신용 0.34% ※ 대출취급일로부터 3년 이상 경과, 대출 만기일이 1개월 미만 : 면제",
-              delayRate: "적용금리+연 3% (최고 연 15%)",
-              options: [
-                BusinessLoanOption(
-                  minRate: 4.44,
-                  maxRate: 5.96,
-                  avgRate: 4.14,
-                  loanGradeOver900: 4.6,
-                  loanGrade801900: 4.79,
-                  loanGrade701800: 5.25,
-                  loanGrade601700: 0,
-                  loanGrade501600: 0,
-                  loanGrade401500: 0,
-                  loanGrade301400: 0,
-                  loanGradeUnder300: 0,
-                  loanGradeAvg: 4.73,
-                  baseGradeOver900: 3.19,
-                  baseGrade801900: 3.18,
-                  baseGrade701800: 3.16,
-                  baseGrade601700: 0,
-                  baseGrade501600: 0,
-                  baseGrade401500: 0,
-                  baseGrade301400: 0,
-                  baseGradeUnder300: 0,
-                  baseGradeAvg: 3.18,
-                  marginGradeOver900: 1.41,
-                  marginGrade801900: 1.61,
-                  marginGrade701800: 2.09,
-                  marginGrade601700: 0,
-                  marginGrade501600: 0,
-                  marginGrade401500: 0,
-                  marginGrade301400: 0,
-                  marginGradeUnder300: 0,
-                  marginGradeAvg: 1.55,
-                ),
-              ],
-            ),
-          ],
-        );
-      }
+
       return (ctg == ProductCategory.isaMp)
           ? await repository.fetchIsaMpProductsAndCount(
               user.uid,
@@ -310,10 +111,6 @@ class ProductViewmodel extends _$ProductViewmodel {
     final result = await ref.read(
       fetchProductViewmodelProvider(ctg, cPage).future,
     );
-    
-    if(ctg == ProductCategory.business){
-      return result;
-    }
 
     if (filters.value != null) {
       // 선택된 필터 추출
@@ -491,6 +288,37 @@ class ProductViewmodel extends _$ProductViewmodel {
         final sorted = criteriaRate.map((e) => e.product).toList();
         return sorted;
 
+      case ProductCategory.business:
+        final index = switch (criteria) {
+          "최저 적용 이자율(낮은 순)" => 0, // 기본값(default value)
+          "최고 적용 이자율(낮은 순)" => 2,
+          _ => 1,
+        };
+
+        final criteriaRate = products.map((e) {
+          final targetRate = switch (index) {
+            0 => (e as BusinessLoan).options[0].minRate,
+            1 => (e as BusinessLoan).options[0].avgRate,
+            _ => (e as BusinessLoan).options[0].maxRate,
+          };
+          return (product: e, rate: targetRate);
+        }).toList();
+
+        criteriaRate.sort((a, b) {
+          if (a.rate == null && b.rate == null) return 0;
+          if (a.rate == null) return 1;
+          if (b.rate == null) return -1;
+
+          final comparison = a.rate!.compareTo(b.rate!);
+          if (comparison != 0) return comparison;
+
+          return a.product.commonInfo.productName!.compareTo(
+            b.product.commonInfo.productName!,
+          );
+        });
+
+        final sorted = criteriaRate.map((e) => e.product).toList();
+        return sorted;
       case ProductCategory.isaMp:
         final isAvg = (criteria == "평균 수익률(높은 순)");
 
