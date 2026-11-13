@@ -87,6 +87,9 @@ class LikedProductViewmodel extends _$LikedProductViewmodel {
       if (criteriaList.contains("개인신용대출")) {
         categories.add(ProductCategory.credit);
       }
+      if(criteriaList.contains("개인사업자대출")) {
+        categories.add(ProductCategory.business);
+      }
     }
 
     // 데이터 불러와 필터 적용하기
