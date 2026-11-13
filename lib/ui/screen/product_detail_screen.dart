@@ -1,3 +1,4 @@
+import 'package:finbrain/data/model/entities/business_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
@@ -470,6 +471,23 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           "mp유형: ${(product.mpType == null || product.mpType == "null") ? "미제공" : replace(product.mpType!)}",
           defaultTxtStyle,
         ),
+      ] else if (category == ProductCategory.business) ...[
+        TextFrame(
+          "CB 회사명: ${((product as BusinessLoan).cbName == null || product.cbName == "null") ? "미제공" : product.cbName}",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "상품 구분명: ${(product.productTypeName == null || product.productTypeName == "null") ? "미제공" : product.productTypeName}",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "대출 종류: ${(product.loanType == null || product.loanType == "null") ? "미제공" : product.loanType}",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "상환 방식: ${(product.repayType == null || product.repayType == "null") ? "미제공" : product.repayType}",
+          defaultTxtStyle,
+        ),
       ] else
         ...[],
       TextFrame(
@@ -478,7 +496,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       ),
       if (category == ProductCategory.mortgage ||
           category == ProductCategory.rent ||
-          category == ProductCategory.credit) ...[
+          category == ProductCategory.credit ||
+          category == ProductCategory.business) ...[
         const SizedBox(height: 12.0),
         TextFrame(
           "*본인의 최대 대출 금액 및 한도의 경우 해당 회사에 문의하세요",
@@ -488,7 +507,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       const SizedBox(height: 24.0),
       Text(
         switch (category) {
-          ProductCategory.credit => "대출 금리 안내",
+          ProductCategory.credit || ProductCategory.business => "대출 금리 안내",
           ProductCategory.isaMp => "수익률",
           _ => "상품 세부사항",
         },
@@ -569,7 +588,54 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           colorScheme,
           textTheme,
         )
-      else
+      else if (category == ProductCategory.business) ...[
+        DetailTableFrame(
+          category,
+          (product as BusinessLoan).options,
+          colorScheme,
+          textTheme,
+        ),
+        const SizedBox(height: 28),
+        Text(
+          "기타 세부사항",
+          style: textTheme.headlineSmall!.copyWith(
+            color: colorScheme.onPrimary,
+          ),
+        ),
+        Divider(thickness: 1, color: colorScheme.onSecondary),
+        TextFrame(
+          "대출한도: ${(product.loanLimit == null || product.loanLimit == "null") ? "미제공" : product.loanLimit}",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "대출한도(세부사항): ${(product.loanLimitDetail == null || product.loanLimitDetail == "null") ? "미제공" : product.loanLimitDetail}\n",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "가입조건: ${(product.joinDeny == null || product.joinDeny == "null") ? "미제공" : product.joinDeny}",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "가입조건(세부사항): ${(product.joinDenyDetail == null || product.joinDenyDetail == "null") ? "미제공" : product.joinDenyDetail}\n",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "우대금리: ${(product.specialRate == null || product.specialRate == "null") ? "미제공" : product.specialRate}\n",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "중대상환수수료\n: ${(product.earlyRepayFee == null || product.earlyRepayFee == "null") ? "미제공" : product.earlyRepayFee}\n",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "대출부대비용\n: ${(product.extraExpense == null || product.extraExpense == "null") ? "미제공" : product.extraExpense}\n",
+          defaultTxtStyle,
+        ),
+        TextFrame(
+          "연체이자율\n: ${(product.delayRate == null || product.delayRate == "null") ? "미제공" : product.delayRate}\n",
+          defaultTxtStyle,
+        ),
+      ] else
         DetailTableFrame(
           category,
           (product as IsaMpBenefitRate).options,
@@ -610,60 +676,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     ),
                   ),
                   ...[
-                    (
-                      "900점 초과",
-                      (option.gradeOver900 == null)
-                          ? "미제공"
-                          : option.gradeOver900.toString(),
-                    ),
-                    (
-                      "801~900점",
-                      (option.grade801900 == null)
-                          ? "미제공"
-                          : option.grade801900.toString(),
-                    ),
-                    (
-                      "701~800점",
-                      (option.grade701800 == null)
-                          ? "미제공"
-                          : option.grade701800.toString(),
-                    ),
-                    (
-                      "601~700점",
-                      (option.grade601700 == null)
-                          ? "미제공"
-                          : option.grade601700.toString(),
-                    ),
-                    (
-                      "501~600점",
-                      (option.grade501600 == null)
-                          ? "미제공"
-                          : option.grade501600.toString(),
-                    ),
-                    (
-                      "401~500점",
-                      (option.grade401500 == null)
-                          ? "미제공"
-                          : option.grade401500.toString(),
-                    ),
-                    (
-                      "301~400점",
-                      (option.grade301400 == null)
-                          ? "미제공"
-                          : option.grade301400.toString(),
-                    ),
-                    (
-                      "300점 이하",
-                      (option.gradeUnder300 == null)
-                          ? "미제공"
-                          : option.gradeUnder300.toString(),
-                    ),
-                    (
-                      "평균 금리",
-                      (option.averageGrade == null)
-                          ? "미제공"
-                          : option.averageGrade.toString(),
-                    ),
+                    ("900점 초과", option.gradeOver900 ?? "미제공"),
+                    ("801~900점", option.grade801900 ?? "미제공"),
+                    ("701~800점", option.grade701800 ?? "미제공"),
+                    ("601~700점", option.grade601700 ?? "미제공"),
+                    ("501~600점", option.grade501600 ?? "미제공"),
+                    ("401~500점", option.grade401500 ?? "미제공"),
+                    ("301~400점", option.grade301400 ?? "미제공"),
+                    ("300점 이하", option.gradeUnder300 ?? "미제공"),
+                    ("평균 금리", option.averageGrade ?? "미제공"),
                   ].map(
                     (e) => DetailTableRow(
                       e,
@@ -680,6 +701,143 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ],
       );
       // ISA
+    } else if (category == ProductCategory.business) {
+      final option = options[0];
+      return Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextFrame(
+              "적용이자율(최저): ${(option.minRate == null || option.minRate == "null") ? "미제공" : option.minRate}",
+              defaultTxtStyle,
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextFrame(
+              "적용이자율(최대): ${(option.maxRate == null || option.maxRate == "null") ? "미제공" : option.maxRate}",
+              defaultTxtStyle,
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextFrame(
+              "전월취급평균이자율: ${(option.avgRate == null || option.avgRate == "null") ? "미제공" : option.avgRate}",
+              defaultTxtStyle,
+            ),
+          ),
+          const SizedBox(height: 24.0),
+          for (final rate in ["대출금리", "기준금리", "가산금리"]) ...[
+            TextFrame(rate, defaultTxtStyle),
+            const SizedBox(height: 8.0),
+            Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              border: TableBorder.all(color: colorScheme.outline),
+              children: [
+                DetailTableRow(
+                  ("신용 등급", "금리"),
+                  true,
+                  textTheme.bodyMedium!.copyWith(
+                    color: colorScheme.onSecondary,
+                  ),
+                ),
+                ...[
+                  (
+                    "900점 초과",
+                    switch (rate) {
+                      "대출금리" => option.loanGradeOver900 ?? "미제공",
+                      "기준금리" => option.baseGradeOver900 ?? "미제공",
+                      "가산금리" => option.marginGradeOver900 ?? "미제공",
+                      _ => "미제공",
+                    },
+                  ),
+                  (
+                    "801~900점",
+                    switch (rate) {
+                      "대출금리" => option.loanGrade801900 ?? "미제공",
+                      "기준금리" => option.baseGrade801900 ?? "미제공",
+                      "가산금리" => option.marginGrade801900 ?? "미제공",
+                      _ => "미제공",
+                    },
+                  ),
+                  (
+                    "701~800점",
+                    switch (rate) {
+                      "대출금리" => option.loanGrade701800 ?? "미제공",
+                      "기준금리" => option.baseGrade701800 ?? "미제공",
+                      "가산금리" => option.marginGrade701800 ?? "미제공",
+                      _ => "미제공",
+                    },
+                  ),
+                  (
+                    "601~700점",
+                    switch (rate) {
+                      "대출금리" => option.loanGrade601700 ?? "미제공",
+                      "기준금리" => option.baseGrade601700 ?? "미제공",
+                      "가산금리" => option.marginGrade601700 ?? "미제공",
+                      _ => "미제공",
+                    },
+                  ),
+                  (
+                    "501~600점",
+                    switch (rate) {
+                      "대출금리" => option.loanGrade501600 ?? "미제공",
+                      "기준금리" => option.baseGrade501600 ?? "미제공",
+                      "가산금리" => option.marginGrade501600 ?? "미제공",
+                      _ => "미제공",
+                    },
+                  ),
+                  (
+                    "401~500점",
+                    switch (rate) {
+                      "대출금리" => option.loanGrade401500 ?? "미제공",
+                      "기준금리" => option.baseGrade401500 ?? "미제공",
+                      "가산금리" => option.marginGrade401500 ?? "미제공",
+                      _ => "미제공",
+                    },
+                  ),
+                  (
+                    "301~400점",
+                    switch (rate) {
+                      "대출금리" => option.loanGrade301400 ?? "미제공",
+                      "기준금리" => option.baseGrade301400 ?? "미제공",
+                      "가산금리" => option.marginGrade301400 ?? "미제공",
+                      _ => "미제공",
+                    },
+                  ),
+                  (
+                    "300점 이하",
+                    switch (rate) {
+                      "대출금리" => option.loanGrade801900 ?? "미제공",
+                      "기준금리" => option.baseGrade801900 ?? "미제공",
+                      "가산금리" => option.marginGrade801900 ?? "미제공",
+                      _ => "미제공",
+                    },
+                  ),
+                  (
+                    "평균 금리",
+                    switch (rate) {
+                      "대출금리" => option.loanGradeUnder300 ?? "미제공",
+                      "기준금리" => option.baseGradeUnder300 ?? "미제공",
+                      "가산금리" => option.marginGrade801900 ?? "미제공",
+                      _ => "미제공",
+                    },
+                  ),
+                ].map(
+                  (e) => DetailTableRow(
+                    e,
+                    false,
+                    textTheme.bodyMedium!.copyWith(
+                      color: colorScheme.onSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+          ],
+        ],
+      );
     } else {
       return Table(
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -709,7 +867,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   }
 
   TableRow DetailTableRow(
-    (String, String) values,
+    (String, dynamic) values,
     bool isHeader,
     TextStyle style,
   ) {
@@ -722,7 +880,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       ),
       children: [
         DetailTableCellFrame(values.$1, style),
-        DetailTableCellFrame(values.$2, style),
+        DetailTableCellFrame(values.$2.toString(), style),
       ],
     );
   }

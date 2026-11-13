@@ -8,6 +8,7 @@ class BusinessLoanOption {
   // loanGrade501600(val1_grad_5): 대출금리 501~600점
   // loanGrade401500(val1_grad_6): 대출금리 401~500점
   // loanGrade301400(val1_grad_7): 대출금리 301~400점
+  // loanGradeUnder300(val1_grad_8): 대출금리 300점 이하
   // loanGradeAvg(val1_grad_avg): 대출금리 평균
 
   // baseGradeOver900(val2_grad_1): 기준금리 900점 초과
@@ -42,6 +43,7 @@ class BusinessLoanOption {
   final double? loanGrade501600;
   final double? loanGrade401500;
   final double? loanGrade301400;
+  final double? loanGradeUnder300;
   final double? loanGradeAvg;
 
   final double? baseGradeOver900;
@@ -51,6 +53,7 @@ class BusinessLoanOption {
   final double? baseGrade501600;
   final double? baseGrade401500;
   final double? baseGrade301400;
+  final double? baseGradeUnder300;
   final double? baseGradeAvg;
 
   final double? marginGradeOver900;
@@ -60,6 +63,7 @@ class BusinessLoanOption {
   final double? marginGrade501600;
   final double? marginGrade401500;
   final double? marginGrade301400;
+  final double? marginGradeUnder300;
   final double? marginGradeAvg;
 
   final double? minRate;
@@ -78,6 +82,7 @@ class BusinessLoanOption {
     required this.loanGrade501600,
     required this.loanGrade401500,
     required this.loanGrade301400,
+    required this.loanGradeUnder300,
     required this.loanGradeAvg,
 
     required this.baseGradeOver900,
@@ -87,6 +92,7 @@ class BusinessLoanOption {
     required this.baseGrade501600,
     required this.baseGrade401500,
     required this.baseGrade301400,
+    required this.baseGradeUnder300,
     required this.baseGradeAvg,
 
     required this.marginGradeOver900,
@@ -96,6 +102,7 @@ class BusinessLoanOption {
     required this.marginGrade501600,
     required this.marginGrade401500,
     required this.marginGrade301400,
+    required this.marginGradeUnder300,
     required this.marginGradeAvg,
   });
 }
