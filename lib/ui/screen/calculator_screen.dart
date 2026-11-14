@@ -60,7 +60,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         .returnRate(widget.category, widget.options, _selectedValues);
     // 슬라이더의 초기값: 평균 금리
     // initial slider value: average rate
-    _sliderValue = value.isNotEmpty ? value[1] : 0.0;
+    _sliderValue = value[1];
     // 예적금: 텍스트 필드 비활성화, 대출: 텍스트 필드 활성화
     // savings: enable text field, loan: disable text field
     _period =

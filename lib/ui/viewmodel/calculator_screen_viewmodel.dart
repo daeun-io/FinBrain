@@ -111,20 +111,10 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
         return [min, avg, max];
       case ProductCategory.business:
         final option = options[0] as BusinessLoanOption;
-        final rates = [
-          option.loanGradeOver900,
-          option.loanGrade801900,
-          option.loanGrade701800,
-          option.loanGrade601700,
-          option.loanGrade501600,
-          option.loanGrade401500,
-          option.loanGrade301400,
-          option.loanGradeUnder300,
-        ].whereType<double>();
 
-        final min = option.minRate ?? rates.min;
-        final max = option.maxRate ?? rates.max;
-        final avg = option.loanGradeAvg ?? rates.average;
+        final min = option.minRate ?? 0;
+        final max = option.maxRate ?? 20;
+        final avg = (min + max) / 2;
         return [min, avg, max];
       default:
         return [];
