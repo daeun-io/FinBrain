@@ -26,6 +26,7 @@ class SelectedCtgForSummariesViewmodel
     ProductCategory.mortgage,
     ProductCategory.rent,
     ProductCategory.credit,
+    ProductCategory.business
   ];
 
   // 필터링 리스트에 카테고리 추가
@@ -167,6 +168,7 @@ class SelectedCtgForCompTextViewmodel
     ProductCategory.mortgage,
     ProductCategory.rent,
     ProductCategory.credit,
+    ProductCategory.business
   ];
 
   // 필터링 리스트에 카테고리 추가

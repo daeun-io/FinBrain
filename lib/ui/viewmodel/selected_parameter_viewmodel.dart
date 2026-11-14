@@ -17,6 +17,7 @@ class SelectedTopFinGrpNoViewmodel extends _$SelectedTopFinGrpNoViewmodel {
       ProductCategory.mortgage: "020000",       // 은행(bank)
       ProductCategory.rent: "020000",           // 은행(bank)
       ProductCategory.credit: "020000",         // 은행(bank)
+      ProductCategory.business: "020000",       // 은행(bank)
     };
   }
 

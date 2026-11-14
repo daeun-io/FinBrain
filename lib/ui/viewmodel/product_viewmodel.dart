@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:finbrain/data/google_auth_service.dart';
+import 'package:finbrain/data/model/entities/business_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
@@ -287,6 +288,37 @@ class ProductViewmodel extends _$ProductViewmodel {
         final sorted = criteriaRate.map((e) => e.product).toList();
         return sorted;
 
+      case ProductCategory.business:
+        final index = switch (criteria) {
+          "최저 적용 이자율(낮은 순)" => 0, // 기본값(default value)
+          "최고 적용 이자율(낮은 순)" => 2,
+          _ => 1,
+        };
+
+        final criteriaRate = products.map((e) {
+          final targetRate = switch (index) {
+            0 => (e as BusinessLoan).options[0].minRate,
+            1 => (e as BusinessLoan).options[0].avgRate,
+            _ => (e as BusinessLoan).options[0].maxRate,
+          };
+          return (product: e, rate: targetRate);
+        }).toList();
+
+        criteriaRate.sort((a, b) {
+          if (a.rate == null && b.rate == null) return 0;
+          if (a.rate == null) return 1;
+          if (b.rate == null) return -1;
+
+          final comparison = a.rate!.compareTo(b.rate!);
+          if (comparison != 0) return comparison;
+
+          return a.product.commonInfo.productName!.compareTo(
+            b.product.commonInfo.productName!,
+          );
+        });
+
+        final sorted = criteriaRate.map((e) => e.product).toList();
+        return sorted;
       case ProductCategory.isaMp:
         final isAvg = (criteria == "평균 수익률(높은 순)");
 

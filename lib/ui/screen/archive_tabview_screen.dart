@@ -28,6 +28,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
       ProductCategory.mortgage,
       ProductCategory.rent,
       ProductCategory.credit,
+      ProductCategory.business
     ];
     final compTextfilters = ref.watch(selectedCtgForCompTextViewmodelProvider);
     final summariesFilters = ref.watch(
@@ -139,6 +140,7 @@ class ArchiveTabViewScreen extends ConsumerWidget {
           ProductCategory.mortgage => "주택담보대출",
           ProductCategory.rent => "전세자금대출",
           ProductCategory.credit => "개인신용대출",
+          ProductCategory.business => "개인사업자대출",
           ProductCategory.isaMp => "ISA",
           _ => "",
         },

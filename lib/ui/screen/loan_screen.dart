@@ -15,16 +15,18 @@ class LoanScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // 대출 상품 탭 리스트
     // Loan product tab list
-    final tabList = const ["주택담보대출", "전세자금대출", "개인신용대출"];
+    final tabList = const ["주택담보대출", "전세자금대출", "개인신용대출", "개인사업자대출"];
     final categories = const [
       ProductCategory.mortgage,
       ProductCategory.rent,
       ProductCategory.credit,
+      ProductCategory.business
     ];
     final tabView = const [
       ProductBaseScreen(category: ProductCategory.mortgage),
       ProductBaseScreen(category: ProductCategory.rent),
       ProductBaseScreen(category: ProductCategory.credit),
+      ProductBaseScreen(category: ProductCategory.business),
     ];
 
     // 탭 선택에 따라 카테고리 변경
@@ -39,7 +41,7 @@ class LoanScreen extends ConsumerWidget {
     }
 
     return DefaultTabController(
-      length: 3,
+      length: 4,
       initialIndex: 0,
       child: Column(
         children: [

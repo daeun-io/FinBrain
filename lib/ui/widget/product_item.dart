@@ -1,3 +1,4 @@
+import 'package:finbrain/data/model/entities/business_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
@@ -169,6 +170,20 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                               ((product as CreditLoan).avgRate == null)
                                   ? "미제공"
                                   : product.avgRate!.toStringAsFixed(2),
+                          },
+                          ProductCategory.business => switch (sortCriteria) {
+                            "최저 적용 이자율(낮은 순)" =>
+                              ((product as BusinessLoan).options[0].minRate == null)
+                                  ? "미제공"
+                                  : product.options[0].minRate!.toStringAsFixed(2),
+                            "최고 적용 이자율(낮은 순)" =>
+                              ((product as BusinessLoan).options[0].maxRate == null)
+                                  ? "미제공"
+                                  : product.options[0].maxRate!.toStringAsFixed(2),
+                            _ =>
+                              ((product as BusinessLoan).options[0].avgRate == null)
+                                  ? "미제공"
+                                  : product.options[0].avgRate!.toStringAsFixed(2),
                           },
                           ProductCategory.mortgage ||
                           ProductCategory.rent => switch (sortCriteria) {
