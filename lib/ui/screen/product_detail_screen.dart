@@ -474,7 +474,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ),
       ] else if (category == ProductCategory.business) ...[
         TextFrame(
-          "CB 회사명: ${((product as BusinessLoan).cbName == null || product.cbName == "null") ? "미제공" : product.cbName}",
+          "CB 회사명: ${((product as BusinessLoan).cbName == null || product.cbName == "null") ? "미제공" : product.cbName!.replaceAll(r'\\n', ", ")}",
           defaultTxtStyle,
         ),
         TextFrame(
@@ -605,39 +605,39 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ),
         Divider(thickness: 1, color: colorScheme.onSecondary),
         TextFrame(
-          "사용용도: ${(product.useWay == null || product.useWay == "null") ? "미제공" : product.useWay}\n",
+          "사용용도: ${(product.useWay == null || product.useWay == "null") ? "미제공" : replace(product.useWay!)}\n",
           defaultTxtStyle,
         ),
         TextFrame(
-          "대출한도: ${(product.loanLimit == null || product.loanLimit == "null") ? "미제공" : product.loanLimit}",
+          "대출한도: ${(product.loanLimit == null || product.loanLimit == "null") ? "미제공" : replace(product.loanLimit!)}",
           defaultTxtStyle,
         ),
         TextFrame(
-          "대출한도(세부사항): ${(product.loanLimitDetail == null || product.loanLimitDetail == "null") ? "미제공" : product.loanLimitDetail}\n",
+          "대출한도(세부사항): ${(product.loanLimitDetail == null || product.loanLimitDetail == "null") ? "미제공" : replace(product.loanLimitDetail!)}\n",
           defaultTxtStyle,
         ),
         TextFrame(
-          "가입조건: ${(product.joinDeny == null || product.joinDeny == "null") ? "미제공" : product.joinDeny}",
+          "가입조건: ${(product.joinDeny == null || product.joinDeny == "null") ? "미제공" : replace(product.joinDeny!)}",
           defaultTxtStyle,
         ),
         TextFrame(
-          "가입조건(세부사항): ${(product.joinDenyDetail == null || product.joinDenyDetail == "null") ? "미제공" : product.joinDenyDetail}\n",
+          "가입조건(세부사항): ${(product.joinDenyDetail == null || product.joinDenyDetail == "null") ? "미제공" : replace(product.joinDenyDetail!)}\n",
           defaultTxtStyle,
         ),
         TextFrame(
-          "우대금리: ${(product.specialRate == null || product.specialRate == "null") ? "미제공" : product.specialRate}\n",
+          "우대금리: ${(product.specialRate == null || product.specialRate == "null") ? "미제공" : replace(product.specialRate!)}\n",
           defaultTxtStyle,
         ),
         TextFrame(
-          "중대상환수수료\n: ${(product.earlyRepayFee == null || product.earlyRepayFee == "null") ? "미제공" : product.earlyRepayFee}\n",
+          "중대상환수수료: ${(product.earlyRepayFee == null || product.earlyRepayFee == "null") ? "미제공" : replace(product.earlyRepayFee!)}\n",
           defaultTxtStyle,
         ),
         TextFrame(
-          "대출부대비용\n: ${(product.extraExpense == null || product.extraExpense == "null") ? "미제공" : product.extraExpense}\n",
+          "대출부대비용: ${(product.extraExpense == null || product.extraExpense == "null") ? "미제공" : replace(product.extraExpense!)}\n",
           defaultTxtStyle,
         ),
         TextFrame(
-          "연체이자율\n: ${(product.delayRate == null || product.delayRate == "null") ? "미제공" : product.delayRate}\n",
+          "연체이자율: ${(product.delayRate == null || product.delayRate == "null") ? "미제공" : replace(product.delayRate!)}\n",
           defaultTxtStyle,
         ),
       ] else
