@@ -10,17 +10,16 @@ export function groupItemsByName(items: IsaMp[]): GroupedIsaMp[]{
   for(const item of items){
     const exisitng = groupedMap.get(item.mpNm);
     if(exisitng){
-      exisitng.options.push({trm: item.trm, bnfRt: item.bnfRt});
+      exisitng.options.push({ basDt: item.basDt, trm: item.trm, bnfRt: item.bnfRt});
       continue;
     }
     groupedMap.set(item.mpNm, {
-      basDt: item.basDt,
       bzds: item.bzds,
       cmpyNm: item.cmpyNm,
       mpTp: item.mpTp,
       mpNm: item.mpNm,
       rlsDt: item.rlsDt,
-      options: [{ trm: item.trm, bnfRt: item.bnfRt}],
+      options: [{ basDt: item.basDt, trm: item.trm, bnfRt: item.bnfRt}],
     });
   }
   const result = Array.from(groupedMap.values());

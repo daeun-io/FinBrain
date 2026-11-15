@@ -4,6 +4,7 @@ import { transformApiResponse } from "./isa_transform";
 const BASE_URL =
   "https://apis.data.go.kr/1160100/GetISAInfoService_V2/getMPBenefitRateInfo_V2";
 const PAGE_SIZE = 10000;
+const RESULT_TYPE = "json";
 
 export const fetchIsaProducts = onRequest(async (request, response) => {
   response.set("Access-Control-Allow-Origin", "*");
@@ -91,6 +92,7 @@ async function callApi(
   });
   urlObj.searchParams.set("numOfRows", String(PAGE_SIZE));
   urlObj.searchParams.set("pageNo", String(pageNo));
+  urlObj.searchParams.set("resultType", RESULT_TYPE);
 
   const url = urlObj.toString();
   console.log(`url: ${url}`);

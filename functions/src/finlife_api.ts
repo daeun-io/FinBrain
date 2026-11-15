@@ -23,9 +23,9 @@ export const fetchFinlifeProducts = onRequest(
 
     try {
       // INPUT
-      const key = String(request.query.key ?? "");
+      const key = String(request.query.auth ?? "");
       const category = String(request.query.category ?? "");
-      const topFinGrpNo = String(request.query.sector ?? "");
+      const topFinGrpNo = String(request.query.topFinGrpNo ?? "");
       const selectedCompany = toStringArray(request.query.selectedCompany);
       const selectedJoinWay = toStringArray(request.query.selectedJoinWay);
 
@@ -100,6 +100,9 @@ export const fetchFinlifeProducts = onRequest(
 );
 
 // XML -> JSON
+const XML_ENCODING = "euc-kr";
+const xmlDecoder = new TextDecoder(XML_ENCODING);
+
 const xmlParser = new XMLParser({
   // 값을 문자열로 유지 (회사코드 "0010001", err_cd "000" 등의 앞자리 0 보존)
   parseTagValue: false,
@@ -136,19 +139,20 @@ function toStringArray(value: unknown): string[] {
 async function callApi(
   key: string,
   category: string,
-  sector: string,
+  topFinGrpNo: string,
   pageNo: number
 ): Promise<string> {
   const urlObj = new URL(`${BASE_URL}/${CATEGORY_PATH[category]}`);
   urlObj.searchParams.set("auth", key);
-  urlObj.searchParams.set("topFinGrpNo", sector);
+  urlObj.searchParams.set("topFinGrpNo", topFinGrpNo);
   urlObj.searchParams.set("pageNo", String(pageNo));
 
   // 로그에 인증키가 남지 않도록 마스킹
   console.log(`url: ${urlObj.toString().replace(key, "***")}`);
 
   const res = await fetch(urlObj.toString());
-  const body = await res.text();
+  const buffer = await res.arrayBuffer();
+  const body = xmlDecoder.decode(buffer);
 
   if (!res.ok) {
     const err: any = new Error(`API error: ${res.status}`);

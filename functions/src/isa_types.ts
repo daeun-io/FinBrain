@@ -10,12 +10,12 @@ export interface IsaMp {
 }
 
 export interface Option {
+  basDt: string;
   trm: string;
   bnfRt: string;
 }
 
 export interface GroupedIsaMp {
-  basDt: string;
   bzds: string;
   cmpyNm: string;
   mpTp: string;
