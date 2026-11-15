@@ -134,7 +134,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
             .read(selectedTopFinGrpNoViewmodelProvider.notifier)
             .changeTopFinGrp(ctg, newTopFinGrpNo);
         Future.microtask(() {
-          ref.invalidate(fetchProductViewmodelProvider(ctg, pageNo));
+          ref.invalidate(fetchProductViewmodelProvider(ctg));
         });
       }
     }
@@ -158,7 +158,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
             ref.read(fetchIsaMngmStatusViewmodelProvider(pageNo));
           default:
             Future.microtask(() {
-              ref.invalidate(fetchProductViewmodelProvider(ctg, pageNo));
+              ref.invalidate(fetchProductViewmodelProvider(ctg));
             });
         }
       }

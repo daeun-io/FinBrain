@@ -11,7 +11,6 @@ import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart'
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
@@ -128,9 +127,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
     // 상품 리스트 불러오기
     // Fetch product list
-    final page = ref.watch(currentPageViewmodelProvider(widget.category));
     final productList = ref.watch(
-      fetchProductViewmodelProvider(widget.category, page),
+      fetchProductViewmodelProvider(widget.category),
     );
     final likedList = ref.watch(fetchLikedViewmodelProvider);
 
@@ -141,7 +139,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           .read(aiCompTutorialViewmodelProvider.notifier)
           .getMockData()
           .first;
-      return DetailSplitView(product, page);
+      return DetailSplitView(product);
     }
 
     // 호출된 부모 스크린에 따라 상품 이름/코드로 데이터 찾기
@@ -171,7 +169,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             body: SizedBox.shrink(),
           );
         }
-        return DetailSplitView(product, page);
+        return DetailSplitView(product);
       },
       error: (err, stack) => Scaffold(
         backgroundColor: colorScheme.primary,
@@ -186,7 +184,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
   // 타블렛일 때 버튼을 누르면 AI 어시스트 스크린을 스플릿 뷰로, 핸드폰이면 네비게이션으로 이동
   // if tablet, show assist screen through split view, else navigate
-  Widget DetailSplitView(FinancialProduct product, int page) {
+  Widget DetailSplitView(FinancialProduct product) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
@@ -201,7 +199,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         color: colorScheme.onTertiary,
       ),
       children: [
-        DetailScreen(product, colorScheme, textTheme, page),
+        DetailScreen(product, colorScheme, textTheme),
         if (isBtnClicked)
           AiAssistScreen(
             tag: (widget.category == ProductCategory.isaMp)
@@ -221,7 +219,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     FinancialProduct product,
     ColorScheme colorScheme,
     TextTheme textTheme,
-    int page,
   ) {
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -232,7 +229,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           screen: "detail",
           title: widget.productName.replaceAll(r'\\n', ""),
           product: product,
-          page: page,
         ),
       ),
       body: SafeArea(

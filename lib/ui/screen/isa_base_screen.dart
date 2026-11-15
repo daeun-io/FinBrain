@@ -164,7 +164,6 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                 child: NoDataFound(
                   ctg: widget.category,
                   isProduct: false,
-                  isLastPage: (_cPage == _maxPage),
                 ),
               );
             }

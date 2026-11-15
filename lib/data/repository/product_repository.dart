@@ -15,7 +15,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finbrain/data/data_source/product_data_source.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
-import 'package:finbrain/data/model/request/finlife_search_options.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,16 +30,12 @@ class ProductRepository {
   Future<(int, List<FinancialProduct>)> fetchFinlifeProductsAndPageNo(
     String uid,
     ProductCategory ctg,
-    String topFinGrpNo,
-    String pageNo,
-  ) async {
+    String topFinGrpNo, [
+    List<String>? selectedCompany,
+    List<String>? selectedJoinWay,
+  ]) async {
     final client = http.Client();
     final dataStore = ProductRemoteDataSource(client);
-    final options = FinlifeSearchOptions(
-      auth: dotenv.env["FINLIFE_API"] ?? "",
-      topFinGrpNo: topFinGrpNo,
-      pageNo: pageNo,
-    );
     try {
       // 좋아요 리스트를 불러와 동적으로 좋아요 상태 반영하기
       // Reflect the like status dynamically from the liked products list
@@ -54,7 +49,12 @@ class ProductRepository {
           })
           .whereType<String>()
           .toList();
-      final result = await dataStore.fetchFinlifeProducts(ctg, options);
+      final result = await dataStore.fetchFinlifeProducts(
+        ctg,
+        topFinGrpNo,
+        selectedCompany,
+        selectedJoinWay,
+      );
       if (result["result"] == null) {
         return (0, <FinancialProduct>[]);
       }
@@ -412,48 +412,112 @@ class ProductRepository {
                   repayType: element["baseinfo"]["rpay_type"].toString(),
                   rateType: element["baseinfo"]["lend_rate_type"].toString(),
                   loanLimit: element["baseinfo"]["loan_limit"].toString(),
-                  loanLimitDetail: element["baseinfo"]["loan_limit_detl"].toString(),
+                  loanLimitDetail: element["baseinfo"]["loan_limit_detl"]
+                      .toString(),
                   joinDeny: element["baseinfo"]["join_deny"].toString(),
-                  joinDenyDetail: element["baseinfo"]["join_deny_detl"].toString(),
+                  joinDenyDetail: element["baseinfo"]["join_deny_detl"]
+                      .toString(),
                   specialRate: element["baseinfo"]["spcl_rate"].toString(),
                   loanTerm: element["baseinfo"]["loan_term"].toString(),
-                  extraExpense: element["baseinfo"]["loan_inci_expn"].toString(),
-                  earlyRepayFee: element["baseinfo"]["erly_rpay_fee"].toString(),
+                  extraExpense: element["baseinfo"]["loan_inci_expn"]
+                      .toString(),
+                  earlyRepayFee: element["baseinfo"]["erly_rpay_fee"]
+                      .toString(),
                   delayRate: element["baseinfo"]["dly_rate"].toString(),
                   useWay: element["baseinfo"]["use_way"],
                   options: productOptions
                       .map<BusinessLoanOption>(
                         (e) => BusinessLoanOption(
-                          minRate: double.tryParse(e["lend_rate_min"].toString()),
-                          maxRate: double.tryParse(e["lend_rate_max"].toString()),
-                          avgRate: double.tryParse(e["lend_rate_avg"].toString()),
-                          loanGradeOver900: double.tryParse(e["val1_grad_1"].toString()),
-                          loanGrade801900: double.tryParse(e["val1_grad_2"].toString()),
-                          loanGrade701800: double.tryParse(e["val1_grad_3"].toString()),
-                          loanGrade601700: double.tryParse(e["val1_grad_4"].toString()),
-                          loanGrade501600: double.tryParse(e["val1_grad_5"].toString()),
-                          loanGrade401500: double.tryParse(e["val1_grad_6"].toString()),
-                          loanGrade301400: double.tryParse(e["val1_grad_7"].toString()),
-                          loanGradeUnder300: double.tryParse(e["val1_grad_8"].toString()),
-                          loanGradeAvg: double.tryParse(e["val1_grad_avg"].toString()),
-                          baseGradeOver900: double.tryParse(e["val2_grad_1"].toString()),
-                          baseGrade801900: double.tryParse(e["val2_grad_2"].toString()),
-                          baseGrade701800: double.tryParse(e["val2_grad_3"].toString()),
-                          baseGrade601700: double.tryParse(e["val2_grad_4"].toString()),
-                          baseGrade501600: double.tryParse(e["val2_grad_5"].toString()),
-                          baseGrade401500: double.tryParse(e["val2_grad_6"].toString()),
-                          baseGrade301400: double.tryParse(e["val2_grad_7"].toString()),
-                          baseGradeUnder300: double.tryParse(e["val2_grad_8"].toString()),
-                          baseGradeAvg: double.tryParse(e["val2_grad_avg"].toString()),
-                          marginGradeOver900: double.tryParse(e["val3_grad_1"].toString()),
-                          marginGrade801900: double.tryParse(e["val3_grad_2"].toString()),
-                          marginGrade701800: double.tryParse(e["val3_grad_3"].toString()),
-                          marginGrade601700: double.tryParse(e["val3_grad_4"].toString()),
-                          marginGrade501600: double.tryParse(e["val3_grad_5"].toString()),
-                          marginGrade401500: double.tryParse(e["val3_grad_6"].toString()),
-                          marginGrade301400: double.tryParse(e["val3_grad_7"].toString()),
-                          marginGradeUnder300: double.tryParse(e["val3_grad_8"].toString()),
-                          marginGradeAvg: double.tryParse(e["val3_grad_avg"].toString()),
+                          minRate: double.tryParse(
+                            e["lend_rate_min"].toString(),
+                          ),
+                          maxRate: double.tryParse(
+                            e["lend_rate_max"].toString(),
+                          ),
+                          avgRate: double.tryParse(
+                            e["lend_rate_avg"].toString(),
+                          ),
+                          loanGradeOver900: double.tryParse(
+                            e["val1_grad_1"].toString(),
+                          ),
+                          loanGrade801900: double.tryParse(
+                            e["val1_grad_2"].toString(),
+                          ),
+                          loanGrade701800: double.tryParse(
+                            e["val1_grad_3"].toString(),
+                          ),
+                          loanGrade601700: double.tryParse(
+                            e["val1_grad_4"].toString(),
+                          ),
+                          loanGrade501600: double.tryParse(
+                            e["val1_grad_5"].toString(),
+                          ),
+                          loanGrade401500: double.tryParse(
+                            e["val1_grad_6"].toString(),
+                          ),
+                          loanGrade301400: double.tryParse(
+                            e["val1_grad_7"].toString(),
+                          ),
+                          loanGradeUnder300: double.tryParse(
+                            e["val1_grad_8"].toString(),
+                          ),
+                          loanGradeAvg: double.tryParse(
+                            e["val1_grad_avg"].toString(),
+                          ),
+                          baseGradeOver900: double.tryParse(
+                            e["val2_grad_1"].toString(),
+                          ),
+                          baseGrade801900: double.tryParse(
+                            e["val2_grad_2"].toString(),
+                          ),
+                          baseGrade701800: double.tryParse(
+                            e["val2_grad_3"].toString(),
+                          ),
+                          baseGrade601700: double.tryParse(
+                            e["val2_grad_4"].toString(),
+                          ),
+                          baseGrade501600: double.tryParse(
+                            e["val2_grad_5"].toString(),
+                          ),
+                          baseGrade401500: double.tryParse(
+                            e["val2_grad_6"].toString(),
+                          ),
+                          baseGrade301400: double.tryParse(
+                            e["val2_grad_7"].toString(),
+                          ),
+                          baseGradeUnder300: double.tryParse(
+                            e["val2_grad_8"].toString(),
+                          ),
+                          baseGradeAvg: double.tryParse(
+                            e["val2_grad_avg"].toString(),
+                          ),
+                          marginGradeOver900: double.tryParse(
+                            e["val3_grad_1"].toString(),
+                          ),
+                          marginGrade801900: double.tryParse(
+                            e["val3_grad_2"].toString(),
+                          ),
+                          marginGrade701800: double.tryParse(
+                            e["val3_grad_3"].toString(),
+                          ),
+                          marginGrade601700: double.tryParse(
+                            e["val3_grad_4"].toString(),
+                          ),
+                          marginGrade501600: double.tryParse(
+                            e["val3_grad_5"].toString(),
+                          ),
+                          marginGrade401500: double.tryParse(
+                            e["val3_grad_6"].toString(),
+                          ),
+                          marginGrade301400: double.tryParse(
+                            e["val3_grad_7"].toString(),
+                          ),
+                          marginGradeUnder300: double.tryParse(
+                            e["val3_grad_8"].toString(),
+                          ),
+                          marginGradeAvg: double.tryParse(
+                            e["val3_grad_avg"].toString(),
+                          ),
                         ),
                       )
                       .toList(),

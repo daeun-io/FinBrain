@@ -4,7 +4,6 @@ import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dar
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
-import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
@@ -42,9 +41,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
-    final cPage = ref.watch(currentPageViewmodelProvider(widget.category));
     final productList = ref.watch(
-      fetchProductViewmodelProvider(widget.category, cPage),
+      fetchProductViewmodelProvider(widget.category),
     );
     final likedList = ref.watch(likedProductViewmodelProvider);
 
@@ -223,14 +221,10 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     // liked button
                     IconButton(
                       onPressed: () {
-                        final page = ref.read(
-                          currentPageViewmodelProvider(widget.category),
-                        );
                         ref
                             .read(
                               fetchProductViewmodelProvider(
                                 widget.category,
-                                page,
                               ).notifier,
                             )
                             .toggleLiked(product);

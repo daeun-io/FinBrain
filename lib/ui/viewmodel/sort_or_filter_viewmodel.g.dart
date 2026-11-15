@@ -61,7 +61,7 @@ final class SortOrFilterTextViewModelProvider
 }
 
 String _$sortOrFilterTextViewModelHash() =>
-    r'8e25c5e5c077845e9735a851daf0ee9ad533af5d';
+    r'96be572f334d754fd95bb35bdda4858b4add0f18';
 
 final class SortOrFilterTextViewModelFamily extends $Family
     with

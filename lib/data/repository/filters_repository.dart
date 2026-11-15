@@ -1,8 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:finbrain/data/data_source/cmpy_data_source.dart';
 import 'package:finbrain/data/converter.dart';
-import 'package:finbrain/data/model/request/finlife_search_options.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:finbrain/product_categories.dart';
 
@@ -101,12 +99,8 @@ class FiltersRepository {
   Future<Iterable<dynamic>> fetchCmpyNames(String topFinGrpNo) async {
     final client = http.Client();
     final dataStore = CmpyRemoteDataSource(client);
-    final options = FinlifeSearchOptions(
-      auth: dotenv.env["FINLIFE_API"] ?? "",
-      topFinGrpNo: topFinGrpNo,
-      pageNo: "1",
-    );
-    final Map<String, dynamic> result = await dataStore.fetchCmpyNames(options);
+    
+    final Map<String, dynamic> result = await dataStore.fetchCmpyNames(topFinGrpNo);
 
     if (result["result"] == null) {
       throw Exception("[error] result of fetching companies is null");

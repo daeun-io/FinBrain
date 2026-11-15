@@ -55,7 +55,7 @@ class _IsaScreenState extends ConsumerState<IsaScreen> with SingleTickerProvider
         case 1:
           ref.read(fetchIsaMngmStatusViewmodelProvider(page));
         case 2:
-          ref.read(fetchProductViewmodelProvider(categories[value], page));
+          ref.read(fetchProductViewmodelProvider(categories[value]));
         default:
           ref.read(fetchIsaJoinStatusViewmodelProvider(page));
       }

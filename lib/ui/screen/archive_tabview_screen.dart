@@ -63,7 +63,6 @@ class ArchiveTabViewScreen extends ConsumerWidget {
                         .filterByKeyword(value);
                     }
                   },
-                  fromLikedScreen: false,
                 ),
                 const SizedBox(height: 20,),
                 // 필터 칩(filter chip)

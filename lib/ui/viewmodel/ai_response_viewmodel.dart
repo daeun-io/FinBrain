@@ -7,7 +7,6 @@ import 'package:finbrain/data/repository/ai_response_repository.dart';
 import 'package:finbrain/data/repository/ai_summary_repository.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/data/repository/ai_convo_repository.dart';
@@ -50,9 +49,8 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
   // 상품 코드 및 이름를 통해 상품 불러오기
   // Get product with given product code or name
   Future<FinancialProduct?> getProduct(String tag, ProductCategory ctg) async {
-    final page = ref.read(currentPageViewmodelProvider(ctg));
     final productList = await ref.read(
-      fetchProductViewmodelProvider(ctg, page).future,
+      fetchProductViewmodelProvider(ctg).future,
     );
     final likedList = await ref.read(fetchLikedViewmodelProvider.future);
     final product =

@@ -25,8 +25,8 @@ class IsaMpScreen extends ConsumerStatefulWidget {
 class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
-  bool _isLoading = false;            // 데이터 로딩 여부(loading data state)
-  int _maxPage = 0;                   // API 데이터 최대 페이지(api data max page)
+  bool _isLoading = false; // 데이터 로딩 여부(loading data state)
+  int _maxPage = 0; // API 데이터 최대 페이지(api data max page)
 
   @override
   void initState() {
@@ -60,8 +60,8 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
       } else {
         _isLoading = false;
       }
-    // 최상단 위치에 도달하면 다음 페이지 불러오기
-    // Fetch previous page when reached top of the list
+      // 최상단 위치에 도달하면 다음 페이지 불러오기
+      // Fetch previous page when reached top of the list
     } else if (position.pixels <= position.minScrollExtent + 10) {
       if (cPage > 1) {
         _isLoading = true;
@@ -76,7 +76,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {;
+  Widget build(BuildContext context) {
     // 현재 페이지, ISA 상품 상태, 필터 관찰하기
     // Watch current page, ISA products status and their filter
     final cPage = ref.watch(
@@ -115,7 +115,6 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                 .read(productViewmodelProvider(ProductCategory.isaMp).notifier)
                 .filterByKeyword(value);
           },
-          fromLikedScreen: false,
         ),
         const SizedBox(height: 24.0),
         Row(
@@ -129,7 +128,13 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                 category: ProductCategory.isaMp,
                 baseYear: baseYear,
                 onSortCriteriaChanged: (criteria) {
-                  ref.read(sortOrFilterTextViewModelProvider(ProductCategory.isaMp).notifier).changeCriteria(criteria);
+                  ref
+                      .read(
+                        sortOrFilterTextViewModelProvider(
+                          ProductCategory.isaMp,
+                        ).notifier,
+                      )
+                      .changeCriteria(criteria);
                 },
               ),
             ),
@@ -160,7 +165,6 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                           child: NoDataFound(
                             ctg: ProductCategory.isaMp,
                             isProduct: true,
-                            isLastPage: (cPage == _maxPage),
                           ),
                         );
                       }
