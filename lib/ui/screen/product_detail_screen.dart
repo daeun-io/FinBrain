@@ -146,16 +146,13 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     // Find data with product code or name in product list
     return ((widget.fromLikedScreen) ? likedList : productList).when(
       data: (data) {
-        final product =
-            ((widget.fromLikedScreen)
-                    ? data as List<FinancialProduct>
-                    : (data as (int, List<FinancialProduct>)).$2)
-                .where(
-                  (e) => (widget.category == ProductCategory.isaMp)
-                      ? e.commonInfo.productName == widget.productName
-                      : e.commonInfo.productCode == widget.productCode,
-                )
-                .firstOrNull;
+        final product = data
+            .where(
+              (e) => (widget.category == ProductCategory.isaMp)
+                  ? e.commonInfo.productName == widget.productName
+                  : e.commonInfo.productCode == widget.productCode,
+            )
+            .firstOrNull;
         // 상품이 없을 경우 원래 화면으로 돌아가기
         // Back to main screen when no product found
         if (product == null) {

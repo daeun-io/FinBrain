@@ -181,9 +181,9 @@ class SavedFilters extends _$SavedFilters {
   // 생성 시 카테고리 별 기본 필터 호출
   // Fetch default filter by given category
   @override
-  Future<Map<String, List<(String, bool)>>> build(ProductCategory ctg) async {
+  AsyncValue<Map<String, List<(String, bool)>>> build(ProductCategory ctg) {
     try {
-      final data = await ref.read(filtersViewmodelProvider(ctg).future);
+      final data = ref.watch(filtersViewmodelProvider(ctg));
       return data;
     } catch (e) {
       throw Exception("[error] failed to fetch $ctg filters, $e");

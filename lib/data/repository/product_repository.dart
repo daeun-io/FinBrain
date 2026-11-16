@@ -25,7 +25,7 @@ class ProductRepository {
 
   // 주어진 업권에 따라 금융한눈에 상품 불러오기
   // Get financial products based on give category
-  Future<(int, List<FinancialProduct>)> fetchFinlifeProductsAndPageNo(
+  Future<List<FinancialProduct>> fetchFinlifeProductsAndPageNo(
     String uid,
     ProductCategory ctg,
     String topFinGrpNo, [
@@ -54,20 +54,20 @@ class ProductRepository {
         selectedJoinWay,
       );
       if (result["result"] == null) {
-        return (0, <FinancialProduct>[]);
+        debugPrint("[null] result is null");
+        return [];
       }
 
       final maxPage =
           int.tryParse((result["result"]["max_page_no"]).toString()) ?? 0;
       if (maxPage == 0) {
         debugPrint("[empty] finlife product list is empty");
-        return (0, <FinancialProduct>[]);
+        return [];
       }
 
       if (result["result"]["products"] == null ||
-          result["result"]["products"]["product"] == null) {
-        return (0, <FinancialProduct>[]);
-      }
+          result["result"]["products"]["product"] == null) return [];
+    
 
       final rawProducts =
           result["result"]["products"]["product"] as Iterable<dynamic>;
@@ -525,10 +525,10 @@ class ProductRepository {
               .toList()
               .cast<FinancialProduct>(),
       };
-      return (maxPage, products);
-    } catch (e) {
-      debugPrint("[error] failed to fetch finlife products : $e");
-      throw Exception("[error] failed to fetch finlife products : $e");
+      return products;
+    } catch (e, stackTrace) {
+      debugPrint("[error] failed to fetch finlife products : $e, $stackTrace");
+      throw Exception("[error] failed to fetch finlife products : $e, $stackTrace");
     } finally {
       client.close();
     }
@@ -536,7 +536,7 @@ class ProductRepository {
 
   // 필터링 조건 없이 모든 ISA 상품 불러오기
   // Get ISA products without filters
-  Future<(int, List<FinancialProduct>)> fetchIsaMpProductsAndCount(
+  Future<List<FinancialProduct>> fetchIsaMpProductsAndCount(
     String uid,
     String baseYear, [
     List<String>? bzds,
@@ -562,7 +562,7 @@ class ProductRepository {
           0;
       if (totalCount == 0) {
         debugPrint("[empty] isa mp product list is empty");
-        return (0, <FinancialProduct>[]);
+        return [];
       }
 
       final body = response["response"]["body"];
@@ -640,12 +640,10 @@ class ProductRepository {
           .nonNulls
           .toList()
           .cast<FinancialProduct>();
-      return (totalCount, items);
+      return items;
     } catch (e, stackTrace) {
-      print("🍊 [error] ISA fetch 실패, $e");
-      print("🍊 [stacktrace] 오류 위치 확인");
-      print(stackTrace);
-      throw Exception("[error] failed to fetch isa mp products : $e");
+      debugPrint("[error] failed to fetch isa mp products : $e, $stackTrace");
+      throw Exception("[error] failed to fetch isa mp products : $e, $stackTrace");
     } finally {
       client.close();
     }

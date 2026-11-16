@@ -17,10 +17,10 @@ import 'package:finbrain/data/google_auth_service.dart';
 part 'ai_response_viewmodel.g.dart';
 
 // AI 응답 관련 레포지토리(AI response repository)
-final responseRepository = AiResponseRepository(); 
+final responseRepository = AiResponseRepository();
 // AI 대화 내역 관련 레포지토리(AI chat history repository)
 final messageRepository = AiConversationRepository();
-// AI 대화 요약 내역 관련 레포지토리(AI summary repository) 
+// AI 대화 요약 내역 관련 레포지토리(AI summary repository)
 final summaryRepository = AiSummaryRepository();
 // AI 비교 분석 관련 레포지토리(AI comparison text repository)
 final compRepository = AiCompRepository();
@@ -54,7 +54,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
     );
     final likedList = await ref.read(fetchLikedViewmodelProvider.future);
     final product =
-        productList.$2
+        productList
             .where((e) => (e.commonInfo.productName == tag))
             .firstOrNull ??
         likedList.where((e) => e.commonInfo.productName == tag).firstOrNull;
@@ -95,7 +95,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
       final newResponse = await ref.read(
         aiResponseViewmodelProvider(newRequest, product).future,
       );
-      
+
       // 응답이 없다면 에러 메시지 띄우기
       // if response is empty, display error message
       if (newResponse == null || newResponse.isEmpty) {
@@ -167,7 +167,8 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
       final conversation = <String, String>{};
       for (final entry in loaded) {
         if (entry["request"] != null && entry["response"] != null) {
-          conversation[AesHelper.decryptText(entry["request"]!)] = AesHelper.decryptText(entry["response"]!);
+          conversation[AesHelper.decryptText(entry["request"]!)] =
+              AesHelper.decryptText(entry["response"]!);
         }
       }
       final messages = conversation.entries
@@ -203,13 +204,14 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
   // Functions for product detail tutorial
   Future<bool> readProductDetailTutorial() async {
     final user = GoogleAuthService.getCurrentUser();
-    if(user == null || user.displayName == null || user.email == null) return true;
+    if (user == null || user.displayName == null || user.email == null)
+      return true;
     return userDataSource.readProductDetailTutorial(user);
   }
 
   Future<void> setReadProductDetailTutorialToTrue() async {
     final user = GoogleAuthService.getCurrentUser();
-    if(user == null || user.email == null || user.displayName == null) return;
+    if (user == null || user.email == null || user.displayName == null) return;
     return userDataSource.setReadProductDetailTutorialToTrue();
   }
 }
@@ -222,10 +224,10 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
     // 튜토리얼이면 예시 응답 아니면 실제 비교 분석 불러오기
     // Fetch mock response while tutorial, else fetch comparison text
     final isTutorialShown = await ref.read(
-        aiCompTutorialViewmodelProvider.future,
-      );
-    
-    if(!isTutorialShown){
+      aiCompTutorialViewmodelProvider.future,
+    );
+
+    if (!isTutorialShown) {
       return ref.read(aiCompTutorialViewmodelProvider.notifier).getMockRes();
     } else {
       return _askComparsion(items);
@@ -237,15 +239,17 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
   Future<String> _askComparsion(List<String> items) async {
     try {
       // 프롬프트 설정
-    final tone = await userDataSource.getAiTone();
-    final tPrompt = switch (tone) {
+      final tone = await userDataSource.getAiTone();
+      final tPrompt = switch (tone) {
         "설명적으로" => "차근차근 설명해주세요. 복잡한 내용도 쉽게 이해하도록 예시를 들어가며 단계별로 풀어서 설명해주세요.",
         "간결하게" => "핵심만 간단하게, 불필요한 설명을 제외하고 중요한 내용만 짧고 명확하게 설명해주세요",
         "전문적으로" => "해당 분야의 정확한 용어를 사용하고, 구체적인 데이터나 절차를 포함해 전문적으로 설명해주세요",
         _ => tone,
       };
       final newResponse = await ref.read(
-        aiResponseViewmodelProvider("$items의 주요 공통점과 차이점을 표 없이 $tPrompt").future,
+        aiResponseViewmodelProvider(
+          "$items의 주요 공통점과 차이점을 표 없이 $tPrompt",
+        ).future,
       );
       if (newResponse == null || newResponse.isEmpty) {
         return "오류가 발생했습니다. 다시 시도해주세요";
@@ -263,11 +267,11 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
     state = const AsyncValue.loading();
     try {
       final response = await _askComparsion(items);
-      if(ref.mounted){
+      if (ref.mounted) {
         state = AsyncValue.data(response);
       }
-    } catch (e, st){
-      if(ref.mounted){
+    } catch (e, st) {
+      if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
     }

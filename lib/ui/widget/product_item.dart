@@ -1,7 +1,6 @@
 import 'package:finbrain/data/model/entities/business_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
-import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
@@ -50,16 +49,13 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     // Watch data based on parent screen
     return ((widget.fromLikedScreen) ? likedList : productList).when(
       data: (data) {
-        final product =
-            ((widget.fromLikedScreen)
-                    ? data as List<FinancialProduct>
-                    : (data as (int, List<FinancialProduct>)).$2)
-                .where(
-                  (e) => (widget.category == ProductCategory.isaMp)
-                      ? e.commonInfo.productName == widget.productName
-                      : e.commonInfo.productCode == widget.productCode,
-                )
-                .firstOrNull;
+        final product = data
+            .where(
+              (e) => (widget.category == ProductCategory.isaMp)
+                  ? e.commonInfo.productName == widget.productName
+                  : e.commonInfo.productCode == widget.productCode,
+            )
+            .firstOrNull;
         if (product == null) return const SizedBox.shrink();
         final sortFilter = ref.watch(
           sortOrFilterTextViewModelProvider(product.commonInfo.category),
@@ -171,17 +167,26 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                           },
                           ProductCategory.business => switch (sortCriteria) {
                             "최저 적용 이자율(낮은 순)" =>
-                              ((product as BusinessLoan).options[0].minRate == null)
+                              ((product as BusinessLoan).options[0].minRate ==
+                                      null)
                                   ? "미제공"
-                                  : product.options[0].minRate!.toStringAsFixed(2),
+                                  : product.options[0].minRate!.toStringAsFixed(
+                                      2,
+                                    ),
                             "최고 적용 이자율(낮은 순)" =>
-                              ((product as BusinessLoan).options[0].maxRate == null)
+                              ((product as BusinessLoan).options[0].maxRate ==
+                                      null)
                                   ? "미제공"
-                                  : product.options[0].maxRate!.toStringAsFixed(2),
+                                  : product.options[0].maxRate!.toStringAsFixed(
+                                      2,
+                                    ),
                             _ =>
-                              ((product as BusinessLoan).options[0].avgRate == null)
+                              ((product as BusinessLoan).options[0].avgRate ==
+                                      null)
                                   ? "미제공"
-                                  : product.options[0].avgRate!.toStringAsFixed(2),
+                                  : product.options[0].avgRate!.toStringAsFixed(
+                                      2,
+                                    ),
                           },
                           ProductCategory.mortgage ||
                           ProductCategory.rent => switch (sortCriteria) {

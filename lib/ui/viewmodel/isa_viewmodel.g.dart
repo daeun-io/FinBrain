@@ -57,7 +57,7 @@ final class FetchIsaJoinStatusViewmodelProvider
 }
 
 String _$fetchIsaJoinStatusViewmodelHash() =>
-    r'82fc56ee8a46c2f47a02152458882afad79ae9d2';
+    r'2b571d69696730b6f1d8a825dc124fdfc4cff0f6';
 
 final class FetchIsaJoinStatusViewmodelFamily extends $Family
     with
@@ -162,7 +162,7 @@ final class FetchIsaMngmStatusViewmodelProvider
 }
 
 String _$fetchIsaMngmStatusViewmodelHash() =>
-    r'203c1e55d7d995e1d053a4659ab765df840a4a0c';
+    r'7613085f70ba77ae790bc7318ef56823b1386f6e';
 
 final class FetchIsaMngmStatusViewmodelFamily extends $Family
     with

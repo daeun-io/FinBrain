@@ -12,6 +12,7 @@ import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_viewmodel.g.dart';
 
@@ -24,7 +25,7 @@ final repository = ProductRepository();
 @riverpod
 class FetchProductViewmodel extends _$FetchProductViewmodel {
   @override
-  Future<(int, List<FinancialProduct>)> build(ProductCategory ctg) async {
+  Future<List<FinancialProduct>> build(ProductCategory ctg) async {
     try {
       final user = GoogleAuthService.getCurrentUser();
       if (user == null) {
@@ -73,11 +74,11 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
                 selectedFilters["가입 방법"],
               );
       } else {
-        print("🍋 [error] filter가 null");
-        throw Exception("[error] filter is null");
+        print("[null] filter is null");
+        throw Exception("[null] filter is null");
       }
     } catch (e) {
-      print("🍋 [error] 금융 상품 fetch 실패");
+      debugPrint("[error] failed to financial products : $e");
       throw Exception("[error] failed to financial products : $e");
     }
   }
@@ -91,7 +92,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
       final isLiked = product.commonInfo.isLiked;
       // 전체 리스트 업데이트하기
       // Update current list
-      final updated = data.$2
+      final updated = data
           .map((e) {
             if ((product.commonInfo.category == ProductCategory.isaMp)
                 ? e.commonInfo.productName == product.commonInfo.productName
@@ -103,7 +104,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
           })
           .whereType<FinancialProduct>()
           .toList();
-      state = AsyncValue.data((data.$1, updated));
+      state = AsyncValue.data(updated);
 
       // 관심 상품 서버에 반영하기
       // Apply new liked product list in server
@@ -125,7 +126,7 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
 @riverpod
 class ProductViewmodel extends _$ProductViewmodel {
   @override
-  AsyncValue<(int, List<FinancialProduct>)> build(ProductCategory ctg) {
+  AsyncValue<List<FinancialProduct>> build(ProductCategory ctg) {
     // 데이터, 필터, 기준 관찰하기
     // Watch data, filter and sorting criteria
     final criteria = ref.watch(sortOrFilterTextViewModelProvider(ctg));
@@ -133,11 +134,8 @@ class ProductViewmodel extends _$ProductViewmodel {
 
     return result.when(
       data: (data) {
-        final sorted = sortByCriteria(
-          criteria.$1.toString(),
-          result.value!.$2,
-        );
-        return AsyncData((result.value!.$1, sorted));
+        final sorted = sortByCriteria(criteria.$1.toString(), result.value);
+        return AsyncData(sorted);
       },
       error: (error, stackTrace) => AsyncError(error, stackTrace),
       loading: () => const AsyncLoading(),
@@ -150,8 +148,7 @@ class ProductViewmodel extends _$ProductViewmodel {
     String criteria, [
     List<FinancialProduct>? prdt,
   ]) {
-    final products =
-        prdt ?? ((state.value == null) ? [] : [...state.value!.$2]);
+    final products = prdt ?? ((state.value == null) ? [] : [...state.value!]);
 
     switch (ctg) {
       case ProductCategory.deposit:
@@ -309,24 +306,20 @@ class ProductViewmodel extends _$ProductViewmodel {
     // 키워드가 있으면 필터링 적용
     // Apply filter when there's keyword
     if (keyword.isNotEmpty) {
-      final currentState = state.value ?? (0, <FinancialProduct>[]);
-      state = AsyncValue.data((
-        currentState.$1,
-        currentState.$2
+      final currentState = state.value ?? [];
+      state = AsyncValue.data(
+        currentState
             .where((e) => e.commonInfo.productName!.contains(keyword))
             .toList(),
-      ));
+      );
       // 키워드가 없으면 원본 데이터 불러오기
       // If no keyword, fetch original data
     } else {
       final original = ref.read(fetchProductViewmodelProvider(ctg));
       final criteria = ref.read(sortOrFilterTextViewModelProvider(ctg));
-      final maxPage = (original.value == null) ? 0 : original.value!.$1;
-      final products = (original.value == null)
-          ? <FinancialProduct>[]
-          : original.value!.$2;
+      final products = original.value;
       final sorted = sortByCriteria(criteria.$1.toString(), products);
-      state = AsyncValue.data((maxPage, sorted));
+      state = AsyncValue.data(sorted);
     }
   }
 }

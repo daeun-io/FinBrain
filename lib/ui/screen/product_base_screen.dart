@@ -68,16 +68,15 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
           const SizedBox(height: 24.0),
           productState.when(
             data: (data) {
-              final (maxPage, items) = data;
               return Expanded(
                 child: ListView.builder(
-                  itemCount: items.length,
+                  itemCount: data.length,
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: ProductItem(
-                      productCode: items[index].commonInfo.productCode!,
-                      productName: items[index].commonInfo.productName!,
-                      category: items[index].commonInfo.category,
+                      productCode: data[index].commonInfo.productCode!,
+                      productName: data[index].commonInfo.productName!,
+                      category: data[index].commonInfo.category,
                       fromLikedScreen: false,
                       isSelecting: false,
                     ),
