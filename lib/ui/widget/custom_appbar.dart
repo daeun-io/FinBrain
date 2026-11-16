@@ -12,13 +12,10 @@ class CustomAppbar extends ConsumerWidget {
     required this.screen,
     required this.title,
     this.product,
-    this.page,
   });
 
   final String screen; // 호출하는 화면 이름(screen name)
   final String title; // 앱 바 타이틀(app bar title)
-
-  final int? page;
   final FinancialProduct? product;
 
   @override
@@ -47,6 +44,8 @@ class CustomAppbar extends ConsumerWidget {
       title: Text(
         title,
         style: textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
       titleSpacing: switch (screen) {
         "main" => 24.0,
@@ -63,7 +62,6 @@ class CustomAppbar extends ConsumerWidget {
                   .read(
                     fetchProductViewmodelProvider(
                       product!.commonInfo.category,
-                      page ?? 1,
                     ).notifier,
                   )
                   .toggleLiked(product!);

@@ -87,7 +87,7 @@ final class LikedProductViewmodelProvider
 }
 
 String _$likedProductViewmodelHash() =>
-    r'94780d8b484898fc2445fcd586fab7eb5d8cd56d';
+    r'1248f72b9acae1d393b51263be298c101a43f615';
 
 abstract class _$LikedProductViewmodel
     extends $AsyncNotifier<List<FinancialProduct>> {

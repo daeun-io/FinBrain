@@ -2,26 +2,23 @@
 // Query parameters for searching isa api
 class IsaSearchOptions {
   final String serviceKey;
-  final String resultType;
-  final String pageNo;
-  final String numOfRows;
-  final String baseYearMonth;
+  final String baseYear;
+  final List<String>? bzds;
+  final List<String>? mpTp;
 
   IsaSearchOptions({
     required this.serviceKey,
-    required this.resultType,
-    required this.pageNo,
-    required this.numOfRows,
-    required this.baseYearMonth,
+    required this.baseYear,
+    this.bzds,
+    this.mpTp
   });
 
-  Map<String, String> toQueryParams(){
+  Map<String, dynamic> toQueryParams(){
     return {
        "serviceKey": serviceKey,
-       "resultType": resultType,
-       "pageNo": pageNo,
-       "numOfRows": numOfRows,
-       "likeBasDt": baseYearMonth,
+       "likeBasDt": baseYear,
+       "bzds": bzds,
+       "mpTp": mpTp,
     };
   }
 }

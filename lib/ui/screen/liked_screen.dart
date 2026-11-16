@@ -81,7 +81,6 @@ class _LikedScreenState extends ConsumerState<LikedScreen> {
                   .read(likedProductViewmodelProvider.notifier)
                   .filterByKeyword(value);
             },
-            fromLikedScreen: true,
           ),
           const SizedBox(height: 32.0),
           // 필터링 바텀시트(filter bottom sheet)

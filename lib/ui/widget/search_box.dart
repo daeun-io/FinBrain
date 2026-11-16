@@ -8,11 +8,9 @@ class SearchBox extends ConsumerStatefulWidget {
   const SearchBox({
     super.key,
     required this.searchItem,
-    required this.fromLikedScreen,
   });
 
   final Function(String) searchItem;          // 필터링 함수(filter funciton)
-  final bool fromLikedScreen;
 
   @override
   ConsumerState<SearchBox> createState() => _SearchBoxState();
@@ -52,7 +50,7 @@ class _SearchBoxState extends ConsumerState<SearchBox> {
         textStyle: WidgetStatePropertyAll(
           textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary)
         ),
-        hintText: (widget.fromLikedScreen) ? "상품명 검색" : "현재 불러온 상품에서 검색",
+        hintText: "금융 상품 검색",
         hintStyle: WidgetStatePropertyAll(
           textTheme.bodyMedium!.copyWith(color: colorScheme.onTertiary)
         ),

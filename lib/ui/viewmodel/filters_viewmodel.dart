@@ -115,7 +115,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
 
   // 선택한 필터 항목 저장
   // Save selected filter options
-  Future<void> applyChanges(int pageNo) async {
+  Future<void> applyChanges() async {
     final snapshot = Map<String, List<(String, bool)>>.from(state.value ?? {});
 
     // 기준년도 및 회사 업권 뷰모델 업데이트
@@ -134,7 +134,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
             .read(selectedTopFinGrpNoViewmodelProvider.notifier)
             .changeTopFinGrp(ctg, newTopFinGrpNo);
         Future.microtask(() {
-          ref.invalidate(fetchProductViewmodelProvider(ctg, pageNo));
+          ref.invalidate(fetchProductViewmodelProvider(ctg));
         });
       }
     }
@@ -153,12 +153,12 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
             );
         switch (ctg) {
           case ProductCategory.isaJoin:
-            ref.read(fetchIsaJoinStatusViewmodelProvider(pageNo));
+            await ref.read(fetchIsaJoinStatusViewmodelProvider.future);
           case ProductCategory.isaManagement:
-            ref.read(fetchIsaMngmStatusViewmodelProvider(pageNo));
+            await ref.read(fetchIsaMngmStatusViewmodelProvider.future);
           default:
             Future.microtask(() {
-              ref.invalidate(fetchProductViewmodelProvider(ctg, pageNo));
+              ref.invalidate(fetchProductViewmodelProvider(ctg));
             });
         }
       }
@@ -181,9 +181,9 @@ class SavedFilters extends _$SavedFilters {
   // 생성 시 카테고리 별 기본 필터 호출
   // Fetch default filter by given category
   @override
-  Future<Map<String, List<(String, bool)>>> build(ProductCategory ctg) async {
+  AsyncValue<Map<String, List<(String, bool)>>> build(ProductCategory ctg) {
     try {
-      final data = await ref.read(filtersViewmodelProvider(ctg).future);
+      final data = ref.watch(filtersViewmodelProvider(ctg));
       return data;
     } catch (e) {
       throw Exception("[error] failed to fetch $ctg filters, $e");

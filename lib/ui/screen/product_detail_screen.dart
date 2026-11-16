@@ -11,7 +11,6 @@ import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart'
 import 'package:finbrain/ui/screen/ai_assist_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_detail_screen_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
@@ -128,9 +127,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
     // 상품 리스트 불러오기
     // Fetch product list
-    final page = ref.watch(currentPageViewmodelProvider(widget.category));
     final productList = ref.watch(
-      fetchProductViewmodelProvider(widget.category, page),
+      fetchProductViewmodelProvider(widget.category),
     );
     final likedList = ref.watch(fetchLikedViewmodelProvider);
 
@@ -141,23 +139,20 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           .read(aiCompTutorialViewmodelProvider.notifier)
           .getMockData()
           .first;
-      return DetailSplitView(product, page);
+      return DetailSplitView(product);
     }
 
     // 호출된 부모 스크린에 따라 상품 이름/코드로 데이터 찾기
     // Find data with product code or name in product list
     return ((widget.fromLikedScreen) ? likedList : productList).when(
       data: (data) {
-        final product =
-            ((widget.fromLikedScreen)
-                    ? data as List<FinancialProduct>
-                    : (data as (int, List<FinancialProduct>)).$2)
-                .where(
-                  (e) => (widget.category == ProductCategory.isaMp)
-                      ? e.commonInfo.productName == widget.productName
-                      : e.commonInfo.productCode == widget.productCode,
-                )
-                .firstOrNull;
+        final product = data
+            .where(
+              (e) => (widget.category == ProductCategory.isaMp)
+                  ? e.commonInfo.productName == widget.productName
+                  : e.commonInfo.productCode == widget.productCode,
+            )
+            .firstOrNull;
         // 상품이 없을 경우 원래 화면으로 돌아가기
         // Back to main screen when no product found
         if (product == null) {
@@ -171,7 +166,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             body: SizedBox.shrink(),
           );
         }
-        return DetailSplitView(product, page);
+        return DetailSplitView(product);
       },
       error: (err, stack) => Scaffold(
         backgroundColor: colorScheme.primary,
@@ -186,7 +181,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
   // 타블렛일 때 버튼을 누르면 AI 어시스트 스크린을 스플릿 뷰로, 핸드폰이면 네비게이션으로 이동
   // if tablet, show assist screen through split view, else navigate
-  Widget DetailSplitView(FinancialProduct product, int page) {
+  Widget DetailSplitView(FinancialProduct product) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
@@ -201,7 +196,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         color: colorScheme.onTertiary,
       ),
       children: [
-        DetailScreen(product, colorScheme, textTheme, page),
+        DetailScreen(product, colorScheme, textTheme),
         if (isBtnClicked)
           AiAssistScreen(
             tag: (widget.category == ProductCategory.isaMp)
@@ -221,7 +216,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     FinancialProduct product,
     ColorScheme colorScheme,
     TextTheme textTheme,
-    int page,
   ) {
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -232,7 +226,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           screen: "detail",
           title: widget.productName.replaceAll(r'\\n', ""),
           product: product,
-          page: page,
         ),
       ),
       body: SafeArea(
@@ -640,7 +633,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           "연체이자율: ${(product.delayRate == null || product.delayRate == "null") ? "미제공" : replace(product.delayRate!)}\n",
           defaultTxtStyle,
         ),
-      ] else
+      ] else // IsaMP
         DetailTableFrame(
           category,
           (product as IsaMpBenefitRate).options,
@@ -844,28 +837,29 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ],
       );
     } else {
-      return Table(
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        border: TableBorder.all(color: colorScheme.outline),
+      // IsaMP
+      return Column(
         children: [
-          DetailTableRow(
-            ("기간", "수익률"),
-            true,
-            textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
-          ),
-          for (final option in options as List<IsaMpBenefitRateOption>) ...[
-            if (option.term != null && option.benefitRate != null)
-              DetailTableRow(
-                (
-                  option.term!,
-                  (option.benefitRate == null)
-                      ? "미제공"
-                      : option.benefitRate.toString(),
-                ),
-                false,
-                textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+          for (final option in options as List<IsaMpBenefitRateOption>)
+            if (option.baseDate != null) ...[
+              TextFrame(addSlash(option.baseDate!), defaultTxtStyle),
+              const SizedBox(height: 8),
+              Table(
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                border: TableBorder.all(color: colorScheme.outline),
+                children: [
+                  DetailTableRow(("기간", "수익률"), true, defaultTxtStyle),
+                  for (final trmAndRt in option.termAndRate)
+                    if (trmAndRt.term != null)
+                      DetailTableRow(
+                        (trmAndRt.term!, trmAndRt.benefitRate ?? "미제공"),
+                        false,
+                        defaultTxtStyle,
+                      ),
+                ],
               ),
-          ],
+              const SizedBox(height: 16),
+            ],
         ],
       );
     }

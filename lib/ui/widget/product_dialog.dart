@@ -165,7 +165,7 @@ class ProductDialog extends ConsumerWidget {
                         onPressed: () async {
                           await ref.read(
                             dialogFiltersViewModelProvider(category).notifier,
-                          ).applyChanges(1);
+                          ).applyChanges();
                           if (context.mounted) Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

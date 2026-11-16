@@ -2,20 +2,26 @@
 // Query parameters for finlife api
 class FinlifeSearchOptions {
   final String auth;
+  final String category;
   final String topFinGrpNo;
-  final String pageNo;
+  List<String>? selectedCompany;
+  List<String>? selectedJoinWay;
 
   FinlifeSearchOptions({
     required this.auth,
+    required this.category,
     required this.topFinGrpNo,
-    required this.pageNo,
+    this.selectedCompany,
+    this.selectedJoinWay
   });
 
-  Map<String, String> toQueryParams(){
+  Map<String, dynamic> toQueryParams() {
     return {
-       "auth": auth,
-       "topFinGrpNo": topFinGrpNo,
-       "pageNo": pageNo,
+      "auth": auth,
+      "category": category,
+      "topFinGrpNo": topFinGrpNo,
+      "selectedCompany": selectedCompany,
+      "selectedJoinWay": selectedJoinWay,
     };
   }
 }

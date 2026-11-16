@@ -151,7 +151,7 @@ final class AiAssistScreenViewmodelProvider
 }
 
 String _$aiAssistScreenViewmodelHash() =>
-    r'85659f3f4ffeb677464f31f38acd9418f88a09d6';
+    r'd893f17135e58877bc1e56d6bdd53cc21050d66f';
 
 final class AiAssistScreenViewmodelFamily extends $Family
     with
@@ -243,7 +243,7 @@ final class AiComparisonScreenViewmodelProvider
 }
 
 String _$aiComparisonScreenViewmodelHash() =>
-    r'58edbd69cb6d523f26197d72f2cad0ac6e9dea85';
+    r'92c655468873310f8d7b63226a50f80d8655ecfc';
 
 final class AiComparisonScreenViewmodelFamily extends $Family
     with

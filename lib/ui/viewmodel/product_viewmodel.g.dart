@@ -14,13 +14,10 @@ final fetchProductViewmodelProvider = FetchProductViewmodelFamily._();
 
 final class FetchProductViewmodelProvider
     extends
-        $AsyncNotifierProvider<
-          FetchProductViewmodel,
-          (int, List<FinancialProduct>)
-        > {
+        $AsyncNotifierProvider<FetchProductViewmodel, List<FinancialProduct>> {
   FetchProductViewmodelProvider._({
     required FetchProductViewmodelFamily super.from,
-    required (ProductCategory, int) super.argument,
+    required ProductCategory super.argument,
   }) : super(
          retry: null,
          name: r'fetchProductViewmodelProvider',
@@ -36,7 +33,7 @@ final class FetchProductViewmodelProvider
   String toString() {
     return r'fetchProductViewmodelProvider'
         ''
-        '$argument';
+        '($argument)';
   }
 
   @$internal
@@ -55,16 +52,16 @@ final class FetchProductViewmodelProvider
 }
 
 String _$fetchProductViewmodelHash() =>
-    r'c200b254569f9258a9670859433ae1e0ff552405';
+    r'0fdbccbf28c9b32244d751741844343782ce0711';
 
 final class FetchProductViewmodelFamily extends $Family
     with
         $ClassFamilyOverride<
           FetchProductViewmodel,
-          AsyncValue<(int, List<FinancialProduct>)>,
-          (int, List<FinancialProduct>),
-          FutureOr<(int, List<FinancialProduct>)>,
-          (ProductCategory, int)
+          AsyncValue<List<FinancialProduct>>,
+          List<FinancialProduct>,
+          FutureOr<List<FinancialProduct>>,
+          ProductCategory
         > {
   FetchProductViewmodelFamily._()
     : super(
@@ -75,44 +72,37 @@ final class FetchProductViewmodelFamily extends $Family
         isAutoDispose: true,
       );
 
-  FetchProductViewmodelProvider call(ProductCategory ctg, int pageNo) =>
-      FetchProductViewmodelProvider._(argument: (ctg, pageNo), from: this);
+  FetchProductViewmodelProvider call(ProductCategory ctg) =>
+      FetchProductViewmodelProvider._(argument: ctg, from: this);
 
   @override
   String toString() => r'fetchProductViewmodelProvider';
 }
 
 abstract class _$FetchProductViewmodel
-    extends $AsyncNotifier<(int, List<FinancialProduct>)> {
-  late final _$args = ref.$arg as (ProductCategory, int);
-  ProductCategory get ctg => _$args.$1;
-  int get pageNo => _$args.$2;
+    extends $AsyncNotifier<List<FinancialProduct>> {
+  late final _$args = ref.$arg as ProductCategory;
+  ProductCategory get ctg => _$args;
 
-  FutureOr<(int, List<FinancialProduct>)> build(
-    ProductCategory ctg,
-    int pageNo,
-  );
+  FutureOr<List<FinancialProduct>> build(ProductCategory ctg);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
         this.ref
-            as $Ref<
-              AsyncValue<(int, List<FinancialProduct>)>,
-              (int, List<FinancialProduct>)
-            >;
+            as $Ref<AsyncValue<List<FinancialProduct>>, List<FinancialProduct>>;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                AsyncValue<(int, List<FinancialProduct>)>,
-                (int, List<FinancialProduct>)
+                AsyncValue<List<FinancialProduct>>,
+                List<FinancialProduct>
               >,
-              AsyncValue<(int, List<FinancialProduct>)>,
+              AsyncValue<List<FinancialProduct>>,
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -121,9 +111,9 @@ final productViewmodelProvider = ProductViewmodelFamily._();
 
 final class ProductViewmodelProvider
     extends
-        $AsyncNotifierProvider<
+        $NotifierProvider<
           ProductViewmodel,
-          (int, List<FinancialProduct>)
+          AsyncValue<List<FinancialProduct>>
         > {
   ProductViewmodelProvider._({
     required ProductViewmodelFamily super.from,
@@ -150,6 +140,16 @@ final class ProductViewmodelProvider
   @override
   ProductViewmodel create() => ProductViewmodel();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<FinancialProduct>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<FinancialProduct>>>(
+        value,
+      ),
+    );
+  }
+
   @override
   bool operator ==(Object other) {
     return other is ProductViewmodelProvider && other.argument == argument;
@@ -161,15 +161,15 @@ final class ProductViewmodelProvider
   }
 }
 
-String _$productViewmodelHash() => r'c675ff221435deb374ffc667563e047b3d02fcf7';
+String _$productViewmodelHash() => r'436ef8120336dc79dd55a37900320390169de9d8';
 
 final class ProductViewmodelFamily extends $Family
     with
         $ClassFamilyOverride<
           ProductViewmodel,
-          AsyncValue<(int, List<FinancialProduct>)>,
-          (int, List<FinancialProduct>),
-          FutureOr<(int, List<FinancialProduct>)>,
+          AsyncValue<List<FinancialProduct>>,
+          AsyncValue<List<FinancialProduct>>,
+          AsyncValue<List<FinancialProduct>>,
           ProductCategory
         > {
   ProductViewmodelFamily._()
@@ -189,28 +189,28 @@ final class ProductViewmodelFamily extends $Family
 }
 
 abstract class _$ProductViewmodel
-    extends $AsyncNotifier<(int, List<FinancialProduct>)> {
+    extends $Notifier<AsyncValue<List<FinancialProduct>>> {
   late final _$args = ref.$arg as ProductCategory;
   ProductCategory get ctg => _$args;
 
-  FutureOr<(int, List<FinancialProduct>)> build(ProductCategory ctg);
+  AsyncValue<List<FinancialProduct>> build(ProductCategory ctg);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<
-              AsyncValue<(int, List<FinancialProduct>)>,
-              (int, List<FinancialProduct>)
+              AsyncValue<List<FinancialProduct>>,
+              AsyncValue<List<FinancialProduct>>
             >;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                AsyncValue<(int, List<FinancialProduct>)>,
-                (int, List<FinancialProduct>)
+                AsyncValue<List<FinancialProduct>>,
+                AsyncValue<List<FinancialProduct>>
               >,
-              AsyncValue<(int, List<FinancialProduct>)>,
+              AsyncValue<List<FinancialProduct>>,
               Object?,
               Object?
             >;
