@@ -3,7 +3,6 @@ import 'package:finbrain/data/google_auth_service.dart';
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
 import 'package:finbrain/data/repository/isa_repository.dart';
-import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
@@ -20,7 +19,7 @@ final repository = IsaRepository();
 @riverpod
 class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
   @override
-  Future<List<IsaJoinStatus>> build(int pageNo) async {
+  Future<List<IsaJoinStatus>> build() async {
     try {
       // 저장한 필터 관찰하기
       // Watch saved filter
@@ -38,7 +37,7 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
 
       // ISA 가입 현황 데이터 호출하기
       // Fetch ISA join status
-      final result = await repository.fetchJoinStatus(pageNo, 200, baseYear);
+      final result = await repository.fetchJoinStatus(1, 200, baseYear);
 
       // 필터 적용하기
       // Apply filter to data
@@ -60,7 +59,7 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
 @riverpod
 class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
   @override
-  Future<List<IsaManagementStatus>> build(int pageNo) async {
+  Future<List<IsaManagementStatus>> build() async {
     try {
       // 저장한 필터 관찰하기
       // Watch saved filter
@@ -82,7 +81,7 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
       // ISA 운용 현황 데이터 호출하기
       // Fetch ISA management status
       final result = await repository.fetchManagementStatus(
-        pageNo,
+        1,
         5000,
         baseYear,
         (selectedFilters["구분"]?.first ?? "비중"),
@@ -112,10 +111,9 @@ class IsaStatusViewmodel extends _$IsaStatusViewmodel {
   AsyncValue<List<Object>> build(ProductCategory category) {
     // 데이터 뷰모델 관찰하기
     // Watch fetching isa join status viewmodel
-    final cPage = ref.watch(currentPageViewmodelProvider(category));
     final result = (category == ProductCategory.isaJoin)
-        ? ref.watch(fetchIsaJoinStatusViewmodelProvider(cPage))
-        : ref.watch(fetchIsaMngmStatusViewmodelProvider(cPage));
+        ? ref.watch(fetchIsaJoinStatusViewmodelProvider)
+        : ref.watch(fetchIsaMngmStatusViewmodelProvider);
     // 정렬 기준 읽기
     // Read sort criteria
     final criteria = ref.watch(sortOrFilterTextViewModelProvider(category));

@@ -11,7 +11,7 @@ part of 'isa_viewmodel.dart';
 
 @ProviderFor(FetchIsaJoinStatusViewmodel)
 final fetchIsaJoinStatusViewmodelProvider =
-    FetchIsaJoinStatusViewmodelFamily._();
+    FetchIsaJoinStatusViewmodelProvider._();
 
 final class FetchIsaJoinStatusViewmodelProvider
     extends
@@ -19,77 +19,31 @@ final class FetchIsaJoinStatusViewmodelProvider
           FetchIsaJoinStatusViewmodel,
           List<IsaJoinStatus>
         > {
-  FetchIsaJoinStatusViewmodelProvider._({
-    required FetchIsaJoinStatusViewmodelFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'fetchIsaJoinStatusViewmodelProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  FetchIsaJoinStatusViewmodelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'fetchIsaJoinStatusViewmodelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$fetchIsaJoinStatusViewmodelHash();
 
-  @override
-  String toString() {
-    return r'fetchIsaJoinStatusViewmodelProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
   FetchIsaJoinStatusViewmodel create() => FetchIsaJoinStatusViewmodel();
-
-  @override
-  bool operator ==(Object other) {
-    return other is FetchIsaJoinStatusViewmodelProvider &&
-        other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
 }
 
 String _$fetchIsaJoinStatusViewmodelHash() =>
-    r'c54fb6775dea4aa7e153a6cb8e7d4521f9a8049d';
-
-final class FetchIsaJoinStatusViewmodelFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          FetchIsaJoinStatusViewmodel,
-          AsyncValue<List<IsaJoinStatus>>,
-          List<IsaJoinStatus>,
-          FutureOr<List<IsaJoinStatus>>,
-          int
-        > {
-  FetchIsaJoinStatusViewmodelFamily._()
-    : super(
-        retry: null,
-        name: r'fetchIsaJoinStatusViewmodelProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  FetchIsaJoinStatusViewmodelProvider call(int pageNo) =>
-      FetchIsaJoinStatusViewmodelProvider._(argument: pageNo, from: this);
-
-  @override
-  String toString() => r'fetchIsaJoinStatusViewmodelProvider';
-}
+    r'51ad67abbad0fbc9c2b767a2de9e9839b55c6e09';
 
 abstract class _$FetchIsaJoinStatusViewmodel
     extends $AsyncNotifier<List<IsaJoinStatus>> {
-  late final _$args = ref.$arg as int;
-  int get pageNo => _$args;
-
-  FutureOr<List<IsaJoinStatus>> build(int pageNo);
+  FutureOr<List<IsaJoinStatus>> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
@@ -103,13 +57,13 @@ abstract class _$FetchIsaJoinStatusViewmodel
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(FetchIsaMngmStatusViewmodel)
 final fetchIsaMngmStatusViewmodelProvider =
-    FetchIsaMngmStatusViewmodelFamily._();
+    FetchIsaMngmStatusViewmodelProvider._();
 
 final class FetchIsaMngmStatusViewmodelProvider
     extends
@@ -117,77 +71,31 @@ final class FetchIsaMngmStatusViewmodelProvider
           FetchIsaMngmStatusViewmodel,
           List<IsaManagementStatus>
         > {
-  FetchIsaMngmStatusViewmodelProvider._({
-    required FetchIsaMngmStatusViewmodelFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'fetchIsaMngmStatusViewmodelProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  FetchIsaMngmStatusViewmodelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'fetchIsaMngmStatusViewmodelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$fetchIsaMngmStatusViewmodelHash();
 
-  @override
-  String toString() {
-    return r'fetchIsaMngmStatusViewmodelProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
   FetchIsaMngmStatusViewmodel create() => FetchIsaMngmStatusViewmodel();
-
-  @override
-  bool operator ==(Object other) {
-    return other is FetchIsaMngmStatusViewmodelProvider &&
-        other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
 }
 
 String _$fetchIsaMngmStatusViewmodelHash() =>
-    r'ae6d0fb910dee42e3ab5e38bfd80303539cfe223';
-
-final class FetchIsaMngmStatusViewmodelFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          FetchIsaMngmStatusViewmodel,
-          AsyncValue<List<IsaManagementStatus>>,
-          List<IsaManagementStatus>,
-          FutureOr<List<IsaManagementStatus>>,
-          int
-        > {
-  FetchIsaMngmStatusViewmodelFamily._()
-    : super(
-        retry: null,
-        name: r'fetchIsaMngmStatusViewmodelProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  FetchIsaMngmStatusViewmodelProvider call(int pageNo) =>
-      FetchIsaMngmStatusViewmodelProvider._(argument: pageNo, from: this);
-
-  @override
-  String toString() => r'fetchIsaMngmStatusViewmodelProvider';
-}
+    r'3bd1b742e8c407fd55e5378179d07d84c461b128';
 
 abstract class _$FetchIsaMngmStatusViewmodel
     extends $AsyncNotifier<List<IsaManagementStatus>> {
-  late final _$args = ref.$arg as int;
-  int get pageNo => _$args;
-
-  FutureOr<List<IsaManagementStatus>> build(int pageNo);
+  FutureOr<List<IsaManagementStatus>> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
@@ -208,7 +116,7 @@ abstract class _$FetchIsaMngmStatusViewmodel
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -262,7 +170,7 @@ final class IsaStatusViewmodelProvider
 }
 
 String _$isaStatusViewmodelHash() =>
-    r'5da12852af9d60ab77833fb97fa8d69ccc69d538';
+    r'000fe525511ac315503337f55b48d62737175ae4';
 
 final class IsaStatusViewmodelFamily extends $Family
     with

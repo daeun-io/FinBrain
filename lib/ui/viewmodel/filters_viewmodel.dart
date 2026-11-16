@@ -115,7 +115,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
 
   // 선택한 필터 항목 저장
   // Save selected filter options
-  Future<void> applyChanges(int pageNo) async {
+  Future<void> applyChanges() async {
     final snapshot = Map<String, List<(String, bool)>>.from(state.value ?? {});
 
     // 기준년도 및 회사 업권 뷰모델 업데이트
@@ -153,9 +153,9 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
             );
         switch (ctg) {
           case ProductCategory.isaJoin:
-            ref.read(fetchIsaJoinStatusViewmodelProvider(pageNo));
+            await ref.read(fetchIsaJoinStatusViewmodelProvider.future);
           case ProductCategory.isaManagement:
-            ref.read(fetchIsaMngmStatusViewmodelProvider(pageNo));
+            await ref.read(fetchIsaMngmStatusViewmodelProvider.future);
           default:
             Future.microtask(() {
               ref.invalidate(fetchProductViewmodelProvider(ctg));
