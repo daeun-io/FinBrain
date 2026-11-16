@@ -9,7 +9,7 @@ import 'package:finbrain/data/model/entities/isa_management_status.dart';
 class IsaRepository {
   // 주어진 조건에 따라 ISA 가입 현황 불러오기
   // Get Isa join status with given condition
-  Future<(int, List<IsaJoinStatus>)> fetchJoinStatus(
+  Future<List<IsaJoinStatus>> fetchJoinStatus(
     int pageNo,
     int numOfRows,
     String baseYear,
@@ -29,7 +29,7 @@ class IsaRepository {
           0;
       if (totalCount == 0) {
         debugPrint("[empty] isa join status list is empty");
-        return (0, <IsaJoinStatus>[]);
+        return [];
       }
 
       // 원시 정보 가져와 IsaJoinStatus로 변환
@@ -58,7 +58,7 @@ class IsaRepository {
           })
           .whereType<IsaJoinStatus>()
           .toList();
-      return (totalCount, items);
+      return items;
     } catch (e) {
       throw Exception("[error] failed to fetch isa join status : $e");
     } finally {
@@ -68,7 +68,7 @@ class IsaRepository {
 
   // 주어진 조건에 따라 ISA 운용 현황 불러오기
   // Get Isa management status with given condition
-  Future<(int, List<IsaManagementStatus>)> fetchManagementStatus(
+  Future<List<IsaManagementStatus>> fetchManagementStatus(
     int pageNo,
     int numOfRows,
     String baseYear,
@@ -85,7 +85,7 @@ class IsaRepository {
           0;
       if (totalCount == 0) {
         debugPrint("[empty] isa management status list is empty");
-        return (0, <IsaManagementStatus>[]);
+        return [];
       }
 
       // 원시 정보 가져와 IsaManagementStatus로 변환
@@ -114,7 +114,7 @@ class IsaRepository {
           })
           .whereType<IsaManagementStatus>()
           .toList();
-      return (totalCount, items);
+      return items;
     } catch (e) {
       throw Exception("[error] failed to fetch isa management status : $e");
     } finally {

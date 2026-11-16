@@ -52,7 +52,7 @@ final class FetchProductViewmodelProvider
 }
 
 String _$fetchProductViewmodelHash() =>
-    r'409a95e6ff7caff9f994d861be747149925cc7c2';
+    r'0fdbccbf28c9b32244d751741844343782ce0711';
 
 final class FetchProductViewmodelFamily extends $Family
     with

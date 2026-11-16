@@ -1,7 +1,6 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
 import 'package:finbrain/themes/text_theme.dart';
-import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
@@ -30,65 +29,6 @@ class IsaBaseScreen extends ConsumerStatefulWidget {
 class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
   final ScrollController _controller = ScrollController();
   final GlobalKey _key = GlobalKey();
-  bool _isLoading = false;          // 데이터 로딩 여부(loading data state)
-  late int _cPage;                  // 현재 페이지(current page)
-  int _maxPage = 0;                 // API 데이터 최대 페이지(api data max page)
-
-  @override
-  void initState() {
-    super.initState();
-    // 현재 페이지 불러오기
-    // Fetch current page
-    _cPage = ref.read(currentPageViewmodelProvider(widget.category));
-    _controller.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() async {
-    // 데이터 로딩 중이면 함수 중단
-    // Stop calling function when data is loading
-    if (_isLoading) return;
-    // 현재 페이지 불러오기
-    // Fetch current page
-    _cPage = ref.read(currentPageViewmodelProvider(widget.category));
-    // 현재 스크롤 위치(current scroll position)
-    final position = _controller.position;
-
-    if (position.maxScrollExtent <= 0) return;
-    final statusAsync = ref.read(isaStatusViewmodelProvider(widget.category));
-    if (statusAsync.isLoading) return;
-
-    // 최하단 스크롤 위치에 도달하면 다음 페이지 불러오기(가입 현황)
-    // Fetch next page when reached bottom of the list(join status)
-    if (position.pixels >= position.maxScrollExtent) {
-      if (_cPage < _maxPage) {
-        _isLoading = true;
-        ref
-            .read(currentPageViewmodelProvider(widget.category).notifier)
-            .setCurrentPage(_cPage + 1);
-        _isLoading = false;
-      } else {
-        _isLoading = false;
-      }
-      // 최상단 위치에 도달하면 다음 페이지 불러오기(가입 현황)
-      // Fetch previous page when reached top of the list(join status)
-    } else if (position.pixels <= position.minScrollExtent) {
-      if (_cPage > 1) {
-        _isLoading = true;
-        ref
-            .read(currentPageViewmodelProvider(widget.category).notifier)
-            .setCurrentPage(_cPage - 1);
-        _isLoading = false;
-      } else {
-        _isLoading = false;
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,25 +38,8 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     // 데이터와 헤더 칼럼(data and header column)
     final isaStatus = ref.watch(isaStatusViewmodelProvider(widget.category));
     final column = (widget.category == ProductCategory.isaJoin)
-        ? ["ISA 종류", "회사 수", "가입자 수", "업권값"]
-        : ["ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
-
-    // 데이터 불러오면 상단으로 이동
-    // Move to top after fetching data
-    ref.listen(isaStatusViewmodelProvider(widget.category), (prev, next) {
-      if (next.hasValue && prev?.value != next.value) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          // 최대 개수 불러와 최대 페이지 계산
-          // Fetch total count and calculate maximum page
-          final (totalCount, _) = next.value!;
-          _maxPage = (totalCount == 0) ? 1 : (totalCount - 1) ~/ 200 + 1;
-
-          if (_controller.hasClients) {
-            _controller.jumpTo(0);
-          }
-        });
-      }
-    });
+        ? ["기준일자", "ISA 종류", "회사 수", "가입자 수", "업권값"]
+        : ["기준일자", "ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
     // ISA 가입 및 운용 현황 필터 불러오기
     // Fetch current ISA filter of isa join/management filter
@@ -158,13 +81,9 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         const SizedBox(height: 24.0),
         isaStatus.when(
           data: (data) {
-            final (totalCount, items) = data;
-            if (items.isEmpty) {
+            if (data.isEmpty) {
               return Expanded(
-                child: NoDataFound(
-                  ctg: widget.category,
-                  isProduct: false,
-                ),
+                child: NoDataFound(ctg: widget.category, isProduct: false),
               );
             }
             return Expanded(
@@ -195,7 +114,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                           physics: const BouncingScrollPhysics(),
                           slivers: [
                             const SliverPadding(
-                              padding: EdgeInsets.only(top: 40.0),
+                              padding: EdgeInsets.only(top: 20.0),
                             ),
                             SliverPadding(key: _key, padding: EdgeInsets.zero),
                             SliverList(
@@ -203,7 +122,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                 context,
                                 index,
                               ) {
-                                final item = items[index];
+                                final item = data[index];
                                 return IsaTableRow(
                                   item,
                                   colorScheme.surface,
@@ -211,10 +130,10 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
                                   textTheme.bodyMedium!,
                                   textTheme,
                                 );
-                              }, childCount: items.length),
+                              }, childCount: data.length),
                             ),
                             const SliverPadding(
-                              padding: EdgeInsets.only(bottom: 40.0),
+                              padding: EdgeInsets.only(bottom: 20.0),
                             ),
                           ],
                         ),
@@ -272,13 +191,17 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: [
-          if (widget.category == ProductCategory.isaJoin) ...[
+          if (widget.category == ProductCategory.isaJoin &&
+              (item as IsaJoinStatus).baseDate != null) ...[
             RowCell(
-              (item as IsaJoinStatus).isaForm!,
-              "isaForm",
+              (item.baseDate!.length == 8)
+                  ? "${item.baseDate!.substring(4, 6)}/${item.baseDate!.substring(6)}"
+                  : "${item.baseDate!.substring(4)}/${item.baseDate!.substring(5)}",
+              "date",
               txtColor,
               style,
             ),
+            RowCell(item.isaForm!, "isaForm", txtColor, style),
             RowCell(item.companyCount.toString(), "cmpyCnt", txtColor, style),
             RowCell(
               item.joinMemberCount.toString(),
@@ -287,13 +210,16 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
               style,
             ),
             RowCell(item.category!, "category", txtColor, style),
-          ] else ...[
+          ] else if ((item as IsaManagementStatus).baseDate != null) ...[
             RowCell(
-              (item as IsaManagementStatus).isaForm!,
-              "isaForm",
+              (item.baseDate!.length == 8)
+                  ? "${item.baseDate!.substring(4, 6)}/${item.baseDate!.substring(6)}"
+                  : "${item.baseDate!.substring(4)}/${item.baseDate!.substring(5)}",
+              "date",
               txtColor,
               style,
             ),
+            RowCell(item.isaForm!, "isaForm", txtColor, style),
             RowCell(item.businessDomain!, "bzds", txtColor, style),
             RowCell(item.includeAssetCtg!, "incAstCtg", txtColor, style),
             RowCell(item.category!, "category", txtColor, style),

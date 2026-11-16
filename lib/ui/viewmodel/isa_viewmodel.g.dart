@@ -17,7 +17,7 @@ final class FetchIsaJoinStatusViewmodelProvider
     extends
         $AsyncNotifierProvider<
           FetchIsaJoinStatusViewmodel,
-          (int, List<IsaJoinStatus>)
+          List<IsaJoinStatus>
         > {
   FetchIsaJoinStatusViewmodelProvider._({
     required FetchIsaJoinStatusViewmodelFamily super.from,
@@ -57,15 +57,15 @@ final class FetchIsaJoinStatusViewmodelProvider
 }
 
 String _$fetchIsaJoinStatusViewmodelHash() =>
-    r'2b571d69696730b6f1d8a825dc124fdfc4cff0f6';
+    r'c54fb6775dea4aa7e153a6cb8e7d4521f9a8049d';
 
 final class FetchIsaJoinStatusViewmodelFamily extends $Family
     with
         $ClassFamilyOverride<
           FetchIsaJoinStatusViewmodel,
-          AsyncValue<(int, List<IsaJoinStatus>)>,
-          (int, List<IsaJoinStatus>),
-          FutureOr<(int, List<IsaJoinStatus>)>,
+          AsyncValue<List<IsaJoinStatus>>,
+          List<IsaJoinStatus>,
+          FutureOr<List<IsaJoinStatus>>,
           int
         > {
   FetchIsaJoinStatusViewmodelFamily._()
@@ -85,28 +85,21 @@ final class FetchIsaJoinStatusViewmodelFamily extends $Family
 }
 
 abstract class _$FetchIsaJoinStatusViewmodel
-    extends $AsyncNotifier<(int, List<IsaJoinStatus>)> {
+    extends $AsyncNotifier<List<IsaJoinStatus>> {
   late final _$args = ref.$arg as int;
   int get pageNo => _$args;
 
-  FutureOr<(int, List<IsaJoinStatus>)> build(int pageNo);
+  FutureOr<List<IsaJoinStatus>> build(int pageNo);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
-        this.ref
-            as $Ref<
-              AsyncValue<(int, List<IsaJoinStatus>)>,
-              (int, List<IsaJoinStatus>)
-            >;
+        this.ref as $Ref<AsyncValue<List<IsaJoinStatus>>, List<IsaJoinStatus>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<(int, List<IsaJoinStatus>)>,
-                (int, List<IsaJoinStatus>)
-              >,
-              AsyncValue<(int, List<IsaJoinStatus>)>,
+              AnyNotifier<AsyncValue<List<IsaJoinStatus>>, List<IsaJoinStatus>>,
+              AsyncValue<List<IsaJoinStatus>>,
               Object?,
               Object?
             >;
@@ -122,7 +115,7 @@ final class FetchIsaMngmStatusViewmodelProvider
     extends
         $AsyncNotifierProvider<
           FetchIsaMngmStatusViewmodel,
-          (int, List<IsaManagementStatus>)
+          List<IsaManagementStatus>
         > {
   FetchIsaMngmStatusViewmodelProvider._({
     required FetchIsaMngmStatusViewmodelFamily super.from,
@@ -162,15 +155,15 @@ final class FetchIsaMngmStatusViewmodelProvider
 }
 
 String _$fetchIsaMngmStatusViewmodelHash() =>
-    r'7613085f70ba77ae790bc7318ef56823b1386f6e';
+    r'ae6d0fb910dee42e3ab5e38bfd80303539cfe223';
 
 final class FetchIsaMngmStatusViewmodelFamily extends $Family
     with
         $ClassFamilyOverride<
           FetchIsaMngmStatusViewmodel,
-          AsyncValue<(int, List<IsaManagementStatus>)>,
-          (int, List<IsaManagementStatus>),
-          FutureOr<(int, List<IsaManagementStatus>)>,
+          AsyncValue<List<IsaManagementStatus>>,
+          List<IsaManagementStatus>,
+          FutureOr<List<IsaManagementStatus>>,
           int
         > {
   FetchIsaMngmStatusViewmodelFamily._()
@@ -190,28 +183,28 @@ final class FetchIsaMngmStatusViewmodelFamily extends $Family
 }
 
 abstract class _$FetchIsaMngmStatusViewmodel
-    extends $AsyncNotifier<(int, List<IsaManagementStatus>)> {
+    extends $AsyncNotifier<List<IsaManagementStatus>> {
   late final _$args = ref.$arg as int;
   int get pageNo => _$args;
 
-  FutureOr<(int, List<IsaManagementStatus>)> build(int pageNo);
+  FutureOr<List<IsaManagementStatus>> build(int pageNo);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<
-              AsyncValue<(int, List<IsaManagementStatus>)>,
-              (int, List<IsaManagementStatus>)
+              AsyncValue<List<IsaManagementStatus>>,
+              List<IsaManagementStatus>
             >;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                AsyncValue<(int, List<IsaManagementStatus>)>,
-                (int, List<IsaManagementStatus>)
+                AsyncValue<List<IsaManagementStatus>>,
+                List<IsaManagementStatus>
               >,
-              AsyncValue<(int, List<IsaManagementStatus>)>,
+              AsyncValue<List<IsaManagementStatus>>,
               Object?,
               Object?
             >;
@@ -223,8 +216,7 @@ abstract class _$FetchIsaMngmStatusViewmodel
 final isaStatusViewmodelProvider = IsaStatusViewmodelFamily._();
 
 final class IsaStatusViewmodelProvider
-    extends
-        $NotifierProvider<IsaStatusViewmodel, AsyncValue<(int, List<Object>)>> {
+    extends $NotifierProvider<IsaStatusViewmodel, AsyncValue<List<Object>>> {
   IsaStatusViewmodelProvider._({
     required IsaStatusViewmodelFamily super.from,
     required ProductCategory super.argument,
@@ -251,12 +243,10 @@ final class IsaStatusViewmodelProvider
   IsaStatusViewmodel create() => IsaStatusViewmodel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<(int, List<Object>)> value) {
+  Override overrideWithValue(AsyncValue<List<Object>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<(int, List<Object>)>>(
-        value,
-      ),
+      providerOverride: $SyncValueProvider<AsyncValue<List<Object>>>(value),
     );
   }
 
@@ -272,15 +262,15 @@ final class IsaStatusViewmodelProvider
 }
 
 String _$isaStatusViewmodelHash() =>
-    r'3ba456a792d1d7bbabdb4ee65931d510591bf71f';
+    r'5da12852af9d60ab77833fb97fa8d69ccc69d538';
 
 final class IsaStatusViewmodelFamily extends $Family
     with
         $ClassFamilyOverride<
           IsaStatusViewmodel,
-          AsyncValue<(int, List<Object>)>,
-          AsyncValue<(int, List<Object>)>,
-          AsyncValue<(int, List<Object>)>,
+          AsyncValue<List<Object>>,
+          AsyncValue<List<Object>>,
+          AsyncValue<List<Object>>,
           ProductCategory
         > {
   IsaStatusViewmodelFamily._()
@@ -300,28 +290,21 @@ final class IsaStatusViewmodelFamily extends $Family
 }
 
 abstract class _$IsaStatusViewmodel
-    extends $Notifier<AsyncValue<(int, List<Object>)>> {
+    extends $Notifier<AsyncValue<List<Object>>> {
   late final _$args = ref.$arg as ProductCategory;
   ProductCategory get category => _$args;
 
-  AsyncValue<(int, List<Object>)> build(ProductCategory category);
+  AsyncValue<List<Object>> build(ProductCategory category);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
     final ref =
-        this.ref
-            as $Ref<
-              AsyncValue<(int, List<Object>)>,
-              AsyncValue<(int, List<Object>)>
-            >;
+        this.ref as $Ref<AsyncValue<List<Object>>, AsyncValue<List<Object>>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<(int, List<Object>)>,
-                AsyncValue<(int, List<Object>)>
-              >,
-              AsyncValue<(int, List<Object>)>,
+              AnyNotifier<AsyncValue<List<Object>>, AsyncValue<List<Object>>>,
+              AsyncValue<List<Object>>,
               Object?,
               Object?
             >;

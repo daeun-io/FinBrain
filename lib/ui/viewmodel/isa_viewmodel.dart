@@ -20,7 +20,7 @@ final repository = IsaRepository();
 @riverpod
 class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
   @override
-  Future<(int, List<IsaJoinStatus>)> build(int pageNo) async {
+  Future<List<IsaJoinStatus>> build(int pageNo) async {
     try {
       // 저장한 필터 관찰하기
       // Watch saved filter
@@ -40,16 +40,14 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
       // Fetch ISA join status
       final result = await repository.fetchJoinStatus(pageNo, 200, baseYear);
 
-      final totalCount = result.$1;
-      final status = result.$2;
       // 필터 적용하기
       // Apply filter to data
-      final filtered = status.where((element) {
+      final filtered = result.where((element) {
         return (selectedFilters["업권"] ?? []).contains(element.category) &&
             (selectedFilters["ISA 형태"] ?? []).contains(element.isaForm);
       }).toList();
 
-      return (totalCount, filtered);
+      return filtered;
     } catch (e) {
       debugPrint("[error] failed to isa join status : $e");
       throw Exception("[error] failed to isa join status : $e");
@@ -62,7 +60,7 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
 @riverpod
 class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
   @override
-  Future<(int, List<IsaManagementStatus>)> build(int pageNo) async {
+  Future<List<IsaManagementStatus>> build(int pageNo) async {
     try {
       // 저장한 필터 관찰하기
       // Watch saved filter
@@ -85,25 +83,23 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
       // Fetch ISA management status
       final result = await repository.fetchManagementStatus(
         pageNo,
-        200,
+        5000,
         baseYear,
         (selectedFilters["구분"]?.first ?? "비중"),
       );
 
-      final totalCount = result.$1;
-      final status = result.$2;
       // 필터 적용하기
       // Apply filter to data
-      final filtered = status.where((element) {
+      final filtered = result.where((element) {
         return (selectedFilters["업권"] ?? []).contains(element.businessDomain) &&
             (selectedFilters["ISA 형태"] ?? []).contains(element.isaForm) &&
             (selectedFilters["구분"] ?? []).contains(element.category);
       }).toList();
 
-      return (totalCount, filtered);
+      return filtered;
     } catch (e) {
       debugPrint("[error] failed to fetch isa management status : $e");
-      return (-1, <IsaManagementStatus>[]);
+      return [];
     }
   }
 }
@@ -113,7 +109,7 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
 @riverpod
 class IsaStatusViewmodel extends _$IsaStatusViewmodel {
   @override
-  AsyncValue<(int, List<Object>)> build(ProductCategory category) {
+  AsyncValue<List<Object>> build(ProductCategory category) {
     // 데이터 뷰모델 관찰하기
     // Watch fetching isa join status viewmodel
     final cPage = ref.watch(currentPageViewmodelProvider(category));
@@ -128,9 +124,8 @@ class IsaStatusViewmodel extends _$IsaStatusViewmodel {
     // Apply sorting criteria to data
     return result.when(
       data: (data) {
-        final (totalCount, status) = data;
-        final sorted = sortByCriteria(criteria.$1.toString(), category, status);
-        return AsyncValue.data((totalCount, sorted));
+        final sorted = sortByCriteria(criteria.$1.toString(), category, data);
+        return AsyncValue.data(sorted);
       },
       loading: () => const AsyncValue.loading(),
       error: (error, stackTrace) => AsyncValue.error(
@@ -147,53 +142,31 @@ class IsaStatusViewmodel extends _$IsaStatusViewmodel {
     ProductCategory category, [
     List<Object>? status,
   ]) {
-    final isaStatus =
-        status ?? ((state.value == null) ? [] : [...state.value!.$2]);
+    final isaStatus = status ?? state.value ?? [];
     if (category == ProductCategory.isaJoin) {
       final joinStatus = List.of(isaStatus as List<IsaJoinStatus>);
       final sorted = joinStatus
         ..sort(switch (criteria) {
-          "회사 수(오름차순)" => (a, b) {
-            if (a.companyCount == null && b.companyCount == null) {
+          "날짜순" => (a, b) {
+            if (a.baseDate == null && b.baseDate == null) {
               return 0;
             }
-            if (a.companyCount == null) return 1;
-            if (b.companyCount == null) return -1;
+            if (a.baseDate == null) return 1;
+            if (b.baseDate == null) return -1;
 
-            final comparison = a.companyCount!.compareTo(b.companyCount!);
+            final comparison = a.baseDate!.compareTo(b.baseDate!);
             return comparison;
           },
-          "회사 수(내림차순)" => (a, b) {
-            if (a.companyCount == null && b.companyCount == null) {
-              return 0;
-            }
-
-            if (a.companyCount == null) return 1;
-            if (b.companyCount == null) return -1;
-
-            final comparison = b.companyCount!.compareTo(a.companyCount!);
-            return comparison;
-          },
-          "가입자 수(오름차순)" => (a, b) {
-            if (a.joinMemberCount == null && b.joinMemberCount == null) {
-              return 0;
-            }
-
-            if (a.joinMemberCount == null) return 1;
-            if (b.joinMemberCount == null) return -1;
-
-            final comparison = a.joinMemberCount!.compareTo(b.joinMemberCount!);
-            return comparison;
-          },
+          // "최신순"
           _ => (a, b) {
-            if (a.joinMemberCount == null && b.joinMemberCount == null) {
+            if (a.baseDate == null && b.baseDate == null) {
               return 0;
             }
 
-            if (a.joinMemberCount == null) return 1;
-            if (b.joinMemberCount == null) return -1;
+            if (a.baseDate == null) return 1;
+            if (b.baseDate == null) return -1;
 
-            final comparison = b.joinMemberCount!.compareTo(a.joinMemberCount!);
+            final comparison = b.baseDate!.compareTo(a.baseDate!);
             return comparison;
           },
         });
@@ -201,26 +174,30 @@ class IsaStatusViewmodel extends _$IsaStatusViewmodel {
     } else {
       final mngmStatus = List.of(isaStatus as List<IsaManagementStatus>);
       final sorted = mngmStatus
-        ..sort(
-          (criteria == "금액/비율(오름차순)")
-              ? ((a, b) {
-                  if (a.amount == null && b.amount == null) {
-                    return 0;
-                  }
+        ..sort(switch (criteria) {
+          "날짜순" => (a, b) {
+            if (a.baseDate == null && b.baseDate == null) {
+              return 0;
+            }
+            if (a.baseDate == null) return 1;
+            if (b.baseDate == null) return -1;
 
-                  if (a.amount == null) return 1;
-                  if (b.amount == null) return -1;
-                  return a.amount!.compareTo(b.amount!);
-                })
-              : ((a, b) {
-                  if (a.amount == null && b.amount == null) {
-                    return 0;
-                  }
-                  if (a.amount == null) return 1;
-                  if (b.amount == null) return -1;
-                  return b.amount!.compareTo(a.amount!);
-                }),
-        );
+            final comparison = a.baseDate!.compareTo(b.baseDate!);
+            return comparison;
+          },
+          // "최신순"
+          _ => (a, b) {
+            if (a.baseDate == null && b.baseDate == null) {
+              return 0;
+            }
+
+            if (a.baseDate == null) return 1;
+            if (b.baseDate == null) return -1;
+
+            final comparison = b.baseDate!.compareTo(a.baseDate!);
+            return comparison;
+          },
+        });
       return sorted;
     }
   }
@@ -235,7 +212,8 @@ class IsaTutorialViemodel extends _$IsaTutorialViemodel {
   @override
   Future<bool> build() async {
     final user = GoogleAuthService.getCurrentUser();
-    if (user == null || user.displayName == null || user.email == null) return true;
+    if (user == null || user.displayName == null || user.email == null)
+      return true;
     return userDataSource.readIsaTutorial(user);
   }
 
