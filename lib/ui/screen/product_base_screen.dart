@@ -20,24 +20,8 @@ class ProductBaseScreen extends ConsumerStatefulWidget {
 }
 
 class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
-  final ScrollController _controller = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    // 현재 페이지와 상품 상태 관찰하기
-    // Watch current page and product state
-    //final cPage = ref.watch(currentPageViewmodelProvider(widget.category));
     final productState = ref.watch(productViewmodelProvider(widget.category));
 
     return Padding(

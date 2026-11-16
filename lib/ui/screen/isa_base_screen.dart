@@ -55,7 +55,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
     if (_isLoading) return;
     // 현재 페이지 불러오기
     // Fetch current page
-    final _cPage = ref.read(currentPageViewmodelProvider(widget.category));
+    _cPage = ref.read(currentPageViewmodelProvider(widget.category));
     // 현재 스크롤 위치(current scroll position)
     final position = _controller.position;
 

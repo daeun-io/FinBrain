@@ -1,7 +1,5 @@
 import 'package:finbrain/data/data_source/isa_data_source.dart';
-import 'package:finbrain/data/model/request/isa_search_options.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
@@ -9,27 +7,21 @@ import 'package:finbrain/data/model/entities/isa_management_status.dart';
 // ISA 다모아 데이터 레포지토리
 // Repository for ISA join and management status
 class IsaRepository {
-
   // 주어진 조건에 따라 ISA 가입 현황 불러오기
   // Get Isa join status with given condition
   Future<(int, List<IsaJoinStatus>)> fetchJoinStatus(
-    String pageNo,
-    String numOfRows,
-    String baseYearMonth,
+    int pageNo,
+    int numOfRows,
+    String baseYear,
   ) async {
     final client = http.Client();
     final dataStore = IsaRemoteDataSource(client);
-    final options = IsaSearchOptions(
-      serviceKey: dotenv.env["PUBLIC_API"] ?? "",
-      resultType: "json",
-      pageNo: pageNo,
-      numOfRows: numOfRows,
-      baseYearMonth: baseYearMonth,
-    );
 
     try {
       final Map<String, dynamic> result = await dataStore.fetchJoinStatus(
-        options,
+        pageNo,
+        numOfRows,
+        baseYear,
       );
 
       final totalCount =
@@ -77,23 +69,16 @@ class IsaRepository {
   // 주어진 조건에 따라 ISA 운용 현황 불러오기
   // Get Isa management status with given condition
   Future<(int, List<IsaManagementStatus>)> fetchManagementStatus(
-    String pageNo,
-    String numOfRows,
-    String baseYearMonth,
+    int pageNo,
+    int numOfRows,
+    String baseYear,
     String ctg,
   ) async {
     final client = http.Client();
     final dataStore = IsaRemoteDataSource(client);
-    final options = IsaSearchOptions(
-      serviceKey: dotenv.env["PUBLIC_API"] ?? "",
-      resultType: "json",
-      pageNo: pageNo,
-      numOfRows: numOfRows,
-      baseYearMonth: baseYearMonth,
-    );
     try {
       final Map<String, dynamic> response = await dataStore
-          .fetchManagementStatus(options, ctg);
+          .fetchManagementStatus(pageNo, numOfRows, baseYear, ctg);
 
       final totalCount =
           int.tryParse(response["response"]["body"]["totalCount"].toString()) ??

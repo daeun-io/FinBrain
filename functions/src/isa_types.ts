@@ -11,6 +11,10 @@ export interface IsaMp {
 
 export interface Option {
   basDt: string;
+  termAndRate: TermAndRate[];
+}
+
+export interface TermAndRate {
   trm: string;
   bnfRt: string;
 }

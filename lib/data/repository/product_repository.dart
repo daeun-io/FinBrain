@@ -9,10 +9,8 @@ import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate_option.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
-import 'package:finbrain/data/model/request/isa_search_options.dart';
 import 'package:finbrain/data/repository/liked_repository.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finbrain/data/data_source/product_data_source.dart';
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/product_categories.dart';
@@ -540,19 +538,12 @@ class ProductRepository {
   // Get ISA products without filters
   Future<(int, List<FinancialProduct>)> fetchIsaMpProductsAndCount(
     String uid,
-    String pageNo,
-    String numOfRows,
-    String baseYearMonth,
-  ) async {
+    String baseYear, [
+    List<String>? bzds,
+    List<String>? mpTp,
+  ]) async {
     final client = http.Client();
     final dataStore = ProductRemoteDataSource(client);
-    final options = IsaSearchOptions(
-      serviceKey: dotenv.env["PUBLIC_API"] ?? "",
-      resultType: "json",
-      pageNo: pageNo,
-      numOfRows: numOfRows,
-      baseYearMonth: baseYearMonth,
-    );
 
     try {
       // 좋아요 리스트를 불러와 동적으로 좋아요 상태 반영하기
@@ -560,7 +551,7 @@ class ProductRepository {
       _cachedLikedPrdtCodes ??= (await likedRepository.getLikedProducts(
         uid,
       )).map((e) => e.commonInfo.productName).whereType<String>().toList();
-      final response = await dataStore.fetchIsaMpProducts(options);
+      final response = await dataStore.fetchIsaProducts(baseYear, bzds, mpTp);
 
       if (response["response"] == null ||
           response["response"]["body"] == null) {
@@ -590,27 +581,30 @@ class ProductRepository {
                 element["mpNm"] == null) {
               return null;
             }
-            final itemOptions =
-                ((element["options"] is! List) || element["options"].isEmpty)
-                ? []
-                : element["options"];
+
             // 정렬용 값 구하기
             // Calculate profits for sorting
-            final List options = (itemOptions is List)
-                ? itemOptions
-                : [itemOptions];
-            final profits =
-                options
-                    .map((e) => double.tryParse(e["bnfRt"].toString()))
+            final productOptions = (element["options"] is List)
+                ? element["options"]
+                : [element["options"]];
+            final List options = (productOptions is List)
+                ? productOptions
+                : [productOptions];
+            final List trmAndRt = options
+                .map((e) => e["termAndRate"])
+                .expand((value) => value)
+                .toList();
+            final List<double> profits =
+                trmAndRt
+                    .map((e) => double.tryParse(e["bnfRt"] ?? ""))
                     .whereType<double>()
                     .toList()
-                  ..sorted((a, b) => a.compareTo(b));
+                  ..sort((a, b) => a.compareTo(b));
             final middle = profits.length ~/ 2;
             final averageProfit = profits.average;
             final medianProfit = (profits.length % 2 == 1)
                 ? profits[middle]
                 : (profits[middle - 1] + profits[middle]) / 2;
-
             try {
               return IsaMpBenefitRate(
                 category: ProductCategory.isaMp,
@@ -620,19 +614,24 @@ class ProductRepository {
                 isLiked: (_cachedLikedPrdtCodes ?? []).contains(
                   element["mpNm"],
                 ),
-                baseDate: element["basDt"].toString(),
                 businessDomain: element["bzds"].toString(),
                 mpType: element["mpTp"].toString(),
                 avgProfit: averageProfit,
                 medProfit: medianProfit,
-                options: itemOptions
-                    .map<IsaMpBenefitRateOption>(
-                      (e) => IsaMpBenefitRateOption(
-                        term: e["trm"].toString(),
-                        benefitRate: double.tryParse(e["bnfRt"].toString()),
-                      ),
-                    )
-                    .toList(),
+                options: options.map<IsaMpBenefitRateOption>((e) {
+                  final List trmAndRate = e["termAndRate"];
+                  return IsaMpBenefitRateOption(
+                    baseDate: e["basDt"].toString(),
+                    termAndRate: trmAndRate
+                        .map<TermAndRate>(
+                          (value) => TermAndRate(
+                            term: value["trm"],
+                            benefitRate: value["bnfRt"],
+                          ),
+                        )
+                        .toList().reversed.toList(),
+                  );
+                }).toList(),
               );
             } catch (e) {
               throw Exception("[error] failed to map isa mp products : $e");
@@ -642,7 +641,10 @@ class ProductRepository {
           .toList()
           .cast<FinancialProduct>();
       return (totalCount, items);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print("🍊 [error] ISA fetch 실패, $e");
+      print("🍊 [stacktrace] 오류 위치 확인");
+      print(stackTrace);
       throw Exception("[error] failed to fetch isa mp products : $e");
     } finally {
       client.close();

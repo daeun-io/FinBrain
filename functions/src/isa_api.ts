@@ -17,7 +17,7 @@ export const fetchIsaProducts = onRequest(async (request, response) => {
     Object.entries(request.query ?? {}).forEach(([key, value]) => {
       if (key === "pageNo" || key === "numOfRows") return;
 
-      if (key === "mpTp") {
+      if (key === "mpTp" || key === "bzds") {
         // mpType은 배열로 들어온다고 가정 (단일 값이어도 안전하게 배열로 변환)
         mpTypes = (Array.isArray(value) ? value : [value]).map(String);
         return; // 일반 파라미터 처리에서 제외, 아래에서 별도 판단

@@ -35,7 +35,7 @@ class ProductRemoteDataSource {
       category: category,
       topFinGrpNo: topFinGrpNo,
       selectedCompany: selectedCompany,
-      selectedJoinWay: selectedJoinWay
+      selectedJoinWay: selectedJoinWay,
     );
 
     final uri = Uri.https(
@@ -59,27 +59,34 @@ class ProductRemoteDataSource {
 
   // 필터링 조건 없이 모든 ISA 상품 불러오기
   // Get ISA products without filters
-  Future<Map<String, dynamic>> fetchIsaMpProducts(
-    IsaSearchOptions options,
-  ) async {
-    final queryParams = {
-      ...options.toQueryParams(),
-      "bzds": "",
-      "mpTp": "",
-      "likeCmpyNm": "",
-    };
-    final uri = Uri.https(firebase, "/fetchAndGroupProducts", queryParams);
+  Future<Map<String, dynamic>> fetchIsaProducts(
+    String baseYear, [
+    List<String>? bzds,
+    List<String>? mpTp,
+  ]) async {
+    final key = dotenv.env["PUBLIC_API"] ?? "";
+    final params = IsaSearchOptions(
+      serviceKey: key,
+      baseYear: baseYear,
+      bzds: bzds,
+      mpTp: mpTp,
+    );
+    
+    final uri = Uri.https(firebase, "/fetchIsaProducts", params.toQueryParams());
 
     try {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {
+        print("🍈 [success] ISA 상품 로딩 성공");
         return jsonDecode(res.body) as Map<String, dynamic>;
       } else {
+        print("🍈 [error] ISA 상품 로딩 실패");
         throw Exception(
           "[error] failed to load isa mp products : ${res.statusCode}, ${res.body}",
         );
       }
     } catch (e) {
+      print("🍈 [error] ISA 상품 로딩 실패");
       throw Exception("[error] failed to load isa mp products : $e");
     }
   }

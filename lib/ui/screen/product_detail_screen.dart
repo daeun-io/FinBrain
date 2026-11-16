@@ -636,7 +636,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           "연체이자율: ${(product.delayRate == null || product.delayRate == "null") ? "미제공" : replace(product.delayRate!)}\n",
           defaultTxtStyle,
         ),
-      ] else
+      ] else // IsaMP
         DetailTableFrame(
           category,
           (product as IsaMpBenefitRate).options,
@@ -840,28 +840,29 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ],
       );
     } else {
-      return Table(
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        border: TableBorder.all(color: colorScheme.outline),
+      // IsaMP
+      return Column(
         children: [
-          DetailTableRow(
-            ("기간", "수익률"),
-            true,
-            textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
-          ),
-          for (final option in options as List<IsaMpBenefitRateOption>) ...[
-            if (option.term != null && option.benefitRate != null)
-              DetailTableRow(
-                (
-                  option.term!,
-                  (option.benefitRate == null)
-                      ? "미제공"
-                      : option.benefitRate.toString(),
-                ),
-                false,
-                textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
+          for (final option in options as List<IsaMpBenefitRateOption>)
+            if (option.baseDate != null) ...[
+              TextFrame(addSlash(option.baseDate!), defaultTxtStyle),
+              const SizedBox(height: 8),
+              Table(
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                border: TableBorder.all(color: colorScheme.outline),
+                children: [
+                  DetailTableRow(("기간", "수익률"), true, defaultTxtStyle),
+                  for (final trmAndRt in option.termAndRate)
+                    if (trmAndRt.term != null)
+                      DetailTableRow(
+                        (trmAndRt.term!, trmAndRt.benefitRate ?? "미제공"),
+                        false,
+                        defaultTxtStyle,
+                      ),
+                ],
               ),
-          ],
+              const SizedBox(height: 16),
+            ],
         ],
       );
     }

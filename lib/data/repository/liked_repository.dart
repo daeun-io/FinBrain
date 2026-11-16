@@ -271,44 +271,49 @@ class LikedRepository {
                   earlyRepayFee: map["earlyRepayFee"],
                   delayRate: map["delayRate"],
                   useWay: map["useWay"],
-                  options: map["options"].map(
-                    (e) => BusinessLoanOption(
-                      minRate: e["minRate"],
-                      maxRate: e["maxRate"],
-                      avgRate: e["avgRate"],
-                      loanGradeOver900: e["loanGradeOver900"],
-                      loanGrade801900: e["loanGrade801900"],
-                      loanGrade701800: e["loanGrade701800"],
-                      loanGrade601700: e["loanGrade601700"],
-                      loanGrade501600: e["loanGrade501600"],
-                      loanGrade401500: e["loanGrade401500"],
-                      loanGrade301400: e["loanGrade301400"],
-                      loanGradeUnder300: e["loanGradeUnder300"],
-                      loanGradeAvg: e["loanGradeAvg"],
-                      baseGradeOver900: e["baseGradeOver900"],
-                      baseGrade801900: e["baseGrade801900"],
-                      baseGrade701800: e["baseGrade701800"],
-                      baseGrade601700: e["baseGrade601700"],
-                      baseGrade501600: e["baseGrade501600"],
-                      baseGrade401500: e["baseGrade401500"],
-                      baseGrade301400: e["baseGrade301400"],
-                      baseGradeUnder300: e["baseGradeUnder300"],
-                      baseGradeAvg: e["baseGradeAvg"],
-                      marginGradeOver900: e["marginGradeOver900"],
-                      marginGrade801900: e["marginGrade801900"],
-                      marginGrade701800: e["marginGrade701800"],
-                      marginGrade601700: e["marginGrade601700"],
-                      marginGrade501600: e["marginGrade501600"],
-                      marginGrade401500: e["marginGrade401500"],
-                      marginGrade301400: e["marginGrade301400"],
-                      marginGradeUnder300: e["marginGradeUnder300"],
-                      marginGradeAvg: e["marginGradeAvg"],
-                    ),
-                  ).toList().cast<BusinessLoanOption>(),
+                  options: map["options"]
+                      .map(
+                        (e) => BusinessLoanOption(
+                          minRate: e["minRate"],
+                          maxRate: e["maxRate"],
+                          avgRate: e["avgRate"],
+                          loanGradeOver900: e["loanGradeOver900"],
+                          loanGrade801900: e["loanGrade801900"],
+                          loanGrade701800: e["loanGrade701800"],
+                          loanGrade601700: e["loanGrade601700"],
+                          loanGrade501600: e["loanGrade501600"],
+                          loanGrade401500: e["loanGrade401500"],
+                          loanGrade301400: e["loanGrade301400"],
+                          loanGradeUnder300: e["loanGradeUnder300"],
+                          loanGradeAvg: e["loanGradeAvg"],
+                          baseGradeOver900: e["baseGradeOver900"],
+                          baseGrade801900: e["baseGrade801900"],
+                          baseGrade701800: e["baseGrade701800"],
+                          baseGrade601700: e["baseGrade601700"],
+                          baseGrade501600: e["baseGrade501600"],
+                          baseGrade401500: e["baseGrade401500"],
+                          baseGrade301400: e["baseGrade301400"],
+                          baseGradeUnder300: e["baseGradeUnder300"],
+                          baseGradeAvg: e["baseGradeAvg"],
+                          marginGradeOver900: e["marginGradeOver900"],
+                          marginGrade801900: e["marginGrade801900"],
+                          marginGrade701800: e["marginGrade701800"],
+                          marginGrade601700: e["marginGrade601700"],
+                          marginGrade501600: e["marginGrade501600"],
+                          marginGrade401500: e["marginGrade401500"],
+                          marginGrade301400: e["marginGrade301400"],
+                          marginGradeUnder300: e["marginGradeUnder300"],
+                          marginGradeAvg: e["marginGradeAvg"],
+                        ),
+                      )
+                      .toList()
+                      .cast<BusinessLoanOption>(),
                 ),
               );
             } catch (e) {
-              throw Exception("[error] failed to map business loan product : $e");
+              throw Exception(
+                "[error] failed to map business loan product : $e",
+              );
             }
             break;
           default:
@@ -331,7 +336,6 @@ class LikedRepository {
                   productName: map["productName"],
                   releaseDate: map["releaseDate"],
                   isLiked: map["isLiked"],
-                  baseDate: map["baseDate"],
                   businessDomain: map["businessDomain"],
                   mpType: map["mpType"],
                   avgProfit:
@@ -344,9 +348,12 @@ class LikedRepository {
                       : map["medProfit"],
                   options: map["options"]
                       .map(
-                        (e) => IsaMpBenefitRateOption(
-                          term: e["term"],
-                          benefitRate: e["benefitRate"],
+                        (element) => IsaMpBenefitRateOption(
+                          baseDate: element["baseDate"],
+                          termAndRate: element["termAndRate"].map(
+                            (e) =>
+                                TermAndRate(term: e.trm, benefitRate: e.bnfRt),
+                          ),
                         ),
                       )
                       .toList()

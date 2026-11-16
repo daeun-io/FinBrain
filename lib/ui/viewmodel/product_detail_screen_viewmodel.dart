@@ -14,8 +14,7 @@ class ProductDetailScreenViewmodel extends _$ProductDetailScreenViewmodel {
   @override
   Future<bool> build() async {
     final user = GoogleAuthService.getCurrentUser();
-    if (user == null || user.displayName == null || user.email == null)
-      return true;
+    if (user == null || user.displayName == null || user.email == null) return true;
     return userDataSource.readProductDetailTutorial(user);
   }
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:finbrain/data/api_constants.dart';
-import 'package:finbrain/data/model/request/isa_search_options.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class IsaRemoteDataSource {
@@ -9,9 +9,21 @@ class IsaRemoteDataSource {
 
   // 주어진 조건에 따라 ISA 가입 현황 불러오기
   // Get Isa join status with given condition
-  Future<Map<String, dynamic>> fetchJoinStatus(IsaSearchOptions options) async {
-    final queryParams = {...options.toQueryParams()};
-    final uri = Uri.https(public, '$isa/getJoinStatus_V2', queryParams);
+  Future<Map<String, dynamic>> fetchJoinStatus(
+    int pageNo,
+    int numOfRows,
+    String baseYear
+  ) async {
+    final key = dotenv.env["PUBLIC_API"] ?? "";
+    final params = {
+      "serviceKey": key,
+      "resultType": "json",
+      "pageNo": pageNo.toString(),
+      "numOfRows": numOfRows.toString(),
+      "likeBasDt": baseYear,
+    };
+
+    final uri = Uri.https(public, '$isa/getJoinStatus_V2', params);
 
     try {
       final res = await _client.get(uri);
@@ -30,11 +42,21 @@ class IsaRemoteDataSource {
   // 주어진 조건에 따라 ISA 운용 현황 불러오기
   // Get Isa management status with given condition
   Future<Map<String, dynamic>> fetchManagementStatus(
-    IsaSearchOptions options,
+    int pageNo,
+    int numOfRows,
+    String baseYear,
     String ctg,
   ) async {
-    final queryParams = {...options.toQueryParams(), "ctg": ctg};
-    final uri = Uri.http(public, '$isa/getManagementStatus_V2', queryParams);
+    final key = dotenv.env["PUBLIC_API"] ?? "";
+    final params = {
+      "serviceKey": key,
+      "resultType": "json",
+      "pageNo": pageNo.toString(),
+      "numOfRows": numOfRows.toString(),
+      "likeBasDt": baseYear,
+      "ctg": ctg,
+    };
+    final uri = Uri.http(public, '$isa/getManagementStatus_V2', params);
     try {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {

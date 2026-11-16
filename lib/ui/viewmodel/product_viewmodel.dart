@@ -61,9 +61,9 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
         return (ctg == ProductCategory.isaMp)
             ? await repository.fetchIsaMpProductsAndCount(
                 user.uid,
-                "1",
-                "100",
                 baseYear.toString(),
+                selectedFilters["업권"],
+                selectedFilters["MP 종류"],
               )
             : await repository.fetchFinlifeProductsAndPageNo(
                 user.uid,
@@ -73,9 +73,11 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
                 selectedFilters["가입 방법"],
               );
       } else {
+        print("🍋 [error] filter가 null");
         throw Exception("[error] filter is null");
       }
     } catch (e) {
+      print("🍋 [error] 금융 상품 fetch 실패");
       throw Exception("[error] failed to financial products : $e");
     }
   }
@@ -127,114 +129,25 @@ class ProductViewmodel extends _$ProductViewmodel {
     // 데이터, 필터, 기준 관찰하기
     // Watch data, filter and sorting criteria
     final criteria = ref.watch(sortOrFilterTextViewModelProvider(ctg));
-    final filters = ref.watch(savedFiltersProvider(ctg));
     final result = ref.watch(fetchProductViewmodelProvider(ctg));
 
-    if (![
-      ProductCategory.isaMp,
-      ProductCategory.isaJoin,
-      ProductCategory.isaManagement,
-    ].contains(ctg)) {
-      return result.when(
-        data: (data) {
-          final sorted = sortByCriteria(
-            criteria.$1.toString(),
-            ctg,
-            result.value!.$2,
-          );
-          return AsyncData((result.value!.$1, sorted));
-        },
-        error: (error, stackTrace) => AsyncError(error, stackTrace),
-        loading: () => const AsyncLoading(),
-      );
-    } else {
-      if (filters.value != null) {
-        // 선택된 필터 추출
-        // Extract selected filter value
-        Map<String, List<String>> selectedFilters = {};
-        for (final entry in filters.value!.entries) {
-          selectedFilters[entry.key] = entry.value
-              .where((e) => e.$2 == true)
-              .map((e) => e.$1)
-              .toList();
-        }
-
-        if (selectedFilters["회사 선택"] != null &&
-            selectedFilters["회사 선택"]!.isEmpty) {
-          final List<String> companies = [];
-          for (final filter in filters.value!["회사 선택"]!) {
-            companies.add(filter.$1);
-          }
-          selectedFilters["회사 선택"] = companies;
-        }
-
-        final maxPage = result.value!.$1;
-        final products = result.value!.$2;
-
-        // 회사명과 상품명이 중복되는 데이터 제거하기
-        // Delete duplicated data where company and product name is same
-        final Set<String> finalSeenKeys = {};
-        final List<FinancialProduct> distinctProducts = [];
-
-        for (var prdt in products) {
-          final company = prdt.commonInfo.companyName!
-              .replaceAll(' ', '')
-              .trim();
-          final product = prdt.commonInfo.productName!
-              .replaceAll(' ', '')
-              .trim();
-          final key = "${company}_$product";
-
-          if (finalSeenKeys.add(key)) {
-            distinctProducts.add(prdt);
-          }
-        }
-
-        // 필터 적용하기
-        // Apply filter to data
-        final selectedCtg = (selectedFilters["업권"] ?? []).toSet();
-        final selectedMP = (selectedFilters["MP 종류"] ?? []).toSet();
-        final selectedCmp = (selectedFilters["회사 선택"] ?? []).toSet();
-        final selectedJoinWay =
-            (selectedFilters["가입 방법"] ??
-                    ["영업점", "인터넷", "스마트폰", "모집인", "전화(텔레뱅킹)", "기타"])
-                .toSet();
-
-        final filtered = (ctg == ProductCategory.isaMp)
-            ? distinctProducts
-                  .where(
-                    (element) =>
-                        selectedCtg.contains(
-                          (element as IsaMpBenefitRate).businessDomain,
-                        ) &&
-                        selectedMP.contains(element.mpType),
-                  )
-                  .toList()
-            : distinctProducts
-                  .where(
-                    (element) =>
-                        selectedCmp.contains(element.commonInfo.companyName) &&
-                        element.commonInfo.joinWay!.any(
-                          (e) => selectedJoinWay.contains(e),
-                        ),
-                  )
-                  .toList();
-
-        // 데이터 정렬하기
-        // Sort financial products
-        final sorted = sortByCriteria(criteria.$1.toString(), ctg, filtered);
-        return AsyncData((maxPage, sorted));
-      } else {
-        return AsyncData((-1, <FinancialProduct>[]));
-      }
-    }
+    return result.when(
+      data: (data) {
+        final sorted = sortByCriteria(
+          criteria.$1.toString(),
+          result.value!.$2,
+        );
+        return AsyncData((result.value!.$1, sorted));
+      },
+      error: (error, stackTrace) => AsyncError(error, stackTrace),
+      loading: () => const AsyncLoading(),
+    );
   }
 
   // 데이터 정렬하기
   // Sort data by criteria
   List<FinancialProduct> sortByCriteria(
-    String criteria,
-    ProductCategory category, [
+    String criteria, [
     List<FinancialProduct>? prdt,
   ]) {
     final products =
@@ -412,7 +325,7 @@ class ProductViewmodel extends _$ProductViewmodel {
       final products = (original.value == null)
           ? <FinancialProduct>[]
           : original.value!.$2;
-      final sorted = sortByCriteria(criteria.$1.toString(), ctg, products);
+      final sorted = sortByCriteria(criteria.$1.toString(), products);
       state = AsyncValue.data((maxPage, sorted));
     }
   }

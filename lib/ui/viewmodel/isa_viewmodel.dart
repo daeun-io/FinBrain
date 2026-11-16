@@ -38,11 +38,7 @@ class FetchIsaJoinStatusViewmodel extends _$FetchIsaJoinStatusViewmodel {
 
       // ISA 가입 현황 데이터 호출하기
       // Fetch ISA join status
-      final result = await repository.fetchJoinStatus(
-        pageNo.toString(),
-        "200",
-        baseYear,
-      );
+      final result = await repository.fetchJoinStatus(pageNo, 200, baseYear);
 
       final totalCount = result.$1;
       final status = result.$2;
@@ -88,8 +84,8 @@ class FetchIsaMngmStatusViewmodel extends _$FetchIsaMngmStatusViewmodel {
       // ISA 운용 현황 데이터 호출하기
       // Fetch ISA management status
       final result = await repository.fetchManagementStatus(
-        pageNo.toString(),
-        "200",
+        pageNo,
+        200,
         baseYear,
         (selectedFilters["구분"]?.first ?? "비중"),
       );
@@ -154,7 +150,7 @@ class IsaStatusViewmodel extends _$IsaStatusViewmodel {
     final isaStatus =
         status ?? ((state.value == null) ? [] : [...state.value!.$2]);
     if (category == ProductCategory.isaJoin) {
-      final joinStatus = List.of(isaStatus as List<IsaJoinStatus>) ;
+      final joinStatus = List.of(isaStatus as List<IsaJoinStatus>);
       final sorted = joinStatus
         ..sort(switch (criteria) {
           "회사 수(오름차순)" => (a, b) {
@@ -228,7 +224,6 @@ class IsaStatusViewmodel extends _$IsaStatusViewmodel {
       return sorted;
     }
   }
-
 }
 
 // 파이어스토어의 ISA 튜토리얼 패러미터 다루기
@@ -240,13 +235,13 @@ class IsaTutorialViemodel extends _$IsaTutorialViemodel {
   @override
   Future<bool> build() async {
     final user = GoogleAuthService.getCurrentUser();
-    if(user == null || user.displayName == null || user.email == null) return true;
+    if (user == null || user.displayName == null || user.email == null) return true;
     return userDataSource.readIsaTutorial(user);
   }
 
   Future<void> setReadIsaTutorialToTrue() async {
     final user = GoogleAuthService.getCurrentUser();
-    if(user == null || user.email == null || user.displayName == null) return;
+    if (user == null || user.email == null || user.displayName == null) return;
     return userDataSource.setReadIsaTutorialToTrue();
   }
 }
