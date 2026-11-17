@@ -83,6 +83,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: ProductItem(
                     productCode: data[index].commonInfo.productCode ?? "ISA_MP",
+                    companyName: data[index].commonInfo.companyName!,
                     productName: data[index].commonInfo.productName!,
                     category: data[index].commonInfo.category,
                     fromLikedScreen: false,

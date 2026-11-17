@@ -228,6 +228,7 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
                 case "상세 화면 및 AI 채팅":
                   return const ProductDetailScreen(
                     productCode: "tutorial",
+                    companyName: "우리은행",
                     productName: "우리웰리치 주거래예금",
                     category: ProductCategory.deposit,
                     fromLikedScreen: false,

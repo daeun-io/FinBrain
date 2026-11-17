@@ -31,6 +31,7 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
   const ProductDetailScreen({
     super.key,
     required this.productCode,
+    required this.companyName,
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
@@ -38,6 +39,7 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
   });
 
   final String productCode;
+  final String companyName;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
@@ -149,8 +151,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         final product = data
             .where(
               (e) => (widget.category == ProductCategory.isaMp)
-                  ? e.commonInfo.productName == widget.productName
-                  : e.commonInfo.productCode == widget.productCode,
+                  ? e.commonInfo.productName == widget.productName &&
+                        e.commonInfo.companyName == widget.companyName
+                  : e.commonInfo.productCode == widget.productCode &&
+                        e.commonInfo.companyName == widget.companyName,
             )
             .firstOrNull;
         // 상품이 없을 경우 원래 화면으로 돌아가기

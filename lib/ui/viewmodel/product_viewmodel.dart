@@ -50,15 +50,36 @@ class FetchProductViewmodel extends _$FetchProductViewmodel {
               .toList();
         }
 
-        if (selectedFilters["회사 선택"] != null &&
-            selectedFilters["회사 선택"]!.isEmpty) {
-          final List<String> companies = [];
-          for (final filter in filters.value!["회사 선택"]!) {
-            companies.add(filter.$1);
-          }
-          selectedFilters["회사 선택"] = companies;
-        }
-
+        final companies = filters.value!["회사 선택"]!
+            .where((element) => element.$2 == true,)
+            .map(
+              (e) => switch (topFinGrpNo) {
+                "050000" => (e.$1 != "생명보험협회") ? "${e.$1}주식회사" : e.$1,
+                "030200" => switch (e.$1) {
+                  "오케이캐피탈" => "오케이캐피탈 ㈜",
+                  "아이비케이캐피탈" ||
+                  "애큐온캐피탈" ||
+                  "에이치비캐피탈" ||
+                  "아이엠캐피탈" ||
+                  "에코캐피탈" ||
+                  "케이비국민카드" ||
+                  "우리카드" ||
+                  "블루코너캐피탈" ||
+                  "마스턴캐피탈" => "㈜${e.$1}",
+                  _ => "${e.$1}㈜",
+                },
+                "020000" => switch(e.$1){
+                  "농협은행" => "농협은행주식회사",
+                  "토스뱅크" => "토스뱅크 주식회사",
+                  "하나은행" || "케이뱅크" || "카카오뱅크" => "주식회사 ${e.$1}",
+                  _ => e.$1
+                },
+                _ => e.$1,
+              },
+            )
+            .toList();
+        selectedFilters["회사 선택"] = companies;
+        
         return (ctg == ProductCategory.isaMp)
             ? await repository.fetchIsaMpProductsAndCount(
                 user.uid,
