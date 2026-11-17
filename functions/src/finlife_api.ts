@@ -28,7 +28,7 @@ export const fetchFinlifeProducts = onRequest(
       const topFinGrpNo = String(request.query.topFinGrpNo ?? "");
       const selectedCompany = toStringArray(request.query.selectedCompany);
       const selectedJoinWay = toStringArray(request.query.selectedJoinWay);
-
+      
       if (!CATEGORY_PATH[category]) {
         response
           .status(400)
@@ -61,20 +61,18 @@ export const fetchFinlifeProducts = onRequest(
       }
 
       // 3. 금융회사, 가입 방법 모두 값이 있으면 필터링
-      if (selectedCompany.length > 0 && selectedJoinWay.length > 0) {
-        const companySet = new Set(selectedCompany);
+      const companySet = new Set(selectedCompany);
+      const joinWaySet = new Set(selectedJoinWay);
+      
+      products = products.filter((p) => {
+        const company = (p.baseinfo?.[COMPANY_FIELD] ?? "").trim();
+        const companyMatched = companySet.size === 0 || companySet.has(company);
 
-        products = products.filter((p) => {
-          const company = p.baseinfo?.[COMPANY_FIELD] ?? "";
-          const joinWay = p.baseinfo?.[JOIN_WAY_FIELD] ?? "";
+        const joinWay = (p.baseinfo?.[JOIN_WAY_FIELD] ?? "").split(",").map((e) => e.trim());
+        const joinWayMatched = joinWay.some((e) => joinWaySet.has(e));
 
-          const companyMatched = companySet.has(company);
-          // join_way는 "영업점,인터넷,스마트폰"처럼 여러 값이 들어오므로 포함 여부로 비교
-          const joinWayMatched = selectedJoinWay.some((w) => joinWay.includes(w));
-
-          return companyMatched && joinWayMatched;
-        });
-      }
+        return companyMatched && joinWayMatched;
+      });
 
       // 4. 메타 값은 첫 페이지 것을 유지하고 products.product만 교체
       const result: ApiResult = {
