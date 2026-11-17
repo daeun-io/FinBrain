@@ -83,16 +83,13 @@ class ProductRemoteDataSource {
     try {
       final res = await _client.get(uri);
       if (res.statusCode == 200) {
-        print("🍈 [success] ISA 상품 로딩 성공");
         return jsonDecode(res.body) as Map<String, dynamic>;
       } else {
-        print("🍈 [error] ISA 상품 로딩 실패");
         throw Exception(
           "[error] failed to load isa mp products : ${res.statusCode}, ${res.body}",
         );
       }
     } catch (e) {
-      print("🍈 [error] ISA 상품 로딩 실패");
       throw Exception("[error] failed to load isa mp products : $e");
     }
   }

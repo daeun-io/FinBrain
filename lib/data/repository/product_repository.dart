@@ -544,7 +544,7 @@ class ProductRepository {
 
   // 필터링 조건 없이 모든 ISA 상품 불러오기
   // Get ISA products without filters
-  Future<List<FinancialProduct>> fetchIsaMpProductsAndCount(
+  Future<List<FinancialProduct>> fetchIsaProducts(
     String uid,
     String baseYear, [
     List<String>? bzds,
