@@ -582,7 +582,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     }
     return (category == ProductCategory.mortgage ||
             category == ProductCategory.rent ||
-            category == ProductCategory.credit || 
+            category == ProductCategory.credit ||
             category == ProductCategory.business)
         // 대출 계산 결과(loan calculation result)
         ? Column(
@@ -769,7 +769,9 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           onPressed: () {
             setState(() {
               if (_money.trim().isEmpty || _period.trim().isEmpty) {
+                //showSnackBar("항목이 다 채워지지 않았습니다!\n모든 항목을 기입해주세요");
                 if (!mounted) return;
+
                 CustomSnackBar.show(
                   context,
                   ref,
@@ -785,6 +787,13 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   ref,
                   text: "입력값에 숫자 외 값이 있습니다!\n숫자만 입력해주세요",
                 );
+                return;
+              }
+              if (widget.category != ProductCategory.deposit &&
+                  widget.category != ProductCategory.installment &&
+                  _sliderValue == 0.0) {
+                if (!mounted) return;
+                CustomSnackBar.show(context, ref, text: "연 이자율을 설정해주세요!");
                 return;
               }
               _isSubmitted = true;

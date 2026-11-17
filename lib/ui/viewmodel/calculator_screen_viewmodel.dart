@@ -179,7 +179,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
         switch (type) {
           case "원리금균등상환방식": // full amortization
             for (final currentMonth in num) {
-              double monthlyPayment =
+              double monthlyPayment = 
                   principal *
                   monthlyRate *
                   pow(1 + monthlyRate, term) /
