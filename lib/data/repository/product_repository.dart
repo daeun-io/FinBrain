@@ -66,8 +66,8 @@ class ProductRepository {
       }
 
       if (result["result"]["products"] == null ||
-          result["result"]["products"]["product"] == null) return [];
-    
+          result["result"]["products"]["product"] == null)
+        return [];
 
       final rawProducts =
           result["result"]["products"]["product"] as Iterable<dynamic>;
@@ -84,6 +84,7 @@ class ProductRepository {
                     element["baseinfo"]["fin_prdt_nm"] == null ||
                     element["baseinfo"]["fin_prdt_cd"] == null ||
                     element["options"] == null ||
+                    element["options"] == "" ||
                     element["options"]["option"] == null) {
                   return null;
                 }
@@ -172,6 +173,7 @@ class ProductRepository {
                     element["baseinfo"]["fin_prdt_nm"] == null ||
                     element["baseinfo"]["fin_prdt_cd"] == null ||
                     element["options"] == null ||
+                    element["options"] == "" ||
                     element["options"]["option"] == null) {
                   return null;
                 }
@@ -262,12 +264,15 @@ class ProductRepository {
                 if (element == null ||
                     element["baseinfo"] == null ||
                     element["baseinfo"]["kor_co_nm"] == null ||
+                    element["baseinfo"]["fin_co_no"] == null ||
                     element["baseinfo"]["fin_prdt_nm"] == null ||
                     element["baseinfo"]["fin_prdt_cd"] == null ||
                     element["options"] == null ||
+                    element["options"] == "" ||
                     element["options"]["option"] == null) {
                   return null;
                 }
+                
                 final productOptions = (element["options"]["option"] is List)
                     ? element["options"]["option"]
                     : [element["options"]["option"]];
@@ -375,6 +380,7 @@ class ProductRepository {
                     element["baseinfo"]["fin_prdt_nm"] == null ||
                     element["baseinfo"]["fin_prdt_cd"] == null ||
                     element["options"] == null ||
+                    element["options"] == "" ||
                     element["options"]["option"] == null) {
                   return null;
                 }
@@ -528,7 +534,9 @@ class ProductRepository {
       return products;
     } catch (e, stackTrace) {
       debugPrint("[error] failed to fetch finlife products : $e, $stackTrace");
-      throw Exception("[error] failed to fetch finlife products : $e, $stackTrace");
+      throw Exception(
+        "[error] failed to fetch finlife products : $e, $stackTrace",
+      );
     } finally {
       client.close();
     }
@@ -536,7 +544,7 @@ class ProductRepository {
 
   // 필터링 조건 없이 모든 ISA 상품 불러오기
   // Get ISA products without filters
-  Future<List<FinancialProduct>> fetchIsaMpProductsAndCount(
+  Future<List<FinancialProduct>> fetchIsaProducts(
     String uid,
     String baseYear, [
     List<String>? bzds,
@@ -629,7 +637,9 @@ class ProductRepository {
                             benefitRate: value["bnfRt"],
                           ),
                         )
-                        .toList().reversed.toList(),
+                        .toList()
+                        .reversed
+                        .toList(),
                   );
                 }).toList(),
               );
@@ -643,7 +653,9 @@ class ProductRepository {
       return items;
     } catch (e, stackTrace) {
       debugPrint("[error] failed to fetch isa mp products : $e, $stackTrace");
-      throw Exception("[error] failed to fetch isa mp products : $e, $stackTrace");
+      throw Exception(
+        "[error] failed to fetch isa mp products : $e, $stackTrace",
+      );
     } finally {
       client.close();
     }

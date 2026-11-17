@@ -9,7 +9,6 @@ import 'package:finbrain/ui/widget/ai_example_query.dart';
 import 'package:finbrain/ui/widget/ai_summary.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
-import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:finbrain/ui/widget/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,7 +82,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (ctx) => const MyPageDetailScreen(title: "앱 튜토리얼 다시보기",)),
-              (route) => false,
+              (route) => route.isFirst,
             );
           } else {
             ref
@@ -260,8 +259,8 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
                             )
                           else
                             SliverToBoxAdapter(
-                              child: CustomText(
-                                text: "AI 대답에는 오류가 있을 수 있습니다.",
+                              child: Text(
+                                "AI 대답에는 오류가 있을 수 있습니다.",
                                 style: textTheme.bodySmall!.copyWith(
                                   color: colorScheme.onTertiary,
                                 ),

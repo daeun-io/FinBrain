@@ -189,7 +189,9 @@ class _ProductScelectionScreenState
                                             data[index]
                                                 .commonInfo
                                                 .productCode ??
-                                            "isaMp",
+                                            "ISA_MP",
+                                        companyName:
+                                            data[index].commonInfo.companyName!,
                                         productName:
                                             data[index].commonInfo.productName!,
                                         category:

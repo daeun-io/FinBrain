@@ -207,7 +207,7 @@ final class AiComparisonScreenViewmodelProvider
     extends $AsyncNotifierProvider<AiComparisonScreenViewmodel, String> {
   AiComparisonScreenViewmodelProvider._({
     required AiComparisonScreenViewmodelFamily super.from,
-    required List<String> super.argument,
+    required String super.argument,
   }) : super(
          retry: null,
          name: r'aiComparisonScreenViewmodelProvider',
@@ -243,7 +243,7 @@ final class AiComparisonScreenViewmodelProvider
 }
 
 String _$aiComparisonScreenViewmodelHash() =>
-    r'92c655468873310f8d7b63226a50f80d8655ecfc';
+    r'e29fb29ef7f944e87c196f431ca0b29ff39bcb0d';
 
 final class AiComparisonScreenViewmodelFamily extends $Family
     with
@@ -252,7 +252,7 @@ final class AiComparisonScreenViewmodelFamily extends $Family
           AsyncValue<String>,
           String,
           FutureOr<String>,
-          List<String>
+          String
         > {
   AiComparisonScreenViewmodelFamily._()
     : super(
@@ -263,7 +263,7 @@ final class AiComparisonScreenViewmodelFamily extends $Family
         isAutoDispose: true,
       );
 
-  AiComparisonScreenViewmodelProvider call(List<String> items) =>
+  AiComparisonScreenViewmodelProvider call(String items) =>
       AiComparisonScreenViewmodelProvider._(argument: items, from: this);
 
   @override
@@ -271,10 +271,10 @@ final class AiComparisonScreenViewmodelFamily extends $Family
 }
 
 abstract class _$AiComparisonScreenViewmodel extends $AsyncNotifier<String> {
-  late final _$args = ref.$arg as List<String>;
-  List<String> get items => _$args;
+  late final _$args = ref.$arg as String;
+  String get items => _$args;
 
-  FutureOr<String> build(List<String> items);
+  FutureOr<String> build(String items);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {

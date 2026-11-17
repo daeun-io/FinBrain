@@ -1,6 +1,6 @@
 import 'package:finbrain/product_categories.dart';
-import 'package:finbrain/ui/viewModel/filters_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/selected_parameter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
@@ -26,15 +26,8 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
     // 현재 페이지, ISA 상품 상태, 필터 관찰하기
     // Watch current page, ISA products status and their filter
     final products = ref.watch(productViewmodelProvider(ProductCategory.isaMp));
-    final filters = ref.watch(filtersViewmodelProvider(ProductCategory.isaMp));
-
-    final baseYear =
-        filters
-            .whenData(
-              (data) => data["기준년도"]!.firstWhere((e) => e.$2 == true).$1,
-            )
-            .value ??
-        "";
+    final baseYears = ref.watch(selectedBaseYearViewmodelProvider);
+    final baseYear = baseYears[ProductCategory.isaMp] ?? DateTime.now().year;
 
     return Column(
       children: [
@@ -57,7 +50,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
             Expanded(
               child: SortOrFilterText(
                 category: ProductCategory.isaMp,
-                baseYear: baseYear,
+                baseYear: baseYear.toString(),
                 onSortCriteriaChanged: (criteria) {
                   ref
                       .read(
@@ -83,6 +76,7 @@ class _IsaMpScreenState extends ConsumerState<IsaMpScreen> {
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: ProductItem(
                     productCode: data[index].commonInfo.productCode ?? "ISA_MP",
+                    companyName: data[index].commonInfo.companyName!,
                     productName: data[index].commonInfo.productName!,
                     category: data[index].commonInfo.category,
                     fromLikedScreen: false,

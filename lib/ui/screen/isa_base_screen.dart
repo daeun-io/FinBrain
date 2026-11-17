@@ -1,7 +1,7 @@
 import 'package:finbrain/data/model/entities/isa_join_status.dart';
 import 'package:finbrain/data/model/entities/isa_management_status.dart';
 import 'package:finbrain/themes/text_theme.dart';
-import 'package:finbrain/ui/viewmodel/filters_viewmodel.dart';
+import 'package:finbrain/ui/viewmodel/selected_parameter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/sort_or_filter_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
@@ -41,17 +41,10 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
         ? ["기준일자", "ISA 종류", "회사 수", "가입자 수", "업권값"]
         : ["기준일자", "ISA 종류", "업권", "편입자산 구분", "구분값", "금액/비율"];
 
-    // ISA 가입 및 운용 현황 필터 불러오기
-    // Fetch current ISA filter of isa join/management filter
-    final filters = ref.watch(filtersViewmodelProvider(widget.category));
-    final baseYear =
-        filters
-            .whenData(
-              (data) => data["기준년도"]!.firstWhere((e) => e.$2 == true).$1,
-            )
-            .value ??
-        "";
-
+    // 기준 일자(base year)    
+    final baseYears = ref.watch(selectedBaseYearViewmodelProvider);
+    final baseYear = baseYears[widget.category] ?? DateTime.now().year;
+  
     return Column(
       children: [
         const SizedBox(height: 24.0),
@@ -64,7 +57,7 @@ class _IsaBaseScreenState extends ConsumerState<IsaBaseScreen> {
             Expanded(
               child: SortOrFilterText(
                 category: widget.category,
-                baseYear: baseYear,
+                baseYear: baseYear.toString(),
                 onSortCriteriaChanged: (criteria) {
                   ref
                       .read(

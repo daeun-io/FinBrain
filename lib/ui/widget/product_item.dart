@@ -18,6 +18,7 @@ class ProductItem extends ConsumerStatefulWidget {
   const ProductItem({
     super.key,
     required this.productCode,
+    required this.companyName,
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
@@ -25,6 +26,7 @@ class ProductItem extends ConsumerStatefulWidget {
   });
 
   final String productCode;
+  final String companyName;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
@@ -52,8 +54,10 @@ class _ProductItemState extends ConsumerState<ProductItem> {
         final product = data
             .where(
               (e) => (widget.category == ProductCategory.isaMp)
-                  ? e.commonInfo.productName == widget.productName
-                  : e.commonInfo.productCode == widget.productCode,
+                  ? e.commonInfo.productName == widget.productName &&
+                        e.commonInfo.companyName == widget.companyName
+                  : e.commonInfo.productCode == widget.productCode &&
+                        e.commonInfo.companyName == widget.companyName,
             )
             .firstOrNull;
         if (product == null) return const SizedBox.shrink();
@@ -78,7 +82,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
             Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
                 builder: (ctx) => ProductDetailScreen(
-                  productCode: product.commonInfo.productCode ?? "isaMp",
+                  productCode: product.commonInfo.productCode ?? "ISA_MP",
+                  companyName: product.commonInfo.companyName!,
                   productName: product.commonInfo.productName!,
                   category: product.commonInfo.category,
                   fromLikedScreen: widget.fromLikedScreen,

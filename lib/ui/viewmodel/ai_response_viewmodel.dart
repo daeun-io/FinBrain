@@ -204,8 +204,7 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
   // Functions for product detail tutorial
   Future<bool> readProductDetailTutorial() async {
     final user = GoogleAuthService.getCurrentUser();
-    if (user == null || user.displayName == null || user.email == null)
-      return true;
+    if (user == null || user.displayName == null || user.email == null) return true;
     return userDataSource.readProductDetailTutorial(user);
   }
 
@@ -220,15 +219,16 @@ class AiAssistScreenViewmodel extends _$AiAssistScreenViewmodel {
 @riverpod
 class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
   @override
-  Future<String> build(List<String> items) async {
+  Future<String> build(String items) async {
     // 튜토리얼이면 예시 응답 아니면 실제 비교 분석 불러오기
     // Fetch mock response while tutorial, else fetch comparison text
     final isTutorialShown = await ref.read(
       aiCompTutorialViewmodelProvider.future,
     );
-
+    debugPrint('2. 튜토리얼 값: $isTutorialShown');
     if (!isTutorialShown) {
-      return ref.read(aiCompTutorialViewmodelProvider.notifier).getMockRes();
+      final mock = ref.read(aiCompTutorialViewmodelProvider.notifier).getMockRes();
+      return mock;
     } else {
       return _askComparsion(items);
     }
@@ -236,8 +236,10 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
 
   // AI 비교분석 응답 요청
   // Request comparison among selected products
-  Future<String> _askComparsion(List<String> items) async {
+  Future<String> _askComparsion(String items) async {
     try {
+      // `기준으로 분리
+      final itemList = items.split("`");
       // 프롬프트 설정
       final tone = await userDataSource.getAiTone();
       final tPrompt = switch (tone) {
@@ -248,7 +250,7 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
       };
       final newResponse = await ref.read(
         aiResponseViewmodelProvider(
-          "$items의 주요 공통점과 차이점을 표 없이 $tPrompt",
+          "$itemList의 주요 공통점과 차이점을 표 없이 $tPrompt",
         ).future,
       );
       if (newResponse == null || newResponse.isEmpty) {
@@ -263,7 +265,7 @@ class AiComparisonScreenViewmodel extends _$AiComparisonScreenViewmodel {
 
   // 비교 분석 재요청
   // Re-request the comparison
-  Future<void> refreshComparison(List<String> items) async {
+  Future<void> refreshComparison(String items) async {
     state = const AsyncValue.loading();
     try {
       final response = await _askComparsion(items);

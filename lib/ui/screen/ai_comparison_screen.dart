@@ -8,7 +8,6 @@ import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
-import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -95,13 +94,9 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
-    // 상품 이름을 분리
-    // Separate name collection
-    final items = widget.name.split("`");
-
     // 프롬프트 전달
     // Send AI prompt
-    final text = ref.watch(aiComparisonScreenViewmodelProvider(items));
+    final text = ref.watch(aiComparisonScreenViewmodelProvider(widget.name));
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
@@ -130,8 +125,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                     ),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: CustomText(
-                        text: "AI 대답에는 오류가 있을 수 있습니다.",
+                      child: Text(
+                        "AI 대답에는 오류가 있을 수 있습니다.",
                         style: textTheme.bodySmall!.copyWith(
                           color: colorScheme.onTertiary,
                         ),
@@ -148,10 +143,10 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                               ref
                                   .read(
                                     aiComparisonScreenViewmodelProvider(
-                                      items,
+                                      widget.name,
                                     ).notifier,
                                   )
-                                  .refreshComparison(items);
+                                  .refreshComparison(widget.name);
                             }
                           },
                           style: ButtonStyle(
@@ -181,7 +176,7 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                               await ref
                                   .read(
                                     aiComparisonScreenViewmodelProvider(
-                                      items,
+                                      widget.name,
                                     ).notifier,
                                   )
                                   .saveComparisonText(
@@ -209,7 +204,9 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                                         )
                                       : const MainScreen(index: 2),
                                 ),
-                                (route) => false,
+                                (route) => (widget.isAiCompTutorial == true)
+                                    ? route.isFirst
+                                    : false,
                               );
                             }
                           },
@@ -256,8 +253,10 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                 // 오류 발생 시 재시도
                 // Try again to fetch response when error occurred
                 ref
-                    .read(aiComparisonScreenViewmodelProvider(items).notifier)
-                    .refreshComparison(items);
+                    .read(
+                      aiComparisonScreenViewmodelProvider(widget.name).notifier,
+                    )
+                    .refreshComparison(widget.name);
               },
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(colorScheme.secondary),

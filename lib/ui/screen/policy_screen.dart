@@ -32,40 +32,42 @@ class PolicyScreen extends ConsumerWidget {
       ),
       body: policy.when(
         data: (data) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 32, left: 20, right: 20, bottom: 20),
-              child: Column(
-                children: [
-                  MarkdownTextRenderer(str: data),
-                  if (!isAgreed) ...[
-                    const SizedBox(height: 20),
-                    TextButton.icon(
-                      onPressed: () async {
-                        isChecked = true;
-                        await ref
-                            .read(onboardingScreenViewmodelProvider(user).notifier)
-                            .saveEmailAndDisplayName(user);
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (ctx) => const MainScreen()),
-                        );
-                      },
-                      icon: Icon(
-                        (isChecked)
-                            ? Icons.check_box
-                            : Icons.check_box_outline_blank,
-                        color: colorScheme.onPrimary,
-                        size: 32,
-                      ),
-                      label: Text(
-                        "개인정보 처리방침에 동의합니다",
-                        style: textTheme.titleLarge!.copyWith(
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 32, left: 20, right: 20, bottom: 20),
+                child: Column(
+                  children: [
+                    MarkdownTextRenderer(str: data),
+                    if (!isAgreed) ...[
+                      const SizedBox(height: 12),
+                      TextButton.icon(
+                        onPressed: () async {
+                          isChecked = true;
+                          await ref
+                              .read(onboardingScreenViewmodelProvider(user).notifier)
+                              .saveEmailAndDisplayName(user);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (ctx) => const MainScreen()),
+                          );
+                        },
+                        icon: Icon(
+                          (isChecked)
+                              ? Icons.check_box
+                              : Icons.check_box_outline_blank,
                           color: colorScheme.onPrimary,
+                          size: 32,
+                        ),
+                        label: Text(
+                          "개인정보 처리방침에 동의합니다",
+                          style: textTheme.titleLarge!.copyWith(
+                            color: colorScheme.onPrimary,
+                          ),
                         ),
                       ),
-                    ),
+                    ]
                   ],
-                ],
+                ),
               ),
             ),
           );

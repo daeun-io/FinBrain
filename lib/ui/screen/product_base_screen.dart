@@ -75,6 +75,7 @@ class _ProductBaseScreenState extends ConsumerState<ProductBaseScreen> {
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: ProductItem(
                       productCode: data[index].commonInfo.productCode!,
+                      companyName: data[index].commonInfo.companyName!,
                       productName: data[index].commonInfo.productName!,
                       category: data[index].commonInfo.category,
                       fromLikedScreen: false,
