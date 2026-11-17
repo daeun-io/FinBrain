@@ -170,7 +170,7 @@ final class IsaStatusViewmodelProvider
 }
 
 String _$isaStatusViewmodelHash() =>
-    r'000fe525511ac315503337f55b48d62737175ae4';
+    r'3f57a91b52af22f8d4050661583c78cae7545dc1';
 
 final class IsaStatusViewmodelFamily extends $Family
     with

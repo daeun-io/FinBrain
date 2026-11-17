@@ -112,6 +112,8 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
             );
         Navigator.of(context).pop();
       }
+    } else {
+      Navigator.of(context).pop();
     }
   }
 
@@ -148,6 +150,7 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
                 color: colorScheme.onPrimary,
               ),
             ),
+            titleSpacing: -6,
           ),
         ),
         body: Padding(

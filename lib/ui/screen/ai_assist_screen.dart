@@ -83,7 +83,7 @@ class _AiAssistScreenState extends ConsumerState<AiAssistScreen> {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (ctx) => const MyPageDetailScreen(title: "앱 튜토리얼 다시보기",)),
-              (route) => false,
+              (route) => route.isFirst,
             );
           } else {
             ref
