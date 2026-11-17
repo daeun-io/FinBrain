@@ -5,7 +5,6 @@ import 'package:finbrain/ui/viewModel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/my_page_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
-import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,7 +53,10 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
     });
   }
 
-  Future<void> _saveToneOrShowDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> _saveToneOrShowDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
@@ -64,14 +66,14 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
           context: Navigator.of(context, rootNavigator: true).context,
           builder: (context) => AlertDialog(
             backgroundColor: colorScheme.surfaceContainer,
-            title: CustomText(
-              text: "AI 어조가 설정되지 않았습니다",
+            title: Text(
+              "AI 어조가 설정되지 않았습니다",
               style: textTheme.bodyMedium!.copyWith(
                 color: colorScheme.onSecondary,
               ),
             ),
-            content: CustomText(
-              text: "다시 설정하시겠습니까?",
+            content: Text(
+              "다시 설정하시겠습니까?",
               style: textTheme.titleMedium!.copyWith(
                 color: colorScheme.onSecondary,
               ),
@@ -79,8 +81,8 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: CustomText(
-                  text: "아니오",
+                child: Text(
+                  "아니오",
                   style: textTheme.bodyMedium!.copyWith(
                     color: colorScheme.onSecondary,
                   ),
@@ -88,8 +90,8 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: CustomText(
-                  text: "예",
+                child: Text(
+                  "예",
                   style: textTheme.bodyMedium!.copyWith(
                     color: colorScheme.onSecondary,
                   ),
@@ -133,8 +135,8 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: AppBar(
             backgroundColor: colorScheme.tertiary,
-            title: CustomText(
-              text: !["앱 튜토리얼 다시보기", "공지사항", "AI 어조 설정"].contains(widget.title)
+            title: Text(
+              !["앱 튜토리얼 다시보기", "공지사항", "AI 어조 설정"].contains(widget.title)
                   ? "공지사항"
                   : widget.title,
               style: textTheme.headlineMedium!.copyWith(
@@ -162,15 +164,15 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomText(
-                      text: widget.title,
+                    Text(
+                      widget.title,
                       style: textTheme.headlineSmall!.copyWith(
                         color: colorScheme.onSecondary,
                       ),
                     ),
                     const SizedBox(height: 24),
-                    CustomText(
-                      text: widget.content ?? "",
+                    Text(
+                      widget.content ?? "",
                       style: textTheme.bodyMedium!.copyWith(
                         color: colorScheme.onSecondary,
                       ),
@@ -241,8 +243,8 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
         );
       },
       child: ListTile(
-        title: CustomText(
-          text: title,
+        title: Text(
+          title,
           style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
         ),
         trailing: Icon(
@@ -273,8 +275,8 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
         );
       },
       child: ListTile(
-        title: CustomText(
-          text: title,
+        title: Text(
+          title,
           style: textTheme.bodyMedium!.copyWith(color: colorScheme.onSecondary),
         ),
         leading: Icon(
@@ -299,8 +301,8 @@ class _MyPageDetailScreenState extends ConsumerState<MyPageDetailScreen> {
       children: [
         Row(
           children: [
-            CustomText(
-              text: title,
+            Text(
+              title,
               style: textTheme.bodyMedium!.copyWith(
                 color: colorScheme.onSecondary,
               ),

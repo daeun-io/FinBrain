@@ -1,6 +1,5 @@
 import 'package:finbrain/data/model/entities/ai_record.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
-import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,8 +34,8 @@ class AiSummary extends ConsumerWidget {
               borderRadius: BorderRadius.circular(20.0),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: CustomText(
-              text: "지난 대화 요약",
+            child: Text(
+              "지난 대화 요약",
               style: textTheme.titleMedium!.copyWith(
                 color: colorScheme.onSecondary,
               ),
@@ -59,8 +58,8 @@ class AiSummary extends ConsumerWidget {
   ) {
     return Column(
       children: [
-        CustomText(
-          text: text.createdAt.toIso8601String().split("T").first,
+        Text(
+          text.createdAt.toIso8601String().split("T").first,
           style: textTheme.titleSmall!.copyWith(color: colorScheme.onTertiary),
         ),
         const SizedBox(height: 8.0),

@@ -10,7 +10,6 @@ import 'package:finbrain/ui/screen/product_detail_screen.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/my_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
-import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,15 +48,15 @@ class MyPageScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 프로필(profile)
-                    CustomText(
-                      text: "안녕하세요\n${user?.displayName}님",
+                    Text(
+                      "안녕하세요\n${user?.displayName}님",
                       style: textTheme.displayLarge!.copyWith(
                         color: colorScheme.onSecondary,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    CustomText(
-                      text: user?.email ?? "이메일 로딩에 실패했습니다",
+                    Text(
+                      user?.email ?? "이메일 로딩에 실패했습니다",
                       style: textTheme.bodyMedium!.copyWith(
                         color: colorScheme.onTertiary,
                       ),
@@ -368,8 +367,8 @@ class MyPageScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(icon, color: colorScheme.onSecondary, size: 40),
-          CustomText(
-            text: text,
+          Text(
+            text,
             style: textTheme.bodyMedium!.copyWith(
               color: colorScheme.onSecondary,
             ),
@@ -393,10 +392,7 @@ class MyPageScreen extends ConsumerWidget {
         children: [
           Icon(icon, color: color, size: 24),
           const SizedBox(width: 4),
-          CustomText(
-            text: text,
-            style: style.copyWith(color: color),
-          ),
+          Text(text, style: style.copyWith(color: color)),
         ],
       ),
     );

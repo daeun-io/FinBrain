@@ -3,7 +3,6 @@ import 'package:finbrain/ui/viewmodel/calculator_screen_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_snack_bar.dart';
-import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -174,14 +173,11 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 예치금 및 대출 원금 텍스트(balance or principal text)
-        CustomText(
-          text: switch (widget.category) {
-            ProductCategory.deposit => "예치금",
-            ProductCategory.installment => "월 불입액",
-            _ => "대출 원금",
-          },
-          style: textTheme.bodyLarge!.copyWith(color: colorScheme.onPrimary),
-        ),
+        Text(switch (widget.category) {
+          ProductCategory.deposit => "예치금",
+          ProductCategory.installment => "월 불입액",
+          _ => "대출 원금",
+        }, style: textTheme.bodyLarge!.copyWith(color: colorScheme.onPrimary)),
         const SizedBox(height: 2.0),
         // 예적금/대출에 따라 필드 디스플레이
         // display fields based on savings or loan
@@ -202,8 +198,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40.0),
-              CustomText(
-                text: "계산 결과",
+              Text(
+                "계산 결과",
                 style: textTheme.bodyLarge!.copyWith(
                   color: colorScheme.onPrimary,
                 ),
@@ -378,13 +374,10 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       const SizedBox(height: 16.0),
       // 예치/대출 기간 및 상환 방법(대출)
       // period and method of repayment(loan)
-      CustomText(
-        text: switch (category) {
-          (ProductCategory.deposit || ProductCategory.installment) => "기간(개월)",
-          _ => "상환 방법 및 대출 기간(개월)",
-        },
-        style: textTheme.bodyLarge!.copyWith(color: colorScheme.onPrimary),
-      ),
+      Text(switch (category) {
+        (ProductCategory.deposit || ProductCategory.installment) => "기간(개월)",
+        _ => "상환 방법 및 대출 기간(개월)",
+      }, style: textTheme.bodyLarge!.copyWith(color: colorScheme.onPrimary)),
       const SizedBox(height: 2.0),
       // 예치 기간 드랍다운
       // saving period dropdown
@@ -426,14 +419,11 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         ),
       const SizedBox(height: 32.0),
       // 금리(rate/interest)
-      CustomText(
-        text: switch (category) {
-          ProductCategory.deposit => "예금 금리",
-          ProductCategory.installment => "적금 금리",
-          _ => "대출 금리",
-        },
-        style: textTheme.bodyLarge!.copyWith(color: colorScheme.onPrimary),
-      ),
+      Text(switch (category) {
+        ProductCategory.deposit => "예금 금리",
+        ProductCategory.installment => "적금 금리",
+        _ => "대출 금리",
+      }, style: textTheme.bodyLarge!.copyWith(color: colorScheme.onPrimary)),
       const SizedBox(height: 2.0),
       // 우대 조건 체크박스(preferential conditions checkbox)
       if (category == ProductCategory.deposit ||
@@ -463,8 +453,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               ),
             ),
             const SizedBox(width: 4.0),
-            CustomText(
-              text: "우대 금리 적용",
+            Text(
+              "우대 금리 적용",
               style: textTheme.bodySmall!.copyWith(
                 color: colorScheme.onTertiary,
               ),
@@ -495,9 +485,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   ),
                 ),
                 alignment: Alignment.centerRight,
-                child: CustomText(
-                  text:
-                      (rates.isNotEmpty &&
+                child: Text(
+                  (rates.isNotEmpty &&
                           _isPrefSelected == true &&
                           rates.last != -1.0)
                       ? rates.lastOrNull.toString()
@@ -571,8 +560,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       return Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
-          child: CustomText(
-            text: "계산 결과를 제공할 수 없습니다",
+          child: Text(
+            "계산 결과를 제공할 수 없습니다",
             style: textTheme.bodyLarge!.copyWith(
               color: colorScheme.onSecondary,
             ),
@@ -612,8 +601,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  CustomText(
-                                    text: e,
+                                  Text(
+                                    e,
                                     style: textTheme.bodyLarge!.copyWith(
                                       color: colorScheme.onSecondary,
                                     ),
@@ -631,8 +620,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                               ...map.entries.map(
                                 (e) => DataCell(
                                   Center(
-                                    child: CustomText(
-                                      text: (e.key == "회차")
+                                    child: Text(
+                                      (e.key == "회차")
                                           ? e.value[i].toString()
                                           : "${formatter.format(e.value[i])}원",
                                       style: textTheme.bodyLarge!.copyWith(
@@ -650,9 +639,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                 ),
               ),
               const SizedBox(height: 12.0),
-              CustomText(
-                text:
-                    "*본 계산 결과는 매월 30일로 가정해 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해 주세요",
+              Text(
+                "*본 계산 결과는 매월 30일로 가정해 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해 주세요",
                 style: textTheme.bodySmall!.copyWith(
                   color: colorScheme.onTertiary,
                 ),
@@ -680,8 +668,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Center(
-                                child: CustomText(
-                                  text: e.key,
+                                child: Text(
+                                  e.key,
                                   style: textTheme.bodyLarge!.copyWith(
                                     color: colorScheme.onSecondary,
                                   ),
@@ -701,8 +689,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Center(
-                                child: CustomText(
-                                  text: "${formatter.format(e.value)}원",
+                                child: Text(
+                                  "${formatter.format(e.value)}원",
                                   style: textTheme.bodyLarge!.copyWith(
                                     color: colorScheme.onSecondary,
                                   ),
@@ -717,9 +705,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                 ],
               ),
               const SizedBox(height: 12.0),
-              CustomText(
-                text:
-                    "*본 계산 결과는 월을 기준으로 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해 주세요.",
+              Text(
+                "*본 계산 결과는 월을 기준으로 계산한 예상 금액이며, 실제 금액과 차이가 있을 수 있습니다. 정확한 금액은 해당 회사에 문의해 주세요.",
                 style: textTheme.bodySmall!.copyWith(
                   color: colorScheme.onTertiary,
                 ),
@@ -756,8 +743,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               color: colorScheme.secondary,
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: CustomText(
-              text: "리셋",
+            child: Text(
+              "리셋",
               style: textTheme.bodyLarge!.copyWith(
                 color: colorScheme.onPrimary,
               ),
@@ -813,8 +800,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
               color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: CustomText(
-              text: "계산",
+            child: Text(
+              "계산",
               style: textTheme.titleLarge!.copyWith(
                 color: colorScheme.onSecondaryContainer,
               ),
@@ -859,8 +846,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   value: item,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: CustomText(
-                      text: item,
+                    child: Text(
+                      item,
                       style: textTheme.bodyLarge!.copyWith(
                         color: colorScheme.onSecondary,
                       ),
@@ -925,7 +912,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         borderRadius: BorderRadius.circular(10.0),
       ),
       padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-      child: CustomText(text: word, style: style),
+      child: Text(word, style: style),
     );
   }
 }

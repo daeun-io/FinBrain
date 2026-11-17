@@ -8,7 +8,6 @@ import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
 import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:finbrain/ui/widget/custom_progress_indicator.dart';
-import 'package:finbrain/ui/widget/custom_text.dart';
 import 'package:finbrain/ui/widget/markdown_text_render.dart';
 import 'package:finbrain/ui/widget/showing_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -126,8 +125,8 @@ class _AiComparisonScreenState extends ConsumerState<AiComparisonScreen> {
                     ),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: CustomText(
-                        text: "AI 대답에는 오류가 있을 수 있습니다.",
+                      child: Text(
+                        "AI 대답에는 오류가 있을 수 있습니다.",
                         style: textTheme.bodySmall!.copyWith(
                           color: colorScheme.onTertiary,
                         ),
