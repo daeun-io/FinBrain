@@ -13,23 +13,31 @@ export const fetchIsaProducts = onRequest(async (request, response) => {
     // 1. 쿼리 파라미터 정리
     const params: Record<string, string> = {};
     let mpTypes: string[] = [];
+    let bzdses: string [] = [];
 
     Object.entries(request.query ?? {}).forEach(([key, value]) => {
       if (key === "pageNo" || key === "numOfRows") return;
 
-      if (key === "mpTp" || key === "bzds") {
-        // mpType은 배열로 들어온다고 가정 (단일 값이어도 안전하게 배열로 변환)
+      if (key === "mpTp") {
         mpTypes = (Array.isArray(value) ? value : [value]).map(String);
         return; // 일반 파라미터 처리에서 제외, 아래에서 별도 판단
+      }
+      if (key === "bzds") {
+        bzdses = (Array.isArray(value) ? value : [value]).map(String);
+        return;
       }
 
       params[key] = Array.isArray(value) ? String(value[0]) : String(value);
     });
 
-    // 2. mpType 개수에 따라 분기 - 1개: API 호출 인자로 전달, 2개 이상: API에는 넘기지 않고, 결합 후 필터링
-    const needsFilter = mpTypes.length >= 2;
+    // 2. mpType 및 bzdses 개수에 따라 분기
+    // - 1개: API 호출 인자로 전달, 2개 이상: API에는 넘기지 않고, 결합 후 필터링
+    const needsFilter = mpTypes.length >= 2 || bzdses.length >= 2;
     if (mpTypes.length === 1) {
       params["mpTp"] = mpTypes[0];
+    }
+    if(bzdses.length === 1) {
+      params["bzds"] = bzdses[0];
     }
 
     // 3. 첫 페이지 호출
@@ -50,9 +58,11 @@ export const fetchIsaProducts = onRequest(async (request, response) => {
 
     // 5. mpType이 2개 이상이면 결합 데이터 필터링
     if (needsFilter) {
-      const allowed = new Set(mpTypes);
+      const allowedMpType = new Set(mpTypes);
+      const allowedBzds = new Set(bzdses);
       resultList = resultList.filter((item) =>
-        allowed.has(String(item?.["mpTp"]))
+        allowedMpType.has(String(item?.["mpTp"])) && 
+        allowedBzds.has(String(item?.["bzds"]))
       );
     }
 
@@ -97,7 +107,7 @@ async function callApi(
   const url = urlObj.toString();
   console.log(`url: ${url}`);
 
-  const res = await fetch(url);
+  const res = await fetchWithRetry(url);
 
   if (!res.ok) {
     const errorBody = await res.text();
@@ -123,4 +133,26 @@ function extractPage(raw: any): { totalCount: number; items: any[] } {
   }
 
   return { totalCount, items };
+}
+
+const RETRYABLE_CODES = new Set([
+  "UND_ERR_CONNECT_TIMEOUT",
+  "ECONNRESET",
+  "ETIMEDOUT",
+  "EAI_AGAIN",
+]);
+
+async function fetchWithRetry(url: string, retries = 3): Promise<Response> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await fetch(url, { signal: AbortSignal.timeout(30000) });
+    } catch (e: any) {
+      const code = e?.cause?.code ?? e?.code;
+      const retryable = RETRYABLE_CODES.has(code) || e?.name === "TimeoutError";
+      if (!retryable || attempt >= retries) throw e;
+      const delay = 1000 * 2 ** attempt; // 1s, 2s, 4s
+      console.warn(`fetch retry ${attempt + 1} (${code}), wait ${delay}ms`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
 }

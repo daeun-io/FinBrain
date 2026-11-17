@@ -14,8 +14,8 @@ class IsaMpBenefitRate extends FinancialProduct {
 
   final String? businessDomain;
   final String? mpType;
-  final double? avgProfit;
-  final double? medProfit;
+  final double? maxProfit;
+  final double? minProfit;
   final List<IsaMpBenefitRateOption> options;
 
   IsaMpBenefitRate({
@@ -29,8 +29,8 @@ class IsaMpBenefitRate extends FinancialProduct {
     required this.businessDomain,
     required this.mpType,
     required this.options,
-    required this.avgProfit,
-    required this.medProfit,
+    required this.maxProfit,
+    required this.minProfit,
   }) : super(
          CommonInfo(
            category: category,
@@ -51,8 +51,8 @@ class IsaMpBenefitRate extends FinancialProduct {
       releaseDate: commonInfo.submittedDay,
       businessDomain: businessDomain,
       mpType: mpType,
-      avgProfit: avgProfit,
-      medProfit: medProfit,
+      maxProfit: maxProfit,
+      minProfit: minProfit,
       options: options,
     );
   }
@@ -67,8 +67,8 @@ class IsaMpBenefitRate extends FinancialProduct {
       "releaseDate": commonInfo.submittedDay.toString(),
       "businessDomain": businessDomain.toString(),
       "mpType": mpType.toString(),
-      "avgProfit": avgProfit ?? "null",
-      "medProfit": medProfit ?? "null",
+      "maxProfit": maxProfit ?? "null",
+      "minProfit": minProfit ?? "null",
       "options": options
           .map(
             (element) => {

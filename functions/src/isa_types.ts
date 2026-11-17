@@ -25,6 +25,8 @@ export interface GroupedIsaMp {
   mpTp: string;
   mpNm: string;
   rlsDt: string;
+  maxBnfRt: string;
+  minBnfRt: string,
   options: Option[];
 }
 

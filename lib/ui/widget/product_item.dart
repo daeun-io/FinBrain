@@ -69,7 +69,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
             ? switch (product.commonInfo.category) {
                 ProductCategory.deposit => "최고 금리(높은 순)",
                 ProductCategory.installment => "최고 금리(높은 순)",
-                ProductCategory.isaMp => "평균 수익률(높은 순)",
+                ProductCategory.isaMp => "최고 수익률(높은 순)",
                 _ => "최저 금리(낮은 순)",
               }
             : sortFilter.$1.toString();
@@ -209,14 +209,14 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                                   : product.avgRate!.toStringAsFixed(2),
                           },
                           _ => switch (sortCriteria) {
-                            "평균 수익률(높은 순)" =>
-                              ((product as IsaMpBenefitRate).avgProfit == null)
+                            "최저 수익률(높은 순)" =>
+                              ((product as IsaMpBenefitRate).minProfit == null)
                                   ? "미제공"
-                                  : product.avgProfit!.toStringAsFixed(2),
+                                  : product.minProfit!.toStringAsFixed(2),
                             _ =>
-                              ((product as IsaMpBenefitRate).medProfit == null)
+                              ((product as IsaMpBenefitRate).maxProfit == null)
                                   ? "미제공"
-                                  : product.medProfit!.toStringAsFixed(2),
+                                  : product.maxProfit!.toStringAsFixed(2),
                           },
                         },
                         style: textTheme.titleMedium!.copyWith(
