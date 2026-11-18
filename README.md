@@ -2,10 +2,11 @@
 An AI-powered application for searching, anaylzing, and comparing financial products.
 
 ### 🔗 Links
-> 🍎 **App Store**: https://apps.apple.com/us/app/핀브레인/id6796775538
+> 🍎 **App Store**: https://apps.apple.com/kr/app/핀브레인/id6796775538
 > <br>
 > ▶️ **Google Play**: https://play.google.com/store/apps/details?id=com.daeun.finbrain
 > <br>
+<br>
 
 ### 🛠️ Tech Stack
 ```
