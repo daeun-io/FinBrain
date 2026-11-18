@@ -17,6 +17,7 @@ State Management: Riverpod
 Database: Firebase Firestore
 Authentication: Firebase Authentication
 ```
+<br>
 
 ### 📚 Libraries
 > #### State Management
