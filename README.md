@@ -7,12 +7,6 @@ An AI-powered application for searching, anaylzing, and comparing financial prod
 > ▶️ **Google Play**: https://play.google.com/store/apps/details?id=com.daeun.finbrain
 > <br>
 
-### 🎬 Demo
-
-https://github.com/user-attachments/assets/51ad6db1-129f-4566-8ac6-92eb7f1d82d1
-
-<br>
-
 ### 🛠️ Tech Stack
 ```
 FrameWork & Language: Flutter & Dart
@@ -46,6 +40,9 @@ project/
 │   │   └── onboarding/
 │   └── privacy_policy.md
 │
+├── functions/
+│   └── src/
+│  
 └── lib/
     ├── data/
     │   ├── data_source/
