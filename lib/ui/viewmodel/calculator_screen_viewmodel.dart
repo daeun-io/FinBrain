@@ -84,37 +84,53 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
           foundOption.grade301400,
           foundOption.gradeUnder300,
         ].whereType<double>();
+        final avgRates = foundOption.averageGrade;
+        final min = rates.minOrNull ?? 0.0;
+        final max = (rates.isEmpty || rates.max == 0.0) ? 20.0: rates.max;
+        final avg = (avgRates != null && avgRates >= min && avgRates <= max)
+            ? avgRates
+            : (rates.isEmpty)
+            ? 10.0
+            : rates.average;
 
-        if (rates.isNotEmpty) {
-          final avgRates = foundOption.averageGrade;
-          final min = rates.min;
-          final max = rates.max;
-          final avg = (avgRates != null) ? avgRates : rates.average;
-          return [min, avg, max];
-        } else {
-          return [];
-        }
+        return [min, avg, max];
       case ProductCategory.mortgage:
       case ProductCategory.rent:
-        final min = options
+        final minList = options
             .map((e) => (e as MortgageAndRentLoanOption).lendRateMin)
-            .whereType<double>()
-            .min;
-        final max = options
+            .whereType<double>();
+        final maxList = options
             .map((e) => (e as MortgageAndRentLoanOption).lendRateMax)
-            .whereType<double>()
-            .max;
-        final avg = options
+            .whereType<double>();
+        final avgList = options
             .map((e) => (e as MortgageAndRentLoanOption).lendRateAvg)
-            .whereType<double>()
-            .average;
+            .whereType<double>();
+        final rates = [...minList, ...maxList, ...avgList];
+
+        final min = rates.minOrNull ?? 0.0;
+        final max = (rates.isEmpty || rates.max == 0.0) ? 20.0: rates.max;
+        final avg = (rates.isEmpty) ? 10.0 : rates.average;
+
         return [min, avg, max];
+
       case ProductCategory.business:
         final option = options[0] as BusinessLoanOption;
-
-        final min = option.minRate ?? 0;
-        final max = option.maxRate ?? 20;
-        final avg = (min + max) / 2;
+        final rates = [
+          option.loanGrade301400,
+          option.loanGrade401500,
+          option.loanGrade501600,
+          option.loanGrade601700,
+          option.loanGrade701800,
+          option.loanGrade801900,
+          option.loanGradeOver900,
+          option.loanGradeUnder300,
+          option.loanGradeAvg,
+          option.minRate,
+          option.maxRate
+        ].whereType<double>();
+        final min = (rates.isEmpty) ? 0.0 : rates.min;
+        final max = (rates.isEmpty || rates.max == 0.0) ? 20.0 : rates.max;
+        final avg = (rates.isEmpty || rates.max == 0.0) ? 10.0 : rates.average;
         return [min, avg, max];
       default:
         return [];
@@ -179,7 +195,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
         switch (type) {
           case "원리금균등상환방식": // full amortization
             for (final currentMonth in num) {
-              double monthlyPayment = 
+              double monthlyPayment =
                   principal *
                   monthlyRate *
                   pow(1 + monthlyRate, term) /

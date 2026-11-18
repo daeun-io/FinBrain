@@ -2,16 +2,10 @@
 An AI-powered application for searching, anaylzing, and comparing financial products.
 
 ### 🔗 Links
-> 🍎 **App Store**: https://apps.apple.com/us/app/핀브레인/id6796775538
+> 🍎 **App Store**: https://apps.apple.com/kr/app/핀브레인/id6796775538
 > <br>
 > ▶️ **Google Play**: https://play.google.com/store/apps/details?id=com.daeun.finbrain
 > <br>
-
-### 🎬 Demo
-
-https://github.com/user-attachments/assets/51ad6db1-129f-4566-8ac6-92eb7f1d82d1
-
-<br>
 
 ### 🛠️ Tech Stack
 ```
@@ -35,8 +29,6 @@ Authentication: Firebase Authentication
 > #### Security
 > Encrypt · Flutter Dotenv
 
-<br>
-
 ### 📁 Structure
 ```
 project/
@@ -46,6 +38,9 @@ project/
 │   │   └── onboarding/
 │   └── privacy_policy.md
 │
+├── functions/
+│   └── src/
+│  
 └── lib/
     ├── data/
     │   ├── data_source/
@@ -59,7 +54,6 @@ project/
         ├── viewmodel/
         └── widget/
 ```
-<br>
 
 ### 📖 Git Convention
 #### Naming Rules

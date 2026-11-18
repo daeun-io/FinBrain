@@ -23,7 +23,7 @@ class SortOrFilterTextViewModel extends _$SortOrFilterTextViewModel {
       ],
       ProductCategory.isaJoin => ["최신순", "날짜순"],
       ProductCategory.isaManagement => ["최신순", "날짜순"],
-      ProductCategory.isaMp => ["평균 수익률(높은 순)", "중위 수익률(높은 순)"],
+      ProductCategory.isaMp => ["최고 수익률(높은 순)", "최저 수익률(높은 순)"],
       ProductCategory.liked => [
         "모든 상품",
         "정기예금",

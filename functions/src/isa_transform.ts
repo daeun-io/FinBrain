@@ -18,6 +18,13 @@ export function groupItemsByName(items: IsaMp[]): GroupedIsaMp[]{
       } else {
         existing.options.push({ basDt: item.basDt, termAndRate: [termAndRate]});
       }
+      
+      if(Number(item.bnfRt) > Number(existing.maxBnfRt)){
+        existing.maxBnfRt = item.bnfRt;
+      }
+      if(Number(item.bnfRt) < Number(existing.minBnfRt)){
+        existing.minBnfRt = item.bnfRt;
+      }
       continue;
     }
 
@@ -27,6 +34,8 @@ export function groupItemsByName(items: IsaMp[]): GroupedIsaMp[]{
       mpTp: item.mpTp,
       mpNm: item.mpNm,
       rlsDt: item.rlsDt,
+      maxBnfRt: item.bnfRt,
+      minBnfRt: item.bnfRt,
       options: [
         { basDt: item.basDt,
           termAndRate: [
@@ -39,6 +48,7 @@ export function groupItemsByName(items: IsaMp[]): GroupedIsaMp[]{
       ],
     });
   }
+  
   const result = Array.from(groupedMap.values());
   result.forEach((group) => group.options.reverse());
 

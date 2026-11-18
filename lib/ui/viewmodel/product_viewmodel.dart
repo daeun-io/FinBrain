@@ -294,12 +294,12 @@ class ProductViewmodel extends _$ProductViewmodel {
         final sorted = criteriaRate.map((e) => e.product).toList();
         return sorted;
       case ProductCategory.isaMp:
-        final isAvg = (criteria == "평균 수익률(높은 순)");
+        final isMin = (criteria == "최저 수익률(높은 순)");
 
         final criteriaRate = products.map((e) {
-          final targetRate = isAvg
-              ? (e as IsaMpBenefitRate).avgProfit
-              : (e as IsaMpBenefitRate).medProfit;
+          final targetRate = isMin
+              ? (e as IsaMpBenefitRate).minProfit
+              : (e as IsaMpBenefitRate).maxProfit;
           return (product: e, rate: targetRate);
         }).toList();
         criteriaRate.sort((a, b) {

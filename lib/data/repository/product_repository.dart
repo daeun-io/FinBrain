@@ -272,7 +272,7 @@ class ProductRepository {
                     element["options"]["option"] == null) {
                   return null;
                 }
-                
+
                 final productOptions = (element["options"]["option"] is List)
                     ? element["options"]["option"]
                     : [element["options"]["option"]];
@@ -598,21 +598,7 @@ class ProductRepository {
             final List options = (productOptions is List)
                 ? productOptions
                 : [productOptions];
-            final List trmAndRt = options
-                .map((e) => e["termAndRate"])
-                .expand((value) => value)
-                .toList();
-            final List<double> profits =
-                trmAndRt
-                    .map((e) => double.tryParse(e["bnfRt"] ?? ""))
-                    .whereType<double>()
-                    .toList()
-                  ..sort((a, b) => a.compareTo(b));
-            final middle = profits.length ~/ 2;
-            final averageProfit = profits.average;
-            final medianProfit = (profits.length % 2 == 1)
-                ? profits[middle]
-                : (profits[middle - 1] + profits[middle]) / 2;
+
             try {
               return IsaMpBenefitRate(
                 category: ProductCategory.isaMp,
@@ -624,8 +610,8 @@ class ProductRepository {
                 ),
                 businessDomain: element["bzds"].toString(),
                 mpType: element["mpTp"].toString(),
-                avgProfit: averageProfit,
-                medProfit: medianProfit,
+                maxProfit: double.tryParse(element["maxBnfRt"].toString()),
+                minProfit: double.tryParse(element["minBnfRt"].toString()),
                 options: options.map<IsaMpBenefitRateOption>((e) {
                   final List trmAndRate = e["termAndRate"];
                   return IsaMpBenefitRateOption(

@@ -318,17 +318,6 @@ class LikedRepository {
             break;
           default:
             try {
-              final List options = (map["options"] is List)
-                  ? map["options"]
-                  : [map["options"]];
-              final profits =
-                  options
-                      .map((e) => e["benefitRate"])
-                      .whereType<double>()
-                      .toList()
-                    ..sorted((a, b) => a.compareTo(b));
-              final averageProfit = profits.isEmpty ? null : profits.average;
-
               products.add(
                 IsaMpBenefitRate(
                   category: ProductCategory.isaMp,
@@ -338,14 +327,8 @@ class LikedRepository {
                   isLiked: map["isLiked"],
                   businessDomain: map["businessDomain"],
                   mpType: map["mpType"],
-                  avgProfit:
-                      (map["avgProfit"] == null || map["avgProfit"] == "null")
-                      ? averageProfit
-                      : map["avgProfit"],
-                  medProfit:
-                      (map["medrofit"] == null || map["medrofit"] == "null")
-                      ? null
-                      : map["medProfit"],
+                  maxProfit: map["maxProfit"],
+                  minProfit: map["minProfit"],
                   options: map["options"]
                       .map(
                         (element) => IsaMpBenefitRateOption(
