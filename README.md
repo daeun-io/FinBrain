@@ -6,7 +6,6 @@ An AI-powered application for searching, anaylzing, and comparing financial prod
 > <br>
 > ▶️ **Google Play**: https://play.google.com/store/apps/details?id=com.daeun.finbrain
 > <br>
-<br>
 
 ### 🛠️ Tech Stack
 ```
@@ -17,7 +16,6 @@ State Management: Riverpod
 Database: Firebase Firestore
 Authentication: Firebase Authentication
 ```
-<br>
 
 ### 📚 Libraries
 > #### State Management
@@ -30,8 +28,6 @@ Authentication: Firebase Authentication
 > Flutter SVG · Split View · Smooth Page Indicator · Tutorial Coach Mark
 > #### Security
 > Encrypt · Flutter Dotenv
-
-<br>
 
 ### 📁 Structure
 ```
@@ -58,7 +54,6 @@ project/
         ├── viewmodel/
         └── widget/
 ```
-<br>
 
 ### 📖 Git Convention
 #### Naming Rules
