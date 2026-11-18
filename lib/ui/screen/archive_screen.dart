@@ -21,23 +21,23 @@ class ArchiveScreen extends StatelessWidget {
       ],
     );
 
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: colorScheme.primary,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: CustomAppbar(screen: "archive", title: "기록 보관소"),
         ),
-        body: DefaultTabController(
-          length: 2,
-          child: Column(
-            children: [
-              CustomTapbar(tabList: tabList, isIsaScreen: false,),
-              Expanded(child: tabView),
-            ],
+        body: SafeArea(
+          child: DefaultTabController(
+            length: 2,
+            child: Column(
+              children: [
+                CustomTapbar(tabList: tabList, isIsaScreen: false,),
+                Expanded(child: tabView),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
