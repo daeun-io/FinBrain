@@ -1,10 +1,10 @@
 import 'package:finbrain/ui/screen/loan_screen.dart';
+import 'package:finbrain/ui/screen/my_page_screen.dart';
 import 'package:finbrain/ui/screen/savings_screen.dart';
 import 'package:finbrain/ui/screen/liked_screen.dart';
 import 'package:finbrain/ui/tutorial_helper.dart';
 import 'package:finbrain/ui/viewmodel/text_theme_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/ai_comp_tutorial_viewmodel.dart';
-import 'package:finbrain/ui/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -37,6 +37,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
+
     _currentIndex = widget.index ?? 0;
 
     // 방문한 탭(캐시 유지)
@@ -69,7 +70,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           milliseconds:
               (widget.isAiCompTutorial == true || widget.isIsaTutorial == true)
               ? 300
-              : 3000,
+              : 1000,
         ),
         () => showTutorial(context, targets),
       );
@@ -83,36 +84,29 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     return Scaffold(
       backgroundColor: colorScheme.primary,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: const CustomAppbar(screen: "main", title: "핀브레인"),
+      body: SafeArea(
+        child: IndexedStack(
+          index: _currentIndex,
+          children: [
+            _visitedIndices.contains(0)
+                ? SavingsScreen(isIsaTutorial: widget.isIsaTutorial)
+                : const SizedBox.shrink(),
+            _visitedIndices.contains(1)
+                ? const LoanScreen()
+                : const SizedBox.shrink(),
+            _visitedIndices.contains(2)
+                ? LikedScreen(isAiCompTutorial: widget.isAiCompTutorial)
+                : const SizedBox.shrink(),
+            _visitedIndices.contains(3)
+                ? const MyPageScreen()
+                : const SizedBox.shrink(),
+          ],
         ),
-      ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          _visitedIndices.contains(0)
-              ? SavingsScreen(isIsaTutorial: widget.isIsaTutorial)
-              : const SizedBox.shrink(),
-          _visitedIndices.contains(1)
-              ? const LoanScreen()
-              : const SizedBox.shrink(),
-          _visitedIndices.contains(2)
-              ? LikedScreen(isAiCompTutorial: widget.isAiCompTutorial)
-              : const SizedBox.shrink(),
-        ],
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          height: 70,
-          decoration: BoxDecoration(
-            color: colorScheme.secondary,
-            border: Border(
-              top: BorderSide(color: colorScheme.outline, width: 1.0),
-            ),
-          ),
+          height: 80,
+          color: colorScheme.secondary,
           child: Theme(
             data: Theme.of(context).copyWith(
               splashFactory: NoSplash.splashFactory,
@@ -148,6 +142,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   key: aiCompKey1,
                   icon: Icon(Icons.favorite, size: 28),
                   label: "관심",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person, size: 28),
+                  label: "마이",
                 ),
               ],
             ),

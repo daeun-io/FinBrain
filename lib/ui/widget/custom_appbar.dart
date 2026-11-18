@@ -1,6 +1,5 @@
 import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/ui/screen/main_screen.dart';
-import 'package:finbrain/ui/screen/my_page_screen.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,13 +12,10 @@ class CustomAppbar extends ConsumerWidget {
     required this.screen,
     required this.title,
     this.product,
-    this.page,
   });
 
-  final String screen;      // 호출하는 화면 이름(screen name)
-  final String title;       // 앱 바 타이틀(app bar title)
-
-  final int? page;
+  final String screen; // 호출하는 화면 이름(screen name)
+  final String title; // 앱 바 타이틀(app bar title)
   final FinancialProduct? product;
 
   @override
@@ -32,13 +28,13 @@ class CustomAppbar extends ConsumerWidget {
     return AppBar(
       // 스크린에 따라 배경색 변경
       // Change background color based on screen
-      backgroundColor: ["archive", "main", "calculator", "product_selection"].contains(screen)
+      backgroundColor:
+          ["archive", "calculator", "product_selection"].contains(screen)
           ? colorScheme.primary
           : colorScheme.tertiary,
       scrolledUnderElevation: 0.0,
       automaticallyImplyLeading: false,
       leading: switch (screen) {
-        "main" => null,
         // 기기에 따라 백버튼 추가/삭제
         // Display back button based on device
         "ai_assist" =>
@@ -47,12 +43,9 @@ class CustomAppbar extends ConsumerWidget {
       },
       title: Text(
         title,
-        style: (screen == "main")
-            ? textTheme.headlineMedium!.copyWith(
-                color: colorScheme.onPrimary,
-                fontWeight: FontWeight.w900,
-              )
-            : textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary),
+        style: textTheme.headlineMedium!.copyWith(color: colorScheme.onPrimary),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
       titleSpacing: switch (screen) {
         "main" => 24.0,
@@ -60,22 +53,6 @@ class CustomAppbar extends ConsumerWidget {
         _ => -6.0,
       },
       actions: switch (screen) {
-        "main" => [
-          // 마이페이지로 이동하는 버튼
-          // Navigate to my page screen button
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => const MyPageScreen()),
-              );
-            },
-            icon: Icon(
-              Icons.account_circle,
-              color: colorScheme.surfaceContainerHighest,
-              size: 36,
-            ),
-          ),
-        ],
         "detail" => [
           // 관심 상품 선택/미선택 아이콘
           // Toggle product as liked/unliked button
@@ -85,7 +62,6 @@ class CustomAppbar extends ConsumerWidget {
                   .read(
                     fetchProductViewmodelProvider(
                       product!.commonInfo.category,
-                      page ?? 1,
                     ).notifier,
                   )
                   .toggleLiked(product!);
@@ -111,11 +87,12 @@ class CustomAppbar extends ConsumerWidget {
   IconButton BackButton(BuildContext context, Color color) {
     return IconButton(
       onPressed: () {
-        if(Navigator.canPop(context)){
+        if (Navigator.canPop(context)) {
           Navigator.of(context).pop();
         } else {
           Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (ctx) => const MainScreen())
+            context,
+            MaterialPageRoute(builder: (ctx) => const MainScreen()),
           );
         }
       },

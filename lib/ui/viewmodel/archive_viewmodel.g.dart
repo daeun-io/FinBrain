@@ -48,7 +48,7 @@ final class SelectedCtgForSummariesViewmodelProvider
 }
 
 String _$selectedCtgForSummariesViewmodelHash() =>
-    r'10ffb1997377b95d6a258220ba94a9c5d0503b29';
+    r'eaedabc2fc8897233f99ba5d46aa951dacdd37e6';
 
 abstract class _$SelectedCtgForSummariesViewmodel
     extends $Notifier<List<ProductCategory>> {
@@ -148,7 +148,7 @@ final class ArchiveSummaryViewmodelProvider
 }
 
 String _$archiveSummaryViewmodelHash() =>
-    r'39c31ec86e0d4a92e347ca4fe8f9b383f7d929cd';
+    r'adedd6f3ba05f0bf798b270a0aef460eeece80f8';
 
 abstract class _$ArchiveSummaryViewmodel
     extends $Notifier<AsyncValue<List<AiRecord>>> {
@@ -212,7 +212,7 @@ final class SelectedCtgForCompTextViewmodelProvider
 }
 
 String _$selectedCtgForCompTextViewmodelHash() =>
-    r'261f4de6c48dc986464dc3dde768547c900a5a39';
+    r'a98d3d8cedafa52016eac13a5e4e2068125bf23f';
 
 abstract class _$SelectedCtgForCompTextViewmodel
     extends $Notifier<List<ProductCategory>> {
@@ -315,7 +315,7 @@ final class ArchiveComparisonViewmodelProvider
 }
 
 String _$archiveComparisonViewmodelHash() =>
-    r'eb1a0348f780eec16607029488b1626bdc8028db';
+    r'b9754d92928dadae819b143fa1cec29ccc912d90';
 
 abstract class _$ArchiveComparisonViewmodel
     extends $Notifier<AsyncValue<List<AiRecord>>> {

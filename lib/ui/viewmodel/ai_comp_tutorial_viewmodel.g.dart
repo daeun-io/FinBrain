@@ -34,7 +34,7 @@ final class AiCompTutorialViewmodelProvider
 }
 
 String _$aiCompTutorialViewmodelHash() =>
-    r'984bbcb33ca11a5a0c85d3f2c3273864e3166f24';
+    r'70b8d0d425b4d54007d46a750f5dbb5bf7671da5';
 
 abstract class _$AiCompTutorialViewmodel extends $AsyncNotifier<bool> {
   FutureOr<bool> build();

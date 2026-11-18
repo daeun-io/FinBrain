@@ -18,34 +18,9 @@ class AiSummary extends ConsumerWidget {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: texts
-          .map(
-            (e) => _buildSingleSummary(
-              context,
-              e.text,
-              colorScheme,
-              textTheme.headlineMedium!,
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  Widget _buildSingleSummary(
-    BuildContext context,
-    String text,
-    ColorScheme colorScheme,
-    TextStyle style,
-  ) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: 0,
-          maxWidth: MediaQuery.of(context).size.width * 0.8,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
+      children: [
+        Align(
+          alignment: Alignment.center,
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -56,29 +31,41 @@ class AiSummary extends ConsumerWidget {
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
-              borderRadius: BorderRadiusGeometry.all(Radius.circular(20.0)),
+              borderRadius: BorderRadius.circular(20.0),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "지난 대화 요약",
-                      style: style.copyWith(
-                        color: colorScheme.onSecondary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  MarkdownTextRenderer(str: text),
-                ],
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Text(
+              "지난 대화 요약",
+              style: textTheme.titleMedium!.copyWith(
+                color: colorScheme.onSecondary,
               ),
             ),
           ),
         ),
-      ),
+        const SizedBox(height: 16.0),
+        ...texts.map(
+          (e) => _buildSingleSummary(context, e, colorScheme, textTheme),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSingleSummary(
+    BuildContext context,
+    AiText text,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
+    return Column(
+      children: [
+        Text(
+          text.createdAt.toIso8601String().split("T").first,
+          style: textTheme.titleSmall!.copyWith(color: colorScheme.onTertiary),
+        ),
+        const SizedBox(height: 8.0),
+        MarkdownTextRenderer(str: text.text),
+        const SizedBox(height: 16.0),
+      ],
     );
   }
 }

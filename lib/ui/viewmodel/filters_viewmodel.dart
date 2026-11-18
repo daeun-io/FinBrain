@@ -1,8 +1,7 @@
 import 'dart:async';
+import 'package:collection/collection.dart';
 import 'package:finbrain/data/converter.dart';
 import 'package:finbrain/data/repository/filters_repository.dart';
-import 'package:finbrain/ui/viewmodel/isa_viewmodel.dart';
-import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_parameter_viewmodel.dart';
 import 'package:finbrain/product_categories.dart';
 import 'package:flutter/foundation.dart';
@@ -81,8 +80,18 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
         for (final entry in updated.entries)
           if (entry.key == "회사 선택")
             entry.key: cmpyList
-                .map<(String, bool)>((e) => (e as String, false))
+                .map<(String, bool)>(
+                  (e) => (
+                    e
+                        .toString()
+                        .replaceAll("주식회사", "")
+                        .replaceAll("㈜", "")
+                        .trim(),
+                    false,
+                  ),
+                )
                 .toList()
+                .sorted((a, b) => a.$1.compareTo(b.$1))
           else
             entry.key: entry.value,
       });
@@ -114,7 +123,7 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
 
   // 선택한 필터 항목 저장
   // Save selected filter options
-  Future<void> applyChanges(int pageNo) async {
+  Future<void> applyChanges() async {
     final snapshot = Map<String, List<(String, bool)>>.from(state.value ?? {});
 
     // 기준년도 및 회사 업권 뷰모델 업데이트
@@ -126,19 +135,12 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
           .firstWhere((e) => e.$2 == true)
           .$1;
       final newTopFinGrpNo = getFinGroupCode[newTopFinGrpName] ?? "020000";
-      // 금융회사 업권 변경 시 새 데이터 호출
-      // Fetch data when company category changes
       if (currentTopFinGrpNo != newTopFinGrpNo) {
         ref
             .read(selectedTopFinGrpNoViewmodelProvider.notifier)
             .changeTopFinGrp(ctg, newTopFinGrpNo);
-        Future.microtask(() {
-          ref.invalidate(fetchProductViewmodelProvider(ctg, pageNo));
-        });
       }
     }
-    // 기준년도 변경 시 새 데이터 호출
-    // Fetch data when base year changes
     if (snapshot["기준년도"] != null) {
       final currentBaseYear = ref.read(selectedBaseYearViewmodelProvider)[ctg];
       final newBaseYear = snapshot["기준년도"]!.firstWhere((e) => e.$2 == true).$1;
@@ -150,16 +152,6 @@ class DialogFiltersViewModel extends _$DialogFiltersViewModel {
               ctg,
               int.tryParse(newBaseYear) ?? DateTime.now().year,
             );
-        switch (ctg) {
-          case ProductCategory.isaJoin:
-            ref.read(fetchIsaJoinStatusViewmodelProvider(pageNo));
-          case ProductCategory.isaManagement:
-            ref.read(fetchIsaMngmStatusViewmodelProvider(pageNo));
-          default:
-            Future.microtask(() {
-              ref.invalidate(fetchProductViewmodelProvider(ctg, pageNo));
-            });
-        }
       }
     }
     ref.read(savedFiltersProvider(ctg).notifier).save(snapshot);
@@ -180,9 +172,9 @@ class SavedFilters extends _$SavedFilters {
   // 생성 시 카테고리 별 기본 필터 호출
   // Fetch default filter by given category
   @override
-  Future<Map<String, List<(String, bool)>>> build(ProductCategory ctg) async {
+  AsyncValue<Map<String, List<(String, bool)>>> build(ProductCategory ctg) {
     try {
-      final data = await ref.read(filtersViewmodelProvider(ctg).future);
+      final data = ref.watch(filtersViewmodelProvider(ctg));
       return data;
     } catch (e) {
       throw Exception("[error] failed to fetch $ctg filters, $e");
@@ -191,6 +183,6 @@ class SavedFilters extends _$SavedFilters {
 
   // 변경사항 저장
   // Save filter change
-  void save(Map<String, List<(String, bool)>> filters) => 
-    state = AsyncValue.data(filters);
+  void save(Map<String, List<(String, bool)>> filters) =>
+      state = AsyncValue.data(filters);
 }

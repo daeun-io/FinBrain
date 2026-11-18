@@ -124,7 +124,7 @@ class CustomTapbarState extends ConsumerState<CustomTapbar> {
       tabs: [
         for (int i = 0; i < widget.tabList.length; i++)
           Container(
-            key: tutorialKeys[i],
+            key: (widget.isIsaScreen) ? tutorialKeys[i] : null,
             alignment: Alignment.center,
             height: (widget.isIsaScreen) ? 40 : 60,
             child: FittedBox(

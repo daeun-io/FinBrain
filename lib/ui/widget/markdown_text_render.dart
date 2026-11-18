@@ -12,7 +12,6 @@ class MarkdownTextRenderer extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
       child: RichText(
         text: TextSpan(
           style: GoogleFonts.notoSansKr(

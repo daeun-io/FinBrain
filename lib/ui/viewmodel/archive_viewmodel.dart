@@ -26,6 +26,7 @@ class SelectedCtgForSummariesViewmodel
     ProductCategory.mortgage,
     ProductCategory.rent,
     ProductCategory.credit,
+    ProductCategory.business
   ];
 
   // 필터링 리스트에 카테고리 추가
@@ -105,7 +106,7 @@ class ArchiveSummaryViewmodel extends _$ArchiveSummaryViewmodel {
       ref.invalidate(aiSummariesViewmodelProvider);
 
       // 데이터 재호출 후 로컬에 업데이트
-      // Fetch renewal data and update in local 
+      // Fetch renewal data and update in local
       final allComparison = await ref.read(aiSummariesViewmodelProvider.future);
       final filter = ref.read(selectedCtgForSummariesViewmodelProvider);
       state = AsyncData(
@@ -129,6 +130,27 @@ class ArchiveSummaryViewmodel extends _$ArchiveSummaryViewmodel {
       }).toList(),
     );
   }
+
+  // 검색창을 통해 키워드로 필터링하기
+  // Filter by keyword using search bar
+  void filterByKeyword(String keyword) {
+    // 키워드가 있으면 필터링 적용
+    // Apply filter when there's keyword
+    if (keyword.isNotEmpty) {
+      final currentState = state.value ?? [];
+      state = AsyncValue.data(
+        currentState.where((e) => e.name.contains(keyword)).toList(),
+      );
+      // 키워드가 없으면 원본 데이터 불러오기
+      // If no keyword, fetch original data
+    } else {
+      final filter = ref.read(selectedCtgForSummariesViewmodelProvider);
+      final records = ref.read(aiSummariesViewmodelProvider);
+      state = records.whenData(
+        (data) => data.where((e) => filter.contains(e.category)).toList(),
+      );
+    }
+  }
 }
 
 // AI 비교 분석 필터링 뷰모델
@@ -146,6 +168,7 @@ class SelectedCtgForCompTextViewmodel
     ProductCategory.mortgage,
     ProductCategory.rent,
     ProductCategory.credit,
+    ProductCategory.business
   ];
 
   // 필터링 리스트에 카테고리 추가
@@ -226,7 +249,7 @@ class ArchiveComparisonViewmodel extends _$ArchiveComparisonViewmodel {
       ref.invalidate(aiCompViewmodelProvider);
 
       // 데이터 재호출 후 로컬에 업데이트
-      // Fetch renewal data and update in local 
+      // Fetch renewal data and update in local
       final allComparison = await ref.read(aiCompViewmodelProvider.future);
       final filter = ref.read(selectedCtgForCompTextViewmodelProvider);
       state = AsyncData(
@@ -249,5 +272,26 @@ class ArchiveComparisonViewmodel extends _$ArchiveComparisonViewmodel {
         }
       }).toList(),
     );
+  }
+
+  // 검색창을 통해 키워드로 필터링하기
+  // Filter by keyword using search bar
+  void filterByKeyword(String keyword) {
+    // 키워드가 있으면 필터링 적용
+    // Apply filter when there's keyword
+    if (keyword.isNotEmpty) {
+      final currentState = state.value ?? [];
+      state = AsyncValue.data(
+        currentState.where((e) => e.name.contains(keyword)).toList(),
+      );
+      // 키워드가 없으면 원본 데이터 불러오기
+      // If no keyword, fetch original data
+    } else {
+      final filter = ref.read(selectedCtgForCompTextViewmodelProvider);
+      final records = ref.read(aiCompViewmodelProvider);
+      state = records.whenData(
+        (data) => data.where((e) => filter.contains(e.category)).toList(),
+      );
+    }
   }
 }

@@ -28,5 +28,6 @@ const getCategoryEnum = {
   "ProductCategory.mortgage": ProductCategory.mortgage,
   "ProductCategory.rent": ProductCategory.rent,
   "ProductCategory.credit": ProductCategory.credit,
-  "ProductCategory.isaMp": ProductCategory.isaMp
+  "ProductCategory.isaMp": ProductCategory.isaMp,
+  "ProductCategory.business": ProductCategory.business
 };

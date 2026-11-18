@@ -47,7 +47,7 @@ final class SelectedTopFinGrpNoViewmodelProvider
 }
 
 String _$selectedTopFinGrpNoViewmodelHash() =>
-    r'354e6a8842760d7b20918efa7dd03f006d92a873';
+    r'8b422efb3afe632ef791a0911d557ac593945181';
 
 abstract class _$SelectedTopFinGrpNoViewmodel
     extends $Notifier<Map<ProductCategory, String>> {

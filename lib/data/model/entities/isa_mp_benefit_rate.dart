@@ -12,11 +12,10 @@ class IsaMpBenefitRate extends FinancialProduct {
   // companyName(cmpyNm): 회사명
   // mpType(mpTp): mp유형
 
-  final String? baseDate;
   final String? businessDomain;
   final String? mpType;
-  final double? avgProfit;
-  final double? medProfit;
+  final double? maxProfit;
+  final double? minProfit;
   final List<IsaMpBenefitRateOption> options;
 
   IsaMpBenefitRate({
@@ -27,12 +26,11 @@ class IsaMpBenefitRate extends FinancialProduct {
     required String? releaseDate,
     required bool isLiked,
 
-    required this.baseDate,
     required this.businessDomain,
     required this.mpType,
     required this.options,
-    required this.avgProfit,
-    required this.medProfit
+    required this.maxProfit,
+    required this.minProfit,
   }) : super(
          CommonInfo(
            category: category,
@@ -51,11 +49,10 @@ class IsaMpBenefitRate extends FinancialProduct {
       companyName: commonInfo.companyName,
       productName: commonInfo.productName,
       releaseDate: commonInfo.submittedDay,
-      baseDate: baseDate,
       businessDomain: businessDomain,
       mpType: mpType,
-      avgProfit: avgProfit,
-      medProfit: medProfit,
+      maxProfit: maxProfit,
+      minProfit: minProfit,
       options: options,
     );
   }
@@ -68,13 +65,22 @@ class IsaMpBenefitRate extends FinancialProduct {
       "companyName": commonInfo.companyName.toString(),
       "productName": commonInfo.productName.toString(),
       "releaseDate": commonInfo.submittedDay.toString(),
-      "baseDate": baseDate.toString(),
       "businessDomain": businessDomain.toString(),
       "mpType": mpType.toString(),
-      "avgProfit": avgProfit ?? "null",
-      "medProfit": medProfit ?? "null",
+      "maxProfit": maxProfit ?? "null",
+      "minProfit": minProfit ?? "null",
       "options": options
-          .map((e) => {"term": e.term, "benefitRate": e.benefitRate})
+          .map(
+            (element) => {
+              "baseDate": element.baseDate,
+              "termAndRate": element.termAndRate.map(
+                (e) => {
+                  "trm": e.term,
+                  "bnfRt": e.benefitRate,
+                },
+              ).toList(),
+            },
+          )
           .toList(),
     };
   }

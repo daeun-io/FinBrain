@@ -15,10 +15,12 @@ setGlobalOptions({
   timeoutSeconds: 120,
 });
 
-import { fetchAndGroupProducts } from "./isa_api";
+import { fetchIsaProducts } from "./isa_api";
 import { fetchCmpyNameList } from "./cmpy_api";
+
 import { summarizeAndArchiveChat } from "./summarize_chat";
 import { deleteAllUserData } from "./delete_user_data";
+import { fetchFinlifeProducts } from "./finlife_api";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -35,7 +37,8 @@ import { deleteAllUserData } from "./delete_user_data";
 // this will be the maximum concurrent request count.
 
 
-exports.fetchAndGroupProducts = fetchAndGroupProducts;
+exports.fetchIsaProducts = fetchIsaProducts;
+exports.fetchFinlifeProducts = fetchFinlifeProducts;
 exports.fetchCmpyNameList = fetchCmpyNameList;
 exports.summarizeAndArchiveChat = summarizeAndArchiveChat;
 exports.deleteAllUserData = deleteAllUserData;

@@ -35,7 +35,7 @@ class ProductDialog extends ConsumerWidget {
           ),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.65,
+            height: MediaQuery.of(context).size.height * 0.6,
             child: Column(
               children: [
                 Row(
@@ -165,7 +165,7 @@ class ProductDialog extends ConsumerWidget {
                         onPressed: () async {
                           await ref.read(
                             dialogFiltersViewModelProvider(category).notifier,
-                          ).applyChanges(1);
+                          ).applyChanges();
                           if (context.mounted) Navigator.pop(ctx);
                         },
                         style: TextButton.styleFrom(

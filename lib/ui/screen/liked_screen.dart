@@ -48,7 +48,7 @@ class _LikedScreenState extends ConsumerState<LikedScreen> {
       ContentAlign.top,
       ShapeLightFocus.Circle,
       "AI를 통해 상품끼리 비교·분석하세요.\n버튼 클릭 시 상품 선택 화면으로 이동합니다.",
-      "버튼을 눌러 이동해주세요."
+      "버튼을 눌러 이동해주세요.",
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -81,7 +81,6 @@ class _LikedScreenState extends ConsumerState<LikedScreen> {
                   .read(likedProductViewmodelProvider.notifier)
                   .filterByKeyword(value);
             },
-            fromLikedScreen: true,
           ),
           const SizedBox(height: 32.0),
           // 필터링 바텀시트(filter bottom sheet)
@@ -110,7 +109,9 @@ class _LikedScreenState extends ConsumerState<LikedScreen> {
                               child: ProductItem(
                                 productCode:
                                     data[index].commonInfo.productCode ??
-                                    "isaMp",
+                                    "ISA_MP",
+                                companyName:
+                                    data[index].commonInfo.companyName!,
                                 productName:
                                     data[index].commonInfo.productName!,
                                 category: data[index].commonInfo.category,

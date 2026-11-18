@@ -151,7 +151,7 @@ final class AiAssistScreenViewmodelProvider
 }
 
 String _$aiAssistScreenViewmodelHash() =>
-    r'85659f3f4ffeb677464f31f38acd9418f88a09d6';
+    r'd893f17135e58877bc1e56d6bdd53cc21050d66f';
 
 final class AiAssistScreenViewmodelFamily extends $Family
     with
@@ -243,7 +243,7 @@ final class AiComparisonScreenViewmodelProvider
 }
 
 String _$aiComparisonScreenViewmodelHash() =>
-    r'a5768fa7f76e459bce7d9a9785a2094584559fec';
+    r'e29fb29ef7f944e87c196f431ca0b29ff39bcb0d';
 
 final class AiComparisonScreenViewmodelFamily extends $Family
     with
@@ -263,8 +263,8 @@ final class AiComparisonScreenViewmodelFamily extends $Family
         isAutoDispose: true,
       );
 
-  AiComparisonScreenViewmodelProvider call(String text) =>
-      AiComparisonScreenViewmodelProvider._(argument: text, from: this);
+  AiComparisonScreenViewmodelProvider call(String items) =>
+      AiComparisonScreenViewmodelProvider._(argument: items, from: this);
 
   @override
   String toString() => r'aiComparisonScreenViewmodelProvider';
@@ -272,9 +272,9 @@ final class AiComparisonScreenViewmodelFamily extends $Family
 
 abstract class _$AiComparisonScreenViewmodel extends $AsyncNotifier<String> {
   late final _$args = ref.$arg as String;
-  String get text => _$args;
+  String get items => _$args;
 
-  FutureOr<String> build(String text);
+  FutureOr<String> build(String items);
   @$mustCallSuper
   @override
   WhenComplete runBuild() {

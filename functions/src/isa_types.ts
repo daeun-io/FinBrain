@@ -10,17 +10,23 @@ export interface IsaMp {
 }
 
 export interface Option {
+  basDt: string;
+  termAndRate: TermAndRate[];
+}
+
+export interface TermAndRate {
   trm: string;
   bnfRt: string;
 }
 
 export interface GroupedIsaMp {
-  basDt: string;
   bzds: string;
   cmpyNm: string;
   mpTp: string;
   mpNm: string;
   rlsDt: string;
+  maxBnfRt: string;
+  minBnfRt: string,
   options: Option[];
 }
 

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
+import 'package:finbrain/data/model/entities/business_loan_option.dart';
 import 'package:finbrain/data/model/entities/credit_loan_option.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings_option.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan_option.dart';
@@ -83,30 +84,53 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
           foundOption.grade301400,
           foundOption.gradeUnder300,
         ].whereType<double>();
+        final avgRates = foundOption.averageGrade;
+        final min = rates.minOrNull ?? 0.0;
+        final max = (rates.isEmpty || rates.max == 0.0) ? 20.0: rates.max;
+        final avg = (avgRates != null && avgRates >= min && avgRates <= max)
+            ? avgRates
+            : (rates.isEmpty)
+            ? 10.0
+            : rates.average;
 
-        if (rates.isNotEmpty) {
-          final avgRates = foundOption.averageGrade;
-          final min = rates.min;
-          final max = rates.max;
-          final avg = (avgRates != null) ? avgRates : rates.average;
-          return [min, avg, max];
-        } else {
-          return [];
-        }
+        return [min, avg, max];
       case ProductCategory.mortgage:
       case ProductCategory.rent:
-        final min = options
+        final minList = options
             .map((e) => (e as MortgageAndRentLoanOption).lendRateMin)
-            .whereType<double>()
-            .min;
-        final max = options
+            .whereType<double>();
+        final maxList = options
             .map((e) => (e as MortgageAndRentLoanOption).lendRateMax)
-            .whereType<double>()
-            .max;
-        final avg = options
+            .whereType<double>();
+        final avgList = options
             .map((e) => (e as MortgageAndRentLoanOption).lendRateAvg)
-            .whereType<double>()
-            .average;
+            .whereType<double>();
+        final rates = [...minList, ...maxList, ...avgList];
+
+        final min = rates.minOrNull ?? 0.0;
+        final max = (rates.isEmpty || rates.max == 0.0) ? 20.0: rates.max;
+        final avg = (rates.isEmpty) ? 10.0 : rates.average;
+
+        return [min, avg, max];
+
+      case ProductCategory.business:
+        final option = options[0] as BusinessLoanOption;
+        final rates = [
+          option.loanGrade301400,
+          option.loanGrade401500,
+          option.loanGrade501600,
+          option.loanGrade601700,
+          option.loanGrade701800,
+          option.loanGrade801900,
+          option.loanGradeOver900,
+          option.loanGradeUnder300,
+          option.loanGradeAvg,
+          option.minRate,
+          option.maxRate
+        ].whereType<double>();
+        final min = (rates.isEmpty) ? 0.0 : rates.min;
+        final max = (rates.isEmpty || rates.max == 0.0) ? 20.0 : rates.max;
+        final avg = (rates.isEmpty || rates.max == 0.0) ? 10.0 : rates.average;
         return [min, avg, max];
       default:
         return [];
@@ -162,14 +186,14 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
           "세후 이자(15.4%)": interestAfterTax.toInt(),
           "만기수령액": (totalPrincipal + interestAfterTax).toInt(),
         };
-      default:        // 대출(loan)
+      default: // 대출(loan)
         final num = List.generate(term, (index) => index + 1);
-        List<int> monthlyPaymentList = [];        // 월 납입금(원금 + 이자)
-        List<int> repaidPrincipalList = [];       // 상환한 원금
-        List<int> interestList = [];              // 매달 이자
-        List<int> remainingBalanceList = [];      // 대출 잔액
+        List<int> monthlyPaymentList = []; // 월 납입금(원금 + 이자)
+        List<int> repaidPrincipalList = []; // 상환한 원금
+        List<int> interestList = []; // 매달 이자
+        List<int> remainingBalanceList = []; // 대출 잔액
         switch (type) {
-          case "원리금균등상환방식":                   // full amortization
+          case "원리금균등상환방식": // full amortization
             for (final currentMonth in num) {
               double monthlyPayment =
                   principal *
@@ -190,7 +214,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
               remainingBalanceList.add(remainingBalance.toInt());
             }
             break;
-          case "원금균등상환방식":                   // even repayment of principal
+          case "원금균등상환방식": // even repayment of principal
             for (final currentMonth in num) {
               double repaidPrincipal = principal / term;
               double previousBalance =
@@ -204,7 +228,7 @@ class CalculatorScreenViewmodel extends _$CalculatorScreenViewmodel {
               remainingBalanceList.add(remainingBalance.toInt());
             }
             break;
-          default:                   // 만기일시상환방식: bullet payment
+          default: // 만기일시상환방식: bullet payment
             final interest = principal * monthlyRate;
             interestList = List.generate(term, (index) => interest.toInt());
             repaidPrincipalList = List.generate(term - 1, (index) => 0);

@@ -1,9 +1,8 @@
+import 'package:finbrain/data/model/entities/business_loan.dart';
 import 'package:finbrain/data/model/entities/credit_loan.dart';
 import 'package:finbrain/data/model/entities/deposit_and_installment_savings.dart';
-import 'package:finbrain/data/model/entities/financial_product.dart';
 import 'package:finbrain/data/model/entities/isa_mp_benefit_rate.dart';
 import 'package:finbrain/data/model/entities/mortgage_and_rent_loan.dart';
-import 'package:finbrain/ui/viewmodel/current_page_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/liked_product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/product_viewmodel.dart';
 import 'package:finbrain/ui/viewmodel/selected_prdt_viewmodel.dart';
@@ -19,6 +18,7 @@ class ProductItem extends ConsumerStatefulWidget {
   const ProductItem({
     super.key,
     required this.productCode,
+    required this.companyName,
     required this.productName,
     required this.category,
     required this.fromLikedScreen,
@@ -26,6 +26,7 @@ class ProductItem extends ConsumerStatefulWidget {
   });
 
   final String productCode;
+  final String companyName;
   final String productName;
   final ProductCategory category;
   final bool fromLikedScreen;
@@ -41,9 +42,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = ref.watch(textThemeViewmodelProvider);
 
-    final cPage = ref.watch(currentPageViewmodelProvider(widget.category));
     final productList = ref.watch(
-      fetchProductViewmodelProvider(widget.category, cPage),
+      fetchProductViewmodelProvider(widget.category),
     );
     final likedList = ref.watch(likedProductViewmodelProvider);
 
@@ -51,16 +51,15 @@ class _ProductItemState extends ConsumerState<ProductItem> {
     // Watch data based on parent screen
     return ((widget.fromLikedScreen) ? likedList : productList).when(
       data: (data) {
-        final product =
-            ((widget.fromLikedScreen)
-                    ? data as List<FinancialProduct>
-                    : (data as (int, List<FinancialProduct>)).$2)
-                .where(
-                  (e) => (widget.category == ProductCategory.isaMp)
-                      ? e.commonInfo.productName == widget.productName
-                      : e.commonInfo.productCode == widget.productCode,
-                )
-                .firstOrNull;
+        final product = data
+            .where(
+              (e) => (widget.category == ProductCategory.isaMp)
+                  ? e.commonInfo.productName == widget.productName &&
+                        e.commonInfo.companyName == widget.companyName
+                  : e.commonInfo.productCode == widget.productCode &&
+                        e.commonInfo.companyName == widget.companyName,
+            )
+            .firstOrNull;
         if (product == null) return const SizedBox.shrink();
         final sortFilter = ref.watch(
           sortOrFilterTextViewModelProvider(product.commonInfo.category),
@@ -70,7 +69,7 @@ class _ProductItemState extends ConsumerState<ProductItem> {
             ? switch (product.commonInfo.category) {
                 ProductCategory.deposit => "최고 금리(높은 순)",
                 ProductCategory.installment => "최고 금리(높은 순)",
-                ProductCategory.isaMp => "평균 수익률(높은 순)",
+                ProductCategory.isaMp => "최고 수익률(높은 순)",
                 _ => "최저 금리(낮은 순)",
               }
             : sortFilter.$1.toString();
@@ -83,7 +82,8 @@ class _ProductItemState extends ConsumerState<ProductItem> {
             Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
                 builder: (ctx) => ProductDetailScreen(
-                  productCode: product.commonInfo.productCode ?? "isaMp",
+                  productCode: product.commonInfo.productCode ?? "ISA_MP",
+                  companyName: product.commonInfo.companyName!,
                   productName: product.commonInfo.productName!,
                   category: product.commonInfo.category,
                   fromLikedScreen: widget.fromLikedScreen,
@@ -170,6 +170,29 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                                   ? "미제공"
                                   : product.avgRate!.toStringAsFixed(2),
                           },
+                          ProductCategory.business => switch (sortCriteria) {
+                            "최저 적용 이자율(낮은 순)" =>
+                              ((product as BusinessLoan).options[0].minRate ==
+                                      null)
+                                  ? "미제공"
+                                  : product.options[0].minRate!.toStringAsFixed(
+                                      2,
+                                    ),
+                            "최고 적용 이자율(낮은 순)" =>
+                              ((product as BusinessLoan).options[0].maxRate ==
+                                      null)
+                                  ? "미제공"
+                                  : product.options[0].maxRate!.toStringAsFixed(
+                                      2,
+                                    ),
+                            _ =>
+                              ((product as BusinessLoan).options[0].avgRate ==
+                                      null)
+                                  ? "미제공"
+                                  : product.options[0].avgRate!.toStringAsFixed(
+                                      2,
+                                    ),
+                          },
                           ProductCategory.mortgage ||
                           ProductCategory.rent => switch (sortCriteria) {
                             "최저 금리(낮은 순)" =>
@@ -186,14 +209,14 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                                   : product.avgRate!.toStringAsFixed(2),
                           },
                           _ => switch (sortCriteria) {
-                            "평균 수익률(높은 순)" =>
-                              ((product as IsaMpBenefitRate).avgProfit == null)
+                            "최저 수익률(높은 순)" =>
+                              ((product as IsaMpBenefitRate).minProfit == null)
                                   ? "미제공"
-                                  : product.avgProfit!.toStringAsFixed(2),
+                                  : product.minProfit!.toStringAsFixed(2),
                             _ =>
-                              ((product as IsaMpBenefitRate).medProfit == null)
+                              ((product as IsaMpBenefitRate).maxProfit == null)
                                   ? "미제공"
-                                  : product.medProfit!.toStringAsFixed(2),
+                                  : product.maxProfit!.toStringAsFixed(2),
                           },
                         },
                         style: textTheme.titleMedium!.copyWith(
@@ -208,14 +231,10 @@ class _ProductItemState extends ConsumerState<ProductItem> {
                     // liked button
                     IconButton(
                       onPressed: () {
-                        final page = ref.read(
-                          currentPageViewmodelProvider(widget.category),
-                        );
                         ref
                             .read(
                               fetchProductViewmodelProvider(
                                 widget.category,
-                                page,
                               ).notifier,
                             )
                             .toggleLiked(product);
